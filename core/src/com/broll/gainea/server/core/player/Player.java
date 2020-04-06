@@ -1,0 +1,68 @@
+package com.broll.gainea.server.core.player;
+
+import com.broll.gainea.server.core.fractions.Fraction;
+import com.broll.gainea.server.core.objects.BattleObject;
+import com.broll.gainea.net.NT_Player;
+import com.broll.gainea.net.NT_Unit;
+import com.broll.gainea.server.PlayerData;
+import com.broll.gainea.server.core.map.Location;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Stream;
+
+public class Player {
+
+    private Fraction fraction;
+    private int score;
+    private com.broll.networklib.server.impl.Player<PlayerData> serverPlayer;
+    private List<BattleObject> units = new ArrayList<>();
+    private Map<String, Object> data = new HashMap<>();
+
+    public Player(Fraction fraction, com.broll.networklib.server.impl.Player<PlayerData> serverPlayer) {
+        this.fraction = fraction;
+        this.serverPlayer = serverPlayer;
+        serverPlayer.getData().joinedGame(this);
+    }
+
+    public Stream<Location> getControlledLocations() {
+        return units.stream().map(BattleObject::getLocation).distinct();
+    }
+
+    public Map<String, Object> getData() {
+        return data;
+    }
+
+    public void addPoints(int points) {
+        this.score += points;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public NT_Player nt() {
+        NT_Player player = new NT_Player();
+        player.cards = 0;
+        player.fraction = fraction.getType().ordinal();
+        player.id = serverPlayer.getId();
+        player.name = serverPlayer.getName();
+        player.points = score;
+        player.units = units.stream().map(BattleObject::nt).toArray(NT_Unit[]::new);
+        return player;
+    }
+
+    public com.broll.networklib.server.impl.Player<PlayerData> getServerPlayer() {
+        return serverPlayer;
+    }
+
+    public List<BattleObject> getUnits() {
+        return units;
+    }
+
+    public Fraction getFraction() {
+        return fraction;
+    }
+}
