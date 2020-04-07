@@ -1,6 +1,8 @@
 package com.broll.gainea.server.core.player;
 
+import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.fractions.Fraction;
+import com.broll.gainea.server.core.goals.GoalHandler;
 import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.net.NT_Player;
 import com.broll.gainea.net.NT_Unit;
@@ -20,10 +22,12 @@ public class Player {
     private com.broll.networklib.server.impl.Player<PlayerData> serverPlayer;
     private List<BattleObject> units = new ArrayList<>();
     private Map<String, Object> data = new HashMap<>();
+    private GoalHandler goalHandler;
 
-    public Player(Fraction fraction, com.broll.networklib.server.impl.Player<PlayerData> serverPlayer) {
+    public Player(GameContainer game, Fraction fraction, com.broll.networklib.server.impl.Player<PlayerData> serverPlayer) {
         this.fraction = fraction;
         this.serverPlayer = serverPlayer;
+        this.goalHandler = new GoalHandler(game, this);
         serverPlayer.getData().joinedGame(this);
     }
 
@@ -56,6 +60,10 @@ public class Player {
 
     public com.broll.networklib.server.impl.Player<PlayerData> getServerPlayer() {
         return serverPlayer;
+    }
+
+    public GoalHandler getGoalHandler() {
+        return goalHandler;
     }
 
     public List<BattleObject> getUnits() {

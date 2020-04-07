@@ -25,9 +25,6 @@ import java.util.stream.Collectors;
 
 public class GameStartSite extends AbstractGameSite {
 
-    //place 1 commander and 2 soldiers
-    public final static int START_LOCATIONS = 3;
-
     private final static String PLAYER_LOADED = "PLAYER_LOADED";
 
     private final static String GAME_LOADING = "GAME_LOADING";
@@ -55,17 +52,32 @@ public class GameStartSite extends AbstractGameSite {
     }
 
     private void gameLoaded() {
-        //start  placing units
+        //give random goals and start locations to everyone
+        drawStartLocations();
+        assignGoals();
+        //start  placing units after delay
+        getGame().schedule(5000, () -> placeUnit());
+    }
+
+    private void assignGoals() {
         GameContainer game = getGame();
+        int startGoalsCount = getLobby().getData().getStartGoals();
+        for (int i = 0; i < startGoalsCount; i++) {
+            game.getPlayers().forEach(game.getGoalStorage()::assignNewRandomGoal);
+        }
+    }
+
+    private void drawStartLocations() {
+        GameContainer game = getGame();
+        int startLocationsCount = getLobby().getData().getStartLocations();
         game.getData().put(START_UNITS_PLACED, 0);
         int playerCount = game.getPlayers().size();
-        List<Area> startLocations = LocationPicker.pickRandom(game, playerCount * START_LOCATIONS);
+        List<Area> startLocations = LocationPicker.pickRandom(game.getMap(), playerCount * startLocationsCount);
         for (Player player : game.getPlayers()) {
-            List<Location> playerStartLocations = startLocations.stream().limit(START_LOCATIONS).collect(Collectors.toList());
+            List<Location> playerStartLocations = startLocations.stream().limit(startLocationsCount).collect(Collectors.toList());
             startLocations.removeAll(playerStartLocations);
             player.getData().put(PLAYER_START_LOCATIONS, playerStartLocations);
         }
-        placeUnit();
     }
 
     private void placeUnit() {
@@ -89,13 +101,14 @@ public class GameStartSite extends AbstractGameSite {
 
     private void placedUnit(BattleObject battleObject, Location location) {
         GameContainer game = getGame();
+        int startLocationsCount = getLobby().getData().getStartLocations();
         int placed = (Integer) game.getData().get(START_UNITS_PLACED);
         Player player = getPlacingPlayer();
         //remove selected location from start locations
         ((List<Location>) player.getData().get(PLAYER_START_LOCATIONS)).remove(location);
         placed++;
         game.getData().put(START_UNITS_PLACED, placed);
-        if (placed < game.getPlayers().size() * START_LOCATIONS) {
+        if (placed < game.getPlayers().size() * startLocationsCount) {
             //next player places unit
             placeUnit();
         } else {

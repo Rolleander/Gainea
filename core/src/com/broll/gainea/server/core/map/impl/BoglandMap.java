@@ -2,12 +2,29 @@ package com.broll.gainea.server.core.map.impl;
 
 import com.broll.gainea.server.core.map.AreaCollection;
 import com.broll.gainea.client.render.ExpansionRender;
+import com.broll.gainea.server.core.map.AreaID;
+import com.broll.gainea.server.core.map.ContinentID;
 import com.broll.gainea.server.core.map.ExpansionFactory;
 import com.broll.gainea.server.core.map.ExpansionType;
+import com.broll.gainea.server.core.map.IslandID;
 
 import java.util.List;
-
+import static com.broll.gainea.server.core.map.impl.BoglandMap.Areas.*;
+import static com.broll.gainea.server.core.map.impl.BoglandMap.Islands.*;
+import static com.broll.gainea.server.core.map.impl.BoglandMap.Continents.*;
 public class BoglandMap extends ExpansionFactory {
+
+    public enum Continents implements ContinentID {
+
+    }
+
+    public enum Islands implements IslandID {
+
+    }
+
+    public enum Areas implements AreaID {
+    }
+
     public BoglandMap() {
         super(ExpansionType.BOGLANDS);
         setBaseCoordinates(-0.2f,0.9f);
@@ -19,12 +36,14 @@ public class BoglandMap extends ExpansionFactory {
     }
 
     @Override
-    protected void init(List<AreaCollection> contents) {
+    protected void init() {
 
     }
 
     @Override
-    protected void connectExpansion(ExpansionFactory expansion) {
+    protected void connectWithExpansion(ExpansionFactory expansion) {
 
     }
+
+
 }

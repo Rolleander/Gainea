@@ -9,12 +9,12 @@ import java.util.stream.Collectors;
 
 public class LocationPicker {
 
-    public static Area pickRandom(GameContainer game) {
-        return pickRandom(game.getAllAreas(), true);
+    public static Area pickRandom(MapContainer map) {
+        return pickRandom(map.getAllAreas(), true);
     }
 
-    public static List<Area> pickRandom(GameContainer game, int amount) {
-        List<Area> areas = game.getAllAreas();
+    public static List<Area> pickRandom(MapContainer map, int amount) {
+        List<Area> areas = map.getAllAreas();
         Collections.shuffle(areas);
         return areas.stream().limit(amount).collect(Collectors.toList());
     }

@@ -11,6 +11,15 @@ public class Area extends Location {
     private AreaType type;
     private String name;
     private AreaCollection container;
+    private AreaID id;
+
+    public Area(AreaID id){
+        this.id = id;
+    }
+
+    public AreaID getId() {
+        return id;
+    }
 
     public void setType(AreaType type) {
         this.type = type;

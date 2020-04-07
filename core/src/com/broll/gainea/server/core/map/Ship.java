@@ -20,7 +20,7 @@ public class Ship extends Location {
     }
 
     public boolean passable(Location from) {
-        if (from == from) {
+        if (this.from == from) {
             return true;
         }
         return false;

@@ -4,8 +4,15 @@ import com.broll.gainea.net.NT_StartGame;
 import com.broll.gainea.server.core.actions.ActionContext;
 import com.broll.gainea.server.core.actions.ReactionActions;
 import com.broll.gainea.server.core.battle.BattleHandler;
+import com.broll.gainea.server.core.goals.GoalStorage;
 import com.broll.gainea.server.core.map.AreaCollection;
+import com.broll.gainea.server.core.map.AreaID;
+import com.broll.gainea.server.core.map.Continent;
 import com.broll.gainea.server.core.map.Expansion;
+import com.broll.gainea.server.core.map.ExpansionType;
+import com.broll.gainea.server.core.map.Island;
+import com.broll.gainea.server.core.map.IslandID;
+import com.broll.gainea.server.core.map.MapContainer;
 import com.broll.gainea.server.core.objects.MapObject;
 import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.server.core.player.PlayerFactory;
@@ -33,9 +40,8 @@ import java.util.stream.Collectors;
 
 public class GameContainer {
 
-    private ExpansionSetting expansionSetting;
+    private MapContainer map;
     private List<Player> players;
-    private List<Expansion> expansions;
     private List<MapObject> objects = new ArrayList<>();
     private Map<Integer, ActionContext> actions = new HashMap<>();
     private int turns = 0;
@@ -47,12 +53,20 @@ public class GameContainer {
     private Map<String, Object> data = new HashMap<>();
     private BattleHandler battleHandler;
     private ScheduledExecutorService executor;
+    private GoalStorage goalStorage;
 
     public GameContainer(ExpansionSetting setting, Collection<com.broll.networklib.server.impl.Player<PlayerData>> players) {
         this.executor = Executors.newScheduledThreadPool(3);
-        this.expansionSetting = setting;
-        this.expansions = MapFactory.create(setting);
+        this.map =new MapContainer(setting);
         this.players = players.stream().map(player -> PlayerFactory.create(this, player)).collect(Collectors.toList());
+    }
+
+    public void initHandlers(ReactionActions reactionResult) {
+        ActionHandlers actionHandlers = new ActionHandlers(this, reactionResult);
+        reactionHandler = new ReactionHandler(this, actionHandlers);
+        turnBuilder = new TurnBuilder(this, actionHandlers);
+        this.battleHandler = new BattleHandler(this, reactionResult);
+        this.goalStorage = new GoalStorage(this, actionHandlers);
     }
 
     public synchronized int newObjectId() {
@@ -70,13 +84,6 @@ public class GameContainer {
 
     public void schedule(int inMilliseconds, Runnable runnable) {
         executor.schedule(runnable, inMilliseconds, TimeUnit.MILLISECONDS);
-    }
-
-    public void initHandlers(ReactionActions reactionResult) {
-        ActionHandlers actionHandlers = new ActionHandlers(this, reactionResult);
-        reactionHandler = new ReactionHandler(this, actionHandlers);
-        turnBuilder = new TurnBuilder(this, actionHandlers);
-        this.battleHandler = new BattleHandler(this, reactionResult);
     }
 
     public Map<String, Object> getData() {
@@ -100,7 +107,7 @@ public class GameContainer {
     public NT_StartGame start() {
         NT_StartGame startGame = new NT_StartGame();
         fillUpdate(startGame);
-        startGame.expansionsSetting = expansionSetting.ordinal();
+        startGame.expansionsSetting = map.getExpansionSetting().ordinal();
         return startGame;
     }
 
@@ -126,14 +133,8 @@ public class GameContainer {
         return players.get(currentPlayer);
     }
 
-    public List<Area> getAllAreas() {
-        List<Area> areas = new ArrayList<>();
-        for (Expansion expansion : expansions) {
-            for (AreaCollection collection : expansion.getContents()) {
-                areas.addAll(collection.getAreas());
-            }
-        }
-        return areas;
+    public MapContainer getMap() {
+        return map;
     }
 
     public int getCurrentPlayer() {
@@ -148,9 +149,6 @@ public class GameContainer {
         return players;
     }
 
-    public List<Expansion> getExpansions() {
-        return expansions;
-    }
 
     public ReactionHandler getReactionHandler() {
         return reactionHandler;
@@ -166,5 +164,9 @@ public class GameContainer {
 
     public List<MapObject> getObjects() {
         return objects;
+    }
+
+    public GoalStorage getGoalStorage() {
+        return goalStorage;
     }
 }

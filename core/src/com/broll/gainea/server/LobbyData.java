@@ -6,7 +6,15 @@ import com.broll.networklib.server.impl.LobbySettings;
 
 public class LobbyData implements LobbySettings {
 
+    private final static int START_LOCATIONS_DEFAULT = 3;
+
+    private final static int START_GOALS_DEFAULT = 3;
+
     private ExpansionSetting expansionSetting = ExpansionSetting.BASIC_GAME;
+
+    private int startLocations = START_LOCATIONS_DEFAULT;
+
+    private int startGoals = START_GOALS_DEFAULT;
 
     private GameContainer game;
 
@@ -24,6 +32,22 @@ public class LobbyData implements LobbySettings {
 
     public ExpansionSetting getExpansionSetting() {
         return expansionSetting;
+    }
+
+    public int getStartGoals() {
+        return startGoals;
+    }
+
+    public int getStartLocations() {
+        return startLocations;
+    }
+
+    public void setStartGoals(int startGoals) {
+        this.startGoals = startGoals;
+    }
+
+    public void setStartLocations(int startLocations) {
+        this.startLocations = startLocations;
     }
 
     @Override

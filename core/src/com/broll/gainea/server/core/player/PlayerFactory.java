@@ -5,15 +5,14 @@ import com.broll.gainea.server.PlayerData;
 import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.fractions.FractionType;
 import com.broll.gainea.server.core.fractions.impl.FireFraction;
+import com.broll.gainea.server.core.fractions.impl.WaterFraction;
 
 public class PlayerFactory {
 
     public static Player create(GameContainer game, com.broll.networklib.server.impl.Player<PlayerData> serverPlayer) {
         PlayerData data = serverPlayer.getData();
-        int id = serverPlayer.getId();
-        String name = serverPlayer.getName();
         Fraction fraction = createFraction(data.getFraction());
-        Player player = new Player(fraction, serverPlayer);
+        Player player = new Player(game, fraction, serverPlayer);
         fraction.init(game, player);
         return player;
     }
@@ -23,8 +22,9 @@ public class PlayerFactory {
             case FIRE:
                 return new FireFraction();
             case WATER:
+                return new WaterFraction();
         }
-        return null;
+        throw new RuntimeException("No fraction factory for type "+type);
     }
 
 }
