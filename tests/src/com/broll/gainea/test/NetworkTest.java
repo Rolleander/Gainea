@@ -32,14 +32,14 @@ public class NetworkTest {
 
     @Before
     public void before() {
-        Log.ERROR();
-        server = new TestServer(TIMEOUT);
+        Log.INFO();
+        server = new TestServer(NetworkSetup::registerNetwork, TIMEOUT);
         gameServer = new LobbyGameServer<>(server, "TestServer");
         NetworkSetup.setup(gameServer);
     }
 
     public LobbyGameClient testClient(String name) {
-        TestClient testClient = new TestClient(TIMEOUT);
+        TestClient testClient = new TestClient(NetworkSetup::registerNetwork, TIMEOUT);
         testClient.connect(server);
         LobbyGameClient client = new LobbyGameClient(testClient);
         NetworkSetup.registerNetwork(client);
@@ -69,17 +69,17 @@ public class NetworkTest {
         server.getConnection(getTestClient(client)).sendTCP(o);
     }
 
-    public void dropPackages(){
+    public void dropPackages() {
         dropClientsPackages();
         dropServerPackages();
     }
 
-    public void dropServerPackages(){
+    public void dropServerPackages() {
         server.dropReceivedPackages();
     }
 
-    public void dropClientsPackages(){
-        clients.values().forEach(e->e.testClient.dropReceivedPackages());
+    public void dropClientsPackages() {
+        clients.values().forEach(e -> e.testClient.dropReceivedPackages());
     }
 
     public <T> T assertClientReceived(LobbyGameClient client, Class<T> type) {
@@ -118,6 +118,11 @@ public class NetworkTest {
                     @Override
                     public void noLobbiesDiscovered() {
                         fail("no lobbies discovered");
+                    }
+
+                    @Override
+                    public void discoveryDone() {
+
                     }
                 })
         );

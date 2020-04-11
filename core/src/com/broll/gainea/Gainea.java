@@ -14,8 +14,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.broll.gainea.client.MapScrollHandler;
+import com.broll.gainea.client.ui.GameUI;
+import com.broll.gainea.server.NetworkSetup;
 import com.broll.gainea.server.core.map.Expansion;
 import com.broll.gainea.client.render.ExpansionRender;
 import com.broll.gainea.server.core.map.ExpansionFactory;
@@ -23,6 +28,7 @@ import com.broll.gainea.server.core.map.impl.BoglandMap;
 import com.broll.gainea.server.core.map.impl.GaineaMap;
 import com.broll.gainea.server.core.map.impl.IcelandMap;
 import com.broll.gainea.server.core.map.impl.MountainsMap;
+import com.broll.networklib.client.LobbyGameClient;
 
 public class Gainea extends ApplicationAdapter {
 
@@ -30,34 +36,23 @@ public class Gainea extends ApplicationAdapter {
 
     private Stage gameStage;
     private Stage uiStage;
+    private GameUI gameUI;
+    private LobbyGameClient client;
 
     @Override
     public void create() {
-        gameStage = new Stage(new StretchViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
-        uiStage = new Stage(new StretchViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
+        //new StretchViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight())
+        client =new LobbyGameClient(NetworkSetup::registerNetwork);
+        NetworkSetup.setup(client);
+        gameStage = new Stage(new ScreenViewport());
+        uiStage = new Stage(new ScreenViewport());
+        gameUI =new GameUI(uiStage, client);
         gameStage.addListener(new MapScrollHandler((OrthographicCamera) gameStage.getCamera()));
         Gdx.input.setInputProcessor(new InputMultiplexer(uiStage, gameStage));
         initExpansion(new GaineaMap());
         initExpansion(new IcelandMap());
-        initExpansion(new BoglandMap());
-        initExpansion(new MountainsMap());
-		Table table =new Table();
-		table.setFillParent(true);
-		Skin skin = new Skin();
-		Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
-		pixmap.setColor(Color.WHITE);
-		pixmap.fill();
-		skin.add("white", new Texture(pixmap));
-		skin.add("default", new BitmapFont());
-		TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
-		textButtonStyle.up = skin.newDrawable("white", Color.DARK_GRAY);
-		textButtonStyle.down = skin.newDrawable("white", Color.DARK_GRAY);
-		textButtonStyle.checked = skin.newDrawable("white", Color.BLUE);
-		textButtonStyle.over = skin.newDrawable("white", Color.LIGHT_GRAY);
-		textButtonStyle.font = skin.getFont("default");
-		skin.add("default", textButtonStyle);
-		table.add(new TextButton("click me",skin));
-        uiStage.addActor(table);
+          initExpansion(new BoglandMap());
+          initExpansion(new MountainsMap());
     }
 
     private void initExpansion(ExpansionFactory factory) {
@@ -70,7 +65,7 @@ public class Gainea extends ApplicationAdapter {
     @Override
     public void resize(int width, int height) {
         gameStage.getViewport().update(width, height);
-        uiStage.getViewport().update(width,height);
+        uiStage.getViewport().update(width,height,true);
     }
 
     @Override

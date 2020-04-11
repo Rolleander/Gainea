@@ -12,14 +12,14 @@ import java.util.Map;
 public class ReactionHandler {
 
     private GameContainer game;
-    private ReactionActions reactionResult;
+    private ReactionActions reactionActions;
     private Map<ActionContext, RequiredAction> requiredActions = Collections.synchronizedMap(new HashMap<>());
     private ActionHandlers actionHandlers;
 
     public ReactionHandler(GameContainer game, ActionHandlers actionHandlers) {
         this.game = game;
         this.actionHandlers = actionHandlers;
-        this.reactionResult = actionHandlers.getReactionResult();
+        this.reactionActions = actionHandlers.getReactionActions();
     }
 
     public void requireAction(Player target, ActionContext requiredAction) {
@@ -27,6 +27,10 @@ public class ReactionHandler {
         ra.player = target;
         ra.context = requiredAction;
         requiredActions.put(requiredAction, ra);
+    }
+
+    public ActionHandlers getActionHandlers() {
+        return actionHandlers;
     }
 
     public synchronized boolean hasRequiredActionFor(Player player) {
@@ -61,7 +65,7 @@ public class ReactionHandler {
         if (customHandler != null) {
             customHandler.handleReaction(actionContext, reaction);
         } else {
-            AbstractActionHandler actionHandler = actionHandlers.getHandler(action.getClass());
+            AbstractActionHandler actionHandler = actionHandlers.getHandlerForAction(action.getClass());
             if(actionHandler!=null){
                 actionHandler.update(gamePlayer);
                 actionHandler.handleReaction(actionContext, action, reaction);

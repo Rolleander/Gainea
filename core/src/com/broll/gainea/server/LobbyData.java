@@ -4,6 +4,9 @@ import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.net.NT_LobbySettings;
 import com.broll.networklib.server.impl.LobbySettings;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class LobbyData implements LobbySettings {
 
     private final static int START_LOCATIONS_DEFAULT = 3;
@@ -51,9 +54,9 @@ public class LobbyData implements LobbySettings {
     }
 
     @Override
-    public Object getSettings() {
-        NT_LobbySettings settings =new NT_LobbySettings();
+    public NT_LobbySettings getSettings() {
+        NT_LobbySettings settings = new NT_LobbySettings();
         settings.expansionSetting = expansionSetting.ordinal();
-        return settings;
+        return  settings;
     }
 }

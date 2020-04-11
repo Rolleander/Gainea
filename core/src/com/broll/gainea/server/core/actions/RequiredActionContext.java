@@ -9,14 +9,14 @@ public class RequiredActionContext<T extends NT_Action> extends ActionContext<T>
     private String text;
     private Object messageForOtherPlayer;
 
-    public RequiredActionContext(ActionContext<T> actionContext, String text){
+    public RequiredActionContext(ActionContext<T> actionContext, String text) {
         this(actionContext, text, null);
     }
 
     public RequiredActionContext(ActionContext<T> actionContext, String text, Object messageForOtherPlayers) {
         super(actionContext.getAction());
         this.actionContext = actionContext;
-        this.text =text;
+        this.text = text;
         this.messageForOtherPlayer = messageForOtherPlayers;
     }
 
@@ -24,7 +24,7 @@ public class RequiredActionContext<T extends NT_Action> extends ActionContext<T>
         return messageForOtherPlayer;
     }
 
-    public NT_PlayerAction nt(){
+    public NT_PlayerAction nt() {
         NT_PlayerAction action = new NT_PlayerAction();
         action.action = actionContext.getAction();
         action.text = text;

@@ -15,8 +15,8 @@ public abstract class AbstractGoal {
     private GoalDifficulty difficulty;
     private String restrictionInfo;
     private ExpansionType[] requiredExpansions;
-    private GameContainer game;
-    private Player player;
+    protected GameContainer game;
+    protected Player player;
 
     public AbstractGoal(GoalDifficulty difficulty, String text) {
         this.difficulty = difficulty;

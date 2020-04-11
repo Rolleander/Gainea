@@ -21,26 +21,20 @@ public abstract class AbstractGameSite extends LobbyServerSite<LobbyData, Player
         return getPlayer().getData().getGamePlayer();
     }
 
-    protected int getPlayersCount(){
+    protected int getPlayersCount() {
         return getGame().getPlayers().size();
     }
 
-    protected Player getCurrentPlayer(){
+    protected Player getCurrentPlayer() {
         GameContainer game = getGame();
         return game.getPlayers().get(game.getCurrentPlayer());
     }
 
     protected boolean playersTurn() {
-        return getGamePlayer().getServerPlayer() == getPlayer();
+        return getGamePlayer().getServerPlayer() == getPlayer() && getGamePlayer().getSkipRounds() <= 0;
     }
 
-    protected void nextTurn(Function<Player, NT_PlayerTurn> turn) {
-        Player player = getGame().nextTurn();
-        NT_PlayerTurn playerTurn = turn.apply(player);
-        playerAction(player, playerTurn);
-    }
-
-    protected void playerAction(Player player, NT_PlayerTurn turn) {
+    public void doPlayerTurn(Player player, NT_PlayerTurn turn) {
         //send turn to player
         player.getServerPlayer().sendTCP(turn);
         NT_PlayerWait wait = new NT_PlayerWait();

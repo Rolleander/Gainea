@@ -11,10 +11,10 @@ public class PlayerData implements LobbySettings {
 
     private Player gamePlayer;
 
-    private boolean ready=false;
+    private boolean ready = false;
 
-    public void joinedGame(Player gamePlayer){
-        this.gamePlayer =gamePlayer;
+    public void joinedGame(Player gamePlayer) {
+        this.gamePlayer = gamePlayer;
     }
 
     public void setFraction(FractionType fraction) {
@@ -38,8 +38,8 @@ public class PlayerData implements LobbySettings {
     }
 
     @Override
-    public Object getSettings() {
-        NT_PlayerSettings playerSettings =new NT_PlayerSettings();
+    public NT_PlayerSettings getSettings() {
+        NT_PlayerSettings playerSettings = new NT_PlayerSettings();
         playerSettings.fraction = fraction.ordinal();
         playerSettings.ready = ready;
         return playerSettings;

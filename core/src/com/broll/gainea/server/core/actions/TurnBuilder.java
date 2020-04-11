@@ -52,12 +52,13 @@ public class TurnBuilder {
         //2. create unit actions (move targets)
         player.getUnits().forEach(this::buildUnitActions);
         //3. card actions
+        player.getCardHandler().onTurnStart(this, actionHandlers);
         //4. fraction actions
         player.getFraction().turnStarts(actionHandlers);
     }
 
     private void buildAttackActions() {
-        AttackAction attackHandler = (AttackAction) actionHandlers.getHandler(NT_Action_Attack.class);
+        AttackAction attackHandler = actionHandlers.getHandler(AttackAction.class);
         player.getControlledLocations().forEach(location -> {
             List<Location> attackLocations = location.getConnectedLocations().stream().filter(
                     attackLocation -> !attackHandler.getEnemyArmy(player, attackLocation).isEmpty()).collect(Collectors.toList());
@@ -69,8 +70,8 @@ public class TurnBuilder {
 
     private void buildUnitActions(BattleObject battleObject) {
         //create move actions for each unit
-        AttackAction attackHandler = (AttackAction) actionHandlers.getHandler(NT_Action_Attack.class);
-        MoveUnitAction moveHandler = (MoveUnitAction) actionHandlers.getHandler(NT_Action_MoveUnit.class);
+        AttackAction attackHandler = actionHandlers.getHandler(AttackAction.class);
+        MoveUnitAction moveHandler = actionHandlers.getHandler(MoveUnitAction.class);
         List<Location> moveLocations = player.getFraction().getMoveLocations(battleObject).stream().filter(moveLocation ->
                 attackHandler.getEnemyArmy(player, moveLocation).isEmpty()
         ).collect(Collectors.toList());

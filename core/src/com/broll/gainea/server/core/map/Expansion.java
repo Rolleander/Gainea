@@ -14,6 +14,19 @@ public class Expansion {
         return contents;
     }
 
+    public List<Location> getAllLocations() {
+        List<Location> locations = new ArrayList<>();
+        contents.stream().map(AreaCollection::getAreas).forEach(locations::addAll);
+        contents.stream().map(AreaCollection::getShips).forEach(locations::addAll);
+        return locations;
+    }
+
+    public List<Area> getAllAreas() {
+        List<Area> locations = new ArrayList<>();
+        contents.stream().map(AreaCollection::getAreas).forEach(locations::addAll);
+        return locations;
+    }
+
     public void setType(ExpansionType type) {
         this.type = type;
     }
@@ -34,11 +47,11 @@ public class Expansion {
         return coordinates;
     }
 
-    public List<Island> getIslands(){
-        return contents.stream().filter(it->it instanceof Island).map(it->(Island)it).collect(Collectors.toList());
+    public List<Island> getIslands() {
+        return contents.stream().filter(it -> it instanceof Island).map(it -> (Island) it).collect(Collectors.toList());
     }
 
-    public List<Continent> getContinents(){
-        return contents.stream().filter(it->it instanceof Continent).map(it->(Continent)it).collect(Collectors.toList());
+    public List<Continent> getContinents() {
+        return contents.stream().filter(it -> it instanceof Continent).map(it -> (Continent) it).collect(Collectors.toList());
     }
 }

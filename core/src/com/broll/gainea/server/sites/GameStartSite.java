@@ -8,7 +8,6 @@ import com.broll.gainea.server.core.actions.impl.PlaceUnitAction;
 import com.broll.gainea.server.core.map.LocationPicker;
 import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.player.Player;
-import com.broll.gainea.net.NT_Action_PlaceUnit;
 import com.broll.gainea.server.ExpansionSetting;
 import com.broll.gainea.server.LobbyData;
 import com.broll.gainea.server.PlayerData;
@@ -95,8 +94,8 @@ public class GameStartSite extends AbstractGameSite {
         }
         String text = "Setze " + unitToPlace.getName() + " auf einen Startpunkt";
         ActionHandlers actionHandlers = game.getTurnBuilder().getActionHandlers();
-        PlaceUnitAction placeUnitAction = (PlaceUnitAction) actionHandlers.getHandler(NT_Action_PlaceUnit.class);
-        actionHandlers.getReactionResult().requireAction(player, new RequiredActionContext<>(placeUnitAction.placeUnit(unitToPlace, locations, this::placedUnit), text));
+        PlaceUnitAction placeUnitAction = actionHandlers.getHandler(PlaceUnitAction.class);
+        actionHandlers.getReactionActions().requireAction(player, new RequiredActionContext<>(placeUnitAction.placeUnit(unitToPlace, locations, this::placedUnit), text));
     }
 
     private void placedUnit(BattleObject battleObject, Location location) {

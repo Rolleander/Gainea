@@ -1,7 +1,5 @@
 package com.broll.gainea.misc;
 
-import com.broll.networklib.network.NetworkException;
-import com.broll.networklib.network.NetworkRegistry;
 import com.google.common.reflect.ClassPath;
 
 import java.io.IOException;
@@ -19,7 +17,7 @@ public class PackageLoader<T> {
         try {
             ClassPath cp = ClassPath.from(PackageLoader.class.getClassLoader());
             cp.getTopLevelClasses(path).forEach(cl -> {
-                Class javaClazz = cl.getClass();
+                Class javaClazz = cl.load();
                 classes.add(javaClazz);
             });
             shuffle();
@@ -35,7 +33,7 @@ public class PackageLoader<T> {
     public T next() {
         T next = null;
         if (index < classes.size()) {
-            next = instantite(classes.get(index));
+            next = instantiate(classes.get(index));
         }
         index++;
         return next;
@@ -45,7 +43,11 @@ public class PackageLoader<T> {
         index = 0;
     }
 
-    public T instantite(Class clazz) {
+    public T instantiate(int index) {
+        return instantiate(classes.get(index));
+    }
+
+    public T instantiate(Class clazz) {
         try {
             return (T) clazz.newInstance();
         } catch (Exception e) {
@@ -54,11 +56,15 @@ public class PackageLoader<T> {
     }
 
     public T instantiateRandom() {
-        return instantite(getRandom());
+        return instantiate(getRandom());
+    }
+
+    public int getRandomIndex() {
+        return (int) Math.random() * classes.size();
     }
 
     public Class<? extends T> getRandom() {
-        return classes.get((int) Math.random() * classes.size());
+        return classes.get(getRandomIndex());
     }
 
     public List<Class<? extends T>> getClasses() {

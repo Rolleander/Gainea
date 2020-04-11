@@ -4,6 +4,7 @@ import com.broll.gainea.net.NT_StartGame;
 import com.broll.gainea.server.core.actions.ActionContext;
 import com.broll.gainea.server.core.actions.ReactionActions;
 import com.broll.gainea.server.core.battle.BattleHandler;
+import com.broll.gainea.server.core.cards.CardStorage;
 import com.broll.gainea.server.core.goals.GoalStorage;
 import com.broll.gainea.server.core.map.AreaCollection;
 import com.broll.gainea.server.core.map.AreaID;
@@ -54,10 +55,11 @@ public class GameContainer {
     private BattleHandler battleHandler;
     private ScheduledExecutorService executor;
     private GoalStorage goalStorage;
+    private CardStorage cardStorage;
 
     public GameContainer(ExpansionSetting setting, Collection<com.broll.networklib.server.impl.Player<PlayerData>> players) {
         this.executor = Executors.newScheduledThreadPool(3);
-        this.map =new MapContainer(setting);
+        this.map = new MapContainer(setting);
         this.players = players.stream().map(player -> PlayerFactory.create(this, player)).collect(Collectors.toList());
     }
 
@@ -67,6 +69,7 @@ public class GameContainer {
         turnBuilder = new TurnBuilder(this, actionHandlers);
         this.battleHandler = new BattleHandler(this, reactionResult);
         this.goalStorage = new GoalStorage(this, actionHandlers);
+        this.cardStorage = new CardStorage(this, actionHandlers);
     }
 
     public synchronized int newObjectId() {
@@ -168,5 +171,9 @@ public class GameContainer {
 
     public GoalStorage getGoalStorage() {
         return goalStorage;
+    }
+
+    public CardStorage getCardStorage() {
+        return cardStorage;
     }
 }

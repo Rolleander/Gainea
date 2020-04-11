@@ -2,6 +2,7 @@ package com.broll.gainea.server.sites;
 
 import com.broll.gainea.net.NT_EndTurn;
 import com.broll.gainea.net.NT_Reaction;
+import com.broll.gainea.net.NT_TextInfo;
 import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.actions.ActionContext;
 import com.broll.gainea.server.core.actions.ReactionActions;
@@ -20,7 +21,18 @@ public class GameBoardSite extends AbstractGameSite {
 
     public void nextTurn() {
         GameContainer game = getGame();
-        nextTurn(p -> game.getTurnBuilder().build(p));
+        Player player = game.nextTurn();
+        if (player.getSkipRounds() > 0) {
+            player.consumeSkippedRound();
+            //send aussetzen info to all players
+            NT_TextInfo info = new NT_TextInfo();
+            info.text = player.getServerPlayer().getName() + " muss aussetzen!";
+            getLobby().sendToAllTCP(info);
+            //auto start next round after delay
+            game.schedule(3000, () -> nextTurn());
+        } else {
+            doPlayerTurn(player, game.getTurnBuilder().build(player));
+        }
     }
 
     @PackageReceiver

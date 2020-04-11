@@ -6,12 +6,7 @@ import com.broll.gainea.misc.PackageLoader;
 import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.actions.ActionHandlers;
 import com.broll.gainea.server.core.player.Player;
-import com.broll.networklib.network.NetworkException;
-import com.broll.networklib.network.NetworkRegistry;
-import com.google.common.reflect.ClassPath;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.function.Function;
 
 public class GoalStorage {
@@ -50,7 +45,7 @@ public class GoalStorage {
 
     public AbstractGoal newGoal(Player forPlayer, Function<AbstractGoal, Boolean> condition) {
         for (Class clazz : goalClasses) {
-            AbstractGoal goal = loader.instantite(clazz);
+            AbstractGoal goal = loader.instantiate(clazz);
             if (goal.init(game, forPlayer)) {
                 if (condition.apply(goal)) {
                     goalClasses.remove(clazz);

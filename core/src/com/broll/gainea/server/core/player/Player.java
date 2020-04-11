@@ -1,6 +1,7 @@
 package com.broll.gainea.server.core.player;
 
 import com.broll.gainea.server.core.GameContainer;
+import com.broll.gainea.server.core.cards.CardHandler;
 import com.broll.gainea.server.core.fractions.Fraction;
 import com.broll.gainea.server.core.goals.GoalHandler;
 import com.broll.gainea.server.core.objects.BattleObject;
@@ -18,17 +19,31 @@ import java.util.stream.Stream;
 public class Player {
 
     private Fraction fraction;
-    private int score;
     private com.broll.networklib.server.impl.Player<PlayerData> serverPlayer;
     private List<BattleObject> units = new ArrayList<>();
     private Map<String, Object> data = new HashMap<>();
     private GoalHandler goalHandler;
+    private CardHandler cardHandler;
+    private int skipRounds;
 
     public Player(GameContainer game, Fraction fraction, com.broll.networklib.server.impl.Player<PlayerData> serverPlayer) {
         this.fraction = fraction;
         this.serverPlayer = serverPlayer;
         this.goalHandler = new GoalHandler(game, this);
+        this.cardHandler = new CardHandler(game, this);
         serverPlayer.getData().joinedGame(this);
+    }
+
+    public void skipRounds(int rounds){
+        this.skipRounds++;
+    }
+
+    public int getSkipRounds() {
+        return skipRounds;
+    }
+
+    public void consumeSkippedRound(){
+        skipRounds--;
     }
 
     public Stream<Location> getControlledLocations() {
@@ -39,21 +54,13 @@ public class Player {
         return data;
     }
 
-    public void addPoints(int points) {
-        this.score += points;
-    }
-
-    public int getScore() {
-        return score;
-    }
-
     public NT_Player nt() {
         NT_Player player = new NT_Player();
-        player.cards = 0;
+        player.cards = cardHandler.getCardCount();
         player.fraction = fraction.getType().ordinal();
         player.id = serverPlayer.getId();
         player.name = serverPlayer.getName();
-        player.points = score;
+        player.points = goalHandler.getScore();
         player.units = units.stream().map(BattleObject::nt).toArray(NT_Unit[]::new);
         return player;
     }
@@ -72,5 +79,9 @@ public class Player {
 
     public Fraction getFraction() {
         return fraction;
+    }
+
+    public CardHandler getCardHandler() {
+        return cardHandler;
     }
 }

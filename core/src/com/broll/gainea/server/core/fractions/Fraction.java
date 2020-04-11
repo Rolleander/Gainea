@@ -44,9 +44,9 @@ public abstract class Fraction {
     public void turnStarts(ActionHandlers actionHandlers) {
         //default place one new soldier on an occupied location
         List<Location> spawnLocations = owner.getControlledLocations().collect(Collectors.toList());
-        PlaceUnitAction placeUnitAction = (PlaceUnitAction) actionHandlers.getHandler(NT_Action_PlaceUnit.class);
+        PlaceUnitAction placeUnitAction =actionHandlers.getHandler(PlaceUnitAction.class);
         RequiredActionContext<NT_Action_PlaceUnit> placeUnit = new RequiredActionContext<>(placeUnitAction.placeSoldier(spawnLocations), "Verstärke eine Truppe");
-        actionHandlers.getReactionResult().requireAction(owner, placeUnit);
+        actionHandlers.getReactionActions().requireAction(owner, placeUnit);
     }
 
     public FightingPower calcPower(Location location, List<BattleObject> fighters, List<BattleObject> enemeies, boolean isAttacker) {
