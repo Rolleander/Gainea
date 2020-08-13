@@ -1,8 +1,8 @@
 package com.broll.gainea.test;
 
-import com.broll.gainea.server.LobbyData;
-import com.broll.gainea.server.NetworkSetup;
-import com.broll.gainea.server.PlayerData;
+import com.broll.gainea.server.init.LobbyData;
+import com.broll.gainea.server.init.NetworkSetup;
+import com.broll.gainea.server.init.PlayerData;
 import com.broll.networklib.client.ClientAuthenticationKey;
 import com.broll.networklib.client.LobbyGameClient;
 import com.broll.networklib.client.impl.GameLobby;
@@ -47,6 +47,7 @@ public class NetworkTest {
         data.playerName = name;
         data.testClient = testClient;
         clients.put(client, data);
+        client.setClientAuthenticationKey(ClientAuthenticationKey.custom(name));
         client.connectToServer(IP);
         return client;
     }
@@ -94,13 +95,22 @@ public class NetworkTest {
         return clients.get(client).testClient;
     }
 
-    public ServerLobby<LobbyData, PlayerData> openGameLobby(LobbyData data) {
-        ServerLobby<LobbyData, PlayerData> lobby = gameServer.getLobbyHandler().openLobby("TestLobby");
+    public ServerLobby<LobbyData, PlayerData> openGameLobby(LobbyData data, String name) {
+        ServerLobby<LobbyData, PlayerData> lobby = gameServer.getLobbyHandler().openLobby(name);
         lobby.setData(data);
         return lobby;
     }
 
+    private void fail(String reason) {
+        throw new RuntimeException("Operation failed: " + reason);
+    }
+
     public void joinLobby(LobbyGameClient client, ServerLobby serverLobby) {
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         AsyncTask.doAsync(task ->
                 client.listLobbies(new ILobbyDiscovery() {
                     @Override
@@ -129,6 +139,11 @@ public class NetworkTest {
     }
 
     private void connectToLobby(LobbyGameClient client, GameLobby lobby) {
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         AsyncTask.doAsync(task -> {
                     String name = clients.get(client).playerName;
                     client.connectToLobby(lobby, name, new INetworkRequestAttempt<GameLobby>() {
@@ -142,7 +157,7 @@ public class NetworkTest {
                             //joined lobby
                             task.done(true);
                         }
-                    }, ClientAuthenticationKey.custom(name));
+                    });
                 }
         );
     }

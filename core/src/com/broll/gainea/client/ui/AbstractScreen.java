@@ -3,15 +3,28 @@ package com.broll.gainea.client.ui;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Widget;
+import com.broll.networklib.client.LobbyGameClient;
 
 public abstract class AbstractScreen {
 
     protected Skin skin;
+    protected LobbyGameClient client;
+    protected GameUI ui;
 
     public AbstractScreen(){
 
     }
+
+    void init(Skin skin, LobbyGameClient client, GameUI ui){
+        this.skin = skin;
+        this.client = client;
+        this.ui = ui;
+    }
+
+    protected void backToTitle(){
+        ui.showScreen(new StartScreen());
+    }
+
 
     protected Label info(String text){
         return new Label(text,skin);
@@ -30,9 +43,6 @@ public abstract class AbstractScreen {
     }
 
 
-    void init(Skin skin){
-        this.skin = skin;
-    }
 
     public abstract Actor build();
 }

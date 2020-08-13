@@ -1,4 +1,4 @@
-package com.broll.gainea.server;
+package com.broll.gainea.server.init;
 
 import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.net.NT_PlayerSettings;

@@ -1,4 +1,4 @@
-package com.broll.gainea.server;
+package com.broll.gainea.server.init;
 
 import com.broll.gainea.server.sites.GameLobbySite;
 import com.broll.gainea.net.NT_Action;
@@ -11,13 +11,7 @@ import com.broll.gainea.server.sites.GameBoardSite;
 import com.broll.gainea.server.sites.GameStartSite;
 import com.broll.networklib.NetworkRegister;
 import com.broll.networklib.client.LobbyGameClient;
-import com.broll.networklib.network.nt.NT_LobbyInformation;
 import com.broll.networklib.server.LobbyGameServer;
-import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.Serializer;
-import com.esotericsoftware.kryo.io.Input;
-import com.esotericsoftware.kryo.io.Output;
-import com.esotericsoftware.minlog.Log;
 
 public class NetworkSetup {
 

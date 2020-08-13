@@ -1,7 +1,7 @@
 package com.broll.gainea.server.core.player;
 
 import com.broll.gainea.server.core.fractions.Fraction;
-import com.broll.gainea.server.PlayerData;
+import com.broll.gainea.server.init.PlayerData;
 import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.fractions.FractionType;
 import com.broll.gainea.server.core.fractions.impl.FireFraction;

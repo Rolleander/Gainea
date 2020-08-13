@@ -11,8 +11,11 @@ public class DesktopLauncher {
 	public static void main (String[] arg) {
 		Log.set(LEVEL_TRACE);
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-	//	config.width=1920;
-	//	config.height=1080;
+		//config.width=1920;
+//		config.height=1080;
+		config.width=920;
+		config.height=680;
+
 		new LwjglApplication(new Gainea(), config);
 	}
 }

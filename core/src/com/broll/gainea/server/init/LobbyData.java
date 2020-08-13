@@ -1,11 +1,8 @@
-package com.broll.gainea.server;
+package com.broll.gainea.server.init;
 
 import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.net.NT_LobbySettings;
 import com.broll.networklib.server.impl.LobbySettings;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class LobbyData implements LobbySettings {
 
@@ -13,11 +10,17 @@ public class LobbyData implements LobbySettings {
 
     private final static int START_GOALS_DEFAULT = 3;
 
+    private final static int POINT_LIMIT_DEFAULT = 3;
+
     private ExpansionSetting expansionSetting = ExpansionSetting.BASIC_GAME;
+
+    private GoalTypes goalTypes = GoalTypes.ALL;
 
     private int startLocations = START_LOCATIONS_DEFAULT;
 
     private int startGoals = START_GOALS_DEFAULT;
+
+    private int pointLimit = POINT_LIMIT_DEFAULT;
 
     private GameContainer game;
 
@@ -53,10 +56,30 @@ public class LobbyData implements LobbySettings {
         this.startLocations = startLocations;
     }
 
+    public GoalTypes getGoalTypes() {
+        return goalTypes;
+    }
+
+    public int getPointLimit() {
+        return pointLimit;
+    }
+
+    public void setGoalTypes(GoalTypes goalTypes) {
+        this.goalTypes = goalTypes;
+    }
+
+    public void setPointLimit(int pointLimit) {
+        this.pointLimit = pointLimit;
+    }
+
     @Override
     public NT_LobbySettings getSettings() {
         NT_LobbySettings settings = new NT_LobbySettings();
         settings.expansionSetting = expansionSetting.ordinal();
-        return  settings;
+        settings.startGoals = startGoals;
+        settings.startLocations = startLocations;
+        settings.pointLimit = pointLimit;
+        settings.goalTypes = goalTypes.ordinal();
+        return settings;
     }
 }

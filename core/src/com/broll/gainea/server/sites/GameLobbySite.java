@@ -4,9 +4,10 @@ import com.broll.gainea.misc.EnumUtils;
 import com.broll.gainea.net.NT_LobbySettings;
 import com.broll.gainea.net.NT_PlayerChangeFraction;
 import com.broll.gainea.net.NT_PlayerReady;
-import com.broll.gainea.server.ExpansionSetting;
-import com.broll.gainea.server.LobbyData;
-import com.broll.gainea.server.PlayerData;
+import com.broll.gainea.server.init.ExpansionSetting;
+import com.broll.gainea.server.init.LobbyData;
+import com.broll.gainea.server.init.LobbyFactory;
+import com.broll.gainea.server.init.PlayerData;
 import com.broll.gainea.server.core.fractions.FractionType;
 import com.broll.gainea.server.core.map.ExpansionType;
 import com.broll.networklib.PackageReceiver;
@@ -21,13 +22,10 @@ import com.broll.networklib.server.impl.ServerLobbyListener;
 
 public class GameLobbySite extends LobbyServerSite<LobbyData, PlayerData> {
 
-    private ServerLobbyListener lobbyListener = new LobbyListener();
-
     private GameStartSite gameStartSite;
 
     public GameLobbySite(GameStartSite gameStartSite) {
         this.gameStartSite = gameStartSite;
-
     }
 
     @Override
@@ -40,10 +38,7 @@ public class GameLobbySite extends LobbyServerSite<LobbyData, PlayerData> {
                     int expansion = ((NT_LobbySettings) settings).expansionSetting;
                     if (EnumUtils.inBounds(expansion, ExpansionType.class)) {
                         ServerLobby<LobbyData, PlayerData> lobby = lobbyHandler.openLobby(lobbyName);
-                        LobbyData data = new LobbyData();
-                        data.setExpansionSetting(ExpansionSetting.values()[expansion]);
-                        lobby.setData(data);
-                        lobby.setListener(lobbyListener);
+                        LobbyFactory.initLobby(lobby, ExpansionSetting.values()[expansion]);
                         return lobby;
                     }
                 }
@@ -75,7 +70,8 @@ public class GameLobbySite extends LobbyServerSite<LobbyData, PlayerData> {
         ServerLobby<LobbyData, PlayerData> lobby = getLobby();
         lobby.synchronizedAccess(() -> {
             if (lobby.streamData().map(PlayerData::isReady).reduce(true, Boolean::logicalAnd)) {
-                gameStartSite.receive(getConnection(),null);
+                lobby.setLocked(true);
+                gameStartSite.receive(getConnection(), null);
                 gameStartSite.startGame();
             }
         });

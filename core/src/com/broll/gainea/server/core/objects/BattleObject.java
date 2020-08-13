@@ -60,7 +60,9 @@ public abstract class BattleObject extends MapObject {
         unit.health = health;
         unit.maxHealth = maxHealth;
         unit.power = power;
-        unit.owner = owner.getServerPlayer().getId();
+        if(owner!=null){
+            unit.owner = owner.getServerPlayer().getId();
+        }
         return unit;
     }
 

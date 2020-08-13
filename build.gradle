@@ -80,7 +80,7 @@ project(":core") {
         api "com.badlogicgames.gdx:gdx:$gdxVersion"
         api "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
         compile group: 'com.esotericsoftware.minlog', name: 'minlog', version: '1.2'
-
+        compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
     }
 }
 

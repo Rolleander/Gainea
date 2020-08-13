@@ -1,4 +1,4 @@
-package com.broll.gainea.server;
+package com.broll.gainea.server.init;
 
 public enum ExpansionSetting {
 

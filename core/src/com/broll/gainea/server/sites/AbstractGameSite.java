@@ -3,12 +3,10 @@ package com.broll.gainea.server.sites;
 import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.net.NT_PlayerTurn;
 import com.broll.gainea.net.NT_PlayerWait;
-import com.broll.gainea.server.LobbyData;
-import com.broll.gainea.server.PlayerData;
+import com.broll.gainea.server.init.LobbyData;
+import com.broll.gainea.server.init.PlayerData;
 import com.broll.gainea.server.core.GameContainer;
 import com.broll.networklib.server.LobbyServerSite;
-
-import java.util.function.Function;
 
 public abstract class AbstractGameSite extends LobbyServerSite<LobbyData, PlayerData> {
 
@@ -35,6 +33,8 @@ public abstract class AbstractGameSite extends LobbyServerSite<LobbyData, Player
     }
 
     public void doPlayerTurn(Player player, NT_PlayerTurn turn) {
+        //reset actions
+        getGame().clearActions();
         //send turn to player
         player.getServerPlayer().sendTCP(turn);
         NT_PlayerWait wait = new NT_PlayerWait();

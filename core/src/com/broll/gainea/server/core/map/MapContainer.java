@@ -1,7 +1,6 @@
 package com.broll.gainea.server.core.map;
 
-import com.broll.gainea.server.ExpansionSetting;
-import com.broll.gainea.server.core.player.Player;
+import com.broll.gainea.server.init.ExpansionSetting;
 
 import java.util.ArrayList;
 import java.util.List;

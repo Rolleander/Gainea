@@ -39,8 +39,12 @@ public class GameBoardSite extends AbstractGameSite {
     @PackageRestriction(RestrictionType.LOBBY_LOCKED)
     public void reaction(NT_Reaction reaction) {
         GameContainer game = getGame();
-        ReactionHandler handler = game.getReactionHandler();
         ActionContext action = game.getAction(reaction.actionId);
+        if(action==null){
+            //invalid action, ignore client request
+            return;
+        }
+        ReactionHandler handler = game.getReactionHandler();
         Player player = getGamePlayer();
         if (handler.hasRequiredActionFor(player)) {
             handler.handle(player, action, reaction);

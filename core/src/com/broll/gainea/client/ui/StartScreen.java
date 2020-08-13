@@ -1,11 +1,13 @@
 package com.broll.gainea.client.ui;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -14,12 +16,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Widget;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.broll.networklib.client.LobbyGameClient;
 import com.broll.networklib.client.impl.GameLobby;
 import com.broll.networklib.client.impl.ILobbyDiscovery;
 import com.broll.networklib.network.INetworkRequestAttempt;
+import com.esotericsoftware.minlog.Log;
 
 import java.util.List;
 
@@ -28,37 +32,40 @@ public class StartScreen extends AbstractScreen {
     private TextField serverIp;
     private TextField name;
     private Table lobbies;
-    private LobbyGameClient client;
     private LobbyListener lobbyListener = new LobbyListener();
 
     private TextButton discover, connect;
     private boolean connecting = false;
-    private Widget loadingInfo;
+    private Label loadingInfo;
 
 
-    public StartScreen(LobbyGameClient client) {
-        this.client = client;
+    public StartScreen() {
     }
 
     private void joinLobby(GameLobby lobby) {
         String name = this.name.getText();
+        Log.info("try joining lobby " + lobby.getName());
         if (name != null && name.trim().length() > 0) {
             client.connectToLobby(lobby, name, new INetworkRequestAttempt<GameLobby>() {
                 @Override
                 public void failure(String reason) {
-
+                    Log.info("Failed to connect to lobby: " + reason);
                 }
 
                 @Override
                 public void receive(GameLobby lobby) {
-                    joinLobby(lobby);
+                    joinedLobby(lobby);
                 }
             });
         }
     }
 
     private void joinedLobby(GameLobby lobby) {
-
+        Log.info("join lobby " + lobby.getName());
+        Gdx.app.postRunnable(() -> {
+            Log.info("into lobby");
+            ui.showScreen(new LobbyScreen(lobby));
+        });
     }
 
     private class LobbyListener implements ILobbyDiscovery {
@@ -73,9 +80,9 @@ public class StartScreen extends AbstractScreen {
                 table.add(info(lobby.getName())).padRight(50);
                 table.add(info(serverName + " [" + serverIp + "]")).padRight(50);
                 table.add(info(lobby.getPlayerCount() + " Players"));
-                table.addListener(new ChangeListener() {
+                table.addListener(new ClickListener() {
                     @Override
-                    public void changed(ChangeEvent event, Actor actor) {
+                    public void clicked(InputEvent event, float x, float y) {
                         joinLobby(lobby);
                     }
                 });
@@ -86,8 +93,8 @@ public class StartScreen extends AbstractScreen {
 
         @Override
         public void noLobbiesDiscovered() {
-            StartScreen.this.lobbies.addActor(info("No Game found"));
             setConnecting(false);
+            showInfo("No Game found");
         }
 
         @Override
@@ -100,18 +107,25 @@ public class StartScreen extends AbstractScreen {
         this.connecting = connecting;
         connect.setDisabled(connecting);
         //   discover.setDisabled(connecting);
-        if (connecting) {
-            lobbies.addActor(loadingInfo);
+        if (!connecting) {
+            loadingInfo.setVisible(false);
         } else {
-            lobbies.removeActor(loadingInfo);
+            showInfo("Connecting...");
         }
+    }
+
+    public void showInfo(String text) {
+        loadingInfo.setText(text);
+        loadingInfo.setVisible(true);
     }
 
     @Override
     public Actor build() {
-        loadingInfo = info("Connecting...");
+        loadingInfo = info("");
+        loadingInfo.setAlignment(Align.center);
+        loadingInfo.setVisible(false);
         serverIp = new TextField("localhost", skin);
-        name = new TextField("", skin);
+        name = new TextField("TimoTester", skin);
         Table vg = new Table();
         vg.setFillParent(true);
         vg.setBackground(new TextureRegionDrawable(new Texture("textures/title.png")));
@@ -135,7 +149,8 @@ public class StartScreen extends AbstractScreen {
         });
         table.add(connect).align(Align.center).colspan(2);
         table.row().padTop(20);
-
+        table.add(loadingInfo).center();
+        table.row();
         lobbies = new Table(skin);
         lobbies.center();
         table.add(lobbies).colspan(5);

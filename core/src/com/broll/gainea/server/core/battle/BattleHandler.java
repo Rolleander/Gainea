@@ -29,6 +29,7 @@ public class BattleHandler {
 
     public void startBattle(List<BattleObject> attackers, List<BattleObject> defenders) {
         if (battleActive == false) {
+            game.getReactionHandler().incActionStack();
             this.attackers = attackers;
             this.defenders = defenders;
             battleActive = true;
@@ -90,6 +91,7 @@ public class BattleHandler {
         } else {
             //battle finished, all attackers or defenders died
             battleActive = false;
+            game.getReactionHandler().decActionStack();
         }
     }
 

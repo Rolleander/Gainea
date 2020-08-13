@@ -1,6 +1,6 @@
 package com.broll.gainea.server.core.map;
 
-import com.broll.gainea.server.ExpansionSetting;
+import com.broll.gainea.server.init.ExpansionSetting;
 import com.broll.gainea.server.core.map.impl.BoglandMap;
 import com.broll.gainea.server.core.map.impl.GaineaMap;
 import com.broll.gainea.server.core.map.impl.IcelandMap;

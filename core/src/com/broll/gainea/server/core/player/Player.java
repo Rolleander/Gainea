@@ -7,7 +7,7 @@ import com.broll.gainea.server.core.goals.GoalHandler;
 import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.net.NT_Player;
 import com.broll.gainea.net.NT_Unit;
-import com.broll.gainea.server.PlayerData;
+import com.broll.gainea.server.init.PlayerData;
 import com.broll.gainea.server.core.map.Location;
 
 import java.util.ArrayList;

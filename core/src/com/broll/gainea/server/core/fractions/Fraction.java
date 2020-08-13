@@ -21,8 +21,8 @@ public abstract class Fraction {
 
     protected int soldierHealth = 1;
     protected int soldierPower = 1;
-    protected int commanderHealth = 1;
-    protected int commanderPower = 1;
+    protected int commanderHealth = 3;
+    protected int commanderPower = 3;
 
     private FractionType type;
     protected GameContainer game;

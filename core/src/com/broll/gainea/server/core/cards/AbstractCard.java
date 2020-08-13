@@ -1,7 +1,5 @@
 package com.broll.gainea.server.core.cards;
 
-import com.broll.gainea.misc.Consumer;
-import com.broll.gainea.net.NT_Action_Card;
 import com.broll.gainea.net.NT_Card;
 import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.actions.ActionHandlers;

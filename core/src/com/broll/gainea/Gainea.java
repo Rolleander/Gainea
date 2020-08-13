@@ -3,24 +3,14 @@ package com.broll.gainea;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.broll.gainea.client.MapScrollHandler;
 import com.broll.gainea.client.ui.GameUI;
-import com.broll.gainea.server.NetworkSetup;
+import com.broll.gainea.server.init.NetworkSetup;
 import com.broll.gainea.server.core.map.Expansion;
 import com.broll.gainea.client.render.ExpansionRender;
 import com.broll.gainea.server.core.map.ExpansionFactory;
@@ -41,6 +31,9 @@ public class Gainea extends ApplicationAdapter {
 
     @Override
     public void create() {
+        TextField.keyRepeatInitialTime=0.1f;
+        TextField.keyRepeatTime=0.005f;
+
         //new StretchViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight())
         client =new LobbyGameClient(NetworkSetup::registerNetwork);
         NetworkSetup.setup(client);

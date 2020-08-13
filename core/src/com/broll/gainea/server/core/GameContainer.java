@@ -6,13 +6,6 @@ import com.broll.gainea.server.core.actions.ReactionActions;
 import com.broll.gainea.server.core.battle.BattleHandler;
 import com.broll.gainea.server.core.cards.CardStorage;
 import com.broll.gainea.server.core.goals.GoalStorage;
-import com.broll.gainea.server.core.map.AreaCollection;
-import com.broll.gainea.server.core.map.AreaID;
-import com.broll.gainea.server.core.map.Continent;
-import com.broll.gainea.server.core.map.Expansion;
-import com.broll.gainea.server.core.map.ExpansionType;
-import com.broll.gainea.server.core.map.Island;
-import com.broll.gainea.server.core.map.IslandID;
 import com.broll.gainea.server.core.map.MapContainer;
 import com.broll.gainea.server.core.objects.MapObject;
 import com.broll.gainea.server.core.player.Player;
@@ -20,14 +13,12 @@ import com.broll.gainea.server.core.player.PlayerFactory;
 import com.broll.gainea.net.NT_BoardObject;
 import com.broll.gainea.net.NT_BoardUpdate;
 import com.broll.gainea.net.NT_Player;
-import com.broll.gainea.server.ExpansionSetting;
-import com.broll.gainea.server.PlayerData;
+import com.broll.gainea.server.init.ExpansionSetting;
+import com.broll.gainea.server.init.PlayerData;
 import com.broll.gainea.server.core.actions.ActionHandlers;
 import com.broll.gainea.server.core.actions.ReactionHandler;
 import com.broll.gainea.server.core.actions.TurnBuilder;
-import com.broll.gainea.server.core.map.Area;
 import com.broll.gainea.server.core.map.Location;
-import com.broll.gainea.server.core.map.MapFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -37,6 +28,7 @@ import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 public class GameContainer {
@@ -105,6 +97,14 @@ public class GameContainer {
 
     public synchronized void consumeAction(int id) {
         actions.remove(id);
+    }
+
+    public void clearActions() {
+        actions.clear();
+    }
+
+    public boolean hasRemainingActions() {
+        return !actions.isEmpty();
     }
 
     public NT_StartGame start() {
@@ -176,4 +176,6 @@ public class GameContainer {
     public CardStorage getCardStorage() {
         return cardStorage;
     }
+
+
 }

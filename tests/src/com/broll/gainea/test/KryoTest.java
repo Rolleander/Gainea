@@ -1,28 +1,19 @@
 package com.broll.gainea.test;
 
 import com.broll.gainea.net.NT_LobbySettings;
-import com.broll.gainea.server.ExpansionSetting;
-import com.broll.gainea.server.LobbyData;
-import com.broll.gainea.server.NetworkSetup;
-import com.broll.gainea.server.PlayerData;
-import com.broll.networklib.NetworkRegister;
+import com.broll.gainea.server.init.ExpansionSetting;
+import com.broll.gainea.server.init.LobbyData;
+import com.broll.gainea.server.init.NetworkSetup;
+import com.broll.gainea.server.init.PlayerData;
 import com.broll.networklib.client.LobbyGameClient;
 import com.broll.networklib.client.impl.GameLobby;
 import com.broll.networklib.client.impl.ILobbyDiscovery;
-import com.broll.networklib.network.nt.NT_LobbyInformation;
-import com.broll.networklib.network.nt.NT_ServerInformation;
-import com.broll.networklib.server.GameServer;
 import com.broll.networklib.server.LobbyGameServer;
 import com.broll.networklib.server.impl.ServerLobby;
-import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.io.Input;
-import com.esotericsoftware.kryo.io.Output;
 
 import org.junit.Test;
 
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
