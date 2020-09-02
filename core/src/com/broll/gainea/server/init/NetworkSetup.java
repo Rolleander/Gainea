@@ -4,7 +4,6 @@ import com.broll.gainea.server.sites.GameLobbySite;
 import com.broll.gainea.net.NT_Action;
 import com.broll.gainea.net.NT_BoardObject;
 import com.broll.gainea.net.NT_Goal;
-import com.broll.gainea.net.NT_Location;
 import com.broll.gainea.net.NT_Player;
 import com.broll.gainea.net.NT_Unit;
 import com.broll.gainea.server.sites.GameBoardSite;
@@ -24,15 +23,11 @@ public class NetworkSetup {
         server.register(gameBoardSite, gameStartSite, gameLobbySite);
     }
 
-    public static void setup(LobbyGameClient client) {
-    }
-
     public static void registerNetwork(NetworkRegister register) {
         register.registerNetworkPackage(NETWORK_PACKAGE);
         register.registerNetworkType(NT_Action[].class);
         register.registerNetworkType(NT_BoardObject[].class);
         register.registerNetworkType(NT_Unit[].class);
-        register.registerNetworkType(NT_Location[].class);
         register.registerNetworkType(NT_Player[].class);
         register.registerNetworkType(NT_Goal[].class);
         register.registerNetworkType(int[].class);

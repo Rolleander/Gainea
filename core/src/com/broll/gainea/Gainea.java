@@ -31,21 +31,17 @@ public class Gainea extends ApplicationAdapter {
 
     @Override
     public void create() {
-        TextField.keyRepeatInitialTime=0.1f;
-        TextField.keyRepeatTime=0.005f;
-
         //new StretchViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight())
-        client =new LobbyGameClient(NetworkSetup::registerNetwork);
-        NetworkSetup.setup(client);
+        client = new LobbyGameClient(NetworkSetup::registerNetwork);
         gameStage = new Stage(new ScreenViewport());
         uiStage = new Stage(new ScreenViewport());
-        gameUI =new GameUI(uiStage, client);
+        gameUI = new GameUI(uiStage, client);
         gameStage.addListener(new MapScrollHandler((OrthographicCamera) gameStage.getCamera()));
         Gdx.input.setInputProcessor(new InputMultiplexer(uiStage, gameStage));
         initExpansion(new GaineaMap());
         initExpansion(new IcelandMap());
-          initExpansion(new BoglandMap());
-          initExpansion(new MountainsMap());
+        initExpansion(new BoglandMap());
+        initExpansion(new MountainsMap());
     }
 
     private void initExpansion(ExpansionFactory factory) {
@@ -58,7 +54,7 @@ public class Gainea extends ApplicationAdapter {
     @Override
     public void resize(int width, int height) {
         gameStage.getViewport().update(width, height);
-        uiStage.getViewport().update(width,height,true);
+        uiStage.getViewport().update(width, height, true);
     }
 
     @Override
@@ -67,7 +63,7 @@ public class Gainea extends ApplicationAdapter {
         Gdx.gl.glClearColor(0.3f, 0.35f, 1f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         gameStage.act(delta);
-		uiStage.act(delta);
+        uiStage.act(delta);
         gameStage.draw();
         uiStage.draw();
     }

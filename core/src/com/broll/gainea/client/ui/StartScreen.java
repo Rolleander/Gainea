@@ -26,6 +26,7 @@ import com.broll.networklib.network.INetworkRequestAttempt;
 import com.esotericsoftware.minlog.Log;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class StartScreen extends AbstractScreen {
 
@@ -143,8 +144,15 @@ public class StartScreen extends AbstractScreen {
             public void changed(ChangeEvent event, Actor actor) {
                 lobbies.clear();
                 setConnecting(true);
-                client.listLobbies(serverIp.getText(), lobbyListener);
-                client.checkForReconnection(serverIp.getText(), StartScreen.this::joinedLobby);
+                Boolean reconnected = null;
+                try {
+                    reconnected = client.checkForReconnection(serverIp.getText(), StartScreen.this::joinedLobby).get();
+                } catch (InterruptedException | ExecutionException e) {
+                    Log.error("Interrupted while checking for reconnection", e);
+                }
+                if (reconnected == null || reconnected.booleanValue() == false) {
+                    client.listLobbies(serverIp.getText(), lobbyListener);
+                }
             }
         });
         table.add(connect).align(Align.center).colspan(2);

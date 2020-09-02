@@ -1,7 +1,5 @@
 package com.broll.gainea.server.core.map;
 
-import com.broll.gainea.net.NT_Location;
-
 import java.util.HashSet;
 import java.util.Set;
 
@@ -64,10 +62,4 @@ public class Area extends Location {
         return adjacentLocations;
     }
 
-    @Override
-    public NT_Location nt() {
-        NT_Location location = super.nt();
-        location.name = name;
-        return location;
-    }
 }

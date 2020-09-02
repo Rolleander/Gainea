@@ -1,4 +1,4 @@
-package com.broll.gainea.server.core.bot.impl;
+package com.broll.gainea.server.core.bot;
 
 import com.broll.gainea.net.NT_EndTurn;
 import com.broll.gainea.net.NT_PlayerTurn;

@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class PackageLoader<T> {
 
@@ -41,6 +42,10 @@ public class PackageLoader<T> {
 
     public void resetIndex() {
         index = 0;
+    }
+
+    public List<T> instantiateAll() {
+        return classes.stream().map(this::instantiate).collect(Collectors.toList());
     }
 
     public T instantiate(int index) {

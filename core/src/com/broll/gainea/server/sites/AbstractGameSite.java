@@ -40,7 +40,7 @@ public abstract class AbstractGameSite extends LobbyServerSite<LobbyData, Player
         NT_PlayerWait wait = new NT_PlayerWait();
         wait.playersTurn = player.getServerPlayer().getId();
         //send wait to all others
-        getGame().getPlayers().forEach(p -> p.getServerPlayer().sendTCP(wait));
+        getGame().getPlayers().stream().filter(p -> p != player).forEach(p -> p.getServerPlayer().sendTCP(wait));
     }
 
 }

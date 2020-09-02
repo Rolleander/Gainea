@@ -47,7 +47,6 @@ public class LobbyScreen extends AbstractScreen {
         lobby.setChatMessageListener(new ChatMessageListener() {
             @Override
             public void fromPlayer(String msg, LobbyPlayer from) {
-
             }
 
             @Override

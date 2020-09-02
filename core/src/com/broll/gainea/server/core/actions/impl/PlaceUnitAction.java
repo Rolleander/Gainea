@@ -6,7 +6,6 @@ import com.broll.gainea.server.core.objects.Commander;
 import com.broll.gainea.server.core.objects.Monster;
 import com.broll.gainea.server.core.objects.Soldier;
 import com.broll.gainea.net.NT_Action_PlaceUnit;
-import com.broll.gainea.net.NT_Location;
 import com.broll.gainea.net.NT_Reaction;
 import com.broll.gainea.server.core.actions.AbstractActionHandler;
 import com.broll.gainea.server.core.map.Location;
@@ -52,7 +51,7 @@ public class PlaceUnitAction extends AbstractActionHandler<NT_Action_PlaceUnit, 
     public Context placeUnit(BattleObject object, List<Location> locations, PlacedUnitListener listener) {
         NT_Action_PlaceUnit placeUnit = new NT_Action_PlaceUnit();
         placeUnit.unitToPlace = object.nt();
-        placeUnit.possibleLocations = locations.stream().map(Location::nt).toArray(NT_Location[]::new);
+        placeUnit.possibleLocations = locations.stream().mapToInt(Location::getNumber).toArray();
         Context context = new Context(placeUnit);
         context.locations = locations;
         context.unitToPlace = object;

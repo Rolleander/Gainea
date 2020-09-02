@@ -3,7 +3,6 @@ package com.broll.gainea.server.core.actions.impl;
 import com.broll.gainea.server.core.actions.ActionContext;
 import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.net.NT_Action_MoveUnit;
-import com.broll.gainea.net.NT_Location;
 import com.broll.gainea.net.NT_Reaction;
 import com.broll.gainea.server.core.actions.AbstractActionHandler;
 import com.broll.gainea.server.core.map.Location;
@@ -25,7 +24,7 @@ public class MoveUnitAction extends AbstractActionHandler<NT_Action_MoveUnit, Mo
 
     public Context move(BattleObject object, Collection<Location> locations) {
         NT_Action_MoveUnit moveUnit = new NT_Action_MoveUnit();
-        moveUnit.possibleLocations = locations.stream().map(Location::nt).toArray(NT_Location[]::new);
+        moveUnit.possibleLocations = locations.stream().mapToInt(Location::getNumber).toArray();
         moveUnit.unit = object.nt();
         Context context = new Context(moveUnit);
         context.locations = new ArrayList<>(locations);

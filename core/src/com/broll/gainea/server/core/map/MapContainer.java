@@ -3,16 +3,29 @@ package com.broll.gainea.server.core.map;
 import com.broll.gainea.server.init.ExpansionSetting;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class MapContainer {
 
     private ExpansionSetting expansionSetting;
-    private List<Expansion> expansions;
+    protected List<Expansion> expansions;
+    private Map<Integer, Location> locations = new HashMap<>();
 
     public MapContainer(ExpansionSetting setting) {
-        this.expansions = MapFactory.create(setting);
+        this.expansionSetting = setting;
+        init(setting);
+        expansions.stream().flatMap(it -> it.getAllLocations().stream()).forEach(l -> locations.put(l.getNumber(), l));
+    }
+
+    protected void init(ExpansionSetting setting) {
+        this.expansions = MapFactory.createRenderless(setting);
+    }
+
+    public Location getLocation(int number) {
+        return locations.get(number);
     }
 
     public List<ExpansionType> getActiveExpansionTypes() {
@@ -46,11 +59,11 @@ public class MapContainer {
     }
 
     public Island getIsland(IslandID id) {
-        return getAllIslands().stream().filter(it-> it.getId() ==id).findFirst().orElse(null);
+        return getAllIslands().stream().filter(it -> it.getId() == id).findFirst().orElse(null);
     }
 
     public Continent getContinent(ContinentID id) {
-        return getAllContinents().stream().filter(it-> it.getId() ==id).findFirst().orElse(null);
+        return getAllContinents().stream().filter(it -> it.getId() == id).findFirst().orElse(null);
     }
 
     public List<Expansion> getExpansions() {

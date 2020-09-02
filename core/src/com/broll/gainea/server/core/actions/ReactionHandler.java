@@ -6,9 +6,11 @@ import com.broll.gainea.net.NT_Reaction;
 import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.player.Player;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -19,6 +21,7 @@ public class ReactionHandler {
     private Map<ActionContext, RequiredAction> requiredActions = Collections.synchronizedMap(new HashMap<>());
     private ActionHandlers actionHandlers;
     private AtomicInteger actionStack = new AtomicInteger();
+    private List<ActionContext> furtherActions = new ArrayList<>();
 
     public ReactionHandler(GameContainer game, ActionHandlers actionHandlers) {
         this.game = game;
@@ -34,6 +37,11 @@ public class ReactionHandler {
         requiredActions.put(requiredAction, ra);
     }
 
+    public void optionalAction(ActionContext furhterAction) {
+        game.pushAction(furhterAction);
+        furtherActions.add(furhterAction);
+    }
+
     public ActionHandlers getActionHandlers() {
         return actionHandlers;
     }
@@ -45,11 +53,19 @@ public class ReactionHandler {
     public void decActionStack() {
         if (actionStack.decrementAndGet() <= 0 && requiredActions.isEmpty()) {
             //all game processing and required actions done
-            Player activePlayer = game.getPlayers().get(game.getCurrentPlayer());
-            if (game.hasRemainingActions()) {
-                //player still can do further actions, remind client so next action or turn end can be done
-                activePlayer.getServerPlayer().sendTCP(new NT_PlayerTurnContinue());
-            }
+            continueTurnUpdate();
+        }
+    }
+
+    private void continueTurnUpdate() {
+        Player activePlayer = game.getPlayers().get(game.getCurrentPlayer());
+        if (game.hasRemainingActions()) {
+            //player still can do further actions, remind client so next action or turn end can be done
+            NT_PlayerTurnContinue continueTurn = new NT_PlayerTurnContinue();
+            //pass further actions to player
+            continueTurn.actions = furtherActions.stream().map(ActionContext::getAction).toArray(NT_Action[]::new);
+            furtherActions.clear();
+            activePlayer.getServerPlayer().sendTCP(continueTurn);
         }
     }
 
@@ -73,20 +89,18 @@ public class ReactionHandler {
             //handle required actions only
             RequiredAction ra = requiredActions.get(actionContext);
             if (gamePlayer == ra.player) {
-                if (handleReaction(gamePlayer, actionContext, reaction)) {
-                    //consume required action
-                    requiredActions.remove(actionContext);
-                    decActionStack();
-                }
+                handleReaction(gamePlayer, actionContext, reaction);
+                //consume required action
+                requiredActions.remove(actionContext);
+                decActionStack();
             }
         }
     }
 
-    private boolean handleReaction(Player gamePlayer, ActionContext actionContext, NT_Reaction reaction) {
+    private void handleReaction(Player gamePlayer, ActionContext actionContext, NT_Reaction reaction) {
         NT_Action action = actionContext.getAction();
         CustomReactionHandler customHandler = actionContext.getCustomHandler();
         ActionCompletedListener completionListener = actionContext.getCompletionListener();
-        boolean consumeAction = true;
         if (customHandler != null) {
             customHandler.handleReaction(actionContext, reaction);
         } else {
@@ -94,17 +108,12 @@ public class ReactionHandler {
             if (actionHandler != null) {
                 actionHandler.update(gamePlayer);
                 actionHandler.handleReaction(actionContext, action, reaction);
-                consumeAction = !actionHandler.isKeepAction();
             }
         }
         if (completionListener != null) {
             completionListener.completed(actionContext);
         }
-        if (consumeAction) {
-            game.consumeAction(action.actionId);
-            return true;
-        }
-        return false;
+        game.consumeAction(action.actionId);
     }
 
     private class RequiredAction {

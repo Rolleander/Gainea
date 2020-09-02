@@ -11,7 +11,6 @@ public abstract class AbstractActionHandler<T extends NT_Action, C> {
     protected Player player;
     protected ReactionActions reactionResult;
     protected ActionHandlers actionHandlers;
-    protected boolean keepAction;
 
     public void init(GameContainer game, ReactionActions reactionResult, ActionHandlers actionHandlers) {
         this.game = game;
@@ -20,16 +19,7 @@ public abstract class AbstractActionHandler<T extends NT_Action, C> {
     }
 
     public void update(Player player) {
-        this.keepAction = false;
         this.player = player;
-    }
-
-    protected void keepAction() {
-        keepAction = true;
-    }
-
-    public boolean isKeepAction() {
-        return keepAction;
     }
 
     public abstract void handleReaction(C context, T action, NT_Reaction reaction);

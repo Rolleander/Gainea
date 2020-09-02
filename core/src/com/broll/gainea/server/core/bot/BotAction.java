@@ -19,4 +19,6 @@ public abstract class BotAction<A extends NT_Action> extends BotDecision<A, NT_R
         handleAction(action, reaction);
         return reaction;
     }
+
+    public abstract Class<A> getActionClass();
 }

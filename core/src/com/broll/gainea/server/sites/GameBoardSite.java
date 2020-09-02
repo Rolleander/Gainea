@@ -40,7 +40,7 @@ public class GameBoardSite extends AbstractGameSite {
     public void reaction(NT_Reaction reaction) {
         GameContainer game = getGame();
         ActionContext action = game.getAction(reaction.actionId);
-        if(action==null){
+        if (action == null) {
             //invalid action, ignore client request
             return;
         }
@@ -91,6 +91,12 @@ public class GameBoardSite extends AbstractGameSite {
             if (action.getMessageForOtherPlayer() != null) {
                 getGame().getPlayers().stream().filter(p -> p != player).forEach(p -> p.getServerPlayer().sendTCP(action.getMessageForOtherPlayer()));
             }
+            return action;
+        }
+
+        @Override
+        public ActionContext optionalAction(ActionContext action) {
+            getGame().getReactionHandler().optionalAction(action);
             return action;
         }
 
