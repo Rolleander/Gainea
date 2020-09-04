@@ -5,4 +5,8 @@ public abstract class DirectlyPlayedCard extends AbstractCard {
         super(title, text);
     }
 
+    @Override
+    public boolean isPlayable() {
+        return true;
+    }
 }

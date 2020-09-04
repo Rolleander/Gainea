@@ -18,7 +18,12 @@ import com.broll.gainea.server.core.map.impl.BoglandMap;
 import com.broll.gainea.server.core.map.impl.GaineaMap;
 import com.broll.gainea.server.core.map.impl.IcelandMap;
 import com.broll.gainea.server.core.map.impl.MountainsMap;
+import com.broll.networklib.client.ClientSite;
+import com.broll.networklib.client.GameClient;
 import com.broll.networklib.client.LobbyGameClient;
+import com.broll.networklib.site.SiteReceiver;
+
+import java.lang.reflect.Method;
 
 public class Gainea extends ApplicationAdapter {
 
@@ -33,6 +38,13 @@ public class Gainea extends ApplicationAdapter {
     public void create() {
         //new StretchViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight())
         client = new LobbyGameClient(NetworkSetup::registerNetwork);
+        client.setSiteReceiver(new SiteReceiver<ClientSite, GameClient.ClientConnection>() {
+            @Override
+            public void receive(GameClient.ClientConnection context, ClientSite site, Method receiver, Object object) {
+                //perform operations from received packages on main thread
+                Gdx.app.postRunnable(() -> super.receive(context, site, receiver, object));
+            }
+        });
         gameStage = new Stage(new ScreenViewport());
         uiStage = new Stage(new ScreenViewport());
         gameUI = new GameUI(uiStage, client);

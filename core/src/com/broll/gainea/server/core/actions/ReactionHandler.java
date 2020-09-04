@@ -50,6 +50,10 @@ public class ReactionHandler {
         actionStack.incrementAndGet();
     }
 
+    public boolean actionActive() {
+        return actionStack.get() > 0;
+    }
+
     public void decActionStack() {
         if (actionStack.decrementAndGet() <= 0 && requiredActions.isEmpty()) {
             //all game processing and required actions done
@@ -79,7 +83,7 @@ public class ReactionHandler {
             return;
         }
         if (requiredActions.isEmpty()) {
-            if (actionStack.get() > 0) {
+            if (actionActive()) {
                 //player action is not handled, game still processing actions
                 return;
             }
@@ -88,11 +92,13 @@ public class ReactionHandler {
         } else {
             //handle required actions only
             RequiredAction ra = requiredActions.get(actionContext);
-            if (gamePlayer == ra.player) {
-                handleReaction(gamePlayer, actionContext, reaction);
-                //consume required action
-                requiredActions.remove(actionContext);
-                decActionStack();
+            if (ra != null) {
+                if (gamePlayer == ra.player) {
+                    handleReaction(gamePlayer, actionContext, reaction);
+                    //consume required action
+                    requiredActions.remove(actionContext);
+                    decActionStack();
+                }
             }
         }
     }

@@ -11,7 +11,7 @@ public class Area extends Location {
     private AreaCollection container;
     private AreaID id;
 
-    public Area(AreaID id){
+    public Area(AreaID id) {
         this.id = id;
     }
 
@@ -39,18 +39,11 @@ public class Area extends Location {
         return container;
     }
 
-    public void addAdjacentLocation(Location location){
+    public void addAdjacentLocation(Location location) {
         adjacentLocations.add(location);
-        if(location instanceof Area){
-            Area adjacentArea = ((Area)location);
-            if(!adjacentArea.getAdjacentLocations().contains(this)){
-                addAdjacentLocation(this);
-            }
+        if (location instanceof Area) {
+            ((Area) location).addAdjacentLocation(this);
         }
-    }
-
-    public Set<Location> getAdjacentLocations() {
-        return adjacentLocations;
     }
 
     public AreaType getType() {

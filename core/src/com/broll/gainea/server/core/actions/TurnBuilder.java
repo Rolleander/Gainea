@@ -73,6 +73,7 @@ public class TurnBuilder {
         AttackAction attackHandler = actionHandlers.getHandler(AttackAction.class);
         MoveUnitAction moveHandler = actionHandlers.getHandler(MoveUnitAction.class);
         List<Location> moveLocations = player.getFraction().getMoveLocations(battleObject).stream().filter(moveLocation ->
+                //only valid move location if there is no enemy army defending it
                 attackHandler.getEnemyArmy(player, moveLocation).isEmpty()
         ).collect(Collectors.toList());
         if (!moveLocations.isEmpty()) {

@@ -1,5 +1,6 @@
 package com.broll.gainea.server.core.actions.impl;
 
+import com.broll.gainea.net.NT_Event_MovedObject;
 import com.broll.gainea.server.core.actions.ActionContext;
 import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.net.NT_Action_MoveUnit;
@@ -36,6 +37,10 @@ public class MoveUnitAction extends AbstractActionHandler<NT_Action_MoveUnit, Mo
     public void handleReaction(Context context, NT_Action_MoveUnit action, NT_Reaction reaction) {
         Location pickedLocation = context.locations.get(reaction.option);
         //perform move
-
+        BattleObject unit = context.unitToMove;
+        unit.setLocation(pickedLocation);
+        NT_Event_MovedObject movedObject = new NT_Event_MovedObject();
+        movedObject.object = unit.nt();
+        reactionResult.sendGameUpdate(movedObject);
     }
 }

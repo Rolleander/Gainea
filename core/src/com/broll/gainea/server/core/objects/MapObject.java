@@ -67,7 +67,6 @@ public abstract class MapObject {
         object.name = name;
         object.size = scale * 30;
         object.texture = texture;
-        object.x = location.getCoordinates().getX(1);
-        object.y = location.getCoordinates().getY(1);
+        object.location = location.getNumber();
     }
 }

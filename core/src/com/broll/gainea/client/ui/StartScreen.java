@@ -63,10 +63,8 @@ public class StartScreen extends AbstractScreen {
 
     private void joinedLobby(GameLobby lobby) {
         Log.info("join lobby " + lobby.getName());
-        Gdx.app.postRunnable(() -> {
-            Log.info("into lobby");
-            ui.showScreen(new LobbyScreen(lobby));
-        });
+        Log.info("into lobby");
+        ui.showScreen(new LobbyScreen(lobby));
     }
 
     private class LobbyListener implements ILobbyDiscovery {

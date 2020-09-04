@@ -32,15 +32,7 @@ public abstract class AbstractGameSite extends LobbyServerSite<LobbyData, Player
         return getGamePlayer().getServerPlayer() == getPlayer() && getGamePlayer().getSkipRounds() <= 0;
     }
 
-    public void doPlayerTurn(Player player, NT_PlayerTurn turn) {
-        //reset actions
-        getGame().clearActions();
-        //send turn to player
-        player.getServerPlayer().sendTCP(turn);
-        NT_PlayerWait wait = new NT_PlayerWait();
-        wait.playersTurn = player.getServerPlayer().getId();
-        //send wait to all others
-        getGame().getPlayers().stream().filter(p -> p != player).forEach(p -> p.getServerPlayer().sendTCP(wait));
+    protected void nextTurn() {
+        getGame().getReactionHandler().getActionHandlers().getReactionActions().endTurn();
     }
-
 }

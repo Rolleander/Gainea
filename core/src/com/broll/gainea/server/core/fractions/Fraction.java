@@ -1,6 +1,8 @@
 package com.broll.gainea.server.core.fractions;
 
 import com.broll.gainea.server.core.battle.FightingPower;
+import com.broll.gainea.server.core.map.Area;
+import com.broll.gainea.server.core.map.Ship;
 import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.Commander;
 import com.broll.gainea.net.NT_Action_PlaceUnit;
@@ -25,12 +27,16 @@ public abstract class Fraction {
     protected int commanderPower = 3;
 
     private FractionType type;
+    private FractionDescription description;
     protected GameContainer game;
     protected Player owner;
 
     public Fraction(FractionType type) {
         this.type = type;
+        this.description = description();
     }
+
+    protected abstract FractionDescription description();
 
     public FractionType getType() {
         return type;
@@ -41,10 +47,11 @@ public abstract class Fraction {
         this.owner = owner;
     }
 
+
     public void turnStarts(ActionHandlers actionHandlers) {
         //default place one new soldier on an occupied location
         List<Location> spawnLocations = owner.getControlledLocations().collect(Collectors.toList());
-        PlaceUnitAction placeUnitAction =actionHandlers.getHandler(PlaceUnitAction.class);
+        PlaceUnitAction placeUnitAction = actionHandlers.getHandler(PlaceUnitAction.class);
         RequiredActionContext<NT_Action_PlaceUnit> placeUnit = new RequiredActionContext<>(placeUnitAction.placeSoldier(spawnLocations), "Verstärke eine Truppe");
         actionHandlers.getReactionActions().requireAction(owner, placeUnit);
     }
@@ -53,7 +60,13 @@ public abstract class Fraction {
         FightingPower power = new FightingPower();
         int dice = fighters.stream().map(BattleObject::getPower).reduce(0, Integer::sum);
         power.setDiceCount(dice);
+        if (location instanceof Area) {
+            powerMutatorArea(power, (Area) location);
+        }
         return power;
+    }
+
+    protected void powerMutatorArea(FightingPower power, Area area) {
     }
 
     private void fillSoldier(Soldier soldier, Location location) {
@@ -62,7 +75,15 @@ public abstract class Fraction {
     }
 
     public Collection<Location> getMoveLocations(MapObject object) {
-        return object.getLocation().getConnectedLocations();
+        Location from = object.getLocation();
+        return from.getConnectedLocations().stream().filter(to -> canMove(object, from, to)).collect(Collectors.toList());
+    }
+
+    protected boolean canMove(MapObject object, Location from, Location to) {
+        if (to instanceof Ship) {
+            return ((Ship) to).passable(from);
+        }
+        return true;
     }
 
     public boolean isHostile(BattleObject battleObject) {
@@ -87,4 +108,7 @@ public abstract class Fraction {
         return commander;
     }
 
+    public FractionDescription getDescription() {
+        return description;
+    }
 }

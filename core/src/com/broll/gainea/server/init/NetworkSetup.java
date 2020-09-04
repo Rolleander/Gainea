@@ -18,8 +18,8 @@ public class NetworkSetup {
 
     public final static void setup(LobbyGameServer<LobbyData, PlayerData> server) {
         GameBoardSite gameBoardSite = new GameBoardSite();
-        GameStartSite gameStartSite = new GameStartSite(gameBoardSite);
-        GameLobbySite gameLobbySite = new GameLobbySite(gameStartSite);
+        GameStartSite gameStartSite = new GameStartSite();
+        GameLobbySite gameLobbySite = new GameLobbySite();
         server.register(gameBoardSite, gameStartSite, gameLobbySite);
     }
 

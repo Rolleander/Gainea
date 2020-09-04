@@ -1,5 +1,6 @@
 package com.broll.gainea.server.core.actions.impl;
 
+import com.broll.gainea.net.NT_Event_PlacedObject;
 import com.broll.gainea.server.core.actions.ActionContext;
 import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.Commander;
@@ -28,13 +29,22 @@ public class PlaceUnitAction extends AbstractActionHandler<NT_Action_PlaceUnit, 
         return placeUnit(createSoldier(), locations);
     }
 
+    public Context placeSoldier(List<Location> locations, PlacedUnitListener listener) {
+        return placeUnit(createSoldier(), locations, listener);
+    }
+
     public Context placeCommander(List<Location> locations) {
         return placeUnit(createCommander(), locations);
+    }
+
+    public Context placeCommander(List<Location> locations, PlacedUnitListener listener) {
+        return placeUnit(createCommander(), locations, listener);
     }
 
     public Context placeMonster(Monster monster) {
         return null;
     }
+
 
     private Soldier createSoldier() {
         return player.getFraction().createSoldier(null);
@@ -70,7 +80,9 @@ public class PlaceUnitAction extends AbstractActionHandler<NT_Action_PlaceUnit, 
         if (context.placedUnitListener != null) {
             context.placedUnitListener.placed(unit, location);
         }
-        reactionResult.sendBoardUpdate();
+        NT_Event_PlacedObject placedObject = new NT_Event_PlacedObject();
+        placedObject.object = unit.nt();
+        reactionResult.sendGameUpdate(placedObject);
     }
 
     public interface PlacedUnitListener {

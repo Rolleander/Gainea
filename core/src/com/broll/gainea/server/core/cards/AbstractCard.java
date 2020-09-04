@@ -5,6 +5,13 @@ import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.actions.ActionHandlers;
 import com.broll.gainea.server.core.player.Player;
 
+import org.apache.commons.lang3.concurrent.ConcurrentUtils;
+
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
+
 public abstract class AbstractCard {
 
     protected GameContainer game;
@@ -44,6 +51,10 @@ public abstract class AbstractCard {
         card.text = text;
         card.title = title;
         return card;
+    }
+
+    public String getTitle() {
+        return title;
     }
 
     public int getId() {

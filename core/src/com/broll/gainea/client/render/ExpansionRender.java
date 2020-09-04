@@ -60,7 +60,7 @@ public class ExpansionRender extends Actor {
         shape.setColor(Color.RED);
         shape.circle(x, y, r);
         shape.end();
-        renderConnections(location, location.getAdjacentLocations(), shape);
+        renderConnections(location, location.getConnectedLocations(), shape);
     }
 
     private void renderShip(Ship location, ShapeRenderer shape) {

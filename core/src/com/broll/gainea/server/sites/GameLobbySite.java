@@ -11,26 +11,21 @@ import com.broll.gainea.server.init.PlayerData;
 import com.broll.gainea.server.core.fractions.FractionType;
 import com.broll.gainea.server.core.map.ExpansionType;
 import com.broll.networklib.PackageReceiver;
+import com.broll.networklib.server.LobbyGameServer;
 import com.broll.networklib.server.LobbyServerSite;
-import com.broll.networklib.server.PackageRestriction;
+import com.broll.networklib.server.ConnectionRestriction;
 import com.broll.networklib.server.RestrictionType;
 import com.broll.networklib.server.impl.ILobbyCreationRequest;
 import com.broll.networklib.server.impl.LobbyHandler;
 import com.broll.networklib.server.impl.Player;
 import com.broll.networklib.server.impl.ServerLobby;
-import com.broll.networklib.server.impl.ServerLobbyListener;
 
 public class GameLobbySite extends LobbyServerSite<LobbyData, PlayerData> {
 
-    private GameStartSite gameStartSite;
-
-    public GameLobbySite(GameStartSite gameStartSite) {
-        this.gameStartSite = gameStartSite;
-    }
 
     @Override
-    public void init(LobbyHandler<LobbyData, PlayerData> lobbyHandler) {
-        super.init(lobbyHandler);
+    public void init(LobbyGameServer<LobbyData, PlayerData> server, LobbyHandler<LobbyData, PlayerData> lobbyHandler) {
+        super.init(server,lobbyHandler);
         this.lobbyHandler.setLobbyCreationRequestHandler(new ILobbyCreationRequest<LobbyData, PlayerData>() {
             @Override
             public ServerLobby<LobbyData, PlayerData> createNewLobby(Player<PlayerData> requester, String lobbyName, Object settings) {
@@ -48,7 +43,7 @@ public class GameLobbySite extends LobbyServerSite<LobbyData, PlayerData> {
     }
 
     @PackageReceiver
-    @PackageRestriction(RestrictionType.LOBBY_UNLOCKED)
+    @ConnectionRestriction(RestrictionType.LOBBY_UNLOCKED)
     public void changeFraction(NT_PlayerChangeFraction change) {
         int newFraction = change.fraction;
         if (EnumUtils.inBounds(newFraction, FractionType.class)) {
@@ -63,18 +58,17 @@ public class GameLobbySite extends LobbyServerSite<LobbyData, PlayerData> {
     }
 
     @PackageReceiver
-    @PackageRestriction(RestrictionType.LOBBY_UNLOCKED)
+    @ConnectionRestriction(RestrictionType.LOBBY_UNLOCKED)
     public void ready(NT_PlayerReady ready) {
         getPlayer().getData().setReady(ready.ready);
         //check for all ready, then lock lobby and start game
         ServerLobby<LobbyData, PlayerData> lobby = getLobby();
-        lobby.synchronizedAccess(() -> {
+        synchronized (lobby) {
             if (lobby.streamData().map(PlayerData::isReady).reduce(true, Boolean::logicalAnd)) {
                 lobby.setLocked(true);
-                gameStartSite.receive(getConnection(), null);
-                gameStartSite.startGame();
+                accessSite(GameStartSite.class).startGame();
             }
-        });
+        }
     }
 
 }

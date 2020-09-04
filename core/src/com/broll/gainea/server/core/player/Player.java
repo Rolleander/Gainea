@@ -21,7 +21,6 @@ public class Player {
     private Fraction fraction;
     private com.broll.networklib.server.impl.Player<PlayerData> serverPlayer;
     private List<BattleObject> units = new ArrayList<>();
-    private Map<String, Object> data = new HashMap<>();
     private GoalHandler goalHandler;
     private CardHandler cardHandler;
     private int skipRounds;
@@ -35,7 +34,7 @@ public class Player {
     }
 
     public void skipRounds(int rounds){
-        this.skipRounds++;
+        this.skipRounds+=rounds;
     }
 
     public int getSkipRounds() {
@@ -48,10 +47,6 @@ public class Player {
 
     public Stream<Location> getControlledLocations() {
         return units.stream().map(BattleObject::getLocation).distinct();
-    }
-
-    public Map<String, Object> getData() {
-        return data;
     }
 
     public NT_Player nt() {

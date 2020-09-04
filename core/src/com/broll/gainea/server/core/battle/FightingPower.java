@@ -1,5 +1,7 @@
 package com.broll.gainea.server.core.battle;
 
+import com.badlogic.gdx.math.MathUtils;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -7,12 +9,20 @@ import java.util.List;
 public class FightingPower {
 
     private int diceCount;
-    private int lowestNumber=1;
-    private int highestNumber=6;
-    private int numberPlus=0;
+    private int lowestNumber = 1;
+    private int highestNumber = 6;
+    private int numberPlus = 0;
 
-    public FightingPower(){
+    public FightingPower() {
 
+    }
+
+    public void addDices(int count) {
+        diceCount += count;
+    }
+
+    public void removeDices(int count) {
+        diceCount -= count;
     }
 
     public void setDiceCount(int diceCount) {
@@ -35,18 +45,18 @@ public class FightingPower {
         return diceCount;
     }
 
-    public List<Integer> roll(){
+    public List<Integer> roll() {
         List<Integer> rolls = new ArrayList<>();
-        for(int i=0; i<diceCount; i++){
+        for (int i = 0; i < diceCount; i++) {
             rolls.add(rollDice());
         }
         //sort descending
-        Collections.sort(rolls,Collections.reverseOrder());
+        Collections.sort(rolls, Collections.reverseOrder());
         return rolls;
     }
 
-    private int rollDice(){
-        return (int)(Math.random()*(highestNumber-lowestNumber))+lowestNumber+numberPlus;
+    private int rollDice() {
+        return MathUtils.random(lowestNumber, highestNumber) + numberPlus;
     }
 
     public int getHighestNumber() {

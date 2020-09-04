@@ -1,8 +1,10 @@
 package com.broll.gainea.server.sites;
 
+import java.util.HashMap;
 import java.util.List;
 
 import com.broll.gainea.net.NT_LoadedGame;
+import com.broll.gainea.server.core.ReactionResultHandler;
 import com.broll.gainea.server.core.actions.RequiredActionContext;
 import com.broll.gainea.server.core.actions.impl.PlaceUnitAction;
 import com.broll.gainea.server.core.map.LocationPicker;
@@ -16,27 +18,30 @@ import com.broll.gainea.server.core.actions.ActionHandlers;
 import com.broll.gainea.server.core.map.Area;
 import com.broll.gainea.server.core.map.Location;
 import com.broll.networklib.PackageReceiver;
-import com.broll.networklib.server.PackageRestriction;
+import com.broll.networklib.server.Autoshared;
+import com.broll.networklib.server.ConnectionRestriction;
 import com.broll.networklib.server.RestrictionType;
+import com.broll.networklib.server.ShareLevel;
 import com.broll.networklib.server.impl.ServerLobby;
 
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class GameStartSite extends AbstractGameSite {
 
-    private final static String PLAYER_LOADED = "PLAYER_LOADED";
-
-    private final static String GAME_LOADING = "GAME_LOADING";
-
-    private final static String PLAYER_START_LOCATIONS = "START_LOCATIONS";
-
-    private final static String START_UNITS_PLACED = "START_UNITS_PLACED";
-
-    private GameBoardSite gameBoardSite;
-
-    public GameStartSite(GameBoardSite gameBoardSite) {
-        this.gameBoardSite = gameBoardSite;
+    private class GameStartData {
+        boolean loading = true;
+        int startUnitsPlaced = 0;
+        Map<Player, PlayerStartData> playerData;
     }
+
+    private class PlayerStartData {
+        boolean loaded = false;
+        List<Location> startLocations;
+    }
+
+    @Autoshared(ShareLevel.LOBBY)
+    private GameStartData gameStart;
 
     public void startGame() {
         ServerLobby<LobbyData, PlayerData> lobby = getLobby();
@@ -44,8 +49,11 @@ public class GameStartSite extends AbstractGameSite {
         ExpansionSetting expansionSetting = data.getExpansionSetting();
         GameContainer game = new GameContainer(expansionSetting, lobby.getPlayers());
         data.setGame(game);
-        game.getData().put(GAME_LOADING, true);
-        gameBoardSite.init(game);
+        game.initHandlers(new ReactionResultHandler(game, lobby));
+        gameStart.loading = true;
+        gameStart.startUnitsPlaced = 0;
+        gameStart.playerData = new HashMap<>();
+        lobby.getPlayers().forEach(p -> gameStart.playerData.put(p.getData().getGamePlayer(), new PlayerStartData()));
         lobby.setLocked(true);
         lobby.sendToAllTCP(game.start());
     }
@@ -69,23 +77,21 @@ public class GameStartSite extends AbstractGameSite {
     private void drawStartLocations() {
         GameContainer game = getGame();
         int startLocationsCount = getLobby().getData().getStartLocations();
-        game.getData().put(START_UNITS_PLACED, 0);
         int playerCount = game.getPlayers().size();
         List<Area> startLocations = LocationPicker.pickRandom(game.getMap(), playerCount * startLocationsCount);
         for (Player player : game.getPlayers()) {
             List<Location> playerStartLocations = startLocations.stream().limit(startLocationsCount).collect(Collectors.toList());
             startLocations.removeAll(playerStartLocations);
-            player.getData().put(PLAYER_START_LOCATIONS, playerStartLocations);
+            gameStart.playerData.get(player).startLocations = playerStartLocations;
         }
     }
 
     private void placeUnit() {
         GameContainer game = getGame();
         int playerCount = getPlayersCount();
-        int placed = getPlacedCount();
-        int placingRound = placed / playerCount;
+        int placingRound = gameStart.startUnitsPlaced / playerCount;
         Player player = getPlacingPlayer();
-        List<Location> locations = (List<Location>) player.getData().get(PLAYER_START_LOCATIONS);
+        List<Location> locations = gameStart.playerData.get(player).startLocations;
         BattleObject unitToPlace;
         if (placingRound == 0) {
             unitToPlace = player.getFraction().createCommander(null);
@@ -101,36 +107,29 @@ public class GameStartSite extends AbstractGameSite {
     private void placedUnit(BattleObject battleObject, Location location) {
         GameContainer game = getGame();
         int startLocationsCount = getLobby().getData().getStartLocations();
-        int placed = (Integer) game.getData().get(START_UNITS_PLACED);
         Player player = getPlacingPlayer();
         //remove selected location from start locations
-        ((List<Location>) player.getData().get(PLAYER_START_LOCATIONS)).remove(location);
-        placed++;
-        game.getData().put(START_UNITS_PLACED, placed);
-        if (placed < game.getPlayers().size() * startLocationsCount) {
+        gameStart.playerData.get(player).startLocations.remove(location);
+        gameStart.startUnitsPlaced++;
+        if (gameStart.startUnitsPlaced < game.getPlayers().size() * startLocationsCount) {
             //next player places unit
             placeUnit();
         } else {
             //all start units placed, start first turn
-            gameBoardSite.nextTurn();
+            nextTurn();
         }
     }
 
-    private int getPlacedCount() {
-        return (Integer) getGame().getData().get(START_UNITS_PLACED);
-    }
-
     private Player getPlacingPlayer() {
-        int playerNr = getPlacedCount() % getPlayersCount();
+        int playerNr = gameStart.startUnitsPlaced % getPlayersCount();
         return getGame().getPlayers().get(playerNr);
     }
 
     @PackageReceiver
-    @PackageRestriction(RestrictionType.LOBBY_LOCKED)
+    @ConnectionRestriction(RestrictionType.LOBBY_LOCKED)
     public void playerLoaded(NT_LoadedGame loadedGame) {
-        GameContainer game = getGame();
-        if ((Boolean) game.getData().get(GAME_LOADING)) {
-            getGamePlayer().getData().put(PLAYER_LOADED, true);
+        if (gameStart.loading) {
+            gameStart.playerData.get(getGamePlayer()).loaded = true;
             if (allPlayersLoaded()) {
                 gameLoaded();
             }
@@ -138,7 +137,7 @@ public class GameStartSite extends AbstractGameSite {
     }
 
     private boolean allPlayersLoaded() {
-        return getGame().getPlayers().stream().map(player -> player.getData().containsKey(PLAYER_LOADED)).reduce(true, Boolean::logicalAnd);
+        return gameStart.playerData.values().stream().map(it -> it.loaded).reduce(true, Boolean::logicalAnd);
     }
 
 

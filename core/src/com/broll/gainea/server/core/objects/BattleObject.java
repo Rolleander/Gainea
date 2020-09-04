@@ -18,7 +18,11 @@ public abstract class BattleObject extends MapObject {
     }
 
     public void takeDamage() {
-        health--;
+        takeDamage(1);
+    }
+
+    public void takeDamage(int damage) {
+        health -= damage;
     }
 
     public boolean isDead() {
@@ -60,7 +64,7 @@ public abstract class BattleObject extends MapObject {
         unit.health = health;
         unit.maxHealth = maxHealth;
         unit.power = power;
-        if(owner!=null){
+        if (owner != null) {
             unit.owner = owner.getServerPlayer().getId();
         }
         return unit;

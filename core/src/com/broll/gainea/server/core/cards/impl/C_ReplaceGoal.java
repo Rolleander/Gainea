@@ -11,8 +11,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ReplaceGoal extends AbstractCard {
-    public ReplaceGoal() {
+public class C_ReplaceGoal extends AbstractCard {
+    public C_ReplaceGoal() {
         super("Neues Glück", "Ersetze eines deiner Ziele durch ein neues Ziel einer beliebigen Schwierigkeitsstufe");
         setDrawChance(0.5f);
     }

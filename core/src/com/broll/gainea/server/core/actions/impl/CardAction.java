@@ -1,15 +1,12 @@
 package com.broll.gainea.server.core.actions.impl;
 
-import com.broll.gainea.net.NT_Action_Attack;
 import com.broll.gainea.net.NT_Action_Card;
+import com.broll.gainea.net.NT_Event_PlayedCard;
 import com.broll.gainea.net.NT_Reaction;
 import com.broll.gainea.server.core.actions.AbstractActionHandler;
 import com.broll.gainea.server.core.actions.ActionContext;
 import com.broll.gainea.server.core.cards.AbstractCard;
-import com.broll.gainea.server.core.map.Location;
-import com.broll.gainea.server.core.objects.BattleObject;
-
-import java.util.List;
+import com.broll.gainea.server.core.utils.MessageUtils;
 
 public class CardAction extends AbstractActionHandler<NT_Action_Card, CardAction.Context> {
 
@@ -34,8 +31,14 @@ public class CardAction extends AbstractActionHandler<NT_Action_Card, CardAction
         playCard(context.card);
     }
 
-    public void playCard(AbstractCard card){
+    public void playCard(AbstractCard card) {
+        game.getReactionHandler().incActionStack();
         card.play(actionHandlers);
         player.getCardHandler().discardCard(card);
+        NT_Event_PlayedCard playedCard = new NT_Event_PlayedCard();
+        playedCard.card = card.nt();
+        reactionResult.sendGameUpdate(playedCard);
+        MessageUtils.gameLog(game, "Karte " + card.getTitle() + " ausgespielt");
+        game.getReactionHandler().decActionStack();
     }
 }

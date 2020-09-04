@@ -1,5 +1,8 @@
 package com.broll.gainea.server.core.map;
 
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.set.UnmodifiableSet;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -7,7 +10,6 @@ public class Ship extends Location {
 
     private Location from;
     private Location to;
-    private Set<Location> connected = new HashSet<>();
 
     public void setFrom(Location from) {
         this.from = from;
@@ -15,8 +17,6 @@ public class Ship extends Location {
 
     public void setTo(Location to) {
         this.to = to;
-        connected.clear();
-        connected.add(to);
     }
 
     public boolean passable(Location from) {
@@ -36,6 +36,9 @@ public class Ship extends Location {
 
     @Override
     public Set<Location> getConnectedLocations() {
-        return connected;
+        Set<Location> set = new HashSet<>(2);
+        set.add(from);
+        set.add(to);
+        return set;
     }
 }

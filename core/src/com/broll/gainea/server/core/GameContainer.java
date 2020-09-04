@@ -43,7 +43,6 @@ public class GameContainer {
     private int boardObjectCounter = 0;
     private ReactionHandler reactionHandler;
     private TurnBuilder turnBuilder;
-    private Map<String, Object> data = new HashMap<>();
     private BattleHandler battleHandler;
     private ScheduledExecutorService executor;
     private GoalStorage goalStorage;
@@ -78,11 +77,11 @@ public class GameContainer {
     }
 
     public void schedule(int inMilliseconds, Runnable runnable) {
-        executor.schedule(runnable, inMilliseconds, TimeUnit.MILLISECONDS);
-    }
-
-    public Map<String, Object> getData() {
-        return data;
+        reactionHandler.incActionStack();
+        executor.schedule(() -> {
+            runnable.run();
+            reactionHandler.decActionStack();
+        }, inMilliseconds, TimeUnit.MILLISECONDS);
     }
 
     public synchronized void pushAction(ActionContext action) {
