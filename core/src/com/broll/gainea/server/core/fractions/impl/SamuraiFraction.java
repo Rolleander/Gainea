@@ -9,7 +9,7 @@ import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.objects.MapObject;
 
 public class SamuraiFraction extends Fraction {
-    public SamuraiFraction(FractionType type) {
+    public SamuraiFraction() {
         super(FractionType.SAMURAI);
     }
 

@@ -1,6 +1,14 @@
 package com.broll.gainea.test.network;
 
-import com.broll.gainea.test.NetworkTest;
+import com.broll.gainea.net.NT_PlayerReady;
+import com.broll.gainea.net.NT_StartGame;
+import com.broll.gainea.server.core.GameContainer;
+import com.broll.gainea.server.init.LobbyFactory;
+import com.broll.gainea.server.init.NetworkSetup;
+import com.broll.networklib.NetworkRegister;
+import com.broll.networklib.network.IRegisterNetwork;
+import com.broll.networklib.server.LobbyGameServer;
+import com.broll.networklib.test.NetworkTest;
 import com.broll.gainea.server.init.ExpansionSetting;
 import com.broll.gainea.server.init.LobbyData;
 import com.broll.gainea.server.init.PlayerData;
@@ -10,66 +18,47 @@ import com.broll.networklib.server.impl.ServerLobby;
 
 import org.junit.Test;
 
+import java.util.concurrent.ExecutionException;
+
 import static org.junit.Assert.*;
 
-public class GameStartTest extends NetworkTest {
+public class GameStartTest extends NetworkTest<LobbyData, PlayerData> {
 
-    @Test
-    public void connect(){
-        LobbyData data = new LobbyData();
-        data.setExpansionSetting(ExpansionSetting.BASIC_GAME);
-        ServerLobby<LobbyData, PlayerData> lobby = openGameLobby(data,"TestLobby");
+    @Override
+    protected IRegisterNetwork registerNetwork() {
+        return NetworkSetup::registerNetwork;
+    }
 
-        LobbyGameClient peter = testClient("Peter", lobby);
-        LobbyGameClient pan = testClient("Pan", lobby);
+    @Override
+    public void registerServerSites(LobbyGameServer<LobbyData, PlayerData> server) {
+        NetworkSetup.setup(server);
+    }
 
-        assertEquals(2, lobby.getPlayers().size());
-        dropPackages();
+    @Override
+    public void registerClientSites(LobbyGameClient client) {
     }
 
     @Test
-    public void lobbyTransfer() {
-        LobbyData data = new LobbyData();
-        data.setExpansionSetting(ExpansionSetting.BASIC_GAME);
-        ServerLobby<LobbyData, PlayerData> lobby1 = openGameLobby(data,"TestLobby");
-        ServerLobby<LobbyData, PlayerData> lobby2 = openGameLobby(data,"TestLobby2");
-        assertEquals(2, gameServer.getLobbyHandler().getLobbies().size());
-        LobbyGameClient peter = testClient("Peter", lobby1);
-        assertEquals(1, lobby1.getPlayers().size());
-        assertEquals(0, lobby2.getPlayers().size());
-        Player<PlayerData> serverPeter = lobby1.getPlayers().iterator().next();
-        joinLobby(peter, lobby2);
-        assertEquals(0, lobby1.getPlayers().size());
-        assertTrue(lobby1.isClosed());
-        assertEquals(1, gameServer.getLobbyHandler().getLobbies().size());
-        assertEquals(1, lobby2.getPlayers().size());
-        assertEquals(serverPeter, lobby2.getPlayers().iterator().next());
-        dropPackages();
-    }
+    public void gameStart() {
+        ServerLobby<LobbyData, PlayerData> lobby = openGameLobby(null, "TestLobby");
+        LobbyFactory.initLobby(lobby, ExpansionSetting.BASIC_GAME);
 
-    @Test
-    public void doubleJoin() {
-        LobbyData data = new LobbyData();
-        data.setExpansionSetting(ExpansionSetting.BASIC_GAME);
-        ServerLobby<LobbyData, PlayerData> lobby = openGameLobby(data,"TestLobby");
-        LobbyGameClient peter = testClient("Peter", lobby);
-        assertEquals(1, lobby.getPlayers().size());
-        joinLobby(peter, lobby);
-        assertEquals(1, lobby.getPlayers().size());
-        dropPackages();
-    }
-
-    @Test
-    public void kickPlayer()  {
-        LobbyData data = new LobbyData();
-        data.setExpansionSetting(ExpansionSetting.BASIC_GAME);
-        ServerLobby<LobbyData, PlayerData> lobby = openGameLobby(data,"TestLobby");
-        LobbyGameClient peter = testClient("Peter", lobby);
         LobbyGameClient hans = testClient("Hans", lobby);
-        assertEquals(2, lobby.getPlayers().size());
-        lobby.kickPlayer(lobby.getPlayer(0));
-        assertEquals(1, lobby.getPlayers().size());
+        assertFalse(lobby.isLocked());
+        assertNull(lobby.getData().getGame());
+        LobbyGameClient peter = testClient("Peter", lobby);
+
         dropPackages();
+        NT_PlayerReady ready = new NT_PlayerReady();
+        ready.ready = true;
+        getTestClient(hans).sendTCP(ready);
+        getTestClient(peter).sendTCP(ready);
+        assertTrue(lobby.isLocked());
+        GameContainer game = lobby.getData().getGame();
+        assertNotNull(game);
+
+        getTestClient(hans).assureReceived(NT_StartGame.class);
+        getTestClient(peter).assureReceived(NT_StartGame.class);
     }
 
 }

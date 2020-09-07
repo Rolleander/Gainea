@@ -11,7 +11,7 @@ import com.broll.gainea.server.core.objects.Monster;
 import com.broll.gainea.server.core.utils.PlayerUtils;
 
 public class NomadsFraction extends Fraction {
-    public NomadsFraction(FractionType type) {
+    public NomadsFraction() {
         super(FractionType.NOMADS);
     }
 

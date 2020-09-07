@@ -1,5 +1,7 @@
 package com.broll.gainea.server.sites;
 
+import com.broll.gainea.server.core.GameContainer;
+import com.broll.gainea.server.core.utils.MessageUtils;
 import com.broll.gainea.server.init.LobbyData;
 import com.broll.gainea.server.init.PlayerData;
 import com.broll.gainea.server.core.fractions.FractionType;
@@ -26,12 +28,28 @@ public class LobbyListener implements ServerLobbyListener<LobbyData, PlayerData>
                 return fractionType;
             }
         }
-        return null;
+        return FractionType.values()[0];
     }
 
     @Override
     public void playerLeft(ServerLobby<LobbyData, PlayerData> lobby, Player<PlayerData> player) {
 
+    }
+
+    @Override
+    public void playerDisconnected(ServerLobby<LobbyData, PlayerData> lobby, Player<PlayerData> player) {
+        MessageUtils.gameLog(lobby.getData().getGame(), "Verbindung zu " + player.getName() + " verloren!");
+    }
+
+    @Override
+    public void playerReconnected(ServerLobby<LobbyData, PlayerData> lobby, Player<PlayerData> player) {
+        GameContainer game = lobby.getData().getGame();
+        MessageUtils.gameLog(game, player.getName() + " ist zurück!");
+        //send game start update to reconnecting player
+        player.sendTCP(game.start());
+        //check for open actions and resend them
+        com.broll.gainea.server.core.player.Player gamePlayer = player.getData().getGamePlayer();
+        game.getReactionHandler().playerReconnected(gamePlayer);
     }
 
     @Override

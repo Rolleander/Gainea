@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -56,6 +57,17 @@ public class ReactionHandler {
                 furtherActions.clear();
                 activePlayer.getServerPlayer().sendTCP(continueTurn);
             }
+        }
+    }
+
+    public void playerReconnected(Player player) {
+        //re send required actions for this player
+        requiredActions.values().stream().filter(ra -> ra.player == player).forEach(requiredAction -> {
+            player.getServerPlayer().sendTCP(requiredAction.context.getAction());
+        });
+        if (game.isPlayersTurn(player)) {
+            //re send remaining optional actions
+            finishedProcessing();
         }
     }
 

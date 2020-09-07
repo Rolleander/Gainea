@@ -22,7 +22,6 @@ import com.broll.networklib.server.impl.ServerLobby;
 
 public class GameLobbySite extends LobbyServerSite<LobbyData, PlayerData> {
 
-
     @Override
     public void init(LobbyGameServer<LobbyData, PlayerData> server, LobbyHandler<LobbyData, PlayerData> lobbyHandler) {
         super.init(server,lobbyHandler);

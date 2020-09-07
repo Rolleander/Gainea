@@ -51,7 +51,6 @@ public class GameContainer {
     private ProcessingCore processingCore;
 
     public GameContainer(ExpansionSetting setting, Collection<com.broll.networklib.server.impl.Player<PlayerData>> players) {
-        this.processingCore = new ProcessingCore(reactionHandler::finishedProcessing);
         this.map = new MapContainer(setting);
         this.players = players.stream().map(player -> PlayerFactory.create(this, player)).collect(Collectors.toList());
     }
@@ -59,6 +58,7 @@ public class GameContainer {
     public void initHandlers(ReactionActions reactionResult) {
         ActionHandlers actionHandlers = new ActionHandlers(this, reactionResult);
         reactionHandler = new ReactionHandler(this, actionHandlers);
+        this.processingCore = new ProcessingCore(reactionHandler::finishedProcessing);
         turnBuilder = new TurnBuilder(this, actionHandlers);
         this.battleHandler = new BattleHandler(this, reactionResult);
         this.goalStorage = new GoalStorage(this, actionHandlers);
@@ -145,6 +145,9 @@ public class GameContainer {
         return players;
     }
 
+    public boolean isPlayersTurn(Player player) {
+        return players.indexOf(player) == currentPlayer;
+    }
 
     public ReactionHandler getReactionHandler() {
         return reactionHandler;

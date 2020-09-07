@@ -56,7 +56,7 @@ public class PackageLoader<T> {
         try {
             return (T) clazz.newInstance();
         } catch (Exception e) {
-            throw new RuntimeException("Failed to instantiate " + clazz);
+            throw new RuntimeException("Failed to instantiate " + clazz,e);
         }
     }
 

@@ -48,7 +48,6 @@ public abstract class Fraction {
         this.owner = owner;
     }
 
-
     public void turnStarts(ActionHandlers actionHandlers) {
         //default place one new soldier on an occupied location
         List<Location> spawnLocations = owner.getControlledLocations();
