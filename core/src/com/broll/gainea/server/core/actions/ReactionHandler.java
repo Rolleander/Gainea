@@ -5,6 +5,7 @@ import com.broll.gainea.net.NT_PlayerTurnContinue;
 import com.broll.gainea.net.NT_Reaction;
 import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.player.Player;
+import com.broll.gainea.server.core.utils.ProcessingBlock;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,7 +21,6 @@ public class ReactionHandler {
     private ReactionActions reactionActions;
     private Map<ActionContext, RequiredAction> requiredActions = Collections.synchronizedMap(new HashMap<>());
     private ActionHandlers actionHandlers;
-    private AtomicInteger actionStack = new AtomicInteger();
     private List<ActionContext> furtherActions = new ArrayList<>();
 
     public ReactionHandler(GameContainer game, ActionHandlers actionHandlers) {
@@ -30,46 +30,32 @@ public class ReactionHandler {
     }
 
     public void requireAction(Player target, ActionContext requiredAction) {
-        incActionStack();
         RequiredAction ra = new RequiredAction();
         ra.player = target;
         ra.context = requiredAction;
         requiredActions.put(requiredAction, ra);
     }
 
-    public void optionalAction(ActionContext furhterAction) {
-        game.pushAction(furhterAction);
-        furtherActions.add(furhterAction);
+    public void optionalAction(ActionContext furtherAction) {
+        game.pushAction(furtherAction);
+        furtherActions.add(furtherAction);
     }
 
     public ActionHandlers getActionHandlers() {
         return actionHandlers;
     }
 
-    public void incActionStack() {
-        actionStack.incrementAndGet();
-    }
-
-    public boolean actionActive() {
-        return actionStack.get() > 0;
-    }
-
-    public void decActionStack() {
-        if (actionStack.decrementAndGet() <= 0 && requiredActions.isEmpty()) {
-            //all game processing and required actions done
-            continueTurnUpdate();
-        }
-    }
-
-    private void continueTurnUpdate() {
-        Player activePlayer = game.getPlayers().get(game.getCurrentPlayer());
-        if (game.hasRemainingActions()) {
-            //player still can do further actions, remind client so next action or turn end can be done
-            NT_PlayerTurnContinue continueTurn = new NT_PlayerTurnContinue();
-            //pass further actions to player
-            continueTurn.actions = furtherActions.stream().map(ActionContext::getAction).toArray(NT_Action[]::new);
-            furtherActions.clear();
-            activePlayer.getServerPlayer().sendTCP(continueTurn);
+    public synchronized void finishedProcessing() {
+        if (requiredActions.isEmpty()) {
+            Player activePlayer = game.getPlayers().get(game.getCurrentPlayer());
+            if (game.hasRemainingActions()) {
+                //player still can do further actions, remind client so next action or turn end can be done
+                NT_PlayerTurnContinue continueTurn = new NT_PlayerTurnContinue();
+                //pass further actions to player
+                continueTurn.actions = furtherActions.stream().map(ActionContext::getAction).toArray(NT_Action[]::new);
+                furtherActions.clear();
+                activePlayer.getServerPlayer().sendTCP(continueTurn);
+            }
         }
     }
 
@@ -83,7 +69,7 @@ public class ReactionHandler {
             return;
         }
         if (requiredActions.isEmpty()) {
-            if (actionActive()) {
+            if (game.getProcessingCore().isBusy()) {
                 //player action is not handled, game still processing actions
                 return;
             }
@@ -97,7 +83,6 @@ public class ReactionHandler {
                     handleReaction(gamePlayer, actionContext, reaction);
                     //consume required action
                     requiredActions.remove(actionContext);
-                    decActionStack();
                 }
             }
         }

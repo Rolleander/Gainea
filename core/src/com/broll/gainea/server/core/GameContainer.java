@@ -13,6 +13,7 @@ import com.broll.gainea.server.core.player.PlayerFactory;
 import com.broll.gainea.net.NT_BoardObject;
 import com.broll.gainea.net.NT_BoardUpdate;
 import com.broll.gainea.net.NT_Player;
+import com.broll.gainea.server.core.utils.ProcessingCore;
 import com.broll.gainea.server.init.ExpansionSetting;
 import com.broll.gainea.server.init.PlayerData;
 import com.broll.gainea.server.core.actions.ActionHandlers;
@@ -25,6 +26,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -44,12 +46,12 @@ public class GameContainer {
     private ReactionHandler reactionHandler;
     private TurnBuilder turnBuilder;
     private BattleHandler battleHandler;
-    private ScheduledExecutorService executor;
     private GoalStorage goalStorage;
     private CardStorage cardStorage;
+    private ProcessingCore processingCore;
 
     public GameContainer(ExpansionSetting setting, Collection<com.broll.networklib.server.impl.Player<PlayerData>> players) {
-        this.executor = Executors.newScheduledThreadPool(3);
+        this.processingCore = new ProcessingCore(reactionHandler::finishedProcessing);
         this.map = new MapContainer(setting);
         this.players = players.stream().map(player -> PlayerFactory.create(this, player)).collect(Collectors.toList());
     }
@@ -74,14 +76,6 @@ public class GameContainer {
         }
         object.setLocation(target);
         target.getInhabitants().add(object);
-    }
-
-    public void schedule(int inMilliseconds, Runnable runnable) {
-        reactionHandler.incActionStack();
-        executor.schedule(() -> {
-            runnable.run();
-            reactionHandler.decActionStack();
-        }, inMilliseconds, TimeUnit.MILLISECONDS);
     }
 
     public synchronized void pushAction(ActionContext action) {
@@ -176,5 +170,7 @@ public class GameContainer {
         return cardStorage;
     }
 
-
+    public ProcessingCore getProcessingCore() {
+        return processingCore;
+    }
 }

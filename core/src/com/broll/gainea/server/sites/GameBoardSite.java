@@ -37,7 +37,7 @@ public class GameBoardSite extends AbstractGameSite {
     @ConnectionRestriction(RestrictionType.LOBBY_LOCKED)
     public void reaction(NT_EndTurn endTurn) {
         //only react to if its players turn and no action is running right now
-        if (playersTurn() && !getGame().getReactionHandler().actionActive()) {
+        if (playersTurn() && !getGame().getProcessingCore().isBusy()) {
             //dont allow next turn if there are required actions for the player remaining
             if (!getGame().getReactionHandler().hasRequiredActionFor(getGamePlayer())) {
                 nextTurn();

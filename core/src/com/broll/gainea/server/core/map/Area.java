@@ -42,7 +42,7 @@ public class Area extends Location {
     public void addAdjacentLocation(Location location) {
         adjacentLocations.add(location);
         if (location instanceof Area) {
-            ((Area) location).addAdjacentLocation(this);
+            ((Area) location).adjacentLocations.add(this);
         }
     }
 

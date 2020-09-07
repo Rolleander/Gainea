@@ -12,6 +12,7 @@ import com.broll.gainea.server.core.actions.RequiredActionContext;
 import com.broll.gainea.server.core.actions.impl.PlaceUnitAction;
 import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.objects.MapObject;
+import com.broll.gainea.server.core.objects.Monster;
 import com.broll.gainea.server.core.objects.Soldier;
 import com.broll.gainea.server.core.player.Player;
 
@@ -50,13 +51,17 @@ public abstract class Fraction {
 
     public void turnStarts(ActionHandlers actionHandlers) {
         //default place one new soldier on an occupied location
-        List<Location> spawnLocations = owner.getControlledLocations().collect(Collectors.toList());
+        List<Location> spawnLocations = owner.getControlledLocations();
         PlaceUnitAction placeUnitAction = actionHandlers.getHandler(PlaceUnitAction.class);
-        RequiredActionContext<NT_Action_PlaceUnit> placeUnit = new RequiredActionContext<>(placeUnitAction.placeSoldier(spawnLocations), "Verstärke eine Truppe");
-        actionHandlers.getReactionActions().requireAction(owner, placeUnit);
+        placeUnitAction.placeSoldier(spawnLocations);
     }
 
-    public FightingPower calcPower(Location location, List<BattleObject> fighters, List<BattleObject> enemeies, boolean isAttacker) {
+    public void killedMonster(Monster monster) {
+        //receive random card as bounty
+        owner.getCardHandler().drawRandomCard();
+    }
+
+    public FightingPower calcPower(Location location, List<BattleObject> fighters, List<BattleObject> enemies, boolean isAttacker) {
         FightingPower power = new FightingPower();
         int dice = fighters.stream().map(BattleObject::getPower).reduce(0, Integer::sum);
         power.setDiceCount(dice);

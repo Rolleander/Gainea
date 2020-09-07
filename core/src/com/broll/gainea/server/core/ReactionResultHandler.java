@@ -36,9 +36,10 @@ public class ReactionResultHandler implements ReactionActions {
             info.text = player.getServerPlayer().getName() + " muss aussetzen!";
             lobby.sendToAllTCP(info);
             //auto start next round after delay
-            game.schedule(3000, () -> endTurn());
+            game.getProcessingCore().execute(this::endTurn, 3000);
         } else {
-            doPlayerTurn(player, game.getTurnBuilder().build(player));
+            game.getProcessingCore().execute(() ->
+                    doPlayerTurn(player, game.getTurnBuilder().build(player)));
         }
     }
 

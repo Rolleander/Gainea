@@ -25,6 +25,10 @@ public class FightingPower {
         diceCount -= count;
     }
 
+    public void changeHighestNumber(int delta) {
+        this.highestNumber += delta;
+    }
+
     public void setDiceCount(int diceCount) {
         this.diceCount = diceCount;
     }

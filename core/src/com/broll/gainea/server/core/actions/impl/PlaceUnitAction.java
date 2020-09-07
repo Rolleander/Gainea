@@ -2,6 +2,7 @@ package com.broll.gainea.server.core.actions.impl;
 
 import com.broll.gainea.net.NT_Event_PlacedObject;
 import com.broll.gainea.server.core.actions.ActionContext;
+import com.broll.gainea.server.core.actions.RequiredActionContext;
 import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.Commander;
 import com.broll.gainea.server.core.objects.Monster;
@@ -11,6 +12,8 @@ import com.broll.gainea.net.NT_Reaction;
 import com.broll.gainea.server.core.actions.AbstractActionHandler;
 import com.broll.gainea.server.core.map.Location;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import java.util.List;
 
 public class PlaceUnitAction extends AbstractActionHandler<NT_Action_PlaceUnit, PlaceUnitAction.Context> {
@@ -18,33 +21,24 @@ public class PlaceUnitAction extends AbstractActionHandler<NT_Action_PlaceUnit, 
     class Context extends ActionContext<NT_Action_PlaceUnit> {
         BattleObject unitToPlace;
         List<Location> locations;
-        PlacedUnitListener placedUnitListener;
+        Location selectedLocation;
 
         public Context(NT_Action_PlaceUnit action) {
             super(action);
         }
     }
 
-    public Context placeSoldier(List<Location> locations) {
-        return placeUnit(createSoldier(), locations);
+    public Pair<BattleObject, Location> placeSoldier(List<Location> locations) {
+        return placeUnit(createSoldier(), locations, "Platziere einen Soldat");
     }
 
-    public Context placeSoldier(List<Location> locations, PlacedUnitListener listener) {
-        return placeUnit(createSoldier(), locations, listener);
+    public Pair<BattleObject, Location> placeCommander(List<Location> locations) {
+        return placeUnit(createCommander(), locations, "Platziere deinen Feldherr");
     }
 
-    public Context placeCommander(List<Location> locations) {
-        return placeUnit(createCommander(), locations);
-    }
-
-    public Context placeCommander(List<Location> locations, PlacedUnitListener listener) {
-        return placeUnit(createCommander(), locations, listener);
-    }
-
-    public Context placeMonster(Monster monster) {
+    public Pair<BattleObject, Location> placeMonster(Monster monster) {
         return null;
     }
-
 
     private Soldier createSoldier() {
         return player.getFraction().createSoldier(null);
@@ -54,19 +48,16 @@ public class PlaceUnitAction extends AbstractActionHandler<NT_Action_PlaceUnit, 
         return player.getFraction().createCommander(null);
     }
 
-    public Context placeUnit(BattleObject object, List<Location> locations) {
-        return placeUnit(object, locations, null);
-    }
-
-    public Context placeUnit(BattleObject object, List<Location> locations, PlacedUnitListener listener) {
+    public Pair<BattleObject, Location> placeUnit(BattleObject object, List<Location> locations, String message) {
         NT_Action_PlaceUnit placeUnit = new NT_Action_PlaceUnit();
         placeUnit.unitToPlace = object.nt();
         placeUnit.possibleLocations = locations.stream().mapToInt(Location::getNumber).toArray();
         Context context = new Context(placeUnit);
         context.locations = locations;
         context.unitToPlace = object;
-        context.placedUnitListener = listener;
-        return context;
+        actionHandlers.getReactionActions().requireAction(player, new RequiredActionContext<>(context, message));
+        processingBlock.waitFor();
+        return Pair.of(object, context.selectedLocation);
     }
 
     @Override
@@ -74,18 +65,13 @@ public class PlaceUnitAction extends AbstractActionHandler<NT_Action_PlaceUnit, 
         int nr = reaction.option;
         BattleObject unit = context.unitToPlace;
         Location location = context.locations.get(nr);
+        context.selectedLocation = location;
         player.getUnits().add(unit);
         unit.setLocation(location);
         location.getInhabitants().add(unit);
-        if (context.placedUnitListener != null) {
-            context.placedUnitListener.placed(unit, location);
-        }
         NT_Event_PlacedObject placedObject = new NT_Event_PlacedObject();
         placedObject.object = unit.nt();
         reactionResult.sendGameUpdate(placedObject);
-    }
-
-    public interface PlacedUnitListener {
-        void placed(BattleObject unit, Location location);
+        processingBlock.resume();
     }
 }

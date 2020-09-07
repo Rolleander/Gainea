@@ -1,6 +1,8 @@
 package com.broll.gainea.server.core.battle;
 
+import com.broll.gainea.server.core.fractions.Fraction;
 import com.broll.gainea.server.core.objects.BattleObject;
+import com.broll.gainea.server.core.objects.Monster;
 import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.net.NT_Battle_Start;
 import com.broll.gainea.net.NT_Battle_Update;
@@ -9,6 +11,7 @@ import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.actions.ReactionActions;
 import com.broll.gainea.server.core.map.Location;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,6 +24,9 @@ public class BattleHandler {
     private ReactionActions reactionResult;
     private List<BattleObject> attackers;
     private List<BattleObject> defenders;
+    private Player attackerOwner, defenderOwner;
+    private List<BattleObject> killedAttackers = new ArrayList<>();
+    private List<BattleObject> killedDefenders = new ArrayList<>();
 
     public BattleHandler(GameContainer gameContainer, ReactionActions reactionResult) {
         this.game = gameContainer;
@@ -29,7 +35,6 @@ public class BattleHandler {
 
     public void startBattle(List<BattleObject> attackers, List<BattleObject> defenders) {
         if (battleActive == false) {
-            game.getReactionHandler().incActionStack();
             this.attackers = attackers;
             this.defenders = defenders;
             battleActive = true;
@@ -37,16 +42,16 @@ public class BattleHandler {
             start.attackers = attackers.stream().map(BattleObject::nt).toArray(NT_Unit[]::new);
             start.defenders = defenders.stream().map(BattleObject::nt).toArray(NT_Unit[]::new);
             reactionResult.sendGameUpdate(start);
-            game.schedule(BATTLE_ANIMATION_DELAY, this::fight);
+            game.getProcessingCore().execute(this::fight, BATTLE_ANIMATION_DELAY);
         }
     }
 
     private void fight() {
         //attackers are always of one owner
-        Player attackerOwner = attackers.get(0).getOwner();
+        attackerOwner = attackers.get(0).getOwner();
         //there can be defenders of multiple owners, so attack the army of a random owner first
         Collections.shuffle(defenders);
-        Player defenderOwner = defenders.get(0).getOwner();
+        defenderOwner = defenders.get(0).getOwner();
         Location battleLocation = defenders.get(0).getLocation();
         List<BattleObject> defendingArmy = defenders.stream().filter(defender -> defender.getOwner() == defenderOwner).collect(Collectors.toList());
         Battle battle;
@@ -61,11 +66,13 @@ public class BattleHandler {
         result.getDeadAttackers().forEach(unit -> {
             attackers.remove(unit);
             unitDied(unit);
+            killedAttackers.add(unit);
         });
         result.getDeadDefenders().forEach(unit -> {
             defenders.remove(unit);
             defendingArmy.remove(unit);
             unitDied(unit);
+            killedDefenders.add(unit);
         });
         NT_Battle_Update update = new NT_Battle_Update();
         update.attackerRolls = result.getAttackRolls().stream().mapToInt(i -> i).toArray();
@@ -87,11 +94,19 @@ public class BattleHandler {
         reactionResult.sendGameUpdate(update);
         if (state == NT_Battle_Update.STATE_FIGHTING) {
             //schedule next fight round
-            game.schedule(BATTLE_ANIMATION_DELAY, this::fight);
+            game.getProcessingCore().execute(this::fight, BATTLE_ANIMATION_DELAY);
         } else {
             //battle finished, all attackers or defenders died
             battleActive = false;
-            game.getReactionHandler().decActionStack();
+            battleFinished();
+        }
+    }
+
+    private void battleFinished() {
+        //find monsters to give killing player rewards
+        if (attackerOwner != null) {
+            Fraction fraction = attackerOwner.getFraction();
+            killedDefenders.stream().filter(it -> it instanceof Monster && it.getOwner() == null).map(it -> (Monster) it).forEach(fraction::killedMonster);
         }
     }
 

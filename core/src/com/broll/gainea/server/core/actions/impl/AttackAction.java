@@ -59,19 +59,21 @@ public class AttackAction extends AbstractActionHandler<NT_Action_Attack, Attack
 
     @Override
     public void handleReaction(Context context, NT_Action_Attack action, NT_Reaction reaction) {
-        Location attackLocation = context.attackLocations.get(reaction.option);
-        context.attackLocations.remove(attackLocation);
-        List<BattleObject> selectedAttackers = new ArrayList<>();
-        for (int selection : reaction.options) {
-            BattleObject attacker = context.attackers.get(selection);
-            selectedAttackers.add(attacker);
-            context.attackers.remove(attacker);
-        }
-        startFight(selectedAttackers, attackLocation);
-        if (!context.attackLocations.isEmpty() && !context.attackers.isEmpty()) {
-            //other attack locations and attackers remain => push new attack action
-            reactionResult.optionalAction(attack(context.armyLocation, context.attackLocations));
-        }
+        game.getProcessingCore().execute(() -> {
+            Location attackLocation = context.attackLocations.get(reaction.option);
+            context.attackLocations.remove(attackLocation);
+            List<BattleObject> selectedAttackers = new ArrayList<>();
+            for (int selection : reaction.options) {
+                BattleObject attacker = context.attackers.get(selection);
+                selectedAttackers.add(attacker);
+                context.attackers.remove(attacker);
+            }
+            startFight(selectedAttackers, attackLocation);
+            if (!context.attackLocations.isEmpty() && !context.attackers.isEmpty()) {
+                //other attack locations and attackers remain => push new attack action
+                reactionResult.optionalAction(attack(context.armyLocation, context.attackLocations));
+            }
+        });
     }
 
     private void startFight(List<BattleObject> attackers, Location attackLocation) {

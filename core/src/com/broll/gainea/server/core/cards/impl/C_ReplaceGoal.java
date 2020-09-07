@@ -23,20 +23,13 @@ public class C_ReplaceGoal extends AbstractCard {
     }
 
     @Override
-    public void play(ActionHandlers actionHandlers) {
-        SelectChoiceAction handler = actionHandlers.getHandler(SelectChoiceAction.class);
+    public void play() {
         List<AbstractGoal> goals = owner.getGoalHandler().getGoals();
-        actionHandlers.getReactionActions().requireAction(owner, new RequiredActionContext<>(handler.selectObject(goals.stream().map(AbstractGoal::nt).collect(Collectors.toList()),
-                selectedGoal -> {
-                    AbstractGoal oldGoal = goals.get(selectedGoal);
-                    owner.getGoalHandler().removeGoal(oldGoal);
-                    List<String> difficulties = Arrays.stream(GoalDifficulty.values()).map(GoalDifficulty::getLabel).collect(Collectors.toList());
-                    actionHandlers.getReactionActions().requireAction(owner, new RequiredActionContext<>(handler.selection(difficulties,
-                            selectedDifficulty -> {
-                                GoalDifficulty difficulty = GoalDifficulty.values()[selectedDifficulty];
-                                game.getGoalStorage().assignNewGoal(owner, difficulty);
-                            }), "Welche Schwierigkeit soll das neue Ziel sein?"));
-                }), "Welches Ziel soll ersetzt werden?"));
+        AbstractGoal oldGoal = goals.get(selectHandler.selectObject("Welches Ziel soll ersetzt werden?", goals.stream().map(AbstractGoal::nt).collect(Collectors.toList())));
+        owner.getGoalHandler().removeGoal(oldGoal);
+        List<String> difficulties = Arrays.stream(GoalDifficulty.values()).map(GoalDifficulty::getLabel).collect(Collectors.toList());
+        GoalDifficulty difficulty = GoalDifficulty.values()[selectHandler.selection("Welche Schwierigkeit soll das neue Ziel sein?", difficulties)];
+        game.getGoalStorage().assignNewGoal(owner, difficulty);
     }
 
 }

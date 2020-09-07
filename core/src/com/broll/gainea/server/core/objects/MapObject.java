@@ -25,7 +25,11 @@ public abstract class MapObject {
     }
 
     public void setLocation(Location location) {
+        if (this.location != null) {
+            this.location.getInhabitants().remove(this);
+        }
         this.location = location;
+        this.location.getInhabitants().add(this);
     }
 
     public void setScale(float scale) {

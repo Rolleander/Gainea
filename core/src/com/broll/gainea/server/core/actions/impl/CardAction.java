@@ -8,6 +8,9 @@ import com.broll.gainea.server.core.actions.ActionContext;
 import com.broll.gainea.server.core.cards.AbstractCard;
 import com.broll.gainea.server.core.utils.MessageUtils;
 
+import java.util.Stack;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 public class CardAction extends AbstractActionHandler<NT_Action_Card, CardAction.Context> {
 
     class Context extends ActionContext<NT_Action_Card> {
@@ -32,13 +35,14 @@ public class CardAction extends AbstractActionHandler<NT_Action_Card, CardAction
     }
 
     public void playCard(AbstractCard card) {
-        game.getReactionHandler().incActionStack();
-        card.play(actionHandlers);
-        player.getCardHandler().discardCard(card);
-        NT_Event_PlayedCard playedCard = new NT_Event_PlayedCard();
-        playedCard.card = card.nt();
-        reactionResult.sendGameUpdate(playedCard);
-        MessageUtils.gameLog(game, "Karte " + card.getTitle() + " ausgespielt");
-        game.getReactionHandler().decActionStack();
+        game.getProcessingCore().execute(() -> {
+            player.getCardHandler().discardCard(card);
+            card.play(actionHandlers);
+            NT_Event_PlayedCard playedCard = new NT_Event_PlayedCard();
+            playedCard.card = card.nt();
+            reactionResult.sendGameUpdate(playedCard);
+            MessageUtils.gameLog(game, "Karte " + card.getTitle() + " ausgespielt");
+        });
     }
+
 }

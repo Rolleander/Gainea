@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Player {
@@ -33,20 +34,20 @@ public class Player {
         serverPlayer.getData().joinedGame(this);
     }
 
-    public void skipRounds(int rounds){
-        this.skipRounds+=rounds;
+    public void skipRounds(int rounds) {
+        this.skipRounds += rounds;
     }
 
     public int getSkipRounds() {
         return skipRounds;
     }
 
-    public void consumeSkippedRound(){
+    public void consumeSkippedRound() {
         skipRounds--;
     }
 
-    public Stream<Location> getControlledLocations() {
-        return units.stream().map(BattleObject::getLocation).distinct();
+    public List<Location> getControlledLocations() {
+        return units.stream().map(BattleObject::getLocation).distinct().collect(Collectors.toList());
     }
 
     public NT_Player nt() {

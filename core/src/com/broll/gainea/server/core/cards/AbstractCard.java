@@ -3,6 +3,8 @@ package com.broll.gainea.server.core.cards;
 import com.broll.gainea.net.NT_Card;
 import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.actions.ActionHandlers;
+import com.broll.gainea.server.core.actions.impl.PlaceUnitAction;
+import com.broll.gainea.server.core.actions.impl.SelectChoiceAction;
 import com.broll.gainea.server.core.player.Player;
 
 import org.apache.commons.lang3.concurrent.ConcurrentUtils;
@@ -17,6 +19,9 @@ public abstract class AbstractCard {
     protected GameContainer game;
     protected Player owner;
     private int id;
+    protected ActionHandlers actions;
+    protected PlaceUnitAction placeUnitHandler;
+    protected SelectChoiceAction selectHandler;
 
     private String title, text;
     private float drawChance = 1;
@@ -43,7 +48,14 @@ public abstract class AbstractCard {
 
     public abstract boolean isPlayable();
 
-    public abstract void play(ActionHandlers actionHandlers);
+    public void play(ActionHandlers actionHandlers) {
+        placeUnitHandler = actions.getHandler(PlaceUnitAction.class);
+        selectHandler = actions.getHandler(SelectChoiceAction.class);
+        this.actions = actionHandlers;
+        play();
+    }
+
+    public abstract void play();
 
     public NT_Card nt() {
         NT_Card card = new NT_Card();

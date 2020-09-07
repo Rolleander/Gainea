@@ -35,9 +35,15 @@ public class MoveUnitAction extends AbstractActionHandler<NT_Action_MoveUnit, Mo
 
     @Override
     public void handleReaction(Context context, NT_Action_MoveUnit action, NT_Reaction reaction) {
-        Location pickedLocation = context.locations.get(reaction.option);
-        //perform move
-        BattleObject unit = context.unitToMove;
+        game.getProcessingCore().execute(() -> {
+            Location pickedLocation = context.locations.get(reaction.option);
+            BattleObject unit = context.unitToMove;
+            //perform move
+            move(unit, pickedLocation);
+        });
+    }
+
+    private void move(BattleObject unit, Location pickedLocation) {
         unit.setLocation(pickedLocation);
         NT_Event_MovedObject movedObject = new NT_Event_MovedObject();
         movedObject.object = unit.nt();

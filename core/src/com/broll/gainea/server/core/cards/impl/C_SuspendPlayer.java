@@ -16,10 +16,7 @@ public class C_SuspendPlayer extends AbstractCard {
     }
 
     @Override
-    public void play(ActionHandlers actionHandlers) {
-        SelectChoiceAction handler = actionHandlers.getHandler(SelectChoiceAction.class);
-        actionHandlers.getReactionActions().requireAction(owner, new RequiredActionContext<>(handler.selectOtherPlayer(owner, selectedPlayer -> {
-            selectedPlayer.skipRounds(1);
-        }), "Spieler der Aussetzen muss:"));
+    public void play() {
+        selectHandler.selectOtherPlayer(owner, "Spieler der Aussetzen muss:").skipRounds(1);
     }
 }

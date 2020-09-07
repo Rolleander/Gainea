@@ -3,6 +3,7 @@ package com.broll.gainea.server.core.map;
 import com.broll.gainea.server.core.objects.MapObject;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -12,7 +13,7 @@ public abstract class Location {
 
     private Coordinates coordinates;
 
-    private List<MapObject> inhabitants = new ArrayList<>();
+    private Set<MapObject> inhabitants = new HashSet<>();
 
     public void setCoordinates(Coordinates coordinates) {
         this.coordinates = coordinates;
@@ -22,7 +23,7 @@ public abstract class Location {
         return coordinates;
     }
 
-    public List<MapObject> getInhabitants() {
+    public Set<MapObject> getInhabitants() {
         return inhabitants;
     }
 

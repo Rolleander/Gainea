@@ -134,7 +134,7 @@ public abstract class AbstractOccupyGoal extends AbstractGoal {
 
     @Override
     public boolean checkCondition() {
-        List<Location> occupiedLocations = player.getControlledLocations().collect(Collectors.toList());
+        List<Location> occupiedLocations = player.getControlledLocations();
         for (Location location : occupiedLocations) {
             Function<Location, Boolean> condition = conditions.get(location);
             if (condition != null) {

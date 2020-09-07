@@ -24,6 +24,8 @@ import com.broll.networklib.server.RestrictionType;
 import com.broll.networklib.server.ShareLevel;
 import com.broll.networklib.server.impl.ServerLobby;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -63,7 +65,7 @@ public class GameStartSite extends AbstractGameSite {
         drawStartLocations();
         assignGoals();
         //start  placing units after delay
-        getGame().schedule(5000, () -> placeUnit());
+        getGame().getProcessingCore().execute(this::placeUnit, 5000);
     }
 
     private void assignGoals() {
@@ -101,7 +103,8 @@ public class GameStartSite extends AbstractGameSite {
         String text = "Setze " + unitToPlace.getName() + " auf einen Startpunkt";
         ActionHandlers actionHandlers = game.getTurnBuilder().getActionHandlers();
         PlaceUnitAction placeUnitAction = actionHandlers.getHandler(PlaceUnitAction.class);
-        actionHandlers.getReactionActions().requireAction(player, new RequiredActionContext<>(placeUnitAction.placeUnit(unitToPlace, locations, this::placedUnit), text));
+        Pair<BattleObject, Location> result = placeUnitAction.placeUnit(unitToPlace, locations, text);
+        placedUnit(result.getLeft(), result.getRight());
     }
 
     private void placedUnit(BattleObject battleObject, Location location) {
