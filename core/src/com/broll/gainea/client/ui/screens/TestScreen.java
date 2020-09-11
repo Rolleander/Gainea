@@ -1,4 +1,4 @@
-package com.broll.gainea.client.ui;
+package com.broll.gainea.client.ui.screens;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.broll.gainea.client.ui.AbstractScreen;
 
 import org.apache.commons.lang3.StringUtils;
 

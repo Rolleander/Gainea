@@ -5,62 +5,37 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.broll.gainea.client.Assets;
+import com.broll.gainea.client.ClientHandler;
 import com.broll.gainea.client.MapScrollHandler;
 import com.broll.gainea.client.ui.GameUI;
-import com.broll.gainea.server.init.NetworkSetup;
-import com.broll.gainea.server.core.map.Expansion;
-import com.broll.gainea.client.render.ExpansionRender;
-import com.broll.gainea.server.core.map.ExpansionFactory;
-import com.broll.gainea.server.core.map.impl.BoglandMap;
-import com.broll.gainea.server.core.map.impl.GaineaMap;
-import com.broll.gainea.server.core.map.impl.IcelandMap;
-import com.broll.gainea.server.core.map.impl.MountainsMap;
-import com.broll.networklib.client.ClientSite;
-import com.broll.networklib.client.GameClient;
-import com.broll.networklib.client.LobbyGameClient;
-import com.broll.networklib.site.SiteReceiver;
-
-import java.lang.reflect.Method;
 
 public class Gainea extends ApplicationAdapter {
 
     public final static float EXPANSION_SIZE = 100;
 
-    private Stage gameStage;
-    private Stage uiStage;
-    private GameUI gameUI;
-    private LobbyGameClient client;
+    public ClientHandler client;
+    public Stage gameStage;
+    public Stage uiStage;
+    public GameUI ui;
+    public Assets assets;
+    public ShapeRenderer shapeRenderer;
+    public boolean shutdown=false;
 
     @Override
     public void create() {
         //new StretchViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight())
-        client = new LobbyGameClient(NetworkSetup::registerNetwork);
-        client.setSiteReceiver(new SiteReceiver<ClientSite, GameClient.ClientConnection>() {
-            @Override
-            public void receive(GameClient.ClientConnection context, ClientSite site, Method receiver, Object object) {
-                //perform operations from received packages on main thread
-                Gdx.app.postRunnable(() -> super.receive(context, site, receiver, object));
-            }
-        });
+        client = new ClientHandler();
         gameStage = new Stage(new ScreenViewport());
         uiStage = new Stage(new ScreenViewport());
-        gameUI = new GameUI(uiStage, client);
+        ui = new GameUI(this);
+        client.setClientListener(ui);
         gameStage.addListener(new MapScrollHandler((OrthographicCamera) gameStage.getCamera()));
         Gdx.input.setInputProcessor(new InputMultiplexer(uiStage, gameStage));
-        initExpansion(new GaineaMap());
-        initExpansion(new IcelandMap());
-        initExpansion(new BoglandMap());
-        initExpansion(new MountainsMap());
-    }
-
-    private void initExpansion(ExpansionFactory factory) {
-        Expansion expansion = factory.create();
-        ExpansionRender expansionRender = factory.createRender();
-        expansionRender.init(expansion);
-        gameStage.addActor(expansionRender);
+        shapeRenderer= new ShapeRenderer();
     }
 
     @Override
@@ -82,7 +57,11 @@ public class Gainea extends ApplicationAdapter {
 
     @Override
     public void dispose() {
+        shutdown = true;
+        assets.getManager().dispose();
         gameStage.dispose();
         uiStage.dispose();
+        client.shutdown();
+        shapeRenderer.dispose();
     }
 }

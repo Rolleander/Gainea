@@ -3,40 +3,78 @@ package com.broll.gainea.client.ui;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
-import com.badlogic.gdx.scenes.scene2d.ui.Widget;
-import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
-import com.broll.networklib.client.LobbyGameClient;
+import com.broll.gainea.Gainea;
+import com.broll.gainea.client.Assets;
+import com.broll.gainea.client.ClientHandler;
+import com.broll.gainea.client.IClientListener;
+import com.broll.gainea.client.ui.screens.LoadingScreen;
+import com.broll.gainea.client.ui.screens.LobbyScreen;
+import com.broll.gainea.client.ui.screens.StartScreen;
 import com.broll.networklib.client.impl.GameLobby;
 import com.broll.networklib.client.impl.LobbyPlayer;
+import com.broll.networklib.client.impl.LobbyUpdateListener;
+import com.broll.networklib.client.tasks.DiscoveredLobbies;
+import com.esotericsoftware.minlog.Log;
 
 import java.util.List;
 
-public class GameUI {
+public class GameUI implements IClientListener {
 
-    private Stage stage;
+    private Gainea game;
     private Skin skin;
-    private LobbyGameClient client;
+    private ConnectionCircle connectionCircle;
+    private AbstractScreen currentScreen;
 
-    public GameUI(Stage stage, LobbyGameClient client) {
-        this.stage = stage;
-        this.client = client;
-        skin = new Skin(Gdx.files.internal("ui/cloud-form-ui.json"));
-//        showScreen(new StartScreen());
-        showScreen(new TestScreen());
+    public GameUI(Gainea game) {
+        this.game = game;
+        game.assets = new Assets();
+        showScreen(new LoadingScreen());
+    }
+
+    public void assetsLoaded() {
+        this.skin = game.assets.get("ui/cloud-form-ui.json", Skin.class);
+        connectionCircle = new ConnectionCircle(game.assets);
+        connectionCircle.toFront();
+        game.client.reconnectCheck();
     }
 
     public void showScreen(AbstractScreen screen) {
-        stage.clear();
-        screen.init(skin, client, this);
-        stage.addActor(screen.build());
+        this.currentScreen = screen;
+        game.uiStage.clear();
+        screen.init(skin, game);
+        game.uiStage.addActor(screen.build());
     }
 
+    @Override
+    public void discoveredLobbies(DiscoveredLobbies lobbies) {
+        if (currentScreen instanceof StartScreen) {
+            ((StartScreen) currentScreen).showLobbies(lobbies);
+        }
+    }
 
+    @Override
+    public void connectedLobby(GameLobby lobby) {
+        Log.info("join lobby " + lobby.getName());
+        showScreen(new LobbyScreen(lobby));
+    }
 
+    @Override
+    public void connectionFailure(String reason) {
+        Log.info("failure " + reason);
+        showErrorDialog(reason);
+    }
+
+    public void showErrorDialog(String error) {
+        game.uiStage.addActor(new NetworkProblemDialog(game, skin, error));
+    }
+
+    @Override
+    public void loadingStateUpdate(boolean loading) {
+        if (loading) {
+            game.uiStage.addActor(connectionCircle);
+        } else {
+            connectionCircle.remove();
+        }
+    }
 }

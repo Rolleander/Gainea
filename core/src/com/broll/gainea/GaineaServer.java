@@ -10,11 +10,15 @@ import com.broll.networklib.network.nt.NT_LobbyKicked;
 import com.broll.networklib.server.LobbyGameServer;
 import com.broll.networklib.server.LobbyServerCLI;
 import com.broll.networklib.server.impl.BotSite;
+import com.broll.networklib.server.impl.Player;
 import com.broll.networklib.server.impl.ServerLobby;
+import com.broll.networklib.server.impl.ServerLobbyListener;
+import com.esotericsoftware.minlog.Log;
 
 public class GaineaServer {
 
     public static void main(String[] args) {
+        Log.set(Log.LEVEL_DEBUG);
         LobbyGameServer<LobbyData, PlayerData> server = new LobbyGameServer<>("GaineaServer", NetworkSetup::registerNetwork);
         NetworkSetup.setup(server);
         server.open();

@@ -75,11 +75,11 @@ project(":core") {
 
 
     dependencies {
+        compile group: 'com.esotericsoftware.minlog', name: 'minlog', version: '1.2'
         implementation project(":netlib")
         implementation("com.google.guava:guava:28.2-jre")
         api "com.badlogicgames.gdx:gdx:$gdxVersion"
         api "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
-        compile group: 'com.esotericsoftware.minlog', name: 'minlog', version: '1.2'
         compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
         // https://mvnrepository.com/artifact/org.apache.commons/commons-collections4
         compile group: 'org.apache.commons', name: 'commons-collections4', version: '4.0'

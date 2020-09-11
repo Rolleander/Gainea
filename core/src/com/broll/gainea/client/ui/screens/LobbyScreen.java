@@ -1,11 +1,13 @@
-package com.broll.gainea.client.ui;
+package com.broll.gainea.client.ui.screens;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.broll.gainea.client.ui.AbstractScreen;
 import com.broll.gainea.net.NT_PlayerSettings;
 import com.broll.gainea.server.core.fractions.FractionType;
+import com.broll.networklib.client.auth.LastConnection;
 import com.broll.networklib.client.impl.ChatMessageListener;
 import com.broll.networklib.client.impl.GameLobby;
 import com.broll.networklib.client.impl.LobbyPlayer;
@@ -36,12 +38,25 @@ public class LobbyScreen extends AbstractScreen {
 
             @Override
             public void kickedFromLobby() {
+                LastConnection.clear();
                 backToTitle();
+                game.ui.showErrorDialog("Kicked from lobby");
             }
 
             @Override
             public void closed() {
+                LastConnection.clear();
                 backToTitle();
+                game.ui.showErrorDialog("Lobby closed");
+            }
+
+            @Override
+            public void disconnected() {
+                //disconnected is called on shutdown as well
+                if (!game.shutdown) {
+                    backToTitle();
+                    game.ui.showErrorDialog("Connection problems");
+                }
             }
         });
         lobby.setChatMessageListener(new ChatMessageListener() {
@@ -64,10 +79,10 @@ public class LobbyScreen extends AbstractScreen {
             table.setFillParent(true);
             table.setBackground("highlight");
             table.pad(10);
-            NT_PlayerSettings settings = (NT_PlayerSettings) player.getSettings();
+            //    NT_PlayerSettings settings = (NT_PlayerSettings) player.getSettings();
             table.add(info(player.getName())).padRight(50);
-            table.add(info(FractionType.values()[settings.fraction].getName())).padRight(50);
-            table.add(info(settings.ready + ""));
+            //    table.add(info(FractionType.values()[settings.fraction].getName())).padRight(50);
+            //   table.add(info(settings.ready + ""));
             lobbyTable.add(table).row();
         });
         lobbyTable.pack();

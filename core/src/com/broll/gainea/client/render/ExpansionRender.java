@@ -35,6 +35,8 @@ public class ExpansionRender extends Actor {
         this.setBounds(x, y, SIZE, SIZE);
     }
 
+
+
     @Override
     public void draw(Batch batch, float parentAlpha) {
         batch.draw(texture, getX() - SIZE / 2, getY() - SIZE / 2);
