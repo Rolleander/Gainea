@@ -4,6 +4,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.broll.gainea.Gainea;
+import com.broll.gainea.client.ui.elements.LabelUtils;
 import com.broll.gainea.client.ui.screens.StartScreen;
 
 public abstract class AbstractScreen {
@@ -26,19 +27,16 @@ public abstract class AbstractScreen {
 
 
     protected Label info(String text) {
-        return new Label(text, skin);
+        return LabelUtils.info(skin,text);
     }
 
 
     protected Label title(String text) {
-        Label l = new Label(text, skin, "title");
-        return l;
+       return LabelUtils.title(skin,text);
     }
 
     protected Label label(String text) {
-        Label l = new Label(text, skin, "title");
-        l.setFontScale(0.7f);
-        return l;
+        return LabelUtils.title(skin,text);
     }
 
 

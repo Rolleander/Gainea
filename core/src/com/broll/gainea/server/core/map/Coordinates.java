@@ -6,17 +6,32 @@ public class Coordinates {
 
     private float x;
     private float y;
+    private float displayX;
+    private float displayY;
 
-    private float sx,sy;
+    private float sx, sy;
 
     public Coordinates(float x, float y) {
-        this.x=x;
-        this.y=y;
+        this.x = x;
+        this.y = y;
     }
 
-    public void shift(float x, float y){
-        this.sx+=x;
-        this.sy+=y;
+    public void shift(float x, float y) {
+        this.sx += x;
+        this.sy += y;
+    }
+
+    public void calcDisplayLocation(float size) {
+        this.displayX = getX() * size;
+        this.displayY = getY() * size;
+    }
+
+    public float getDisplayX() {
+        return displayX;
+    }
+
+    public float getDisplayY() {
+        return displayY;
     }
 
     public void setSx(float sx) {
@@ -27,11 +42,15 @@ public class Coordinates {
         this.sy = sy;
     }
 
-    public float getX(float scale) {
-        return (sx+x)*scale;
+    public float getX() {
+        return (sx + x);
     }
 
-    public float getY(float scale) {
-        return (sy+y)*scale;
+    public float getY() {
+        return (sy + y);
+    }
+
+    public void mirrorY(float mirrorY) {
+        this.y = mirrorY - y;
     }
 }

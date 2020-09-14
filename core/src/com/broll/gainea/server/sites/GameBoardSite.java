@@ -1,9 +1,11 @@
 package com.broll.gainea.server.sites;
 
+import com.broll.gainea.net.NT_Battle_Reaction;
 import com.broll.gainea.net.NT_EndTurn;
 import com.broll.gainea.net.NT_Reaction;
 import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.actions.ActionContext;
+import com.broll.gainea.server.core.battle.BattleHandler;
 import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.server.core.actions.ReactionHandler;
 import com.broll.networklib.PackageReceiver;
@@ -30,6 +32,15 @@ public class GameBoardSite extends AbstractGameSite {
             if (playersTurn()) {
                 handler.handle(player, action, reaction);
             }
+        }
+    }
+
+    @PackageReceiver
+    @ConnectionRestriction(RestrictionType.LOBBY_LOCKED)
+    public void reaction(NT_Battle_Reaction battle_reaction) {
+        BattleHandler battle = getGame().getBattleHandler();
+        if (battle.isBattleActive()) {
+            battle.playerReaction(getGamePlayer(),battle_reaction);
         }
     }
 

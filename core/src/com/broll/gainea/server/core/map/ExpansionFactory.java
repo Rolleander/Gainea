@@ -31,7 +31,7 @@ public abstract class ExpansionFactory {
 
     protected Coordinates coord(float x, float y) {
         Coordinates c = new Coordinates(x / 100f, y / 100f);
-        c.shift(baseCoordinates.getX(1), baseCoordinates.getY(1));
+        c.shift(baseCoordinates.getX(), baseCoordinates.getY());
         return c;
     }
 

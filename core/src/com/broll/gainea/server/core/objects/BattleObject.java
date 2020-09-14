@@ -29,6 +29,10 @@ public abstract class BattleObject extends MapObject {
         return health <= 0;
     }
 
+    public boolean isAlive() {
+        return health > 0;
+    }
+
     public void heal() {
         health = maxHealth;
     }

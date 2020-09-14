@@ -10,9 +10,9 @@ public abstract class MapObject {
 
     private int id;
 
-    private String name;
+    private int icon = 0;
 
-    private String texture;
+    private String name;
 
     private float scale = 1;
 
@@ -36,10 +36,6 @@ public abstract class MapObject {
         this.scale = scale;
     }
 
-    public void setTexture(String texture) {
-        this.texture = texture;
-    }
-
     public String getName() {
         return name;
     }
@@ -48,16 +44,16 @@ public abstract class MapObject {
         this.name = name;
     }
 
-    public String getTexture() {
-        return texture;
-    }
-
     public float getScale() {
         return scale;
     }
 
     public int getId() {
         return id;
+    }
+
+    public void setIcon(int icon) {
+        this.icon = icon;
     }
 
     public NT_BoardObject nt() {
@@ -69,8 +65,8 @@ public abstract class MapObject {
     protected void fillObject(NT_BoardObject object) {
         object.id = id;
         object.name = name;
+        object.icon = icon;
         object.size = scale * 30;
-        object.texture = texture;
         object.location = location.getNumber();
     }
 }

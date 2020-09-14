@@ -27,7 +27,7 @@ public class MountainsMap extends ExpansionFactory {
 
     public MountainsMap() {
         super(ExpansionType.MOUNTAINS);
-        setBaseCoordinates(-1f,1.1f);
+        setBaseCoordinates(-1.05f,1.08f);
     }
 
     @Override

@@ -17,7 +17,7 @@ public class PackageLoader<T> {
     public PackageLoader(Class<T> clazz, String path) {
         try {
             ClassPath cp = ClassPath.from(PackageLoader.class.getClassLoader());
-            cp.getTopLevelClasses(path).forEach(cl -> {
+            cp.getTopLevelClassesRecursive(path).forEach(cl -> {
                 Class javaClazz = cl.load();
                 classes.add(javaClazz);
             });

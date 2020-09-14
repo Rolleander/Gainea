@@ -27,7 +27,7 @@ public class BoglandMap extends ExpansionFactory {
 
     public BoglandMap() {
         super(ExpansionType.BOGLANDS);
-        setBaseCoordinates(-0.2f,0.9f);
+        setBaseCoordinates(-0.25f,0.9f);
     }
 
     @Override

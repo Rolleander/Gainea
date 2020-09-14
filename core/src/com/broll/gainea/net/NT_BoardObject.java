@@ -4,8 +4,8 @@ public class NT_BoardObject{
 
     public String name;
     public float size;
+    public int icon;
     public int id;
-    public String texture;
     public int location;
     public float x,y;
 

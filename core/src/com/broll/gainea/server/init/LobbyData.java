@@ -12,6 +12,8 @@ public class LobbyData implements LobbySettings {
 
     private final static int POINT_LIMIT_DEFAULT = 3;
 
+    private final static int MONSTERS_PER_MAP = 10;
+
     private ExpansionSetting expansionSetting = ExpansionSetting.BASIC_GAME;
 
     private GoalTypes goalTypes = GoalTypes.ALL;
@@ -21,6 +23,8 @@ public class LobbyData implements LobbySettings {
     private int startGoals = START_GOALS_DEFAULT;
 
     private int pointLimit = POINT_LIMIT_DEFAULT;
+
+    private int monsterCount = MONSTERS_PER_MAP;
 
     private GameContainer game;
 
@@ -70,6 +74,14 @@ public class LobbyData implements LobbySettings {
 
     public void setPointLimit(int pointLimit) {
         this.pointLimit = pointLimit;
+    }
+
+    public void setMonsterCount(int monsterCount) {
+        this.monsterCount = monsterCount;
+    }
+
+    public int getMonsterCount() {
+        return monsterCount;
     }
 
     @Override

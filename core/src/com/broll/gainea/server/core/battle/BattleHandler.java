@@ -1,5 +1,7 @@
 package com.broll.gainea.server.core.battle;
 
+import com.broll.gainea.net.NT_Battle_Reaction;
+import com.broll.gainea.server.core.actions.impl.SelectChoiceAction;
 import com.broll.gainea.server.core.fractions.Fraction;
 import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.Monster;
@@ -10,10 +12,13 @@ import com.broll.gainea.net.NT_Unit;
 import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.actions.ReactionActions;
 import com.broll.gainea.server.core.map.Location;
+import com.esotericsoftware.minlog.Log;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 public class BattleHandler {
@@ -27,6 +32,8 @@ public class BattleHandler {
     private Player attackerOwner, defenderOwner;
     private List<BattleObject> killedAttackers = new ArrayList<>();
     private List<BattleObject> killedDefenders = new ArrayList<>();
+    private CompletableFuture<Boolean> keepAttacking;
+    private Location battleLocation;
 
     public BattleHandler(GameContainer gameContainer, ReactionActions reactionResult) {
         this.game = gameContainer;
@@ -46,13 +53,19 @@ public class BattleHandler {
         }
     }
 
+    public void playerReaction(Player player, NT_Battle_Reaction battle_reaction) {
+        if (attackerOwner == player && keepAttacking != null) {
+            keepAttacking.complete(battle_reaction.keepAttacking);
+        }
+    }
+
     private void fight() {
         //attackers are always of one owner
         attackerOwner = attackers.get(0).getOwner();
         //there can be defenders of multiple owners, so attack the army of a random owner first
         Collections.shuffle(defenders);
         defenderOwner = defenders.get(0).getOwner();
-        Location battleLocation = defenders.get(0).getLocation();
+        battleLocation = defenders.get(0).getLocation();
         List<BattleObject> defendingArmy = defenders.stream().filter(defender -> defender.getOwner() == defenderOwner).collect(Collectors.toList());
         Battle battle;
         if (defenderOwner == null) {
@@ -93,21 +106,42 @@ public class BattleHandler {
         //send update
         reactionResult.sendGameUpdate(update);
         if (state == NT_Battle_Update.STATE_FIGHTING) {
+            prepareNextRound();
+        } else {
+            //battle finished, all attackers or defenders died
+            battleFinished();
+        }
+    }
+
+    private void prepareNextRound() {
+        //wait for player if he wants to keep attacking
+        keepAttacking = new CompletableFuture<>();
+        boolean startNextRound = false;
+        try {
+            startNextRound = keepAttacking.get().booleanValue();
+        } catch (InterruptedException | ExecutionException e) {
+            Log.error("Failed getting future", e);
+        }
+        if (startNextRound) {
             //schedule next fight round
             game.getProcessingCore().execute(this::fight, BATTLE_ANIMATION_DELAY);
         } else {
-            //battle finished, all attackers or defenders died
-            battleActive = false;
+            //end battle, attackers retreat
             battleFinished();
         }
     }
 
     private void battleFinished() {
+        //if defenders lost, move surviving attackers to location
+        if (defenders.size() == killedDefenders.size()) {
+            attackers.stream().filter(BattleObject::isAlive).forEach(it -> it.setLocation(battleLocation));
+        }
         //find monsters to give killing player rewards
         if (attackerOwner != null) {
             Fraction fraction = attackerOwner.getFraction();
             killedDefenders.stream().filter(it -> it instanceof Monster && it.getOwner() == null).map(it -> (Monster) it).forEach(fraction::killedMonster);
         }
+        battleActive = false;
     }
 
     private void unitDied(BattleObject unit) {
@@ -123,4 +157,5 @@ public class BattleHandler {
     public boolean isBattleActive() {
         return battleActive;
     }
+
 }

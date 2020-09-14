@@ -17,8 +17,6 @@ import com.broll.networklib.client.impl.GameLobby;
 import com.broll.networklib.client.tasks.DiscoveredLobbies;
 import com.esotericsoftware.minlog.Log;
 
-import java.util.List;
-
 public class StartScreen extends AbstractScreen {
 
     private TextField serverIp;
@@ -37,7 +35,7 @@ public class StartScreen extends AbstractScreen {
         String name = this.name.getText();
         Log.info("try joining lobby " + lobby.getName());
         if (name != null && name.trim().length() > 0) {
-            game.client.connectToLobby(name, lobby);
+            game.client.joinLobby(name, lobby);
         }
     }
 

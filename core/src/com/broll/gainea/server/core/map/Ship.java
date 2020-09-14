@@ -35,6 +35,11 @@ public class Ship extends Location {
     }
 
     @Override
+    public String toString() {
+        return "Schiff";
+    }
+
+    @Override
     public Set<Location> getConnectedLocations() {
         Set<Location> set = new HashSet<>(2);
         set.add(from);

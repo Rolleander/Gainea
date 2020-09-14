@@ -8,6 +8,8 @@ import com.broll.gainea.Gainea;
 import com.broll.gainea.client.Assets;
 import com.broll.gainea.client.ClientHandler;
 import com.broll.gainea.client.IClientListener;
+import com.broll.gainea.client.render.MapObjectRender;
+import com.broll.gainea.client.ui.ingame.MapActionHandler;
 import com.broll.gainea.client.ui.screens.LoadingScreen;
 import com.broll.gainea.client.ui.screens.LobbyScreen;
 import com.broll.gainea.client.ui.screens.StartScreen;
@@ -17,6 +19,7 @@ import com.broll.networklib.client.impl.LobbyUpdateListener;
 import com.broll.networklib.client.tasks.DiscoveredLobbies;
 import com.esotericsoftware.minlog.Log;
 
+import java.util.Collection;
 import java.util.List;
 
 public class GameUI implements IClientListener {
@@ -25,6 +28,7 @@ public class GameUI implements IClientListener {
     private Skin skin;
     private ConnectionCircle connectionCircle;
     private AbstractScreen currentScreen;
+    private InGameUI inGameUI;
 
     public GameUI(Gainea game) {
         this.game = game;
@@ -34,9 +38,10 @@ public class GameUI implements IClientListener {
 
     public void assetsLoaded() {
         this.skin = game.assets.get("ui/cloud-form-ui.json", Skin.class);
+        inGameUI = new InGameUI(game, skin);
         connectionCircle = new ConnectionCircle(game.assets);
         connectionCircle.toFront();
-        game.client.reconnectCheck();
+        //  game.client.reconnectCheck();
     }
 
     public void showScreen(AbstractScreen screen) {
@@ -76,5 +81,9 @@ public class GameUI implements IClientListener {
         } else {
             connectionCircle.remove();
         }
+    }
+
+    public InGameUI getInGameUI() {
+        return inGameUI;
     }
 }

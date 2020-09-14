@@ -46,6 +46,11 @@ public class Area extends Location {
         }
     }
 
+    @Override
+    public String toString() {
+        return name;
+    }
+
     public AreaType getType() {
         return type;
     }

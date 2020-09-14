@@ -27,7 +27,7 @@ public class IcelandMap extends ExpansionFactory {
 
     public IcelandMap() {
         super(ExpansionType.ICELANDS);
-        setBaseCoordinates(-0.74f, 0.235f);
+        setBaseCoordinates(-0.82f, 0.235f);
     }
 
     @Override

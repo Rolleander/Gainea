@@ -41,15 +41,13 @@ public class ClientHandler {
         this.clientListener = clientListener;
     }
 
-
     public void listLobbies(String ip) {
         clientExecute(() -> client.listLobbies(ip), lobbies -> clientListener.discoveredLobbies(lobbies), "Failed to list lobbies");
     }
 
-    public void connectToLobby(String playerName, GameLobby lobby) {
+    public void joinLobby(String playerName, GameLobby lobby) {
         clientExecute(() -> client.joinLobby(lobby, playerName), this::connectedLobby, "Unable to join lobby");
     }
-
 
     private void connectedLobby(GameLobby lobby) {
         runOnGdx(() -> clientListener.connectedLobby(lobby));
