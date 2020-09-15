@@ -6,13 +6,16 @@ import com.broll.gainea.server.core.actions.ReactionActions;
 import com.broll.gainea.server.core.battle.BattleHandler;
 import com.broll.gainea.server.core.cards.CardStorage;
 import com.broll.gainea.server.core.goals.GoalStorage;
+import com.broll.gainea.server.core.goals.IGameUpdateReceiver;
 import com.broll.gainea.server.core.map.MapContainer;
 import com.broll.gainea.server.core.objects.MapObject;
+import com.broll.gainea.server.core.objects.MonsterFactory;
 import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.server.core.player.PlayerFactory;
 import com.broll.gainea.net.NT_BoardObject;
 import com.broll.gainea.net.NT_BoardUpdate;
 import com.broll.gainea.net.NT_Player;
+import com.broll.gainea.server.core.utils.GameUpdateReceiverProxy;
 import com.broll.gainea.server.core.utils.ProcessingCore;
 import com.broll.gainea.server.init.ExpansionSetting;
 import com.broll.gainea.server.init.PlayerData;
@@ -49,10 +52,14 @@ public class GameContainer {
     private GoalStorage goalStorage;
     private CardStorage cardStorage;
     private ProcessingCore processingCore;
+    private MonsterFactory monsterFactory;
+    private GameUpdateReceiverProxy gameUpdateReceiver;
 
     public GameContainer(ExpansionSetting setting, Collection<com.broll.networklib.server.impl.Player<PlayerData>> players) {
         this.map = new MapContainer(setting);
-        this.players = players.stream().map(player -> PlayerFactory.create(this, player)).collect(Collectors.toList());
+        this.players = PlayerFactory.create(this,players);
+        this.monsterFactory = new MonsterFactory();
+        this.gameUpdateReceiver = new GameUpdateReceiverProxy();
     }
 
     public void initHandlers(ReactionActions reactionResult) {
@@ -175,5 +182,13 @@ public class GameContainer {
 
     public ProcessingCore getProcessingCore() {
         return processingCore;
+    }
+
+    public MonsterFactory getMonsterFactory() {
+        return monsterFactory;
+    }
+
+    public GameUpdateReceiverProxy getUpdateReceiver() {
+        return gameUpdateReceiver;
     }
 }

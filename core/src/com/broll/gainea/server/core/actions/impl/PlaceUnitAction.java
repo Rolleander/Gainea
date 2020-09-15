@@ -11,6 +11,7 @@ import com.broll.gainea.net.NT_Action_PlaceUnit;
 import com.broll.gainea.net.NT_Reaction;
 import com.broll.gainea.server.core.actions.AbstractActionHandler;
 import com.broll.gainea.server.core.map.Location;
+import com.broll.gainea.server.core.utils.UnitUtils;
 
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -67,11 +68,7 @@ public class PlaceUnitAction extends AbstractActionHandler<NT_Action_PlaceUnit, 
         Location location = context.locations.get(nr);
         context.selectedLocation = location;
         player.getUnits().add(unit);
-        unit.setLocation(location);
-        location.getInhabitants().add(unit);
-        NT_Event_PlacedObject placedObject = new NT_Event_PlacedObject();
-        placedObject.object = unit.nt();
-        reactionResult.sendGameUpdate(placedObject);
+        UnitUtils.spawn(game, unit, location);
         processingBlock.resume();
     }
 }

@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public class MonsterFactory {
 
@@ -18,7 +19,6 @@ public class MonsterFactory {
 
     public MonsterFactory() {
         init();
-        Collections.shuffle(monsters);
     }
 
     private void init() {
@@ -92,33 +92,27 @@ public class MonsterFactory {
         }
     }
 
-
     private void add(String name, int icon, int power, int health, AreaType[] spawnAreas) {
         monsters.add(new MonsterInit(name, icon, power, health, spawnAreas));
     }
 
-    private MonsterInit get() {
-        MonsterInit init = monsters.get(lastSpawned);
-        lastSpawned++;
-        if (lastSpawned >= monsters.size()) {
-            lastSpawned = 0;
-            Collections.shuffle(monsters);
+    public Monster spawn(AreaType areaType, List<Monster> activeMonsters) {
+        Collections.shuffle(monsters);
+        for (MonsterInit init : monsters) {
+            if (ArrayUtils.contains(init.spawnAreas, areaType)) {
+                //check if monster is not active right now
+                if (!activeMonsters.stream().anyMatch(it -> Objects.equals(it.getName(), init.name))) {
+                    Monster monster = new Monster();
+                    monster.setName(init.name);
+                    monster.setIcon(init.icon);
+                    monster.setPower(init.power);
+                    monster.setHealth(init.health);
+                    monster.setMaxHealth(init.health);
+                    return monster;
+                }
+            }
         }
-        return init;
-    }
-
-    public Monster spawn(AreaType areaType) {
-        MonsterInit init;
-        do {
-            init = get();
-        } while (ArrayUtils.contains(init.spawnAreas, areaType));
-        Monster monster = new Monster();
-        monster.setName(init.name);
-        monster.setIcon(init.icon);
-        monster.setPower(init.power);
-        monster.setHealth(init.health);
-        monster.setMaxHealth(init.health);
-        return monster;
+        return null;
     }
 
     private class MonsterInit {

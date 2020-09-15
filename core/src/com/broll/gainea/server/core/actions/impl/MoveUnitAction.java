@@ -1,52 +1,63 @@
 package com.broll.gainea.server.core.actions.impl;
 
+import com.broll.gainea.net.NT_Abstract_Event;
+import com.broll.gainea.net.NT_Event_Bundle;
 import com.broll.gainea.net.NT_Event_MovedObject;
+import com.broll.gainea.net.NT_Unit;
 import com.broll.gainea.server.core.actions.ActionContext;
 import com.broll.gainea.server.core.objects.BattleObject;
-import com.broll.gainea.net.NT_Action_MoveUnit;
+import com.broll.gainea.net.NT_Action_Move;
 import com.broll.gainea.net.NT_Reaction;
 import com.broll.gainea.server.core.actions.AbstractActionHandler;
 import com.broll.gainea.server.core.map.Location;
+import com.broll.gainea.server.core.objects.MapObject;
+import com.broll.gainea.server.core.utils.ProcessingUtils;
+import com.broll.gainea.server.core.utils.UnitUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
-public class MoveUnitAction extends AbstractActionHandler<NT_Action_MoveUnit, MoveUnitAction.Context> {
+public class MoveUnitAction extends AbstractActionHandler<NT_Action_Move, MoveUnitAction.Context> {
 
-    class Context extends ActionContext<NT_Action_MoveUnit> {
-        BattleObject unitToMove;
+    class Context extends ActionContext<NT_Action_Move> {
+        List<BattleObject> unitsToMove;
         List<Location> locations;
 
-        public Context(NT_Action_MoveUnit action) {
+        public Context(NT_Action_Move action) {
             super(action);
         }
     }
 
-    public Context move(BattleObject object, Collection<Location> locations) {
-        NT_Action_MoveUnit moveUnit = new NT_Action_MoveUnit();
+    public Context move(List<BattleObject> objects, Collection<Location> locations) {
+        NT_Action_Move moveUnit = new NT_Action_Move();
         moveUnit.possibleLocations = locations.stream().mapToInt(Location::getNumber).toArray();
-        moveUnit.unit = object.nt();
+        moveUnit.units = objects.stream().map(BattleObject::nt).toArray(NT_Unit[]::new);
         Context context = new Context(moveUnit);
         context.locations = new ArrayList<>(locations);
-        context.unitToMove = object;
+        context.unitsToMove = objects;
         return context;
     }
 
     @Override
-    public void handleReaction(Context context, NT_Action_MoveUnit action, NT_Reaction reaction) {
+    public void handleReaction(Context context, NT_Action_Move action, NT_Reaction reaction) {
         game.getProcessingCore().execute(() -> {
             Location pickedLocation = context.locations.get(reaction.option);
-            BattleObject unit = context.unitToMove;
+            List<MapObject> selectedUnits = new ArrayList<>();
+            for (int selection : reaction.options) {
+                BattleObject attacker = context.unitsToMove.get(selection);
+                selectedUnits.add(attacker);
+                context.unitsToMove.remove(attacker);
+            }
+            context.locations.remove(pickedLocation);
             //perform move
-            move(unit, pickedLocation);
+            UnitUtils.move(game, selectedUnits, pickedLocation);
+            //check for remaining moves
+            if (!context.unitsToMove.isEmpty() && !context.locations.isEmpty()) {
+                reactionResult.optionalAction(move(context.unitsToMove, context.locations));
+            }
         });
     }
 
-    private void move(BattleObject unit, Location pickedLocation) {
-        unit.setLocation(pickedLocation);
-        NT_Event_MovedObject movedObject = new NT_Event_MovedObject();
-        movedObject.object = unit.nt();
-        reactionResult.sendGameUpdate(movedObject);
-    }
 }

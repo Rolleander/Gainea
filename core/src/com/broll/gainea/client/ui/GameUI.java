@@ -1,26 +1,15 @@
 package com.broll.gainea.client.ui;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.broll.gainea.Gainea;
 import com.broll.gainea.client.Assets;
-import com.broll.gainea.client.ClientHandler;
 import com.broll.gainea.client.IClientListener;
-import com.broll.gainea.client.render.MapObjectRender;
-import com.broll.gainea.client.ui.ingame.MapActionHandler;
 import com.broll.gainea.client.ui.screens.LoadingScreen;
 import com.broll.gainea.client.ui.screens.LobbyScreen;
 import com.broll.gainea.client.ui.screens.StartScreen;
 import com.broll.networklib.client.impl.GameLobby;
-import com.broll.networklib.client.impl.LobbyPlayer;
-import com.broll.networklib.client.impl.LobbyUpdateListener;
 import com.broll.networklib.client.tasks.DiscoveredLobbies;
 import com.esotericsoftware.minlog.Log;
-
-import java.util.Collection;
-import java.util.List;
 
 public class GameUI implements IClientListener {
 

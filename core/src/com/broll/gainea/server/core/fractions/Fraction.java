@@ -56,6 +56,8 @@ public abstract class Fraction {
     }
 
     public void killedMonster(Monster monster) {
+        //give player monster stars
+        owner.getGoalHandler().addStars(monster.getStars());
         //receive random card as bounty
         owner.getCardHandler().drawRandomCard();
     }
@@ -78,12 +80,11 @@ public abstract class Fraction {
         soldier.init(game);
     }
 
-    public Collection<Location> getMoveLocations(MapObject object) {
-        Location from = object.getLocation();
-        return from.getConnectedLocations().stream().filter(to -> canMove(object, from, to)).collect(Collectors.toList());
+    public List<Location> getMoveLocations(Location from) {
+        return from.getConnectedLocations().stream().filter(to -> canMove(from, to)).collect(Collectors.toList());
     }
 
-    protected boolean canMove(MapObject object, Location from, Location to) {
+    protected boolean canMove(Location from, Location to) {
         if (to instanceof Ship) {
             return ((Ship) to).passable(from);
         }

@@ -11,6 +11,7 @@ import com.broll.gainea.server.core.map.IslandID;
 import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.map.MapContainer;
 import com.broll.gainea.server.core.objects.BattleObject;
+import com.broll.gainea.server.core.objects.MapObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -132,7 +133,6 @@ public abstract class AbstractOccupyGoal extends AbstractGoal {
         };
     }
 
-    @Override
     public boolean checkCondition() {
         List<Location> occupiedLocations = player.getControlledLocations();
         for (Location location : occupiedLocations) {
@@ -151,5 +151,16 @@ public abstract class AbstractOccupyGoal extends AbstractGoal {
             }
         }
         return true;
+    }
+
+    @Override
+    public void moved(List<MapObject> units, Location location) {
+        MapObject mo = units.get(0);
+        if (mo instanceof BattleObject) {
+            if (((BattleObject) mo).getOwner() == player) {
+                //unit of this player moved, check occupy condition
+                checkCondition();
+            }
+        }
     }
 }

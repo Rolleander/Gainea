@@ -1,17 +1,17 @@
 package com.broll.gainea.server.core.actions;
 
 import com.broll.gainea.net.NT_Action;
-import com.broll.gainea.net.NT_Action_Attack;
-import com.broll.gainea.net.NT_Action_MoveUnit;
 import com.broll.gainea.net.NT_PlayerTurn;
 import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.actions.impl.AttackAction;
 import com.broll.gainea.server.core.actions.impl.MoveUnitAction;
 import com.broll.gainea.server.core.objects.BattleObject;
+import com.broll.gainea.server.core.objects.MapObject;
 import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.server.core.map.Location;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -47,38 +47,29 @@ public class TurnBuilder {
     }
 
     private void buildActions() {
-        //1. create battle actions
-        buildAttackActions();
-        //2. create unit actions (move targets)
-        player.getUnits().forEach(this::buildUnitActions);
-        //3. card actions
+        //1. create move and battle actions
+        buildMoveAndAttackActions();
+        //2. card actions
         player.getCardHandler().onTurnStart(this, actionHandlers);
-        //4. fraction actions
+        //3. fraction actions
         player.getFraction().turnStarts(actionHandlers);
     }
 
-    private void buildAttackActions() {
+    private void buildMoveAndAttackActions() {
         AttackAction attackHandler = actionHandlers.getHandler(AttackAction.class);
+        MoveUnitAction moveHandler = actionHandlers.getHandler(MoveUnitAction.class);
         player.getControlledLocations().forEach(location -> {
-            List<Location> attackLocations = location.getConnectedLocations().stream().filter(
-                    attackLocation -> !attackHandler.getEnemyArmy(player, attackLocation).isEmpty()).collect(Collectors.toList());
+            List<Location> moveLocations = player.getFraction().getMoveLocations(location);
+            List<Location> attackLocations = moveLocations.stream().filter(
+                    moveLocation -> !attackHandler.getEnemyArmy(player, moveLocation).isEmpty()).collect(Collectors.toList());
+            moveLocations.removeAll(attackLocations);
+            List<BattleObject> units = player.getUnits().stream().filter(it -> location == it.getLocation()).collect(Collectors.toList());
             if (!attackLocations.isEmpty()) {
-                action(attackHandler.attack(location, attackLocations));
+                action(attackHandler.attack(units, attackLocations));
+            }
+            if (!moveLocations.isEmpty()) {
+                action(moveHandler.move(units, moveLocations));
             }
         });
     }
-
-    private void buildUnitActions(BattleObject battleObject) {
-        //create move actions for each unit
-        AttackAction attackHandler = actionHandlers.getHandler(AttackAction.class);
-        MoveUnitAction moveHandler = actionHandlers.getHandler(MoveUnitAction.class);
-        List<Location> moveLocations = player.getFraction().getMoveLocations(battleObject).stream().filter(moveLocation ->
-                //only valid move location if there is no enemy army defending it
-                attackHandler.getEnemyArmy(player, moveLocation).isEmpty()
-        ).collect(Collectors.toList());
-        if (!moveLocations.isEmpty()) {
-            action(moveHandler.move(battleObject, moveLocations));
-        }
-    }
-
 }

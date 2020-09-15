@@ -21,14 +21,15 @@ public class MapAction extends Image {
     private final static int SIZE = 100;
     private float animationAngle;
     private ActionTrail trail;
-    private int unitId;
+    private int locationId;
     private int from, to;
     private int type;
+    private Object action;
 
-    public MapAction(Gainea game, int type, int unitId, ActionListener clicked) {
+    public MapAction(Gainea game, int type, int locationId, ActionListener clicked) {
         setVisible(false);
         this.type = type;
-        this.unitId = unitId;
+        this.locationId = locationId;
         Texture texture = game.assets.get("textures/map_actions.png", Texture.class);
         TextureRegion region = new TextureRegion(texture, SIZE * type, 0, SIZE, SIZE);
         setDrawable(new TextureRegionDrawable(region));
@@ -46,22 +47,22 @@ public class MapAction extends Image {
         });
     }
 
+    @Override
+    public void setPosition(float x, float y) {
+        super.setPosition(x - SIZE / 2, y - SIZE / 2);
+    }
+
+    public void setAction(Object action) {
+        this.action = action;
+    }
+
+    public Object getAction() {
+        return action;
+    }
+
     public void setFromTo(int from, int to) {
         this.from = from;
         this.to = to;
-    }
-
-    /**
-     * same map action if type. from and to are same
-     */
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        MapAction action = (MapAction) o;
-        return from == action.from &&
-                to == action.to &&
-                type == action.type;
     }
 
     @Override
@@ -73,8 +74,8 @@ public class MapAction extends Image {
         this.trail = trail;
     }
 
-    public int getUnitId() {
-        return unitId;
+    public int getLocationId() {
+        return locationId;
     }
 
     public int getType() {

@@ -1,24 +1,24 @@
 package com.broll.gainea.server.core.bot.impl;
 
-import com.broll.gainea.net.NT_Action_MoveUnit;
+import com.broll.gainea.net.NT_Action_Move;
 import com.broll.gainea.net.NT_PlayerTurn;
 import com.broll.gainea.net.NT_Reaction;
 import com.broll.gainea.server.core.bot.BotAction;
 
-public class BotMoveUnit extends BotAction<NT_Action_MoveUnit> {
+public class BotMoveUnit extends BotAction<NT_Action_Move> {
     @Override
-    public Class<NT_Action_MoveUnit> getActionClass() {
-        return NT_Action_MoveUnit.class;
+    public Class<NT_Action_Move> getActionClass() {
+        return NT_Action_Move.class;
     }
 
     @Override
-    protected void handleAction(NT_Action_MoveUnit action, NT_Reaction reaction) {
+    protected void handleAction(NT_Action_Move action, NT_Reaction reaction) {
 
     }
 
 
     @Override
-    public float score(NT_Action_MoveUnit action, NT_PlayerTurn turn) {
+    public float score(NT_Action_Move action, NT_PlayerTurn turn) {
         return -1;
     }
 }

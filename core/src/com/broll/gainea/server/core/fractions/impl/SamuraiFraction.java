@@ -27,7 +27,7 @@ public class SamuraiFraction extends Fraction {
     }
 
     @Override
-    protected boolean canMove(MapObject object, Location from, Location to) {
+    protected boolean canMove(Location from, Location to) {
         //can walk ships in both ways
         return true;
     }

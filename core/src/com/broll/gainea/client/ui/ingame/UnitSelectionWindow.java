@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.broll.gainea.Gainea;
 import com.broll.gainea.client.render.MapObjectRender;
 import com.broll.gainea.client.ui.elements.ActionListener;
@@ -15,6 +16,7 @@ import com.broll.gainea.client.ui.elements.LabelUtils;
 import com.broll.gainea.client.ui.elements.MenuUnit;
 import com.broll.gainea.net.NT_Unit;
 import com.broll.gainea.server.core.map.Location;
+import com.esotericsoftware.minlog.Log;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,7 +25,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
-public class UnitSelection {
+public class UnitSelectionWindow {
 
     public static Table create(Gainea game, Skin skin, Location location, Collection<MapObjectRender> stack) {
         List<NT_Unit> units = stack.stream().map(MapObjectRender::getObject).filter(it -> it instanceof NT_Unit).map(it -> (NT_Unit) it).collect(Collectors.toList());
@@ -60,11 +62,12 @@ public class UnitSelection {
         window.add(scrollPane).fillX().expandX().row();
         if (count > 1) {
             Button select = new Button(skin);
-            AtomicBoolean selectOrUnselect = new AtomicBoolean(true);
+            AtomicBoolean selectOrUnselect = new AtomicBoolean(false);
             select.add(new Label("Keins / Alle", skin));
             select.addListener(new InputListener() {
                 @Override
                 public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                    event.stop();
                     menuUnits.forEach(u -> u.setSelected(selectOrUnselect.get()));
                     selectOrUnselect.set(!selectOrUnselect.get());
                     selected(game, menuUnits);

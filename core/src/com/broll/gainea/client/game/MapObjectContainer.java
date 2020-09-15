@@ -1,5 +1,8 @@
 package com.broll.gainea.client.game;
 
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.broll.gainea.client.render.ExpansionRender;
 import com.broll.gainea.client.render.MapObjectRender;
 import com.broll.gainea.net.NT_BoardObject;
@@ -35,6 +38,7 @@ public class MapObjectContainer {
         update.stream().forEach(o -> {
             Location location = game.getMap().getLocation(o.location);
             MapObjectRender render = MapObjectRender.createRender(game.getContainer(), o);
+            render.selectionListener();
             this.objectRenders.put(location, render);
             renders.add(render);
         });

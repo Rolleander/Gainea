@@ -64,6 +64,11 @@ public abstract class BattleObject extends MapObject {
     @Override
     public NT_Unit nt() {
         NT_Unit unit = new NT_Unit();
+        fillBattleObject(unit);
+        return unit;
+    }
+
+    protected void fillBattleObject(NT_Unit unit) {
         fillObject(unit);
         unit.health = health;
         unit.maxHealth = maxHealth;
@@ -71,7 +76,6 @@ public abstract class BattleObject extends MapObject {
         if (owner != null) {
             unit.owner = owner.getServerPlayer().getId();
         }
-        return unit;
     }
 
 }

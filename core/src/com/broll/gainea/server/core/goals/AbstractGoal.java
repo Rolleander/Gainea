@@ -6,10 +6,15 @@ import java.util.stream.Collectors;
 
 import com.broll.gainea.net.NT_Goal;
 import com.broll.gainea.server.core.GameContainer;
+import com.broll.gainea.server.core.battle.BattleResult;
+import com.broll.gainea.server.core.cards.AbstractCard;
 import com.broll.gainea.server.core.map.ExpansionType;
+import com.broll.gainea.server.core.map.Location;
+import com.broll.gainea.server.core.objects.BattleObject;
+import com.broll.gainea.server.core.objects.MapObject;
 import com.broll.gainea.server.core.player.Player;
 
-public abstract class AbstractGoal {
+public abstract class AbstractGoal implements IGameUpdateReceiver {
 
     private String text;
     private GoalDifficulty difficulty;
@@ -49,7 +54,10 @@ public abstract class AbstractGoal {
         return true;
     }
 
-    public abstract boolean checkCondition();
+    protected void success() {
+        player.getGoalHandler().removeGoal(this);
+        player.getGoalHandler().addPoints(difficulty.getPoints());
+    }
 
     public GoalDifficulty getDifficulty() {
         return difficulty;
@@ -61,5 +69,35 @@ public abstract class AbstractGoal {
         goal.points = difficulty.getPoints();
         goal.restriction = restrictionInfo;
         return goal;
+    }
+
+    @Override
+    public void battleResult(BattleResult result) {
+
+    }
+
+    @Override
+    public void playedCard(AbstractCard card) {
+
+    }
+
+    @Override
+    public void moved(List<MapObject> units, Location location) {
+
+    }
+
+    @Override
+    public void spawned(MapObject object, Location location) {
+
+    }
+
+    @Override
+    public void damaged(BattleObject unit, int damage) {
+
+    }
+
+    @Override
+    public void earnedStars(Player player, int stars) {
+
     }
 }

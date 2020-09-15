@@ -9,17 +9,31 @@ import java.util.List;
 public class GoalHandler {
 
     private int score;
+    private int stars;
     private List<AbstractGoal> goals = new ArrayList<>();
+    private GameContainer game;
+    private Player player;
 
     public GoalHandler(GameContainer game, Player player) {
+        this.game = game;
+        this.player = player;
     }
 
-    private void addPoints(int points) {
+    public void addPoints(int points) {
         this.score += points;
+        game.getUpdateReceiver().earnedStars(player, points);
+    }
+
+    public void addStars(int stars) {
+        this.stars += stars;
     }
 
     public int getScore() {
         return score;
+    }
+
+    public int getStars() {
+        return stars;
     }
 
     public List<AbstractGoal> getGoals() {
@@ -28,10 +42,12 @@ public class GoalHandler {
 
     public void removeGoal(AbstractGoal oldGoal) {
         goals.remove(oldGoal);
+        game.getUpdateReceiver().unregister(oldGoal);
     }
 
     public void newGoal(AbstractGoal goal) {
         this.goals.add(goal);
+        game.getUpdateReceiver().register(goal);
     }
 
 }

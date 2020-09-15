@@ -25,6 +25,7 @@ public class Player {
     private GoalHandler goalHandler;
     private CardHandler cardHandler;
     private int skipRounds;
+    private int color;
 
     public Player(GameContainer game, Fraction fraction, com.broll.networklib.server.impl.Player<PlayerData> serverPlayer) {
         this.fraction = fraction;
@@ -32,6 +33,10 @@ public class Player {
         this.goalHandler = new GoalHandler(game, this);
         this.cardHandler = new CardHandler(game, this);
         serverPlayer.getData().joinedGame(this);
+    }
+
+    public void setColor(int color) {
+        this.color = color;
     }
 
     public void skipRounds(int rounds) {
@@ -55,6 +60,8 @@ public class Player {
         player.cards = cardHandler.getCardCount();
         player.fraction = fraction.getType().ordinal();
         player.id = serverPlayer.getId();
+        player.color = color;
+        player.stars=goalHandler.getStars();
         player.name = serverPlayer.getName();
         player.points = goalHandler.getScore();
         player.units = units.stream().map(BattleObject::nt).toArray(NT_Unit[]::new);
@@ -80,4 +87,5 @@ public class Player {
     public CardHandler getCardHandler() {
         return cardHandler;
     }
+
 }

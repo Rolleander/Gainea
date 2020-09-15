@@ -19,7 +19,8 @@ public class MapScrollHandler extends InputListener {
 
     private float lastX, lastY;
 
-    public MapScrollHandler(Stage stage) {
+    public MapScrollHandler(Gainea game, Stage stage) {
+        this.game = game;
         this.stage = stage;
         this.camera = (OrthographicCamera) stage.getCamera();
     }
@@ -31,6 +32,10 @@ public class MapScrollHandler extends InputListener {
         y = screenVec.y;
         this.lastX = x;
         this.lastY = y;
+        InGameUI ui = game.ui.getInGameUI();
+        if (ui != null) {
+            ui.clearSelection();
+        }
         return true;
     }
 

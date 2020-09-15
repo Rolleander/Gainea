@@ -7,8 +7,14 @@ import com.broll.gainea.Gainea;
 public class IconUtils {
 
     private final static int UNIT_SIZE = 82;
+    private final static int ICON_SIZE = 16;
+
 
     public static TextureRegion unitIcon(Gainea game, int icon) {
         return new TextureRegion(game.assets.get("textures/units.png", Texture.class), (icon % 10) * UNIT_SIZE, (icon / 10) * UNIT_SIZE, UNIT_SIZE, UNIT_SIZE);
+    }
+
+    public static TextureRegion icon(Gainea game, int icon) {
+        return new TextureRegion(game.assets.get("textures/icons.png", Texture.class), (icon % 10) * ICON_SIZE, (icon / 10) * ICON_SIZE, ICON_SIZE, ICON_SIZE);
     }
 }

@@ -35,7 +35,7 @@ public class Gainea extends ApplicationAdapter {
         uiStage = new Stage(new ScreenViewport());
         ui = new GameUI(this);
         client.setClientListener(ui);
-        gameStage.addListener(new MapScrollHandler(gameStage));
+        gameStage.addListener(new MapScrollHandler(this,gameStage));
         Gdx.input.setInputProcessor(new InputMultiplexer(uiStage, gameStage));
         shapeRenderer= new ShapeRenderer();
     }

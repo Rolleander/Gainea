@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.broll.gainea.Gainea;
 import com.broll.gainea.client.ui.elements.IconUtils;
 import com.broll.gainea.net.NT_BoardObject;
+import com.broll.gainea.net.NT_Monster;
 import com.broll.gainea.net.NT_Unit;
 import com.broll.gainea.server.core.map.Location;
 import com.esotericsoftware.minlog.Log;
@@ -22,28 +23,40 @@ import java.util.Collection;
 public class MapObjectRender extends Actor {
 
     protected final static int R = 50;
-    private Gainea game;
+    protected Gainea game;
     private NT_BoardObject object;
     private TextureRegion chip;
     protected Collection<MapObjectRender> stack;
-    protected boolean stackTop;
+    protected boolean stackTop = true;
     private Location location;
     private TextureRegion icon;
 
     public MapObjectRender(Gainea game, NT_BoardObject object) {
         this.game = game;
         this.object = object;
+        setSize(R * 2, R * 2);
         init();
         icon = IconUtils.unitIcon(game, object.icon);
+    }
+
+    public void selectionListener() {
         setTouchable(Touchable.enabled);
         addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-
+                event.stop();
                 game.ui.getInGameUI().selectStack(location, stack);
                 return true;
             }
         });
+    }
+
+    //Fix for table
+    @Override
+    public void setBounds(float x, float y, float width, float height) {
+        super.setBounds(x, y, width, height);
+        setX(getX() + width / 2);
+        setY(getY() + height / 2);
     }
 
     @Override
@@ -81,6 +94,9 @@ public class MapObjectRender extends Actor {
     }
 
     public static MapObjectRender createRender(Gainea gainea, NT_BoardObject object) {
+        if (object instanceof NT_Monster) {
+            return new MonsterRender(gainea, (NT_Monster) object);
+        }
         if (object instanceof NT_Unit) {
             return new UnitRender(gainea, (NT_Unit) object);
         }

@@ -12,9 +12,7 @@ import com.broll.gainea.Gainea;
 public class IconLabel extends Table {
 
     public IconLabel(Gainea game, Skin skin, int nr, String text) {
-        Texture texture = game.assets.get("textures/icons.png", Texture.class);
-        TextureRegion region = new TextureRegion(texture, 16 * nr, 0, 16, 16);
-        add(new Image(new TextureRegionDrawable(region)));
+        add(new Image(IconUtils.icon(game, nr)));
         add(new Label(text, skin)).padLeft(10);
     }
 

@@ -19,6 +19,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Scaling;
 import com.broll.gainea.Gainea;
+import com.broll.gainea.net.NT_Monster;
 import com.broll.gainea.net.NT_Unit;
 import com.esotericsoftware.minlog.Log;
 
@@ -36,13 +37,20 @@ public class MenuUnit extends Table {
         TextureRegion icon = IconUtils.unitIcon(game, unit.icon);
         Image image = new Image(icon);
         image.setScaling(Scaling.fill);
-        image.setOrigin(30, 30);
+        image.setOrigin(41, 41);
         image.layout();
-        add(image).size(60, 60).pad(3).center();
+        add(image).pad(3).center();
         left();
         Table table = new Table();
         table.left();
-        table.add(new Label(unit.name, skin)).left().row();
+        table.add(new Label(unit.name, skin)).left().spaceBottom(10).row();
+        if (unit instanceof NT_Monster) {
+            Table stars = new Table();
+            for (int i = 0; i < ((NT_Monster) unit).stars; i++) {
+                stars.add(new Image(IconUtils.icon(game, 2))).left();
+            }
+            table.add(stars).left().row();
+        }
         table.add(IconLabel.attack(game, skin, unit.power)).left().row();
         table.add(IconLabel.health(game, skin, unit.health, unit.maxHealth)).left().row();
         add(table).fillX().expandX().spaceLeft(10);
@@ -50,6 +58,7 @@ public class MenuUnit extends Table {
         addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                event.stop();
                 setSelected(!selected);
                 selectChanged.action();
             }

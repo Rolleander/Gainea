@@ -42,6 +42,7 @@ public class CardAction extends AbstractActionHandler<NT_Action_Card, CardAction
             playedCard.card = card.nt();
             reactionResult.sendGameUpdate(playedCard);
             MessageUtils.gameLog(game, "Karte " + card.getTitle() + " ausgespielt");
+            game.getUpdateReceiver().playedCard(card);
         });
     }
 

@@ -27,19 +27,18 @@ public class AttackAction extends AbstractActionHandler<NT_Action_Attack, Attack
         }
     }
 
-    public Context attack(Location attackingArmy, Collection<Location> attackLocations) {
+    public Context attack(List<BattleObject> attackers, Collection<Location> attackLocations) {
         NT_Action_Attack action = new NT_Action_Attack();
-        List<BattleObject> attackers = getFighters(attackingArmy);
         action.units = attackers.stream().map(BattleObject::nt).toArray(NT_Unit[]::new);
         action.attackLocations = attackLocations.stream().mapToInt(Location::getNumber).toArray();
         Context context = new Context(action);
         context.attackers = attackers;
-        context.armyLocation = attackingArmy;
+        context.armyLocation = attackers.get(0).getLocation();
         context.attackLocations = new ArrayList<>(attackLocations);
         return context;
     }
 
-    private List<BattleObject> getFighters(Location location) {
+    public List<BattleObject> getFighters(Player player, Location location) {
         return location.getInhabitants().stream().filter(inhabitant -> {
             if (inhabitant instanceof BattleObject) {
                 return ((BattleObject) inhabitant).getOwner() == player;
@@ -71,7 +70,7 @@ public class AttackAction extends AbstractActionHandler<NT_Action_Attack, Attack
             startFight(selectedAttackers, attackLocation);
             if (!context.attackLocations.isEmpty() && !context.attackers.isEmpty()) {
                 //other attack locations and attackers remain => push new attack action
-                reactionResult.optionalAction(attack(context.armyLocation, context.attackLocations));
+                reactionResult.optionalAction(attack(context.attackers, context.attackLocations));
             }
         });
     }

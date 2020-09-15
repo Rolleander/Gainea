@@ -12,6 +12,7 @@ import com.broll.gainea.net.NT_Unit;
 import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.actions.ReactionActions;
 import com.broll.gainea.server.core.map.Location;
+import com.broll.gainea.server.core.utils.UnitUtils;
 import com.esotericsoftware.minlog.Log;
 
 import java.util.ArrayList;
@@ -132,9 +133,10 @@ public class BattleHandler {
     }
 
     private void battleFinished() {
+        BattleResult result = new BattleResult(attackers, defenders);
         //if defenders lost, move surviving attackers to location
-        if (defenders.size() == killedDefenders.size()) {
-            attackers.stream().filter(BattleObject::isAlive).forEach(it -> it.setLocation(battleLocation));
+        if (result.attackersWon()) {
+            UnitUtils.move(game, attackers.stream().filter(BattleObject::isAlive).collect(Collectors.toList()), battleLocation);
         }
         //find monsters to give killing player rewards
         if (attackerOwner != null) {
@@ -142,6 +144,7 @@ public class BattleHandler {
             killedDefenders.stream().filter(it -> it instanceof Monster && it.getOwner() == null).map(it -> (Monster) it).forEach(fraction::killedMonster);
         }
         battleActive = false;
+        game.getUpdateReceiver().battleResult(result);
     }
 
     private void unitDied(BattleObject unit) {

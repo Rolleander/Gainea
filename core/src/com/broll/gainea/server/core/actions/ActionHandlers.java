@@ -9,7 +9,7 @@ import com.broll.gainea.server.core.actions.impl.MoveUnitAction;
 import com.broll.gainea.server.core.actions.impl.PlaceUnitAction;
 import com.broll.gainea.net.NT_Action;
 import com.broll.gainea.net.NT_Action_Attack;
-import com.broll.gainea.net.NT_Action_MoveUnit;
+import com.broll.gainea.net.NT_Action_Move;
 import com.broll.gainea.net.NT_Action_PlaceUnit;
 import com.broll.gainea.server.core.actions.impl.SelectChoiceAction;
 
@@ -37,7 +37,7 @@ public class ActionHandlers {
 
     private void initHandlers() {
         initHandler(NT_Action_PlaceUnit.class, new PlaceUnitAction());
-        initHandler(NT_Action_MoveUnit.class, new MoveUnitAction());
+        initHandler(NT_Action_Move.class, new MoveUnitAction());
         initHandler(NT_Action_Attack.class, new AttackAction());
         initHandler(NT_Action_Card.class, new CardAction());
         initHandler(NT_Action_SelectChoice.class, new SelectChoiceAction());

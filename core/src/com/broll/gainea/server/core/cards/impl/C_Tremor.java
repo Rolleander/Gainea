@@ -17,7 +17,7 @@ public class C_Tremor extends DirectlyPlayedCard {
             BattleObject unit = RandomUtils.pickRandom(player.getUnits());
             if (unit != null) {
                 //deal 1 damage
-                UnitUtils.damageUnit(game, unit, 1);
+                UnitUtils.damage(game, unit, 1);
             }
         });
     }
