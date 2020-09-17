@@ -1,17 +1,14 @@
 package com.broll.gainea.client.ui.ingame;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.broll.gainea.Gainea;
 import com.broll.gainea.client.game.PlayerPerformAction;
-import com.broll.gainea.client.ui.elements.IconUtils;
 import com.broll.gainea.client.ui.elements.MapAction;
 import com.broll.gainea.net.NT_Action;
 import com.broll.gainea.net.NT_Action_PlaceUnit;
 import com.broll.gainea.net.NT_Action_SelectChoice;
-import com.broll.gainea.server.core.actions.impl.PlaceUnitAction;
 
 import java.util.ArrayList;
 import java.util.List;

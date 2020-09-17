@@ -8,9 +8,24 @@ public abstract class BattleObject extends MapObject {
     private int maxHealth;
     private int power, health;
     private Player owner;
+    protected boolean rooted=false;
 
     public BattleObject(Player owner) {
         this.owner = owner;
+    }
+
+    public void setStats(int power, int health) {
+        this.power = power;
+        this.maxHealth = health;
+        this.health = health;
+    }
+
+    protected void onDeath() {
+
+    }
+
+    public boolean isRooted() {
+        return rooted;
     }
 
     public Player getOwner() {
@@ -23,6 +38,16 @@ public abstract class BattleObject extends MapObject {
 
     public void takeDamage(int damage) {
         health -= damage;
+        if (isDead()) {
+            onDeath();
+        }
+    }
+
+    public void heal(int heal) {
+        health += heal;
+        if (health > maxHealth) {
+            health = maxHealth;
+        }
     }
 
     public boolean isDead() {

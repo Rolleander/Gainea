@@ -1,9 +1,9 @@
 package com.broll.gainea.server.core.battle;
 
 import com.broll.gainea.net.NT_Battle_Reaction;
-import com.broll.gainea.server.core.actions.impl.SelectChoiceAction;
 import com.broll.gainea.server.core.fractions.Fraction;
 import com.broll.gainea.server.core.objects.BattleObject;
+import com.broll.gainea.server.core.objects.MapObject;
 import com.broll.gainea.server.core.objects.Monster;
 import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.net.NT_Battle_Start;
@@ -12,7 +12,7 @@ import com.broll.gainea.net.NT_Unit;
 import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.actions.ReactionActions;
 import com.broll.gainea.server.core.map.Location;
-import com.broll.gainea.server.core.utils.UnitUtils;
+import com.broll.gainea.server.core.utils.UnitControl;
 import com.esotericsoftware.minlog.Log;
 
 import java.util.ArrayList;
@@ -30,10 +30,13 @@ public class BattleHandler {
     private ReactionActions reactionResult;
     private List<BattleObject> attackers;
     private List<BattleObject> defenders;
+    private List<BattleObject> aliveAttackers;
+    private List<BattleObject> aliveDefenders;
     private Player attackerOwner, defenderOwner;
     private List<BattleObject> killedAttackers = new ArrayList<>();
     private List<BattleObject> killedDefenders = new ArrayList<>();
     private CompletableFuture<Boolean> keepAttacking;
+    private List<BattleObject> defendingArmy;
     private Location battleLocation;
 
     public BattleHandler(GameContainer gameContainer, ReactionActions reactionResult) {
@@ -46,12 +49,17 @@ public class BattleHandler {
             this.attackers = attackers;
             this.defenders = defenders;
             battleActive = true;
-            NT_Battle_Start start = new NT_Battle_Start();
-            start.attackers = attackers.stream().map(BattleObject::nt).toArray(NT_Unit[]::new);
-            start.defenders = defenders.stream().map(BattleObject::nt).toArray(NT_Unit[]::new);
-            reactionResult.sendGameUpdate(start);
+            prepareFight();
+            sendFightStart();
             game.getProcessingCore().execute(this::fight, BATTLE_ANIMATION_DELAY);
         }
+    }
+
+    private void sendFightStart() {
+        NT_Battle_Start start = new NT_Battle_Start();
+        start.attackers = aliveAttackers.stream().map(BattleObject::nt).toArray(NT_Unit[]::new);
+        start.defenders = defendingArmy.stream().map(BattleObject::nt).toArray(NT_Unit[]::new);
+        reactionResult.sendGameUpdate(start);
     }
 
     public void playerReaction(Player player, NT_Battle_Reaction battle_reaction) {
@@ -60,45 +68,48 @@ public class BattleHandler {
         }
     }
 
-    private void fight() {
+    private void prepareFight() {
+        this.aliveAttackers = attackers.stream().filter(BattleObject::isAlive).collect(Collectors.toList());
+        this.aliveDefenders = defenders.stream().filter(BattleObject::isAlive).collect(Collectors.toList());
         //attackers are always of one owner
-        attackerOwner = attackers.get(0).getOwner();
+        attackerOwner = aliveAttackers.get(0).getOwner();
         //there can be defenders of multiple owners, so attack the army of a random owner first
-        Collections.shuffle(defenders);
-        defenderOwner = defenders.get(0).getOwner();
-        battleLocation = defenders.get(0).getLocation();
-        List<BattleObject> defendingArmy = defenders.stream().filter(defender -> defender.getOwner() == defenderOwner).collect(Collectors.toList());
+        Collections.shuffle(aliveDefenders);
+        defenderOwner = aliveDefenders.get(0).getOwner();
+        battleLocation = aliveDefenders.get(0).getLocation();
+        defendingArmy = aliveDefenders.stream().filter(defender -> defender.getOwner() == defenderOwner).collect(Collectors.toList());
+    }
+
+    private void fight() {
         Battle battle;
         if (defenderOwner == null) {
             //fight against neutral enemies (monsters)
-            battle = new Battle(battleLocation, attackerOwner, attackers, defendingArmy);
+            battle = new Battle(battleLocation, attackerOwner, aliveAttackers, defendingArmy);
         } else {
             //fight against player
             battle = new Battle(battleLocation, attackerOwner, attackers, defenderOwner, defendingArmy);
         }
         FightResult result = battle.fight();
+        NT_Battle_Update update = new NT_Battle_Update();
+        update.attackerRolls = result.getAttackRolls().stream().mapToInt(i -> i).toArray();
+        update.defenderRolls = result.getDefenderRolls().stream().mapToInt(i -> i).toArray();
+        update.attackers = aliveAttackers.stream().map(BattleObject::nt).toArray(NT_Unit[]::new);
+        update.defenders = defendingArmy.stream().map(BattleObject::nt).toArray(NT_Unit[]::new);
         result.getDeadAttackers().forEach(unit -> {
-            attackers.remove(unit);
+            aliveAttackers.remove(unit);
             unitDied(unit);
             killedAttackers.add(unit);
         });
         result.getDeadDefenders().forEach(unit -> {
-            defenders.remove(unit);
+            aliveDefenders.remove(unit);
             defendingArmy.remove(unit);
             unitDied(unit);
             killedDefenders.add(unit);
         });
-        NT_Battle_Update update = new NT_Battle_Update();
-        update.attackerRolls = result.getAttackRolls().stream().mapToInt(i -> i).toArray();
-        update.defenderRolls = result.getDefenderRolls().stream().mapToInt(i -> i).toArray();
-        update.remainingAttackers = attackers.stream().map(BattleObject::nt).toArray(NT_Unit[]::new);
-        update.remainingDefenders = defendingArmy.stream().map(BattleObject::nt).toArray(NT_Unit[]::new);
-        update.killedAttacker = result.getDeadAttackers().stream().map(BattleObject::nt).toArray(NT_Unit[]::new);
-        update.killedDefender = result.getDeadDefenders().stream().map(BattleObject::nt).toArray(NT_Unit[]::new);
         int state = NT_Battle_Update.STATE_FIGHTING;
-        if (attackers.isEmpty()) {
+        if (aliveAttackers.isEmpty()) {
             state = NT_Battle_Update.STATE_DEFENDER_WON;
-        } else if (defenders.isEmpty()) {
+        } else if (aliveDefenders.isEmpty()) {
             state = NT_Battle_Update.STATE_ATTACKER_WON;
             //attackers won, move them to the fight location
             attackers.forEach(attacker -> game.moveObject(attacker, battleLocation));
@@ -107,16 +118,31 @@ public class BattleHandler {
         //send update
         reactionResult.sendGameUpdate(update);
         if (state == NT_Battle_Update.STATE_FIGHTING) {
-            prepareNextRound();
+            //wait for player if he wants to keep attacking
+            keepAttacking = new CompletableFuture<>();
+            game.getProcessingCore().execute(this::prepareNextRound, BATTLE_ANIMATION_DELAY);
         } else {
             //battle finished, all attackers or defenders died
-            battleFinished();
+            game.getProcessingCore().execute(this::battleFinished, BATTLE_ANIMATION_DELAY);
+        }
+    }
+
+    private void fightRound() {
+        Player previousEnemy = defenderOwner;
+        prepareFight();
+        if (defenderOwner != previousEnemy) {
+            //next round is against other owner, send new battle start to clients before this round
+            sendFightStart();
+            //start next round after wait
+            game.getProcessingCore().execute(this::fight, BATTLE_ANIMATION_DELAY);
+        } else {
+            //directly continue with next round
+            fight();
         }
     }
 
     private void prepareNextRound() {
         //wait for player if he wants to keep attacking
-        keepAttacking = new CompletableFuture<>();
         boolean startNextRound = false;
         try {
             startNextRound = keepAttacking.get().booleanValue();
@@ -125,18 +151,18 @@ public class BattleHandler {
         }
         if (startNextRound) {
             //schedule next fight round
-            game.getProcessingCore().execute(this::fight, BATTLE_ANIMATION_DELAY);
+            game.getProcessingCore().execute(this::fightRound);
         } else {
             //end battle, attackers retreat
-            battleFinished();
+            game.getProcessingCore().execute(this::battleFinished);
         }
     }
 
     private void battleFinished() {
-        BattleResult result = new BattleResult(attackers, defenders);
+        BattleResult result = new BattleResult(attackers, defenders, battleLocation);
         //if defenders lost, move surviving attackers to location
         if (result.attackersWon()) {
-            UnitUtils.move(game, attackers.stream().filter(BattleObject::isAlive).collect(Collectors.toList()), battleLocation);
+            UnitControl.move(game, attackers.stream().filter(BattleObject::isAlive).collect(Collectors.toList()), battleLocation);
         }
         //find monsters to give killing player rewards
         if (attackerOwner != null) {

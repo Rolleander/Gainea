@@ -22,11 +22,14 @@ public class Assets {
         manager.load("textures/title.png", Texture.class);
         manager.load("textures/chips.png", Texture.class);
         manager.load("textures/icons.png", Texture.class);
+        manager.load("textures/cards.png", Texture.class);
         manager.load("textures/units.png", Texture.class);
+        manager.load("textures/roll_back.png", Texture.class);
         manager.load("textures/star_plates.png", Texture.class);
         manager.load("textures/dot.png", Texture.class);
         manager.load("textures/unit_plate.png", Texture.class);
         manager.load("textures/map_actions.png", Texture.class);
+        manager.load("textures/battles.jpg", Texture.class);
     }
 
     private void loadUi() {

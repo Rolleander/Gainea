@@ -1,19 +1,16 @@
 package com.broll.gainea.client.ui.elements;
 
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.broll.gainea.Gainea;
 
 public class IconLabel extends Table {
 
     public IconLabel(Gainea game, Skin skin, int nr, String text) {
-        add(new Image(IconUtils.icon(game, nr)));
-        add(new Label(text, skin)).padLeft(10);
+        add(new Image(TextureUtils.icon(game, nr)));
+        add(new Label(LabelUtils.filter(text), skin)).padLeft(10);
     }
 
     public static IconLabel attack(Gainea game, Skin skin, int attack) {

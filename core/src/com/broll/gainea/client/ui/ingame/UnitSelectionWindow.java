@@ -14,6 +14,7 @@ import com.broll.gainea.client.ui.elements.ActionListener;
 import com.broll.gainea.client.ui.elements.IconLabel;
 import com.broll.gainea.client.ui.elements.LabelUtils;
 import com.broll.gainea.client.ui.elements.MenuUnit;
+import com.broll.gainea.client.ui.elements.TableUtils;
 import com.broll.gainea.net.NT_Unit;
 import com.broll.gainea.server.core.map.Location;
 import com.esotericsoftware.minlog.Log;
@@ -77,6 +78,7 @@ public class UnitSelectionWindow {
             window.add(select).center();
         }
         selected(game, menuUnits);
+        TableUtils.consumeClicks(window);
         return window;
     }
 

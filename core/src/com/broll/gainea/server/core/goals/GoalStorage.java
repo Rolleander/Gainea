@@ -1,5 +1,7 @@
 package com.broll.gainea.server.core.goals;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import com.broll.gainea.misc.PackageLoader;
@@ -8,11 +10,12 @@ import com.broll.gainea.server.core.actions.ActionHandlers;
 import com.broll.gainea.server.core.player.Player;
 
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class GoalStorage {
 
     private final static String PACKAGE_PATH = "com.broll.gainea.server.core.goals.impl";
-    private final List<Class<? extends AbstractGoal>> goalClasses;
+    private List<Class<? extends AbstractGoal>> goalClasses;
     private PackageLoader<AbstractGoal> loader;
     private GameContainer game;
     private ActionHandlers actionHandlers;
@@ -20,8 +23,13 @@ public class GoalStorage {
     public GoalStorage(GameContainer gameContainer, ActionHandlers actionHandlers) {
         this.game = gameContainer;
         this.actionHandlers = actionHandlers;
-        loader = new PackageLoader<>(AbstractGoal.class, PACKAGE_PATH);
-        goalClasses = loader.getClasses();
+        this.loader = new PackageLoader<>(AbstractGoal.class, PACKAGE_PATH);
+        initGoals();
+    }
+
+    private void initGoals() {
+        this.goalClasses = loader.getClasses().stream().collect(Collectors.toList());
+        Collections.shuffle(goalClasses);
     }
 
     public void assignNewRandomGoal(Player player) {
@@ -38,8 +46,11 @@ public class GoalStorage {
             //assign goal to player
             player.getGoalHandler().newGoal(goal);
         } else {
-            //no more goals found
-
+            //no goal found for condition
+            if (goalClasses.isEmpty()) {
+                //refresh goals
+                initGoals();
+            }
         }
     }
 
@@ -53,7 +64,7 @@ public class GoalStorage {
                 }
             }
         }
-        //no more matching goal found
+        //no more matching goals found
         return null;
     }
 

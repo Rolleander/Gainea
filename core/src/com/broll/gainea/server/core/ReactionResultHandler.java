@@ -53,6 +53,8 @@ public class ReactionResultHandler implements ReactionActions {
         wait.playersTurn = player.getServerPlayer().getId();
         //send wait to all others
         game.getPlayers().stream().filter(p -> p != player).forEach(p -> p.getServerPlayer().sendTCP(wait));
+        //do fraction turn start
+        player.getFraction().turnStarted(game.getReactionHandler().getActionHandlers());
     }
 
     @Override

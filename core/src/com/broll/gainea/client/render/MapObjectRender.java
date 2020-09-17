@@ -3,20 +3,18 @@ package com.broll.gainea.client.render;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.broll.gainea.Gainea;
-import com.broll.gainea.client.ui.elements.IconUtils;
+import com.broll.gainea.client.ui.elements.TextureUtils;
 import com.broll.gainea.net.NT_BoardObject;
 import com.broll.gainea.net.NT_Monster;
 import com.broll.gainea.net.NT_Unit;
 import com.broll.gainea.server.core.map.Location;
-import com.esotericsoftware.minlog.Log;
 
 import java.util.Collection;
 
@@ -31,12 +29,12 @@ public class MapObjectRender extends Actor {
     private Location location;
     private TextureRegion icon;
 
-    public MapObjectRender(Gainea game, NT_BoardObject object) {
+    public MapObjectRender(Gainea game, Skin skin, NT_BoardObject object) {
         this.game = game;
         this.object = object;
         setSize(R * 2, R * 2);
         init();
-        icon = IconUtils.unitIcon(game, object.icon);
+        icon = TextureUtils.unitIcon(game, object.icon);
     }
 
     public void selectionListener() {
@@ -83,6 +81,10 @@ public class MapObjectRender extends Actor {
         chip = new TextureRegion(texture, color * R * 2, 0, R * 2, R * 2);
     }
 
+    public void flip() {
+        icon.flip(true, false);
+    }
+
     @Override
     public void draw(Batch batch, float parentAlpha) {
         batch.draw(chip, getX() - R, getY() - R);
@@ -93,14 +95,14 @@ public class MapObjectRender extends Actor {
         return object;
     }
 
-    public static MapObjectRender createRender(Gainea gainea, NT_BoardObject object) {
+    public static MapObjectRender createRender(Gainea gainea, Skin skin, NT_BoardObject object) {
         if (object instanceof NT_Monster) {
-            return new MonsterRender(gainea, (NT_Monster) object);
+            return new MonsterRender(gainea, skin, (NT_Monster) object);
         }
         if (object instanceof NT_Unit) {
-            return new UnitRender(gainea, (NT_Unit) object);
+            return new UnitRender(gainea, skin, (NT_Unit) object);
         }
-        return new MapObjectRender(gainea, object);
+        return new MapObjectRender(gainea, skin, object);
     }
 
     public void setLocation(Location location) {

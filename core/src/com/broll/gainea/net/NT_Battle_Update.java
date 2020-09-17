@@ -8,9 +8,9 @@ public class NT_Battle_Update {
 
     public int[] attackerRolls;
     public int[] defenderRolls;
-    public NT_Unit[] remainingAttackers;
-    public NT_Unit[] remainingDefenders;
-    public NT_Unit[] killedAttacker;
-    public NT_Unit[] killedDefender;
+    public NT_Unit[] attackers;
+    public NT_Unit[] defenders;
+    public int[] damageToAttackers;
+    public int[] damageToDefenders;
     public int state;
 }

@@ -5,6 +5,7 @@ import com.broll.gainea.server.core.objects.Commander;
 import com.broll.gainea.server.core.player.Player;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 public final class PlayerUtils {
@@ -19,7 +20,11 @@ public final class PlayerUtils {
     }
 
     public static boolean isCommanderAlive(Player player) {
-        return player.getUnits().stream().filter(unit -> unit instanceof Commander).findFirst().isPresent();
+        return getCommander(player).isPresent();
+    }
+
+    public static Optional<Commander> getCommander(Player player) {
+        return player.getUnits().stream().filter(unit -> unit instanceof Commander).map(it -> (Commander) it).findFirst();
     }
 
 

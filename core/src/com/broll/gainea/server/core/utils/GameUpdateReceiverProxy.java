@@ -2,7 +2,6 @@ package com.broll.gainea.server.core.utils;
 
 import com.broll.gainea.server.core.battle.BattleResult;
 import com.broll.gainea.server.core.cards.AbstractCard;
-import com.broll.gainea.server.core.goals.IGameUpdateReceiver;
 import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.MapObject;

@@ -1,6 +1,5 @@
 package com.broll.gainea.server.core.actions.impl;
 
-import com.broll.gainea.net.NT_Event_PlacedObject;
 import com.broll.gainea.server.core.actions.ActionContext;
 import com.broll.gainea.server.core.actions.RequiredActionContext;
 import com.broll.gainea.server.core.objects.BattleObject;
@@ -11,7 +10,7 @@ import com.broll.gainea.net.NT_Action_PlaceUnit;
 import com.broll.gainea.net.NT_Reaction;
 import com.broll.gainea.server.core.actions.AbstractActionHandler;
 import com.broll.gainea.server.core.map.Location;
-import com.broll.gainea.server.core.utils.UnitUtils;
+import com.broll.gainea.server.core.utils.UnitControl;
 
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -68,7 +67,7 @@ public class PlaceUnitAction extends AbstractActionHandler<NT_Action_PlaceUnit, 
         Location location = context.locations.get(nr);
         context.selectedLocation = location;
         player.getUnits().add(unit);
-        UnitUtils.spawn(game, unit, location);
+        UnitControl.spawn(game, unit, location);
         processingBlock.resume();
     }
 }

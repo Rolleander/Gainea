@@ -29,7 +29,9 @@ public abstract class MapObject {
             this.location.getInhabitants().remove(this);
         }
         this.location = location;
-        this.location.getInhabitants().add(this);
+        if (location != null) {
+            this.location.getInhabitants().add(this);
+        }
     }
 
     public void setScale(float scale) {
@@ -67,6 +69,8 @@ public abstract class MapObject {
         object.name = name;
         object.icon = icon;
         object.size = scale * 30;
-        object.location = location.getNumber();
+        if (location != null) {
+            object.location = location.getNumber();
+        }
     }
 }

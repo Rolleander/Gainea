@@ -19,6 +19,7 @@ public abstract class AbstractCard {
     protected GameContainer game;
     protected Player owner;
     private int id;
+    private int picture;
     protected ActionHandlers actions;
     protected PlaceUnitAction placeUnitHandler;
     protected SelectChoiceAction selectHandler;
@@ -26,8 +27,9 @@ public abstract class AbstractCard {
     private String title, text;
     private float drawChance = 1;
 
-    public AbstractCard(String title, String text) {
+    public AbstractCard(int picture, String title, String text) {
         this.text = text;
+        this.picture = picture;
         this.title = title;
     }
 
@@ -39,11 +41,10 @@ public abstract class AbstractCard {
         return drawChance;
     }
 
-    public boolean init(GameContainer game, Player owner, int id) {
+    public void init(GameContainer game, Player owner, int id) {
         this.game = game;
         this.owner = owner;
         this.id = id;
-        return Math.random() < drawChance;
     }
 
     public abstract boolean isPlayable();
@@ -61,6 +62,7 @@ public abstract class AbstractCard {
         NT_Card card = new NT_Card();
         card.id = id;
         card.text = text;
+        card.picture = picture;
         card.title = title;
         return card;
     }

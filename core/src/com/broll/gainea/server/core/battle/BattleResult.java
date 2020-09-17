@@ -1,5 +1,6 @@
 package com.broll.gainea.server.core.battle;
 
+import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.Monster;
 import com.broll.gainea.server.core.player.Player;
@@ -11,10 +12,16 @@ public class BattleResult {
 
     private List<BattleObject> attackers;
     private List<BattleObject> defenders;
+    private Location location;
 
-    public BattleResult(List<BattleObject> attackers, List<BattleObject> defenders) {
+    public BattleResult(List<BattleObject> attackers, List<BattleObject> defenders, Location location) {
         this.attackers = attackers;
         this.defenders = defenders;
+        this.location = location;
+    }
+
+    public Location getLocation() {
+        return location;
     }
 
     public Player getAttacker() {

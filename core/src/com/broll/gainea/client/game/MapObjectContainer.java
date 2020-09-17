@@ -37,7 +37,7 @@ public class MapObjectContainer {
         this.objectRenders.clear();
         update.stream().forEach(o -> {
             Location location = game.getMap().getLocation(o.location);
-            MapObjectRender render = MapObjectRender.createRender(game.getContainer(), o);
+            MapObjectRender render = MapObjectRender.createRender(game.getContainer(), game.getContainer().ui.getSkin(), o);
             render.selectionListener();
             this.objectRenders.put(location, render);
             renders.add(render);

@@ -17,16 +17,23 @@ public class FightingPower {
 
     }
 
-    public void addDices(int count) {
+    public void changeDiceNumber(int count) {
         diceCount += count;
-    }
-
-    public void removeDices(int count) {
-        diceCount -= count;
+        if (diceCount < 1) {
+            diceCount = 1;
+        }
     }
 
     public void changeHighestNumber(int delta) {
         this.highestNumber += delta;
+    }
+
+    public void changeLowestNumber(int delta) {
+        this.lowestNumber += delta;
+    }
+
+    public void changeNumberPlus(int delta) {
+        this.numberPlus += delta;
     }
 
     public void setDiceCount(int diceCount) {

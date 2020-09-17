@@ -47,12 +47,12 @@ public class TurnBuilder {
     }
 
     private void buildActions() {
-        //1. create move and battle actions
+        //1. fraction
+        player.getFraction().prepareTurn(actionHandlers);
+        //2. create move and battle actions
         buildMoveAndAttackActions();
-        //2. card actions
+        //3. card actions
         player.getCardHandler().onTurnStart(this, actionHandlers);
-        //3. fraction actions
-        player.getFraction().turnStarts(actionHandlers);
     }
 
     private void buildMoveAndAttackActions() {
@@ -63,7 +63,7 @@ public class TurnBuilder {
             List<Location> attackLocations = moveLocations.stream().filter(
                     moveLocation -> !attackHandler.getEnemyArmy(player, moveLocation).isEmpty()).collect(Collectors.toList());
             moveLocations.removeAll(attackLocations);
-            List<BattleObject> units = player.getUnits().stream().filter(it -> location == it.getLocation()).collect(Collectors.toList());
+            List<BattleObject> units = player.getUnits().stream().filter(it -> location == it.getLocation() && it.isRooted() == false).collect(Collectors.toList());
             if (!attackLocations.isEmpty()) {
                 action(attackHandler.attack(units, attackLocations));
             }

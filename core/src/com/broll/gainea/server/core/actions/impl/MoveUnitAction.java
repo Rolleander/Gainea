@@ -1,8 +1,5 @@
 package com.broll.gainea.server.core.actions.impl;
 
-import com.broll.gainea.net.NT_Abstract_Event;
-import com.broll.gainea.net.NT_Event_Bundle;
-import com.broll.gainea.net.NT_Event_MovedObject;
 import com.broll.gainea.net.NT_Unit;
 import com.broll.gainea.server.core.actions.ActionContext;
 import com.broll.gainea.server.core.objects.BattleObject;
@@ -11,13 +8,11 @@ import com.broll.gainea.net.NT_Reaction;
 import com.broll.gainea.server.core.actions.AbstractActionHandler;
 import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.objects.MapObject;
-import com.broll.gainea.server.core.utils.ProcessingUtils;
-import com.broll.gainea.server.core.utils.UnitUtils;
+import com.broll.gainea.server.core.utils.UnitControl;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class MoveUnitAction extends AbstractActionHandler<NT_Action_Move, MoveUnitAction.Context> {
 
@@ -52,7 +47,7 @@ public class MoveUnitAction extends AbstractActionHandler<NT_Action_Move, MoveUn
             }
             context.locations.remove(pickedLocation);
             //perform move
-            UnitUtils.move(game, selectedUnits, pickedLocation);
+            UnitControl.move(game, selectedUnits, pickedLocation);
             //check for remaining moves
             if (!context.unitsToMove.isEmpty() && !context.locations.isEmpty()) {
                 reactionResult.optionalAction(move(context.unitsToMove, context.locations));

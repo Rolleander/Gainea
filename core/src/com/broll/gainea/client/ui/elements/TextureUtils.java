@@ -1,0 +1,43 @@
+package com.broll.gainea.client.ui.elements;
+
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.broll.gainea.Gainea;
+
+public class TextureUtils {
+
+    private final static int UNIT_SIZE = 82;
+    private final static int ICON_SIZE = 16;
+    private final static int CARD_HEIGHT = 164;
+    private final static int BATTLE_HEIGHT = 800;
+
+    public static TextureRegion unitIcon(Gainea game, int icon) {
+        return new TextureRegion(game.assets.get("textures/units.png", Texture.class), (icon % 10) * UNIT_SIZE, (icon / 10) * UNIT_SIZE, UNIT_SIZE, UNIT_SIZE);
+    }
+
+    public static TextureRegion cardPicture(Gainea game, int picture) {
+        return new TextureRegion(game.assets.get("textures/cards.png", Texture.class), 0, picture * CARD_HEIGHT, CARD_HEIGHT * 2, CARD_HEIGHT);
+    }
+
+    public static TextureRegion battleBackground(Gainea game, int nr) {
+        return new TextureRegion(game.assets.get("textures/battles.jpg", Texture.class), 0, nr * BATTLE_HEIGHT, 1000, BATTLE_HEIGHT);
+    }
+
+    public static TextureRegion icon(Gainea game, int icon) {
+        return new TextureRegion(game.assets.get("textures/icons.png", Texture.class), (icon % 10) * ICON_SIZE, (icon / 10) * ICON_SIZE, ICON_SIZE, ICON_SIZE);
+    }
+
+    public static TextureRegion[] split(Texture texture, int width, int height) {
+        TextureRegion[][] tmp = TextureRegion.split(texture, width, height);
+        int cols = texture.getWidth() / width;
+        int rows = texture.getHeight() / height;
+        TextureRegion[] regions = new TextureRegion[cols * rows];
+        int index = 0;
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                regions[index++] = tmp[i][j];
+            }
+        }
+        return regions;
+    }
+}

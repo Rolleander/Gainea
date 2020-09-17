@@ -13,8 +13,10 @@ import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.MapObject;
 import com.broll.gainea.server.core.player.Player;
+import com.broll.gainea.server.core.utils.GameUpdateReceiverAdapter;
+import com.broll.gainea.server.core.utils.IGameUpdateReceiver;
 
-public abstract class AbstractGoal implements IGameUpdateReceiver {
+public abstract class AbstractGoal extends GameUpdateReceiverAdapter {
 
     private String text;
     private GoalDifficulty difficulty;
@@ -71,33 +73,4 @@ public abstract class AbstractGoal implements IGameUpdateReceiver {
         return goal;
     }
 
-    @Override
-    public void battleResult(BattleResult result) {
-
-    }
-
-    @Override
-    public void playedCard(AbstractCard card) {
-
-    }
-
-    @Override
-    public void moved(List<MapObject> units, Location location) {
-
-    }
-
-    @Override
-    public void spawned(MapObject object, Location location) {
-
-    }
-
-    @Override
-    public void damaged(BattleObject unit, int damage) {
-
-    }
-
-    @Override
-    public void earnedStars(Player player, int stars) {
-
-    }
 }

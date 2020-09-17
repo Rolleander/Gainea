@@ -27,8 +27,8 @@ public class MonsterFactory {
         add("Wendigo", 52, 3, 2, new AreaType[]{AreaType.SNOW});
         add("Picker", 53, 1, 1, new AreaType[]{AreaType.DESERT});
         add("Waldwolf", 54, 2, 1, new AreaType[]{AreaType.PLAINS, AreaType.MOUNTAIN});
-        add("Wyvern", 55, 2, 2, new AreaType[]{AreaType.BOG, AreaType.MOUNTAIN});
-        add("Sumpfkrokodil", 56, 2, 3, new AreaType[]{AreaType.BOG, AreaType.LAKE});
+        add("Wyvern", 55, 2, 2, new AreaType[]{AreaType.PLAINS, AreaType.MOUNTAIN});
+        add("Sumpfkrokodil", 56, 2, 2, new AreaType[]{AreaType.BOG, AreaType.LAKE, AreaType.PLAINS});
         add("Adlerdrache", 57, 2, 2, new AreaType[]{AreaType.MOUNTAIN, AreaType.DESERT});
         //58-götterdrache
         add("Eberkrieger", 59, 2, 2, new AreaType[]{AreaType.MOUNTAIN, AreaType.DESERT, AreaType.PLAINS});
@@ -38,15 +38,15 @@ public class MonsterFactory {
         add("Donnerdrache", 63, 5, 4, new AreaType[]{AreaType.MOUNTAIN, AreaType.DESERT});
         add("Bergriese", 64, 3, 4, new AreaType[]{AreaType.MOUNTAIN, AreaType.SNOW});
         add("Ork", 65, 2, 2, ALL_BUT_LAKE);
-        add("Dämonenhyäne", 66, 2, 1, new AreaType[]{AreaType.BOG, AreaType.DESERT});
-        add("Geisterpirat", 67, 3, 1, new AreaType[]{AreaType.LAKE});
+        add("Dämonenhyäne", 66, 2, 1, new AreaType[]{AreaType.MOUNTAIN, AreaType.DESERT});
+        add("Geisterpirat", 67, 2, 1, new AreaType[]{AreaType.LAKE});
         add("Mantikor", 68, 3, 3, new AreaType[]{AreaType.DESERT});
         add("Tundranashorn", 69, 2, 4, new AreaType[]{AreaType.SNOW});
         add("Grizzly", 70, 2, 3, new AreaType[]{AreaType.PLAINS, AreaType.SNOW, AreaType.MOUNTAIN});
         add("Urkrabbe", 71, 2, 3, new AreaType[]{AreaType.LAKE});
         add("Smaragddrache", 72, 4, 2, new AreaType[]{AreaType.PLAINS});
         add("Raptor", 73, 2, 2, new AreaType[]{AreaType.PLAINS, AreaType.DESERT, AreaType.MOUNTAIN});
-        add("Gigasaurus", 74, 4, 4, new AreaType[]{AreaType.PLAINS});
+        add("Gigasaurus", 74, 5, 4, new AreaType[]{AreaType.PLAINS});
         add("Dornviper", 75, 5, 2, new AreaType[]{AreaType.BOG, AreaType.DESERT, AreaType.MOUNTAIN});
         add("Giftkobra", 76, 3, 1, new AreaType[]{AreaType.BOG, AreaType.DESERT, AreaType.PLAINS});
         add("Blutwurm", 77, 1, 4, new AreaType[]{AreaType.BOG, AreaType.DESERT});
@@ -55,11 +55,19 @@ public class MonsterFactory {
         add("Yeti", 80, 3, 4, new AreaType[]{AreaType.SNOW, AreaType.MOUNTAIN});
         add("Eismammut", 81, 2, 6, new AreaType[]{AreaType.SNOW});
         add("Säbeltiger", 82, 4, 2, new AreaType[]{AreaType.SNOW});
-        add("Tiefseewal", 83, 2, 7, new AreaType[]{AreaType.LAKE});
-        add("Panzerschildkröte", 84, 1, 6, new AreaType[]{AreaType.PLAINS, AreaType.DESERT});
+        add("Tiefseewal", 83, 2, 8, new AreaType[]{AreaType.LAKE});
+        add("Panzerschildkröte", 84, 1, 5, new AreaType[]{AreaType.PLAINS, AreaType.DESERT});
         add("Kraken", 85, 5, 3, new AreaType[]{AreaType.LAKE});
         add("Yotun", 86, 4, 4, new AreaType[]{AreaType.SNOW});
-        add("Titan", 87, 4, 6, new AreaType[]{AreaType.PLAINS});
+        add("Waldriese", 87, 4, 4, new AreaType[]{AreaType.PLAINS});
+        add("Felsgolem", 88, 4, 4, new AreaType[]{AreaType.MOUNTAIN});
+        add("Skelett", 89, 1, 1, new AreaType[]{AreaType.BOG});
+        add("Felsgolem", 90, 4, 4, new AreaType[]{AreaType.MOUNTAIN});
+        add("Schnitter", 91, 3, 2, new AreaType[]{AreaType.BOG});
+        add("Zombiekrieger", 91, 2, 2, new AreaType[]{AreaType.BOG});
+        add("Skelettdrache", 92, 5, 5, new AreaType[]{AreaType.BOG, AreaType.MOUNTAIN});
+        add("Wüstenkoloss", 97, 6, 6, new AreaType[]{AreaType.DESERT});
+        add("Titanschnapper", 98, 2, 6, new AreaType[]{AreaType.LAKE});
     }
 
     public static void main(String[] args) {
@@ -68,28 +76,30 @@ public class MonsterFactory {
     }
 
     private void statistic() {
-        int[] areas = new int[AreaType.values().length];
+        Stat[] areas = new Stat[AreaType.values().length];
+        for (int i = 0; i < AreaType.values().length; i++) {
+            areas[i] = new Stat();
+        }
+        MonsterFactory mf = new MonsterFactory();
+        for (MonsterInit m : mf.monsters) {
+            for (AreaType t : m.spawnAreas) {
+                areas[ArrayUtils.indexOf(AreaType.values(), t)].power += m.power;
+                areas[ArrayUtils.indexOf(AreaType.values(), t)].health += m.health;
+                areas[ArrayUtils.indexOf(AreaType.values(), t)].stars += Monster.stars(m.power, m.health);
+                areas[ArrayUtils.indexOf(AreaType.values(), t)].count += 1;
+            }
+        }
+        for (int i = 0; i < AreaType.values().length; i++) {
+            AreaType area = AreaType.values()[i];
+            Log.info("AREA " + area+"  count: " + (int) areas[i].count+"  power: " + areas[i].power / areas[i].count+"  health: " + areas[i].health / areas[i].count+"  stars: " + areas[i].stars / areas[i].count);
+        }
+    }
+
+    private class Stat {
+        float count;
         float power = 0;
         float health = 0;
         float stars = 0;
-        MonsterFactory mf = new MonsterFactory();
-        for (MonsterInit m : mf.monsters) {
-            power += m.power;
-            health += m.health;
-            stars += Monster.stars(m.power, m.health);
-            for (AreaType t : m.spawnAreas) {
-                areas[ArrayUtils.indexOf(AreaType.values(), t)] += 1;
-            }
-        }
-        int c = mf.monsters.size();
-        Log.info("count: " + c);
-        Log.info("power: " + power / c);
-        Log.info("health: " + health / c);
-        Log.info("stars: " + stars / c);
-        for (int i = 0; i < AreaType.values().length; i++) {
-            AreaType area = AreaType.values()[i];
-            Log.info("area " + area + " : " + areas[i]);
-        }
     }
 
     private void add(String name, int icon, int power, int health, AreaType[] spawnAreas) {

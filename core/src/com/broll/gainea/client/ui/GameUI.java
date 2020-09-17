@@ -75,4 +75,8 @@ public class GameUI implements IClientListener {
     public InGameUI getInGameUI() {
         return inGameUI;
     }
+
+    public Skin getSkin() {
+        return skin;
+    }
 }

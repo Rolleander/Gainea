@@ -33,6 +33,7 @@ public class Battle {
     public FightResult fight() {
         int attacks = attackPower.getDiceCount();
         int blocks = defendingPower.getDiceCount();
+        int deltaAttacks = attacks - blocks;
         int battleSize = Math.min(attacks, blocks);
         List<Integer> allAttackRolls = attackPower.roll();
         List<Integer> allBlockRolls = defendingPower.roll();
@@ -47,6 +48,13 @@ public class Battle {
             }
         }
         int blockWins = battleSize - attackWins;
+        if (deltaAttacks < 0) {
+            //less attacker dices => deal remaining damage to attacking units without dices
+            blockWins += Math.min(deltaAttacks * -1, attackers.size() - attacks);
+        } else if (deltaAttacks > 0) {
+            //less defender dices => deal remaining damage to defending units without dices
+            attackWins += Math.min(deltaAttacks, defenders.size() - blocks);
+        }
         //sort ascending (so that weakest power level units die first)
         attackers.sort((o1, o2) -> Integer.compare(o1.getPower(), o2.getPower()));
         defenders.sort((o1, o2) -> Integer.compare(o1.getPower(), o2.getPower()));
@@ -63,7 +71,7 @@ public class Battle {
         } while ((attackWins > 0 || blockWins > 0) && bothTeamsAlive());
         List<BattleObject> deadAttackers = attackers.stream().filter(BattleObject::isDead).collect(Collectors.toList());
         List<BattleObject> deadDefenders = defenders.stream().filter(BattleObject::isDead).collect(Collectors.toList());
-        return new FightResult(attackRolls, blockRolls, deadAttackers, deadDefenders);
+        return new FightResult(allAttackRolls, allBlockRolls, deadAttackers, deadDefenders);
     }
 
     private boolean bothTeamsAlive() {
@@ -74,13 +82,14 @@ public class Battle {
         return fighters.stream().map(BattleObject::isDead).reduce(true, Boolean::logicalAnd);
     }
 
-    private void dealDamage(List<BattleObject> targets) {
+    private int dealDamage(List<BattleObject> targets) {
         for (int i = 0; i < targets.size(); i++) {
             BattleObject fighter = targets.get(i);
             if (!fighter.isDead()) {
                 fighter.takeDamage();
-                return;
+                return i;
             }
         }
+        return -1;
     }
 }
