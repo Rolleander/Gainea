@@ -1,6 +1,7 @@
 package com.broll.gainea.client;
 
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
@@ -11,6 +12,17 @@ public class Assets {
     public Assets() {
         loadTextures();
         loadUi();
+        loadSounds();
+    }
+
+    private void loadSounds() {
+        manager.load("sounds/chime.ogg", Sound.class);
+        manager.load("sounds/damage.ogg", Sound.class);
+        manager.load("sounds/fanfare.ogg", Sound.class);
+        manager.load("sounds/hit.ogg", Sound.class);
+        manager.load("sounds/move.ogg", Sound.class);
+        manager.load("sounds/recruit.ogg", Sound.class);
+        manager.load("sounds/roll.ogg", Sound.class);
     }
 
     private void loadTextures() {
@@ -24,6 +36,7 @@ public class Assets {
         manager.load("textures/icons.png", Texture.class);
         manager.load("textures/cards.png", Texture.class);
         manager.load("textures/units.png", Texture.class);
+        manager.load("textures/blood.png", Texture.class);
         manager.load("textures/roll_back.png", Texture.class);
         manager.load("textures/star_plates.png", Texture.class);
         manager.load("textures/dot.png", Texture.class);

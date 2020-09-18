@@ -13,6 +13,7 @@ import com.broll.gainea.client.ui.elements.TextureUtils;
 import com.broll.gainea.client.ui.ingame.AttackAndMoveActionHandler;
 import com.broll.gainea.client.ui.ingame.BattleHandler;
 import com.broll.gainea.client.ui.ingame.FractionWindow;
+import com.broll.gainea.client.ui.ingame.MenuWindows;
 import com.broll.gainea.client.ui.ingame.RequiredActionHandler;
 import com.broll.gainea.client.ui.ingame.UnitSelectionWindow;
 import com.broll.gainea.net.NT_Action;
@@ -40,6 +41,7 @@ public class InGameUI {
     private AttackAndMoveActionHandler attackAndMoveHandler;
     private RequiredActionHandler requiredActionHandler;
     private BattleHandler battleHandler;
+    private MenuWindows windows;
 
     public InGameUI(Gainea game, Skin skin) {
         this.attackAndMoveHandler = new AttackAndMoveActionHandler(game);
@@ -50,7 +52,8 @@ public class InGameUI {
         topBar = new Table(skin);
         bottomBar = new Table(skin);
         bottomBar.setBackground("menu-bg");
-        bottomBar.add(TableUtils.textButton(skin, "Fraktionen", () -> popupWindow(new FractionWindow(game, skin))));
+        bottomBar.add(TableUtils.textButton(skin, "Fraktionen", () -> windows.showFractionWindow()));
+        bottomBar.add(TableUtils.textButton(skin, "Spieler", () -> windows.showPlayerWindow()));
     }
 
     public Cell<Table> showCenter(Table table) {
@@ -73,13 +76,7 @@ public class InGameUI {
         overlay3.add(new Table()).expand().fill().row();
         overlay3.add(bottomBar).bottom().expandX().fillX().height(40);
         game.uiStage.addActor(overlay3);
-    }
-
-    private void popupWindow(Table table) {
-        Table pop = new Table();
-        pop.setFillParent(true);
-        pop.add(table).expand().fill().center();
-        game.uiStage.addActor(table);
+        this.windows = new MenuWindows(game, skin);
     }
 
     public void selectStack(Location location, Collection<MapObjectRender> stack) {
@@ -118,5 +115,9 @@ public class InGameUI {
 
     public void updateBattle(int[] attackRolls, int[] defenderRolls, List<Pair<NT_Unit, Integer>> damagedAttackers, List<Pair<NT_Unit, Integer>> damagedDefenders, int state) {
         battleHandler.updateBattle(attackRolls, defenderRolls, damagedAttackers, damagedDefenders, state);
+    }
+
+    public void updateWindows() {
+        windows.updateWindows();
     }
 }

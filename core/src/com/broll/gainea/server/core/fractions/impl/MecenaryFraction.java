@@ -45,7 +45,7 @@ public class MecenaryFraction extends Fraction {
     @Override
     protected void initSoldier(Soldier soldier) {
         soldier.setName("Söldner");
-        soldier.setIcon(ICONS[MathUtils.random(ICONS.length)-1]);
+        soldier.setIcon(ICONS[MathUtils.random(ICONS.length-1)]);
     }
 
     @Override

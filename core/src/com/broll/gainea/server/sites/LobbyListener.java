@@ -1,5 +1,6 @@
 package com.broll.gainea.server.sites;
 
+import com.broll.gainea.net.NT_Battle_Reaction;
 import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.utils.MessageUtils;
 import com.broll.gainea.server.init.LobbyData;
@@ -39,17 +40,26 @@ public class LobbyListener implements ServerLobbyListener<LobbyData, PlayerData>
     @Override
     public void playerDisconnected(ServerLobby<LobbyData, PlayerData> lobby, Player<PlayerData> player) {
         MessageUtils.gameLog(lobby.getData().getGame(), "Verbindung zu " + player.getName() + " verloren!");
+        GameContainer game = lobby.getData().getGame();
+        if (game != null) {
+            //try retreat from fight so battle does not get stuck
+            game.getBattleHandler().playerReaction(player.getData().getGamePlayer(), new NT_Battle_Reaction());
+        }
     }
 
     @Override
     public void playerReconnected(ServerLobby<LobbyData, PlayerData> lobby, Player<PlayerData> player) {
         GameContainer game = lobby.getData().getGame();
-        MessageUtils.gameLog(game, player.getName() + " ist zurück!");
-        //send game start update to reconnecting player
-        player.sendTCP(game.start());
-        //check for open actions and resend them
-        com.broll.gainea.server.core.player.Player gamePlayer = player.getData().getGamePlayer();
-        game.getReactionHandler().playerReconnected(gamePlayer);
+        if (game != null) {
+            game.getProcessingCore().execute(() -> {
+                MessageUtils.gameLog(game, player.getName() + " ist zurück!");
+                //send game reconnect update to reconnecting player
+                com.broll.gainea.server.core.player.Player gamePlayer = player.getData().getGamePlayer();
+                player.sendTCP(game.reconnect(gamePlayer));
+                //check for open actions and resend them
+                game.getReactionHandler().playerReconnected(gamePlayer);
+            }, 500);
+        }
     }
 
     @Override

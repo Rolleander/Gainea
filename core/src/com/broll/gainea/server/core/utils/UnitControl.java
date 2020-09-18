@@ -1,6 +1,7 @@
 package com.broll.gainea.server.core.utils;
 
 import com.broll.gainea.net.NT_Abstract_Event;
+import com.broll.gainea.net.NT_BoardObject;
 import com.broll.gainea.net.NT_Event_Bundle;
 import com.broll.gainea.net.NT_Event_FocusObject;
 import com.broll.gainea.net.NT_Event_MovedObject;
@@ -25,13 +26,9 @@ public class UnitControl {
 
     public static void move(GameContainer game, List<MapObject> units, Location location) {
         units.forEach(unit -> unit.setLocation(location));
-        NT_Event_Bundle bundle = new NT_Event_Bundle();
-        bundle.events = units.stream().map(it -> {
-            NT_Event_MovedObject movedObject = new NT_Event_MovedObject();
-            movedObject.object = it.nt();
-            return movedObject;
-        }).toArray(NT_Abstract_Event[]::new);
-        game.getReactionHandler().getActionHandlers().getReactionActions().sendGameUpdate(bundle);
+        NT_Event_MovedObject movedObject = new NT_Event_MovedObject();
+        movedObject.objects = units.stream().map(MapObject::nt).toArray(NT_BoardObject[]::new);
+        game.getReactionHandler().getActionHandlers().getReactionActions().sendGameUpdate(movedObject);
         game.getUpdateReceiver().moved(units, location);
         ProcessingUtils.pause(MOVE_PAUSE);
     }

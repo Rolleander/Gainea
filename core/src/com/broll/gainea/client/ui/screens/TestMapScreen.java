@@ -1,5 +1,6 @@
 package com.broll.gainea.client.ui.screens;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -23,6 +24,7 @@ import com.broll.gainea.server.core.map.impl.GaineaMap;
 import com.broll.gainea.server.init.ExpansionSetting;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -63,11 +65,26 @@ public class TestMapScreen extends AbstractScreen {
             bo.icon = 50 + i;
             update.objects[i] = bo;
         }
-        update.players = new NT_Player[1];
-        update.players[0] = new NT_Player();
-        update.players[0].color = 1;
+        update.players = new NT_Player[2];
+        NT_Player p = new NT_Player();
+        p.color = 1;
         int c2 = 40;
-        update.players[0].units = new NT_Unit[c2];
+        p.fraction = 0;
+        p.name = "Peter";
+        p.points = 0;
+        p.stars = 3;
+        p.cards = 0;
+        p.units = new NT_Unit[c2];
+        update.players[0] = p;
+        p = new NT_Player();
+        p.color = 2;
+        p.fraction = 5;
+        p.name = "Lord Hans";
+        p.units = new NT_Unit[0];
+        p.points = 2;
+        p.stars = 5;
+        p.cards = 1;
+        update.players[1] = p;
         List<NT_Action> actions = new ArrayList<>();
         for (int i = 0; i < c2; i++) {
             NT_Unit bo = new NT_Unit();
@@ -110,12 +127,13 @@ public class TestMapScreen extends AbstractScreen {
 
         List<NT_Unit> attackers = new ArrayList<>();
         List<NT_Unit> defenders = new ArrayList<>();
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < 7; i++) {
             NT_Unit u = new NT_Unit();
             u.health = 1;
             u.maxHealth = 1;
             u.power = 1;
-            u.icon = 2;
+            u.icon = i+1;
+            u.id = i;
             attackers.add(u);
         }
         for (int i = 0; i < 1; i++) {
@@ -123,19 +141,31 @@ public class TestMapScreen extends AbstractScreen {
             u.health = 1;
             u.maxHealth = 1;
             u.power = 1;
-            u.icon = 3;
+            u.icon = i+20;
+            u.id = i + 100;
             defenders.add(u);
         }
-        game.ui.getInGameUI().startBattle(attackers, defenders, state.getMap().getArea(GaineaMap.Areas.MITSUMA_SEE));
-        int[] attackRolls = new int[24];
-        int[] defendRolls = new int[19];
+        int[] attackRolls = new int[attackers.size()];
+        int[] defendRolls = new int[defenders.size()];
         attackRolls = Arrays.stream(attackRolls).map(i -> MathUtils.random(1, 6)).toArray();
         defendRolls = Arrays.stream(defendRolls).map(i -> MathUtils.random(1, 6)).toArray();
         Arrays.sort(attackRolls);
         Arrays.sort(defendRolls);
         ArrayUtils.reverse(attackRolls);
         ArrayUtils.reverse(defendRolls);
-        game.ui.getInGameUI().updateBattle(attackRolls, defendRolls, null, null, 0);
+
+        List<Pair<NT_Unit, Integer>> damagedAttackers = new ArrayList<>();
+        List<Pair<NT_Unit, Integer>> damagedDefenders = new ArrayList<>();
+        for (int i = 0; i < Math.min(attackRolls.length, defendRolls.length); i++) {
+            if (attackRolls[i] > defendRolls[i]) {
+                damagedDefenders.add(Pair.of(defenders.get(i), 1));
+            } else {
+                damagedAttackers.add(Pair.of(attackers.get(i), 1));
+            }
+        }
+        game.ui.getInGameUI().startBattle(attackers, defenders, state.getMap().getArea(GaineaMap.Areas.MITSUMA_SEE));
+        game.ui.getInGameUI().updateBattle(attackRolls, defendRolls, damagedAttackers, damagedDefenders, 0);
+        game.ui.getInGameUI().updateWindows();
         return new Table();
     }
 }

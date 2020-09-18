@@ -26,7 +26,7 @@ public class ClosableWindow extends Window {
         button.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                remove();
+                setVisible(false);
             }
         });
         bar.add(button);

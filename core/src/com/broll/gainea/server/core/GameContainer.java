@@ -1,5 +1,6 @@
 package com.broll.gainea.server.core;
 
+import com.broll.gainea.net.NT_ReconnectGame;
 import com.broll.gainea.net.NT_StartGame;
 import com.broll.gainea.server.core.actions.ActionContext;
 import com.broll.gainea.server.core.actions.ReactionActions;
@@ -105,6 +106,15 @@ public class GameContainer {
         fillUpdate(startGame);
         startGame.expansionsSetting = map.getExpansionSetting().ordinal();
         return startGame;
+    }
+
+    public NT_ReconnectGame reconnect(Player player){
+        NT_ReconnectGame reconnectGame = new NT_ReconnectGame();
+        fillUpdate(reconnectGame);
+        reconnectGame.expansionsSetting = map.getExpansionSetting().ordinal();
+        reconnectGame.cards = player.getCardHandler().ntCards();
+        reconnectGame.goals = player.getGoalHandler().ntGoals();
+        return reconnectGame;
     }
 
     private void fillUpdate(NT_BoardUpdate update) {

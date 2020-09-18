@@ -1,6 +1,9 @@
 package com.broll.gainea.server.core.goals;
 
+import com.broll.gainea.net.NT_Card;
+import com.broll.gainea.net.NT_Goal;
 import com.broll.gainea.server.core.GameContainer;
+import com.broll.gainea.server.core.cards.AbstractCard;
 import com.broll.gainea.server.core.player.Player;
 
 import java.util.ArrayList;
@@ -50,4 +53,7 @@ public class GoalHandler {
         game.getUpdateReceiver().register(goal);
     }
 
+    public NT_Goal[] ntGoals() {
+        return goals.stream().map(AbstractGoal::nt).toArray(NT_Goal[]::new);
+    }
 }

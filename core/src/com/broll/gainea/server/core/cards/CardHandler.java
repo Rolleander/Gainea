@@ -1,5 +1,6 @@
 package com.broll.gainea.server.core.cards;
 
+import com.broll.gainea.net.NT_Card;
 import com.broll.gainea.net.NT_Event_DrawedCard;
 import com.broll.gainea.net.NT_Event_TextInfo;
 import com.broll.gainea.server.core.GameContainer;
@@ -50,5 +51,9 @@ public class CardHandler {
 
     public int getCardCount() {
         return this.cards.size();
+    }
+
+    public NT_Card[] ntCards() {
+        return cards.stream().map(AbstractCard::nt).toArray(NT_Card[]::new);
     }
 }

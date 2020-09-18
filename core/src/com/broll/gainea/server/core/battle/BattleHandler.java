@@ -117,13 +117,14 @@ public class BattleHandler {
         update.state = state;
         //send update
         reactionResult.sendGameUpdate(update);
+        int delay = BATTLE_ANIMATION_DELAY + 1500 * Math.min(result.getAttackRolls().size(), result.getDefenderRolls().size());
         if (state == NT_Battle_Update.STATE_FIGHTING) {
             //wait for player if he wants to keep attacking
             keepAttacking = new CompletableFuture<>();
-            game.getProcessingCore().execute(this::prepareNextRound, BATTLE_ANIMATION_DELAY);
+            game.getProcessingCore().execute(this::prepareNextRound, delay);
         } else {
             //battle finished, all attackers or defenders died
-            game.getProcessingCore().execute(this::battleFinished, BATTLE_ANIMATION_DELAY);
+            game.getProcessingCore().execute(this::battleFinished, delay);
         }
     }
 
