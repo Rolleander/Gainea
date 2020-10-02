@@ -18,7 +18,7 @@ import com.esotericsoftware.minlog.Log;
 public class GaineaServer {
 
     public static void main(String[] args) {
-        Log.set(Log.LEVEL_DEBUG);
+        Log.set(Log.LEVEL_TRACE);
         LobbyGameServer<LobbyData, PlayerData> server = new LobbyGameServer<>("GaineaServer", NetworkSetup::registerNetwork);
         NetworkSetup.setup(server);
         server.open();
