@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.broll.gainea.Gainea;
 import com.broll.gainea.client.game.GameState;
+import com.broll.gainea.client.sites.GameEventSite;
 import com.broll.gainea.client.ui.AbstractScreen;
 import com.broll.gainea.net.NT_Action;
 import com.broll.gainea.net.NT_Action_Attack;
@@ -14,6 +15,7 @@ import com.broll.gainea.net.NT_Action_PlaceUnit;
 import com.broll.gainea.net.NT_Battle_Start;
 import com.broll.gainea.net.NT_BoardObject;
 import com.broll.gainea.net.NT_BoardUpdate;
+import com.broll.gainea.net.NT_Event_MovedObject;
 import com.broll.gainea.net.NT_Monster;
 import com.broll.gainea.net.NT_Player;
 import com.broll.gainea.net.NT_PlayerAction;
@@ -118,7 +120,7 @@ public class TestMapScreen extends AbstractScreen {
                 actions.add(attack);
             }
         });
-        state.update(update).forEach(render -> game.gameStage.addActor(render));
+        state.update(update);
         NT_Action_PlaceUnit action = new NT_Action_PlaceUnit();
         action.unitToPlace = (NT_Unit) update.objects[5];
         action.possibleLocations = new int[]{1, 5, 8, 12};
@@ -127,7 +129,7 @@ public class TestMapScreen extends AbstractScreen {
 
         List<NT_Unit> attackers = new ArrayList<>();
         List<NT_Unit> defenders = new ArrayList<>();
-        for (int i = 0; i < 7; i++) {
+        for (int i = 0; i < 17; i++) {
             NT_Unit u = new NT_Unit();
             u.health = 1;
             u.maxHealth = 1;
@@ -136,7 +138,7 @@ public class TestMapScreen extends AbstractScreen {
             u.id = i;
             attackers.add(u);
         }
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < 13; i++) {
             NT_Unit u = new NT_Unit();
             u.health = 1;
             u.maxHealth = 1;
@@ -163,9 +165,15 @@ public class TestMapScreen extends AbstractScreen {
                 damagedAttackers.add(Pair.of(attackers.get(i), 1));
             }
         }
-        game.ui.getInGameUI().startBattle(attackers, defenders, state.getMap().getArea(GaineaMap.Areas.MITSUMA_SEE));
-        game.ui.getInGameUI().updateBattle(attackRolls, defendRolls, damagedAttackers, damagedDefenders, 0);
+     //   game.ui.getInGameUI().startBattle(attackers, defenders, state.getMap().getArea(GaineaMap.Areas.MITSUMA_SEE));
+    //    game.ui.getInGameUI().updateBattle(attackRolls, defendRolls, damagedAttackers, damagedDefenders, 0);
         game.ui.getInGameUI().updateWindows();
+
+        GameEventSite eventSite = new GameEventSite();
+        eventSite.init(state,game.ui);
+        NT_Event_MovedObject event = new NT_Event_MovedObject();
+        //event.objects =
+        eventSite.received(event);
         return new Table();
     }
 }

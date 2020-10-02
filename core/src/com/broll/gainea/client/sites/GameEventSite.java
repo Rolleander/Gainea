@@ -25,12 +25,10 @@ public class GameEventSite extends AbstractGameSite {
     @PackageReceiver
     public void received(NT_Event_Bundle bundle) {
 
-
     }
 
     @PackageReceiver
     public void received(NT_Event_TextInfo text) {
-
 
     }
 

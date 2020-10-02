@@ -17,6 +17,7 @@ import com.broll.gainea.server.core.player.Player;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class UnitControl {
@@ -34,24 +35,26 @@ public class UnitControl {
     }
 
     public static void damage(GameContainer game, BattleObject unit, int damage) {
-        damage(game, unit, damage, 0);
+        damage(game, unit, damage, null);
     }
 
     public static void heal(GameContainer game, BattleObject unit, int heal) {
-        heal(game, unit, heal, 0);
+        heal(game, unit, heal, null);
     }
 
-    public static void heal(GameContainer game, BattleObject unit, int heal, int screenEffect) {
+    public static void heal(GameContainer game, BattleObject unit, int heal, Consumer<NT_Event_FocusObject> consumer) {
         heal = Math.max(unit.getMaxHealth() - unit.getHealth(), heal);
         unit.heal(heal);
         NT_Event_FocusObject nt = new NT_Event_FocusObject();
         nt.object = unit.nt();
-        nt.screen_effect = screenEffect;
+        if (consumer != null) {
+            consumer.accept(nt);
+        }
         game.getReactionHandler().getActionHandlers().getReactionActions().sendGameUpdate(nt);
         ProcessingUtils.pause(DAMAGE_PAUSE);
     }
 
-    public static void damage(GameContainer game, BattleObject unit, int damage, int screenEffect) {
+    public static void damage(GameContainer game, BattleObject unit, int damage, Consumer<NT_Event_FocusObject> consumer) {
         //dont overkill
         damage = Math.max(unit.getHealth(), damage);
         unit.takeDamage(damage);
@@ -67,17 +70,26 @@ public class UnitControl {
         //send update to focus clients on object
         NT_Event_FocusObject nt = new NT_Event_FocusObject();
         nt.object = unit.nt();
-        nt.screen_effect = screenEffect;
+        if (consumer != null) {
+            consumer.accept(nt);
+        }
         game.getReactionHandler().getActionHandlers().getReactionActions().sendGameUpdate(nt);
         game.getUpdateReceiver().damaged(unit, damage);
         ProcessingUtils.pause(DAMAGE_PAUSE);
     }
 
     public static void spawn(GameContainer game, MapObject object, Location location) {
+        spawn(game, object, location, null);
+    }
+
+    public static void spawn(GameContainer game, MapObject object, Location location, Consumer<NT_Event_PlacedObject> consumer) {
         object.setLocation(location);
         location.getInhabitants().add(object);
         NT_Event_PlacedObject placedObject = new NT_Event_PlacedObject();
         placedObject.object = object.nt();
+        if (consumer != null) {
+            consumer.accept(placedObject);
+        }
         game.getReactionHandler().getActionHandlers().getReactionActions().sendGameUpdate(placedObject);
         game.getUpdateReceiver().spawned(object, location);
         ProcessingUtils.pause(SPAWN_PAUSE);

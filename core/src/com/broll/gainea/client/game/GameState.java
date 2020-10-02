@@ -32,15 +32,15 @@ public class GameState {
         mapObjectsContainer = new MapObjectContainer(this);
     }
 
-    public List<MapObjectRender> update(NT_BoardUpdate update) {
+    public void update(NT_BoardUpdate update) {
         this.turnNumber = update.turns;
         this.objects = Arrays.asList(update.objects);
         this.players = Arrays.asList(update.players);
-        return mapObjectsContainer.update(Streams.concat(objects.stream(), players.stream().flatMap(p -> Arrays.stream(p.units))).collect(Collectors.toList()));
+        mapObjectsContainer.update(Streams.concat(objects.stream(), players.stream().flatMap(p -> Arrays.stream(p.units))).collect(Collectors.toList()));
     }
 
     public void performAction(NT_Action action, PlayerPerformAction playerPerformAction) {
-        game.ui.getInGameUI().action(action,playerPerformAction);
+        game.ui.getInGameUI().action(action, playerPerformAction);
     }
 
     public void performOptionalAction(List<NT_Action> actions, PlayerPerformOptionalAction playerPerformAction) {

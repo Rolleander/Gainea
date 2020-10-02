@@ -32,8 +32,10 @@ public class MapObjectContainer {
         this.game = game;
     }
 
-    public List<MapObjectRender> update(List<NT_BoardObject> update) {
+    public void update(List<NT_BoardObject> update) {
         List<MapObjectRender> renders = new ArrayList<>();
+        //remove old renders
+        this.objectRenders.keySet().forEach(location -> objectRenders.getCollection(location).forEach(render -> render.remove()));
         this.objectRenders.clear();
         update.stream().forEach(o -> {
             Location location = game.getMap().getLocation(o.location);
@@ -44,7 +46,9 @@ public class MapObjectContainer {
         });
         objectRenders.keySet().stream().distinct().forEach(this::arrange);
         renders.sort((r1, r2) -> Float.compare(r1.getY(), r2.getY()));
-        return renders;
+        renders.forEach(render -> {
+            game.getContainer().gameStage.addActor(render);
+        });
     }
 
     private void arrange(Location location) {
