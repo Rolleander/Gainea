@@ -112,10 +112,3 @@ project(":tests") {
         testCompile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
     }
 }
-
-task startServer(type: JavaExec) {
-    group = "Execution"
-    description = "Runs the server"
-    classpath =  project("core").sourceSets.main.runtimeClasspath
-    main = "com.broll.gainea.GaineaServer"
-}

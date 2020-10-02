@@ -24,6 +24,13 @@ task debug(dependsOn: classes, type: JavaExec) {
     debug = true
 }
 
+task startServer(type: JavaExec) {
+    group = "Execution"
+    description = "Runs the server"
+    classpath =  sourceSets.main.runtimeClasspath
+    main = "com.broll.gainea.GaineaServer"
+}
+
 task dist(type: Jar) {
     manifest {
         attributes 'Main-Class': project.mainClassName
@@ -34,7 +41,6 @@ task dist(type: Jar) {
     }
     with jar
 }
-
 
 dist.dependsOn classes
 
