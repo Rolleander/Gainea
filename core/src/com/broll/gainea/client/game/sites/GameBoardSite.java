@@ -1,4 +1,4 @@
-package com.broll.gainea.client.sites;
+package com.broll.gainea.client.game.sites;
 
 import com.broll.gainea.net.NT_BoardObject;
 import com.broll.gainea.net.NT_BoardUpdate;
@@ -15,14 +15,14 @@ public class GameBoardSite extends AbstractGameSite {
 
     @PackageReceiver
     public void received(NT_BoardUpdate update) {
-        state.update(update);
+        game.state.update(update);
     }
 
     @PackageReceiver
     public void received(NT_ObjectMovement movement) {
         List<Integer> objectIds = Arrays.stream(movement.objects).boxed().collect(Collectors.toList());
-        List<NT_BoardObject> moveObjects = state.getObjects().stream().filter(it -> objectIds.contains(it.id)).collect(Collectors.toList());
-        Location target = state.getMap().getLocation(movement.location);
+        List<NT_BoardObject> moveObjects =  game.state.getObjects().stream().filter(it -> objectIds.contains(it.id)).collect(Collectors.toList());
+        Location target =  game.state.getMap().getLocation(movement.location);
 
     }
 

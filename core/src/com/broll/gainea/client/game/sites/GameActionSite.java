@@ -1,8 +1,7 @@
-package com.broll.gainea.client.sites;
+package com.broll.gainea.client.game.sites;
 
 import com.broll.gainea.client.game.PlayerPerformAction;
 import com.broll.gainea.net.NT_Action;
-import com.broll.gainea.net.NT_BoardUpdate;
 import com.broll.gainea.net.NT_PlayerAction;
 import com.broll.gainea.net.NT_Reaction;
 import com.broll.networklib.PackageReceiver;
@@ -18,7 +17,7 @@ public class GameActionSite extends AbstractGameSite {
             //show instruction message to player
 
         }
-        state.performAction(action.action, playerPerformAction);
+        game.state.performAction(action.action, playerPerformAction);
     }
 
     public void performAction(NT_Action action, int option, int[] options) {

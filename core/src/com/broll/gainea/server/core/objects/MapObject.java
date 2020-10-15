@@ -58,6 +58,10 @@ public abstract class MapObject {
         this.icon = icon;
     }
 
+    public int getIcon() {
+        return icon;
+    }
+
     public NT_BoardObject nt() {
         NT_BoardObject object = new NT_BoardObject();
         fillObject(object);

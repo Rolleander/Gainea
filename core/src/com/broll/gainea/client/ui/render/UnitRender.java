@@ -1,4 +1,4 @@
-package com.broll.gainea.client.render;
+package com.broll.gainea.client.ui.render;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
@@ -14,11 +14,7 @@ import com.broll.gainea.Gainea;
 import com.broll.gainea.client.ui.elements.ActionListener;
 import com.broll.gainea.client.ui.elements.LabelUtils;
 import com.broll.gainea.client.ui.elements.TextureUtils;
-import com.broll.gainea.net.NT_BoardObject;
 import com.broll.gainea.net.NT_Unit;
-import com.esotericsoftware.minlog.Log;
-
-import java.util.Collection;
 
 public class UnitRender extends MapObjectRender {
 

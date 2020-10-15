@@ -10,6 +10,8 @@ import com.broll.gainea.server.core.actions.impl.PlaceUnitAction;
 import com.broll.gainea.server.core.map.LocationPicker;
 import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.player.Player;
+import com.broll.gainea.server.core.utils.ProcessingUtils;
+import com.broll.gainea.server.core.utils.UnitControl;
 import com.broll.gainea.server.init.ExpansionSetting;
 import com.broll.gainea.server.init.LobbyData;
 import com.broll.gainea.server.init.PlayerData;
@@ -23,6 +25,7 @@ import com.broll.networklib.server.ConnectionRestriction;
 import com.broll.networklib.server.RestrictionType;
 import com.broll.networklib.server.ShareLevel;
 import com.broll.networklib.server.impl.ServerLobby;
+import com.esotericsoftware.minlog.Log;
 
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -47,25 +50,33 @@ public class GameStartSite extends AbstractGameSite {
 
     public void startGame() {
         ServerLobby<LobbyData, PlayerData> lobby = getLobby();
+        lobby.chat(null,"Starte Spiel...");
         LobbyData data = lobby.getData();
         ExpansionSetting expansionSetting = data.getExpansionSetting();
         GameContainer game = new GameContainer(expansionSetting, lobby.getPlayers());
         data.setGame(game);
-        game.initHandlers(new ReactionResultHandler(game, lobby));
+        game.initHandlers(new ReactionResultHandler(game, lobby), data.getGoalTypes());
         gameStart.loading = true;
         gameStart.startUnitsPlaced = 0;
         gameStart.playerData = new HashMap<>();
         lobby.getPlayers().forEach(p -> gameStart.playerData.put(p.getData().getGamePlayer(), new PlayerStartData()));
         lobby.setLocked(true);
         lobby.sendToAllTCP(game.start());
+        Log.info("Started game in lobby "+lobby.getName());
     }
 
     private void gameLoaded() {
         //give random goals and start locations to everyone
         drawStartLocations();
         assignGoals();
-        //start  placing units after delay
-        getGame().getProcessingCore().execute(this::placeUnit, 5000);
+        getGame().getProcessingCore().execute(() -> {
+            //spawn monsters
+            int totalMonsters = getLobby().getData().getMonsterCount() * getGame().getMap().getActiveExpansionTypes().size();
+            UnitControl.spawnMonsters(getGame(), totalMonsters);
+            ProcessingUtils.pause(2000);
+            //players start placing units
+            placeUnit();
+        }, 5000);
     }
 
     private void assignGoals() {

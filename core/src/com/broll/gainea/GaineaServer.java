@@ -18,14 +18,16 @@ import com.esotericsoftware.minlog.Log;
 public class GaineaServer {
 
     public static void main(String[] args) {
-        Log.set(Log.LEVEL_TRACE);
+        Log.set(Log.LEVEL_INFO);
         LobbyGameServer<LobbyData, PlayerData> server = new LobbyGameServer<>("GaineaServer", NetworkSetup::registerNetwork);
         NetworkSetup.setup(server);
         server.open();
         ServerLobby<LobbyData, PlayerData> lobby = server.getLobbyHandler().openLobby("Testlobby");
         LobbyFactory.initLobby(lobby, ExpansionSetting.BASIC_GAME);
         lobby.setAutoClose(false);
-        lobby.createBot("bot_hans", new PlayerData()).ifPresent(bot -> {
+        PlayerData data = new PlayerData();
+        data.setReady(true);
+        lobby.createBot("bot_hans", data).ifPresent(bot -> {
             bot.register(new BotSite<PlayerData>() {
                 @PackageReceiver
                 void rec(NT_LobbyKicked f) {

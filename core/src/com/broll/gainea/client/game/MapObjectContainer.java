@@ -1,10 +1,6 @@
 package com.broll.gainea.client.game;
 
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.broll.gainea.client.render.ExpansionRender;
-import com.broll.gainea.client.render.MapObjectRender;
+import com.broll.gainea.client.ui.render.MapObjectRender;
 import com.broll.gainea.net.NT_BoardObject;
 import com.broll.gainea.net.NT_Unit;
 import com.broll.gainea.server.core.map.Location;
@@ -13,12 +9,8 @@ import org.apache.commons.collections4.map.MultiValueMap;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 public class MapObjectContainer {
 

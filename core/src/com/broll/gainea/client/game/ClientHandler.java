@@ -1,6 +1,16 @@
-package com.broll.gainea.client;
+package com.broll.gainea.client.game;
 
 import com.badlogic.gdx.Gdx;
+import com.broll.gainea.Gainea;
+import com.broll.gainea.client.IClientListener;
+import com.broll.gainea.client.game.sites.AbstractGameSite;
+import com.broll.gainea.client.game.sites.GameActionSite;
+import com.broll.gainea.client.game.sites.GameBattleSite;
+import com.broll.gainea.client.game.sites.GameBoardSite;
+import com.broll.gainea.client.game.sites.GameEventSite;
+import com.broll.gainea.client.game.sites.GameLobbySite;
+import com.broll.gainea.client.game.sites.GameStartSite;
+import com.broll.gainea.client.game.sites.GameTurnSite;
 import com.broll.gainea.server.init.NetworkSetup;
 import com.broll.networklib.client.ClientSite;
 import com.broll.networklib.client.LobbyGameClient;
@@ -9,6 +19,10 @@ import com.broll.networklib.client.tasks.DiscoveredLobbies;
 import com.broll.networklib.network.INetworkRequestAttempt;
 import com.broll.networklib.site.SiteReceiver;
 import com.esotericsoftware.minlog.Log;
+import com.google.common.collect.Lists;
+
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Method;
 import java.util.List;
@@ -26,7 +40,7 @@ public class ClientHandler {
     private boolean clientBusy = false;
     private IClientListener clientListener;
 
-    public ClientHandler() {
+    public ClientHandler(Gainea game) {
         client = new LobbyGameClient(NetworkSetup::registerNetwork);
         client.setSiteReceiver(new SiteReceiver<ClientSite, com.broll.networklib.client.GameClient.ClientConnection>() {
             @Override
@@ -34,6 +48,18 @@ public class ClientHandler {
                 //perform operations from received packages on main thread
                 runOnGdx(() -> super.receive(context, site, receiver, object));
             }
+        });
+        initGameSites(game);
+    }
+
+    public void initGameSites(Gainea game) {
+        GameState state = new GameState(game);
+        game.state = state;
+        client.clearSites();
+        GameActionSite actionSite = new GameActionSite();
+        Lists.newArrayList(actionSite, new GameBattleSite(), new GameBoardSite(), new GameEventSite(), new GameStartSite(), new GameTurnSite(actionSite)).forEach(site -> {
+            site.init(game);
+            client.register(site);
         });
     }
 
@@ -54,7 +80,11 @@ public class ClientHandler {
     }
 
     public void reconnectCheck() {
-        clientExecute(() -> client.reconnectCheck(), this::connectedLobby, "Unable to reconnect to lobby");
+        clientExecute(() -> client.reconnectCheck(), lobby -> {
+            if (lobby != null) {
+                connectedLobby(lobby);
+            }
+        }, "Unable to reconnect to lobby");
     }
 
     private void runOnGdx(Runnable runnable) {
@@ -67,7 +97,8 @@ public class ClientHandler {
                 resultHandler.accept(runnable.call().get());
             } catch (Exception e) {
                 Log.error(errorMessage, e);
-                clientListener.connectionFailure(errorMessage);
+                String[] messageParts = e.getMessage().split("Exception: ");
+                clientListener.connectionFailure(errorMessage + "\n (" + messageParts[messageParts.length - 1] + ")");
             }
         });
     }

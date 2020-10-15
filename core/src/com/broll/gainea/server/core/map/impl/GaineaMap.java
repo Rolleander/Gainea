@@ -1,21 +1,12 @@
 package com.broll.gainea.server.core.map.impl;
 
-import com.broll.gainea.server.core.map.AreaCollection;
 import com.broll.gainea.server.core.map.AreaID;
-import com.broll.gainea.server.core.map.Continent;
 import com.broll.gainea.server.core.map.ContinentID;
-import com.broll.gainea.server.core.map.Island;
 import com.broll.gainea.server.core.map.IslandID;
-import com.broll.gainea.server.core.map.Ship;
-import com.broll.gainea.client.render.ExpansionRender;
-import com.broll.gainea.server.core.map.Area;
+import com.broll.gainea.client.ui.render.ExpansionRender;
 import com.broll.gainea.server.core.map.AreaType;
 import com.broll.gainea.server.core.map.ExpansionFactory;
 import com.broll.gainea.server.core.map.ExpansionType;
-
-import java.awt.event.KeyEvent;
-import java.util.ArrayList;
-import java.util.List;
 
 import static com.broll.gainea.server.core.map.impl.GaineaMap.Areas.*;
 import static com.broll.gainea.server.core.map.impl.GaineaMap.Islands.*;

@@ -7,9 +7,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.broll.gainea.Gainea;
-import com.broll.gainea.client.render.MapObjectRender;
+import com.broll.gainea.client.ui.render.MapObjectRender;
 import com.broll.gainea.client.ui.elements.ActionListener;
 import com.broll.gainea.client.ui.elements.IconLabel;
 import com.broll.gainea.client.ui.elements.LabelUtils;
@@ -17,7 +16,6 @@ import com.broll.gainea.client.ui.elements.MenuUnit;
 import com.broll.gainea.client.ui.elements.TableUtils;
 import com.broll.gainea.net.NT_Unit;
 import com.broll.gainea.server.core.map.Location;
-import com.esotericsoftware.minlog.Log;
 
 import java.util.ArrayList;
 import java.util.Collection;

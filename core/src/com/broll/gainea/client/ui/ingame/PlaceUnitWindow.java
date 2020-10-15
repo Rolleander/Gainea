@@ -1,23 +1,17 @@
 package com.broll.gainea.client.ui.ingame;
 
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.broll.gainea.Gainea;
-import com.broll.gainea.client.render.MapObjectRender;
+import com.broll.gainea.client.ui.render.MapObjectRender;
 import com.broll.gainea.client.ui.elements.LabelUtils;
 import com.broll.gainea.client.ui.elements.MapAction;
 import com.broll.gainea.client.ui.elements.TableUtils;
 import com.broll.gainea.net.NT_Action_PlaceUnit;
-import com.broll.gainea.net.NT_BoardObject;
 import com.broll.gainea.net.NT_Unit;
-import com.esotericsoftware.minlog.Log;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class PlaceUnitWindow {
 

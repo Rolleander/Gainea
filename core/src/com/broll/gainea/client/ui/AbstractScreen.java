@@ -1,5 +1,6 @@
 package com.broll.gainea.client.ui;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -27,18 +28,28 @@ public abstract class AbstractScreen {
 
 
     protected Label info(String text) {
-        return LabelUtils.info(skin,text);
+        return LabelUtils.info(skin, text);
     }
 
+    protected Label info(String text, Color color) {
+        return LabelUtils.color(info(text), color);
+    }
 
     protected Label title(String text) {
-       return LabelUtils.title(skin,text);
+        return LabelUtils.title(skin, text);
+    }
+
+    protected Label title(String text, Color color) {
+        return LabelUtils.color(title(text), color);
     }
 
     protected Label label(String text) {
-        return LabelUtils.title(skin,text);
+        return LabelUtils.title(skin, text);
     }
 
+    protected Label label(String text, Color color) {
+        return LabelUtils.color(label(text), color);
+    }
 
     public abstract Actor build();
 }

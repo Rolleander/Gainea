@@ -9,10 +9,6 @@ import java.util.stream.Collectors;
 
 public class LocationPicker {
 
-    public static Area pickRandom(MapContainer map) {
-        return pickRandom(map.getAllAreas(), true);
-    }
-
     public static List<Area> pickRandom(MapContainer map, int amount) {
         List<Area> areas = map.getAllAreas();
         Collections.shuffle(areas);

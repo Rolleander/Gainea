@@ -1,4 +1,4 @@
-package com.broll.gainea.client.sites;
+package com.broll.gainea.client.game.sites;
 
 import com.broll.gainea.net.NT_Battle_Start;
 import com.broll.gainea.net.NT_Battle_Update;
@@ -21,7 +21,7 @@ public class GameBattleSite extends AbstractGameSite {
         this.attackers = Arrays.asList(battle.attackers);
         this.defenders = Arrays.asList(battle.defenders);
         int location = defenders.get(0).location;
-        gameUI.getInGameUI().startBattle(attackers, defenders, state.getMap().getLocation(location));
+        game.ui.getInGameUI().startBattle(attackers, defenders,  game.state.getMap().getLocation(location));
     }
 
     private List<Pair<NT_Unit, Integer>> doDamageUpdates(List<NT_Unit> before, List<NT_Unit> after) {
@@ -46,6 +46,6 @@ public class GameBattleSite extends AbstractGameSite {
         List<NT_Unit> defenders = Arrays.asList(battle.defenders);
         List<Pair<NT_Unit, Integer>> damagedAttackers = doDamageUpdates(this.attackers, attackers);
         List<Pair<NT_Unit, Integer>> damagedDefenders = doDamageUpdates(this.defenders, defenders);
-        gameUI.getInGameUI().updateBattle(attackRolls,defenderRolls,damagedAttackers,damagedDefenders,battle.state);
+        game.ui.getInGameUI().updateBattle(attackRolls,defenderRolls,damagedAttackers,damagedDefenders,battle.state);
     }
 }

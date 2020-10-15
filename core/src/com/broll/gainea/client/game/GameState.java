@@ -1,7 +1,6 @@
 package com.broll.gainea.client.game;
 
 import com.broll.gainea.Gainea;
-import com.broll.gainea.client.render.MapObjectRender;
 import com.broll.gainea.net.NT_Action;
 import com.broll.gainea.net.NT_BoardObject;
 import com.broll.gainea.net.NT_BoardUpdate;

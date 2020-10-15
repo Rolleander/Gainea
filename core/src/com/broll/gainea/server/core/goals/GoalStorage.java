@@ -8,6 +8,8 @@ import com.broll.gainea.misc.PackageLoader;
 import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.actions.ActionHandlers;
 import com.broll.gainea.server.core.player.Player;
+import com.broll.gainea.server.init.GoalTypes;
+import com.esotericsoftware.minlog.Log;
 
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -19,11 +21,13 @@ public class GoalStorage {
     private PackageLoader<AbstractGoal> loader;
     private GameContainer game;
     private ActionHandlers actionHandlers;
+    private GoalTypes goalTypes;
 
-    public GoalStorage(GameContainer gameContainer, ActionHandlers actionHandlers) {
+    public GoalStorage(GameContainer gameContainer, ActionHandlers actionHandlers, GoalTypes goalTypes) {
         this.game = gameContainer;
         this.actionHandlers = actionHandlers;
         this.loader = new PackageLoader<>(AbstractGoal.class, PACKAGE_PATH);
+        this.goalTypes = goalTypes;
         initGoals();
     }
 
@@ -50,6 +54,16 @@ public class GoalStorage {
             if (goalClasses.isEmpty()) {
                 //refresh goals
                 initGoals();
+                //try again to find one
+                goal = newGoal(player, condition);
+                if (goal != null) {
+                    //assign goal to player
+                    player.getGoalHandler().newGoal(goal);
+                } else {
+                    Log.error("No goal for condition " + condition + " was found");
+                }
+            } else {
+                Log.error("No goal for condition " + condition + " was found in remaining goals");
             }
         }
     }
@@ -57,7 +71,7 @@ public class GoalStorage {
     public AbstractGoal newGoal(Player forPlayer, Function<AbstractGoal, Boolean> condition) {
         for (Class clazz : goalClasses) {
             AbstractGoal goal = loader.instantiate(clazz);
-            if (goal.init(game, forPlayer)) {
+            if (goalTypes.contains(goal.getDifficulty()) && goal.init(game, forPlayer)) {
                 if (condition.apply(goal)) {
                     goalClasses.remove(clazz);
                     return goal;

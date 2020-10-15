@@ -18,6 +18,7 @@ import com.broll.gainea.net.NT_Player;
 import com.broll.gainea.server.core.utils.GameUpdateReceiverProxy;
 import com.broll.gainea.server.core.utils.ProcessingCore;
 import com.broll.gainea.server.init.ExpansionSetting;
+import com.broll.gainea.server.init.GoalTypes;
 import com.broll.gainea.server.init.PlayerData;
 import com.broll.gainea.server.core.actions.ActionHandlers;
 import com.broll.gainea.server.core.actions.ReactionHandler;
@@ -50,19 +51,19 @@ public class GameContainer {
     private GameUpdateReceiverProxy gameUpdateReceiver;
 
     public GameContainer(ExpansionSetting setting, Collection<com.broll.networklib.server.impl.Player<PlayerData>> players) {
+        this.gameUpdateReceiver = new GameUpdateReceiverProxy();
         this.map = new MapContainer(setting);
         this.players = PlayerFactory.create(this,players);
         this.monsterFactory = new MonsterFactory();
-        this.gameUpdateReceiver = new GameUpdateReceiverProxy();
     }
 
-    public void initHandlers(ReactionActions reactionResult) {
+    public void initHandlers(ReactionActions reactionResult, GoalTypes goalTypes) {
         ActionHandlers actionHandlers = new ActionHandlers(this, reactionResult);
         reactionHandler = new ReactionHandler(this, actionHandlers);
         this.processingCore = new ProcessingCore(reactionHandler::finishedProcessing);
         turnBuilder = new TurnBuilder(this, actionHandlers);
         this.battleHandler = new BattleHandler(this, reactionResult);
-        this.goalStorage = new GoalStorage(this, actionHandlers);
+        this.goalStorage = new GoalStorage(this, actionHandlers, goalTypes);
         this.cardStorage = new CardStorage(this, actionHandlers);
     }
 

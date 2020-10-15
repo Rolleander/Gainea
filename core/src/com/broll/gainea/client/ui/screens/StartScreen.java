@@ -33,7 +33,6 @@ public class StartScreen extends AbstractScreen {
 
     private void joinLobby(GameLobby lobby) {
         String name = this.name.getText();
-        Log.info("try joining lobby " + lobby.getName());
         if (name != null && name.trim().length() > 0) {
             game.client.joinLobby(name, lobby);
         }
@@ -69,6 +68,7 @@ public class StartScreen extends AbstractScreen {
         loadingInfo = info("");
         loadingInfo.setAlignment(Align.center);
         loadingInfo.setVisible(false);
+        //"192.168.0.137"
         serverIp = new TextField("localhost", skin);
         name = new TextField("TimoTester", skin);
         Table vg = new Table();
@@ -87,7 +87,6 @@ public class StartScreen extends AbstractScreen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 lobbies.clear();
-                Log.info("list lobbies");
                 game.client.listLobbies(serverIp.getText());
             }
         });

@@ -1,14 +1,19 @@
 package com.broll.gainea.client.ui.elements;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 public class LabelUtils {
 
+    public static Label color(Label label, Color color) {
+        label.setStyle(new Label.LabelStyle(label.getStyle().font, color));
+        return label;
+    }
+
     public static Label info(Skin skin, String text) {
         return new Label(filter(text), skin);
     }
-
 
     public static Label title(Skin skin, String text) {
         Label l = new Label(filter(text), skin, "title");

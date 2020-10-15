@@ -17,8 +17,11 @@ public class LobbyListener implements ServerLobbyListener<LobbyData, PlayerData>
 
     @Override
     public void playerJoined(ServerLobby<LobbyData, PlayerData> lobby, Player<PlayerData> player) {
-        PlayerData playerData = new PlayerData();
-        player.setData(playerData);
+        PlayerData playerData = player.getData();
+        if (playerData == null) {
+            playerData = new PlayerData();
+            player.setData(playerData);
+        }
         playerData.setFraction(findOpenFraction(lobby));
     }
 

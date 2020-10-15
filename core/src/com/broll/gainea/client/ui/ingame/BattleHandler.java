@@ -5,8 +5,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.broll.gainea.Gainea;
-import com.broll.gainea.client.render.MapObjectRender;
-import com.broll.gainea.client.render.UnitRender;
+import com.broll.gainea.client.ui.render.MapObjectRender;
+import com.broll.gainea.client.ui.render.UnitRender;
 import com.broll.gainea.client.ui.elements.BattleRollRender;
 import com.broll.gainea.client.ui.elements.IRollAnimationListener;
 import com.broll.gainea.client.ui.elements.TableUtils;
@@ -17,7 +17,6 @@ import com.broll.gainea.server.core.map.Location;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 import java.util.stream.Collectors;

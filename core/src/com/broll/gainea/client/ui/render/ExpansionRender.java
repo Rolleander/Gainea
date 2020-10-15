@@ -1,21 +1,12 @@
-package com.broll.gainea.client.render;
+package com.broll.gainea.client.ui.render;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.broll.gainea.Gainea;
 import com.broll.gainea.server.core.map.Coordinates;
 import com.broll.gainea.server.core.map.Expansion;
 import com.broll.gainea.server.core.map.Location;
-import com.broll.gainea.server.core.map.Ship;
-import com.broll.gainea.server.core.map.Area;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 public class ExpansionRender extends Actor {
 

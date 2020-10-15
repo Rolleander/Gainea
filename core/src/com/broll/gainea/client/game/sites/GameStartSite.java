@@ -1,10 +1,9 @@
-package com.broll.gainea.client.sites;
+package com.broll.gainea.client.game.sites;
 
-import com.broll.gainea.net.NT_BoardUpdate;
+import com.broll.gainea.client.ui.screens.GameScreen;
 import com.broll.gainea.net.NT_LoadedGame;
 import com.broll.gainea.net.NT_ReconnectGame;
 import com.broll.gainea.net.NT_StartGame;
-import com.broll.gainea.server.core.map.ExpansionType;
 import com.broll.gainea.server.init.ExpansionSetting;
 import com.broll.networklib.PackageReceiver;
 
@@ -27,8 +26,12 @@ public class GameStartSite extends AbstractGameSite {
 
     private void start(NT_StartGame start) {
         ExpansionSetting setting = ExpansionSetting.values()[start.expansionsSetting];
-        state.init(setting);
-        state.update(start);
+        game.state.init(setting);
+        game.state.update(start);
+        //switch to game screen
+        game.ui.showScreen(new GameScreen());
+        //player has loaded
+        finishedLoading();
     }
 
     private void finishedLoading() {

@@ -4,12 +4,11 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.broll.gainea.client.Assets;
-import com.broll.gainea.client.ClientHandler;
+import com.broll.gainea.client.game.ClientHandler;
 import com.broll.gainea.client.MapScrollHandler;
 import com.broll.gainea.client.game.GameState;
 import com.broll.gainea.client.ui.GameUI;
@@ -30,7 +29,7 @@ public class Gainea extends ApplicationAdapter {
     @Override
     public void create() {
         //new StretchViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight())
-        client = new ClientHandler();
+        client = new ClientHandler(this);
         gameStage = new Stage(new ScreenViewport());
         uiStage = new Stage(new ScreenViewport());
         ui = new GameUI(this);

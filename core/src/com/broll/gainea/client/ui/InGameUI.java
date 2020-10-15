@@ -1,18 +1,15 @@
 package com.broll.gainea.client.ui;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Cell;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.broll.gainea.Gainea;
 import com.broll.gainea.client.game.PlayerPerformAction;
 import com.broll.gainea.client.game.PlayerPerformOptionalAction;
-import com.broll.gainea.client.render.MapObjectRender;
+import com.broll.gainea.client.ui.render.MapObjectRender;
 import com.broll.gainea.client.ui.elements.TableUtils;
-import com.broll.gainea.client.ui.elements.TextureUtils;
 import com.broll.gainea.client.ui.ingame.AttackAndMoveActionHandler;
 import com.broll.gainea.client.ui.ingame.BattleHandler;
-import com.broll.gainea.client.ui.ingame.FractionWindow;
 import com.broll.gainea.client.ui.ingame.MenuWindows;
 import com.broll.gainea.client.ui.ingame.RequiredActionHandler;
 import com.broll.gainea.client.ui.ingame.UnitSelectionWindow;

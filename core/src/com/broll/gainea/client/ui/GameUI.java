@@ -7,6 +7,7 @@ import com.broll.gainea.client.IClientListener;
 import com.broll.gainea.client.ui.screens.LoadingScreen;
 import com.broll.gainea.client.ui.screens.LobbyScreen;
 import com.broll.gainea.client.ui.screens.StartScreen;
+import com.broll.networklib.client.auth.LastConnection;
 import com.broll.networklib.client.impl.GameLobby;
 import com.broll.networklib.client.tasks.DiscoveredLobbies;
 import com.esotericsoftware.minlog.Log;
@@ -30,7 +31,7 @@ public class GameUI implements IClientListener {
         inGameUI = new InGameUI(game, skin);
         connectionCircle = new ConnectionCircle(game.assets);
         connectionCircle.toFront();
-        //  game.client.reconnectCheck();
+        game.client.reconnectCheck();
     }
 
     public void showScreen(AbstractScreen screen) {
