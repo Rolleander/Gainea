@@ -1,8 +1,10 @@
 package com.broll.gainea.client.ui;
 
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.Widget;
 import com.broll.gainea.Gainea;
 import com.broll.gainea.client.game.PlayerPerformAction;
 import com.broll.gainea.client.game.PlayerPerformOptionalAction;
@@ -33,6 +35,7 @@ public class InGameUI {
     private Skin skin;
     private Table topBar;
     private Table bottomBar;
+    private Table centerOverlay;
     private Table center = new Table();
     private Table centerContent = new Table();
     private AttackAndMoveActionHandler attackAndMoveHandler;
@@ -48,14 +51,20 @@ public class InGameUI {
         this.skin = skin;
         topBar = new Table(skin);
         bottomBar = new Table(skin);
+        centerOverlay = new Table(skin);
         bottomBar.setBackground("menu-bg");
         bottomBar.add(TableUtils.textButton(skin, "Fraktionen", () -> windows.showFractionWindow()));
         bottomBar.add(TableUtils.textButton(skin, "Spieler", () -> windows.showPlayerWindow()));
     }
 
-    public Cell<Table> showCenter(Table table) {
+    public Cell<Actor> showCenter(Actor actor) {
         centerContent.clear();
-        return centerContent.add(table);
+        return centerContent.add(actor);
+    }
+
+    public Cell<Actor> showCenterOverlay(Actor actor) {
+        centerOverlay.clear();
+        return centerOverlay.add(actor);
     }
 
     public void show() {
@@ -70,7 +79,7 @@ public class InGameUI {
         Table overlay3 = new Table();
         overlay3.setFillParent(true);
         overlay3.add(topBar).top().expandX().fillX().height(40).row();
-        overlay3.add(new Table()).expand().fill().row();
+        overlay3.add(centerOverlay).expand().fill().row();
         overlay3.add(bottomBar).bottom().expandX().fillX().height(40);
         game.uiStage.addActor(overlay3);
         this.windows = new MenuWindows(game, skin);

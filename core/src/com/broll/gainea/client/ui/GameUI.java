@@ -14,11 +14,11 @@ import com.esotericsoftware.minlog.Log;
 
 public class GameUI implements IClientListener {
 
+    public Skin skin;
+    public InGameUI inGameUI;
     private Gainea game;
-    private Skin skin;
     private ConnectionCircle connectionCircle;
     private AbstractScreen currentScreen;
-    private InGameUI inGameUI;
 
     public GameUI(Gainea game) {
         this.game = game;
@@ -28,14 +28,19 @@ public class GameUI implements IClientListener {
 
     public void assetsLoaded() {
         this.skin = game.assets.get("ui/cloud-form-ui.json", Skin.class);
-        inGameUI = new InGameUI(game, skin);
         connectionCircle = new ConnectionCircle(game.assets);
         connectionCircle.toFront();
         game.client.reconnectCheck();
     }
 
+    public void initInGameUi(){
+        game.gameStage.clear();
+        inGameUI = new InGameUI(game, skin);
+    }
+
     public void showScreen(AbstractScreen screen) {
         this.currentScreen = screen;
+        game.gameStage.clear();
         game.uiStage.clear();
         screen.init(skin, game);
         game.uiStage.addActor(screen.build());
@@ -71,13 +76,5 @@ public class GameUI implements IClientListener {
         } else {
             connectionCircle.remove();
         }
-    }
-
-    public InGameUI getInGameUI() {
-        return inGameUI;
-    }
-
-    public Skin getSkin() {
-        return skin;
     }
 }

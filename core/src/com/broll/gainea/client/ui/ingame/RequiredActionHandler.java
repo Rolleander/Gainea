@@ -34,7 +34,7 @@ public class RequiredActionHandler {
         }
         if (window != null) {
             mapActions.forEach(it -> game.gameStage.addActor(it));
-            game.ui.getInGameUI().showCenter(window);
+            game.ui.inGameUI.showCenter(window);
         }
     }
 

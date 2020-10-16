@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.broll.gainea.net.NT_Event_FinishedGoal;
 import com.broll.gainea.net.NT_Goal;
 import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.battle.BattleResult;
@@ -59,6 +60,10 @@ public abstract class AbstractGoal extends GameUpdateReceiverAdapter {
     protected void success() {
         player.getGoalHandler().removeGoal(this);
         player.getGoalHandler().addPoints(difficulty.getPoints());
+        NT_Event_FinishedGoal finishedGoal = new NT_Event_FinishedGoal();
+        finishedGoal.player = player.getServerPlayer().getId();
+        finishedGoal.goal = this.nt();
+        game.getReactionHandler().getActionHandlers().getReactionActions().sendGameUpdate(finishedGoal);
     }
 
     public GoalDifficulty getDifficulty() {

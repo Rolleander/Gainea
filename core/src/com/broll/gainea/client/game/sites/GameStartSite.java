@@ -7,6 +7,8 @@ import com.broll.gainea.net.NT_StartGame;
 import com.broll.gainea.server.init.ExpansionSetting;
 import com.broll.networklib.PackageReceiver;
 
+import java.util.Arrays;
+
 public class GameStartSite extends AbstractGameSite {
 
     @PackageReceiver
@@ -19,9 +21,9 @@ public class GameStartSite extends AbstractGameSite {
     public void received(NT_ReconnectGame reconnectGame) {
         start(reconnectGame);
         //add goals and cards
-        //TODO
-        //   reconnectGame.goals;
-        //   reconnectGame.cards;
+        game.state.getGoals().addAll(Arrays.asList(reconnectGame.goals));
+        game.state.getCards().addAll(Arrays.asList(reconnectGame.cards));
+        game.ui.inGameUI.updateWindows();
     }
 
     private void start(NT_StartGame start) {

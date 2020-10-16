@@ -10,9 +10,10 @@ public class GameScreen extends AbstractScreen {
     @Override
     public Actor build() {
         GameState state = game.state;
-        game.ui.getInGameUI().show();
+        game.ui.initInGameUi();
+        game.ui.inGameUI.show();
         state.getMap().getRenders().forEach(render -> game.gameStage.addActor(render));
-        game.ui.getInGameUI().updateWindows();
+        game.ui.inGameUI.updateWindows();
         return new Table();
     }
 }

@@ -21,7 +21,7 @@ public class GameBattleSite extends AbstractGameSite {
         this.attackers = Arrays.asList(battle.attackers);
         this.defenders = Arrays.asList(battle.defenders);
         int location = defenders.get(0).location;
-        game.ui.getInGameUI().startBattle(attackers, defenders,  game.state.getMap().getLocation(location));
+        game.ui.inGameUI.startBattle(attackers, defenders,  game.state.getMap().getLocation(location));
     }
 
     private List<Pair<NT_Unit, Integer>> doDamageUpdates(List<NT_Unit> before, List<NT_Unit> after) {
@@ -46,6 +46,6 @@ public class GameBattleSite extends AbstractGameSite {
         List<NT_Unit> defenders = Arrays.asList(battle.defenders);
         List<Pair<NT_Unit, Integer>> damagedAttackers = doDamageUpdates(this.attackers, attackers);
         List<Pair<NT_Unit, Integer>> damagedDefenders = doDamageUpdates(this.defenders, defenders);
-        game.ui.getInGameUI().updateBattle(attackRolls,defenderRolls,damagedAttackers,damagedDefenders,battle.state);
+        game.ui.inGameUI.updateBattle(attackRolls,defenderRolls,damagedAttackers,damagedDefenders,battle.state);
     }
 }

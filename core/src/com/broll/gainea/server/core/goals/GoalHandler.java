@@ -24,11 +24,14 @@ public class GoalHandler {
 
     public void addPoints(int points) {
         this.score += points;
-        game.getUpdateReceiver().earnedStars(player, points);
+        if(this.score >= game.getGameSettings().getPointLimit()){
+            game.end();
+        }
     }
 
     public void addStars(int stars) {
         this.stars += stars;
+        game.getUpdateReceiver().earnedStars(player, stars);
     }
 
     public int getScore() {

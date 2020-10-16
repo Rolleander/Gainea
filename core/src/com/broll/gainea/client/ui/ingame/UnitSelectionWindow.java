@@ -82,6 +82,6 @@ public class UnitSelectionWindow {
 
     private static void selected(Gainea game, List<MenuUnit> units) {
         List<NT_Unit> selected = units.stream().filter(MenuUnit::isSelected).map(MenuUnit::getUnit).collect(Collectors.toList());
-        game.ui.getInGameUI().selectedUnits(selected);
+        game.ui.inGameUI.selectedUnits(selected);
     }
 }

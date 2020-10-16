@@ -43,7 +43,8 @@ public class TestMapScreen extends AbstractScreen {
 
     @Override
     public Actor build() {
-        game.ui.getInGameUI().show();
+        game.ui.initInGameUi();
+        game.ui.inGameUI.show();
         state.getMap().getRenders().forEach(render -> game.gameStage.addActor(render));
         NT_BoardUpdate update = new NT_BoardUpdate();
         int c = 20;
@@ -159,9 +160,9 @@ public class TestMapScreen extends AbstractScreen {
                 damagedAttackers.add(Pair.of(attackers.get(i), 1));
             }
         }
-        game.ui.getInGameUI().startBattle(attackers, defenders, state.getMap().getArea(GaineaMap.Areas.MITSUMA_SEE));
-        game.ui.getInGameUI().updateBattle(attackRolls, defendRolls, damagedAttackers, damagedDefenders, 0);
-        game.ui.getInGameUI().updateWindows();
+        game.ui.inGameUI.startBattle(attackers, defenders, state.getMap().getArea(GaineaMap.Areas.MITSUMA_SEE));
+        game.ui.inGameUI.updateBattle(attackRolls, defendRolls, damagedAttackers, damagedDefenders, 0);
+        game.ui.inGameUI.updateWindows();
 
         GameEventSite eventSite = new GameEventSite();
         eventSite.init(game);

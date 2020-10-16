@@ -43,7 +43,7 @@ public class MapObjectRender extends Actor {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 event.stop();
-                game.ui.getInGameUI().selectStack(location, stack);
+                game.ui.inGameUI.selectStack(location, stack);
                 return true;
             }
         });

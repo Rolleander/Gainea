@@ -51,11 +51,8 @@ public class GameStartSite extends AbstractGameSite {
     public void startGame() {
         ServerLobby<LobbyData, PlayerData> lobby = getLobby();
         lobby.chat(null,"Starte Spiel...");
-        LobbyData data = lobby.getData();
-        ExpansionSetting expansionSetting = data.getExpansionSetting();
-        GameContainer game = new GameContainer(expansionSetting, lobby.getPlayers());
-        data.setGame(game);
-        game.initHandlers(new ReactionResultHandler(game, lobby), data.getGoalTypes());
+        GameContainer game = new GameContainer(lobby);
+        game.initHandlers(new ReactionResultHandler(game, lobby));
         gameStart.loading = true;
         gameStart.startUnitsPlaced = 0;
         gameStart.playerData = new HashMap<>();

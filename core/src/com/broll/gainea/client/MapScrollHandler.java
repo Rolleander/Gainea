@@ -32,7 +32,7 @@ public class MapScrollHandler extends InputListener {
         y = screenVec.y;
         this.lastX = x;
         this.lastY = y;
-        InGameUI ui = game.ui.getInGameUI();
+        InGameUI ui = game.ui.inGameUI;
         if (ui != null) {
             ui.clearSelection();
         }

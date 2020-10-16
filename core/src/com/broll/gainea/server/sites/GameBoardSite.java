@@ -18,19 +18,21 @@ public class GameBoardSite extends AbstractGameSite {
     @ConnectionRestriction(RestrictionType.LOBBY_LOCKED)
     public void reaction(NT_Reaction reaction) {
         GameContainer game = getGame();
-        ActionContext action = game.getAction(reaction.actionId);
-        if (action == null) {
-            //invalid action, ignore client request
-            return;
-        }
-        ReactionHandler handler = game.getReactionHandler();
-        Player player = getGamePlayer();
-        if (handler.hasRequiredActionFor(player)) {
-            handler.handle(player, action, reaction);
-        } else {
-            //only handle optional actions when its the players turn
-            if (playersTurn()) {
+        if (!game.isGameOver()) {
+            ActionContext action = game.getAction(reaction.actionId);
+            if (action == null) {
+                //invalid action, ignore client request
+                return;
+            }
+            ReactionHandler handler = game.getReactionHandler();
+            Player player = getGamePlayer();
+            if (handler.hasRequiredActionFor(player)) {
                 handler.handle(player, action, reaction);
+            } else {
+                //only handle optional actions when its the players turn
+                if (playersTurn()) {
+                    handler.handle(player, action, reaction);
+                }
             }
         }
     }
@@ -40,7 +42,7 @@ public class GameBoardSite extends AbstractGameSite {
     public void reaction(NT_Battle_Reaction battle_reaction) {
         BattleHandler battle = getGame().getBattleHandler();
         if (battle.isBattleActive()) {
-            battle.playerReaction(getGamePlayer(),battle_reaction);
+            battle.playerReaction(getGamePlayer(), battle_reaction);
         }
     }
 
@@ -48,7 +50,7 @@ public class GameBoardSite extends AbstractGameSite {
     @ConnectionRestriction(RestrictionType.LOBBY_LOCKED)
     public void reaction(NT_EndTurn endTurn) {
         //only react to if its players turn and no action is running right now
-        if (playersTurn() && !getGame().getProcessingCore().isBusy()) {
+        if (!getGame().isGameOver() && playersTurn() && !getGame().getProcessingCore().isBusy()) {
             //dont allow next turn if there are required actions for the player remaining
             if (!getGame().getReactionHandler().hasRequiredActionFor(getGamePlayer())) {
                 nextTurn();

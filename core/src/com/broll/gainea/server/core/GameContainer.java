@@ -1,5 +1,6 @@
 package com.broll.gainea.server.core;
 
+import com.broll.gainea.net.NT_GameOver;
 import com.broll.gainea.net.NT_ReconnectGame;
 import com.broll.gainea.net.NT_StartGame;
 import com.broll.gainea.server.core.actions.ActionContext;
@@ -19,11 +20,13 @@ import com.broll.gainea.server.core.utils.GameUpdateReceiverProxy;
 import com.broll.gainea.server.core.utils.ProcessingCore;
 import com.broll.gainea.server.init.ExpansionSetting;
 import com.broll.gainea.server.init.GoalTypes;
+import com.broll.gainea.server.init.LobbyData;
 import com.broll.gainea.server.init.PlayerData;
 import com.broll.gainea.server.core.actions.ActionHandlers;
 import com.broll.gainea.server.core.actions.ReactionHandler;
 import com.broll.gainea.server.core.actions.TurnBuilder;
 import com.broll.gainea.server.core.map.Location;
+import com.broll.networklib.server.impl.ServerLobby;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -49,21 +52,25 @@ public class GameContainer {
     private ProcessingCore processingCore;
     private MonsterFactory monsterFactory;
     private GameUpdateReceiverProxy gameUpdateReceiver;
+    private ServerLobby<LobbyData, PlayerData> lobby;
+    private boolean gameOver = false;
 
-    public GameContainer(ExpansionSetting setting, Collection<com.broll.networklib.server.impl.Player<PlayerData>> players) {
+    public GameContainer(ServerLobby<LobbyData, PlayerData> lobby) {
+        this.lobby = lobby;
+        lobby.getData().setGame(this);
         this.gameUpdateReceiver = new GameUpdateReceiverProxy();
-        this.map = new MapContainer(setting);
-        this.players = PlayerFactory.create(this,players);
+        this.map = new MapContainer(lobby.getData().getExpansionSetting());
+        this.players = PlayerFactory.create(this, lobby.getPlayers());
         this.monsterFactory = new MonsterFactory();
     }
 
-    public void initHandlers(ReactionActions reactionResult, GoalTypes goalTypes) {
+    public void initHandlers(ReactionActions reactionResult) {
         ActionHandlers actionHandlers = new ActionHandlers(this, reactionResult);
         reactionHandler = new ReactionHandler(this, actionHandlers);
-        this.processingCore = new ProcessingCore(reactionHandler::finishedProcessing);
+        this.processingCore = new ProcessingCore(this, reactionHandler::finishedProcessing);
         turnBuilder = new TurnBuilder(this, actionHandlers);
         this.battleHandler = new BattleHandler(this, reactionResult);
-        this.goalStorage = new GoalStorage(this, actionHandlers, goalTypes);
+        this.goalStorage = new GoalStorage(this, actionHandlers, lobby.getData().getGoalTypes());
         this.cardStorage = new CardStorage(this, actionHandlers);
     }
 
@@ -109,7 +116,19 @@ public class GameContainer {
         return startGame;
     }
 
-    public NT_ReconnectGame reconnect(Player player){
+    public void end() {
+        processingCore.execute(() -> {
+            NT_GameOver gameOver = new NT_GameOver();
+            gameOver.players = players.stream().map(Player::nt).toArray(NT_Player[]::new);
+            reactionHandler.getActionHandlers().getReactionActions().sendGameUpdate(gameOver);
+            lobby.setLocked(false);
+            lobby.getData().setGame(null);
+        }, 2000);
+        gameOver = true;
+        processingCore.shutdown();
+    }
+
+    public NT_ReconnectGame reconnect(Player player) {
         NT_ReconnectGame reconnectGame = new NT_ReconnectGame();
         fillUpdate(reconnectGame);
         reconnectGame.expansionsSetting = map.getExpansionSetting().ordinal();
@@ -194,5 +213,13 @@ public class GameContainer {
 
     public GameUpdateReceiverProxy getUpdateReceiver() {
         return gameUpdateReceiver;
+    }
+
+    public LobbyData getGameSettings() {
+        return lobby.getData();
+    }
+
+    public boolean isGameOver() {
+        return gameOver;
     }
 }

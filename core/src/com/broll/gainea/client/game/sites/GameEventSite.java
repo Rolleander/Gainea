@@ -26,7 +26,9 @@ public class GameEventSite extends AbstractGameSite {
 
     @PackageReceiver
     public void received(NT_Event_DrawedCard card) {
-
+        //TODO show card
+        game.state.getCards().add(card.card);
+        game.ui.inGameUI.updateWindows();
     }
 
     @PackageReceiver
@@ -46,7 +48,11 @@ public class GameEventSite extends AbstractGameSite {
 
     @PackageReceiver
     public void received(NT_Event_PlayedCard card) {
-
+        //TODO show card played
+        if (card.player == getPlayer().getId()) {
+            game.state.getCards().remove(card.card);
+            game.ui.inGameUI.updateWindows();
+        }
     }
 
     @PackageReceiver
@@ -56,7 +62,9 @@ public class GameEventSite extends AbstractGameSite {
 
     @PackageReceiver
     public void received(NT_Event_ReceivedGoal goal) {
-
+        //TODO show goal
+        game.state.getGoals().add(goal.goal);
+        game.ui.inGameUI.updateWindows();
     }
 
 }

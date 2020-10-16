@@ -30,12 +30,12 @@ public class CardHandler {
 
     public void onTurnStart(TurnBuilder builder, ActionHandlers actionHandlers) {
         CardAction cardAction = actionHandlers.getHandler(CardAction.class);
-        cards.stream().filter(AbstractCard::isPlayable).forEach(card -> builder.action(cardAction.playableCard(card)));
+        cards.stream().filter(AbstractCard::isPlayable).forEach(card -> builder.action(cardAction.playableCard(player,card)));
     }
 
     public void receiveCard(AbstractCard card) {
         if (card instanceof DirectlyPlayedCard) {
-            game.getReactionHandler().getActionHandlers().getHandler(CardAction.class).playCard(card);
+            game.getReactionHandler().getActionHandlers().getHandler(CardAction.class).playCard(player,card);
             return;
         }
         this.cards.add(card);
