@@ -15,6 +15,7 @@ import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.MapObject;
 import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.server.core.utils.GameUpdateReceiverAdapter;
+import com.broll.gainea.server.core.utils.GameUtils;
 import com.broll.gainea.server.core.utils.IGameUpdateReceiver;
 
 public abstract class AbstractGoal extends GameUpdateReceiverAdapter {
@@ -63,7 +64,7 @@ public abstract class AbstractGoal extends GameUpdateReceiverAdapter {
         NT_Event_FinishedGoal finishedGoal = new NT_Event_FinishedGoal();
         finishedGoal.player = player.getServerPlayer().getId();
         finishedGoal.goal = this.nt();
-        game.getReactionHandler().getActionHandlers().getReactionActions().sendGameUpdate(finishedGoal);
+        GameUtils.sendUpdate(game, finishedGoal);
     }
 
     public GoalDifficulty getDifficulty() {

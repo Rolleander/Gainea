@@ -13,7 +13,9 @@ import com.broll.gainea.net.NT_Action_Move;
 import com.broll.gainea.net.NT_Action_PlaceUnit;
 import com.broll.gainea.net.NT_BoardObject;
 import com.broll.gainea.net.NT_BoardUpdate;
+import com.broll.gainea.net.NT_Card;
 import com.broll.gainea.net.NT_Event_MovedObject;
+import com.broll.gainea.net.NT_Goal;
 import com.broll.gainea.net.NT_Monster;
 import com.broll.gainea.net.NT_Player;
 import com.broll.gainea.net.NT_Unit;
@@ -22,6 +24,7 @@ import com.broll.gainea.server.core.map.impl.GaineaMap;
 import com.broll.gainea.server.init.ExpansionSetting;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
@@ -45,6 +48,23 @@ public class TestMapScreen extends AbstractScreen {
     public Actor build() {
         game.ui.initInGameUi();
         game.ui.inGameUI.show();
+        for(int i=0; i<3; i++){
+            NT_Card card = new NT_Card();
+            card.picture = i+5;
+            card.title="Testkarte #"+i;
+            card.text= StringUtils.repeat("Wenn du diese Kart ausspielst dann geht es richtig ab. Du könntest das Spiel gewinnen vermutlich. Aber man weiß es nicht so wirklich :)",i+1);
+            game.state.getCards().add(card);
+            NT_Goal goal = new NT_Goal();
+            goal.points=i+1;
+            goal.description = StringUtils.repeat("Erobere mindestens "+i*3+" verschiedene Gebiete und das sehr schnell bitte!",i+1);
+            goal.restriction="Gainea";
+            game.state.getGoals().add(goal);
+        }
+        NT_Goal goal = new NT_Goal();
+        goal.points=3;
+        goal.description = "Mach erst das zuerst\nund dann das bitte....";
+        goal.restriction="Alle";
+        game.state.getGoals().add(goal);
         state.getMap().getRenders().forEach(render -> game.gameStage.addActor(render));
         NT_BoardUpdate update = new NT_BoardUpdate();
         int c = 20;
@@ -160,8 +180,8 @@ public class TestMapScreen extends AbstractScreen {
                 damagedAttackers.add(Pair.of(attackers.get(i), 1));
             }
         }
-        game.ui.inGameUI.startBattle(attackers, defenders, state.getMap().getArea(GaineaMap.Areas.MITSUMA_SEE));
-        game.ui.inGameUI.updateBattle(attackRolls, defendRolls, damagedAttackers, damagedDefenders, 0);
+    //    game.ui.inGameUI.startBattle(attackers, defenders, state.getMap().getArea(GaineaMap.Areas.MITSUMA_SEE));
+     //   game.ui.inGameUI.updateBattle(attackRolls, defendRolls, damagedAttackers, damagedDefenders, 0);
         game.ui.inGameUI.updateWindows();
 
         GameEventSite eventSite = new GameEventSite();

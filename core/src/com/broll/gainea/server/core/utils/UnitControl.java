@@ -29,7 +29,7 @@ public class UnitControl {
         units.forEach(unit -> unit.setLocation(location));
         NT_Event_MovedObject movedObject = new NT_Event_MovedObject();
         movedObject.objects = units.stream().map(MapObject::nt).toArray(NT_BoardObject[]::new);
-        game.getReactionHandler().getActionHandlers().getReactionActions().sendGameUpdate(movedObject);
+        GameUtils.sendUpdate(game,movedObject);
         game.getUpdateReceiver().moved(units, location);
         ProcessingUtils.pause(MOVE_PAUSE);
     }
@@ -50,7 +50,7 @@ public class UnitControl {
         if (consumer != null) {
             consumer.accept(nt);
         }
-        game.getReactionHandler().getActionHandlers().getReactionActions().sendGameUpdate(nt);
+        GameUtils.sendUpdate(game,nt);
         ProcessingUtils.pause(DAMAGE_PAUSE);
     }
 
@@ -73,7 +73,7 @@ public class UnitControl {
         if (consumer != null) {
             consumer.accept(nt);
         }
-        game.getReactionHandler().getActionHandlers().getReactionActions().sendGameUpdate(nt);
+        GameUtils.sendUpdate(game,nt);
         game.getUpdateReceiver().damaged(unit, damage);
         ProcessingUtils.pause(DAMAGE_PAUSE);
     }
@@ -90,7 +90,7 @@ public class UnitControl {
         if (consumer != null) {
             consumer.accept(placedObject);
         }
-        game.getReactionHandler().getActionHandlers().getReactionActions().sendGameUpdate(placedObject);
+        GameUtils.sendUpdate(game,placedObject);
         game.getUpdateReceiver().spawned(object, location);
         ProcessingUtils.pause(SPAWN_PAUSE);
     }

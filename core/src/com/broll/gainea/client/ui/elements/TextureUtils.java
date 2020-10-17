@@ -6,17 +6,19 @@ import com.broll.gainea.Gainea;
 
 public class TextureUtils {
 
-    private final static int UNIT_SIZE = 82;
-    private final static int ICON_SIZE = 16;
-    private final static int CARD_HEIGHT = 164;
-    private final static int BATTLE_HEIGHT = 800;
+    public final static int UNIT_SIZE = 82;
+    public final static int ICON_SIZE = 16;
+    public final static int CARD_HEIGHT = 164;
+    public final static int CARD_WIDTH = CARD_HEIGHT*2;
+
+    public final static int BATTLE_HEIGHT = 800;
 
     public static TextureRegion unitIcon(Gainea game, int icon) {
         return new TextureRegion(game.assets.get("textures/units.png", Texture.class), (icon % 10) * UNIT_SIZE, (icon / 10) * UNIT_SIZE, UNIT_SIZE, UNIT_SIZE);
     }
 
     public static TextureRegion cardPicture(Gainea game, int picture) {
-        return new TextureRegion(game.assets.get("textures/cards.png", Texture.class), 0, picture * CARD_HEIGHT, CARD_HEIGHT * 2, CARD_HEIGHT);
+        return new TextureRegion(game.assets.get("textures/cards.png", Texture.class), 0, picture * CARD_HEIGHT, CARD_WIDTH, CARD_HEIGHT);
     }
 
     public static TextureRegion battleBackground(Gainea game, int nr) {

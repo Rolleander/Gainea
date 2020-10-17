@@ -30,11 +30,6 @@ public class GameUI implements IClientListener {
 
     public void assetsLoaded() {
         this.skin = game.assets.get("ui/cloud-form-ui.json", Skin.class);
-        //change font of skin
-      //  skin.remove("title", BitmapFont.class);
-      //  skin.remove("font-export", BitmapFont.class);
-        skin.add("title",game.assets.get("ui/title.fnt",BitmapFont.class));
-        skin.add("font-export",game.assets.get("ui/font-export.fnt",BitmapFont.class));
         connectionCircle = new ConnectionCircle(game.assets);
         connectionCircle.toFront();
         game.client.reconnectCheck();

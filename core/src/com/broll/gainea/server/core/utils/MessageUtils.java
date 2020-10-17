@@ -10,14 +10,14 @@ public final class MessageUtils {
         NT_Event_TextInfo info = new NT_Event_TextInfo();
         info.type = NT_Event_TextInfo.TYPE_MESSAGE_LOG;
         info.text = text;
-        game.getReactionHandler().getActionHandlers().getReactionActions().sendGameUpdate(info);
+        GameUtils.sendUpdate(game,info);
     }
 
     public static void displayMessage(GameContainer game, String text) {
         NT_Event_TextInfo info = new NT_Event_TextInfo();
         info.type = NT_Event_TextInfo.TYPE_MESSAGE_DISPLAY;
         info.text = text;
-        game.getReactionHandler().getActionHandlers().getReactionActions().sendGameUpdate(info);
+        GameUtils.sendUpdate(game,info);
     }
 
     public static void displayMessage(GameContainer game, Player forPlayer, String text) {

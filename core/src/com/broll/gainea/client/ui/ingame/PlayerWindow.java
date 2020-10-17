@@ -43,12 +43,12 @@ public class PlayerWindow extends ClosableWindow {
         if (players == null) {
             return;
         }
-        center(700, players.size() * 100 + 50);
+        center(850, players.size() * 100 + 50);
         content.clear();
         content.top().left();
         content.pad(10);
         int space = 30;
-        content.add(LabelUtils.info(skin, "Spieler")).padRight(space * 3).left();
+        content.add(LabelUtils.info(skin, "Spieler")).padRight(space * 3).fillX().expandX().left();
         content.add(LabelUtils.info(skin, "Fraktion")).padRight(space * 3).left();
         content.add(LabelUtils.info(skin, "Punkte")).padRight(space).left();
         content.add(new IconLabel(game, skin, 2, "")).padRight(space).left();
@@ -64,7 +64,7 @@ public class PlayerWindow extends ClosableWindow {
             return p;
         }).forEach(player -> {
             int pad = 15;
-            content.add(LabelUtils.info(skin, player.name)).padTop(15).left();
+            content.add(LabelUtils.info(skin, player.name)).padTop(15).fillX().expandX().left();
             content.add(LabelUtils.info(skin, FractionType.values()[player.fraction].getName())).padTop(15).left();
             content.add(LabelUtils.info(skin, "" + player.points)).padTop(15).left();
             content.add(LabelUtils.info(skin, "" + player.stars)).padTop(15).left();

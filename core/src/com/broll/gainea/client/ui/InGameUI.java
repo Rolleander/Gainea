@@ -53,8 +53,11 @@ public class InGameUI {
         bottomBar = new Table(skin);
         centerOverlay = new Table(skin);
         bottomBar.setBackground("menu-bg");
+        bottomBar.defaults().spaceRight(20);
         bottomBar.add(TableUtils.textButton(skin, "Fraktionen", () -> windows.showFractionWindow()));
         bottomBar.add(TableUtils.textButton(skin, "Spieler", () -> windows.showPlayerWindow()));
+        bottomBar.add(TableUtils.textButton(skin, "Ziele", () -> windows.showGoalWindow()));
+        bottomBar.add(TableUtils.textButton(skin, "Karten", () -> windows.showCardWindow()));
     }
 
     public Cell<Actor> showCenter(Actor actor) {

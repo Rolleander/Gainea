@@ -1,13 +1,14 @@
 package com.broll.gainea.server.core.cards;
 
 import com.broll.gainea.net.NT_Card;
-import com.broll.gainea.net.NT_Event_DrawedCard;
-import com.broll.gainea.net.NT_Event_TextInfo;
+import com.broll.gainea.net.NT_Event_OtherPlayerReceivedCard;
+import com.broll.gainea.net.NT_Event_ReceivedCard;
 import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.actions.ActionHandlers;
 import com.broll.gainea.server.core.actions.TurnBuilder;
 import com.broll.gainea.server.core.actions.impl.CardAction;
 import com.broll.gainea.server.core.player.Player;
+import com.broll.gainea.server.core.utils.GameUtils;
 import com.broll.gainea.server.core.utils.MessageUtils;
 
 import java.util.List;
@@ -39,10 +40,9 @@ public class CardHandler {
             return;
         }
         this.cards.add(card);
-        NT_Event_DrawedCard nt = new NT_Event_DrawedCard();
+        NT_Event_ReceivedCard nt = new NT_Event_ReceivedCard();
         nt.card = card.nt();
-        player.getServerPlayer().sendTCP(nt);
-        MessageUtils.gameLog(game, player.getServerPlayer().getName() + " hat eine Karte erhalten");
+        GameUtils.sendUpdate(game, player, nt, new NT_Event_OtherPlayerReceivedCard());
     }
 
     public void discardCard(AbstractCard card) {

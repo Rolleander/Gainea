@@ -1,7 +1,9 @@
 package com.broll.gainea.client.game.sites;
 
 import com.broll.gainea.net.NT_Event_Bundle;
-import com.broll.gainea.net.NT_Event_DrawedCard;
+import com.broll.gainea.net.NT_Event_OtherPlayerReceivedCard;
+import com.broll.gainea.net.NT_Event_OtherPlayerReceivedGoal;
+import com.broll.gainea.net.NT_Event_ReceivedCard;
 import com.broll.gainea.net.NT_Event_FocusLocation;
 import com.broll.gainea.net.NT_Event_FocusObject;
 import com.broll.gainea.net.NT_Event_MovedObject;
@@ -25,7 +27,7 @@ public class GameEventSite extends AbstractGameSite {
     }
 
     @PackageReceiver
-    public void received(NT_Event_DrawedCard card) {
+    public void received(NT_Event_ReceivedCard card) {
         //TODO show card
         game.state.getCards().add(card.card);
         game.ui.inGameUI.updateWindows();
@@ -65,6 +67,16 @@ public class GameEventSite extends AbstractGameSite {
         //TODO show goal
         game.state.getGoals().add(goal.goal);
         game.ui.inGameUI.updateWindows();
+    }
+
+    @PackageReceiver
+    public void received(NT_Event_OtherPlayerReceivedCard card) {
+
+    }
+
+    @PackageReceiver
+    public void received(NT_Event_OtherPlayerReceivedGoal goal) {
+
     }
 
 }

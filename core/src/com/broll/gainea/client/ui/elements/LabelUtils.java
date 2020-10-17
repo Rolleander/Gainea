@@ -20,6 +20,13 @@ public class LabelUtils {
         return l;
     }
 
+    public static Label autoWrap(Label label, int width){
+        label.setWrap(true);
+        label.setWidth(width);
+        label.pack();
+        return label;
+    }
+
     public static Label label(Skin skin, String text) {
         Label l = new Label(text, skin, "title");
         l.setFontScale(0.7f);

@@ -1,10 +1,13 @@
 package com.broll.gainea.server.core.goals;
 
 import com.broll.gainea.net.NT_Card;
+import com.broll.gainea.net.NT_Event_OtherPlayerReceivedGoal;
+import com.broll.gainea.net.NT_Event_ReceivedGoal;
 import com.broll.gainea.net.NT_Goal;
 import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.cards.AbstractCard;
 import com.broll.gainea.server.core.player.Player;
+import com.broll.gainea.server.core.utils.GameUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +27,7 @@ public class GoalHandler {
 
     public void addPoints(int points) {
         this.score += points;
-        if(this.score >= game.getGameSettings().getPointLimit()){
+        if (this.score >= game.getGameSettings().getPointLimit()) {
             game.end();
         }
     }
@@ -54,6 +57,9 @@ public class GoalHandler {
     public void newGoal(AbstractGoal goal) {
         this.goals.add(goal);
         game.getUpdateReceiver().register(goal);
+        NT_Event_ReceivedGoal nt = new NT_Event_ReceivedGoal();
+        nt.goal = goal.nt();
+        GameUtils.sendUpdate(game, player, nt, new NT_Event_OtherPlayerReceivedGoal());
     }
 
     public NT_Goal[] ntGoals() {

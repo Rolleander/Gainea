@@ -42,7 +42,7 @@ public class FractionWindow extends ClosableWindow {
                 }
             });
         });
-        center(650, 500);
+        center(950, 600);
     }
 
     private Table fraction(Fraction fraction) {
@@ -60,12 +60,8 @@ public class FractionWindow extends ClosableWindow {
         t.add(unit(fraction.createSoldier(null))).left().spaceLeft(50).row();
         table.add(t).left().row();
         FractionDescription description = fraction.getDescription();
-        Label info = LabelUtils.info(skin, description.getGeneral());
         int w = 450;
-        info.setWrap(true);
-        info.setWidth(w);
-        info.pack();
-        table.add(info).left().spaceTop(20).padBottom(20).width(w).row();
+        table.add(LabelUtils.autoWrap(LabelUtils.info(skin, description.getGeneral()), w)).left().spaceTop(20).padBottom(20).width(w).row();
         description.getPlus().forEach(text -> table.add(new IconLabel(game, skin, 4, text)).left().spaceTop(10).row());
         description.getContra().forEach(text -> table.add(new IconLabel(game, skin, 5, text)).left().spaceTop(10).row());
         return table;
