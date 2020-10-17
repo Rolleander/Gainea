@@ -132,13 +132,6 @@ checkbox-pressed-over
   orig: 13, 11
   offset: 0, 0
   index: -1
-font-export
-  rotate: false
-  xy: 387, 427
-  size: 83, 84
-  orig: 83, 84
-  offset: 0, 0
-  index: -1
 list
   rotate: false
   xy: 387, 295
@@ -358,13 +351,6 @@ textfield-selected
   split: 1, 1, 1, 1
   pad: 3, 3, 3, 3
   orig: 13, 26
-  offset: 0, 0
-  index: -1
-title
-  rotate: false
-  xy: 1, 96
-  size: 308, 197
-  orig: 308, 197
   offset: 0, 0
   index: -1
 white

@@ -3,7 +3,9 @@ package com.broll.gainea.client;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+
 
 public class Assets {
 
@@ -46,6 +48,8 @@ public class Assets {
     }
 
     private void loadUi() {
+        manager.load("ui/font-export.fnt", BitmapFont.class);
+        manager.load("ui/title.fnt", BitmapFont.class);
         manager.load("ui/cloud-form-ui.json", Skin.class);
     }
 

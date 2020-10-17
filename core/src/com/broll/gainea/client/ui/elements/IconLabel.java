@@ -10,7 +10,7 @@ public class IconLabel extends Table {
 
     public IconLabel(Gainea game, Skin skin, int nr, String text) {
         add(new Image(TextureUtils.icon(game, nr)));
-        add(new Label(LabelUtils.filter(text), skin)).padLeft(10);
+        add(new Label(text, skin)).padLeft(10);
     }
 
     public static IconLabel attack(Gainea game, Skin skin, int attack) {

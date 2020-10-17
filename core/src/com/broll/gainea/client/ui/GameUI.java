@@ -1,5 +1,6 @@
 package com.broll.gainea.client.ui;
 
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.broll.gainea.Gainea;
 import com.broll.gainea.client.Assets;
@@ -11,6 +12,7 @@ import com.broll.networklib.client.auth.LastConnection;
 import com.broll.networklib.client.impl.GameLobby;
 import com.broll.networklib.client.tasks.DiscoveredLobbies;
 import com.esotericsoftware.minlog.Log;
+
 
 public class GameUI implements IClientListener {
 
@@ -28,6 +30,11 @@ public class GameUI implements IClientListener {
 
     public void assetsLoaded() {
         this.skin = game.assets.get("ui/cloud-form-ui.json", Skin.class);
+        //change font of skin
+      //  skin.remove("title", BitmapFont.class);
+      //  skin.remove("font-export", BitmapFont.class);
+        skin.add("title",game.assets.get("ui/title.fnt",BitmapFont.class));
+        skin.add("font-export",game.assets.get("ui/font-export.fnt",BitmapFont.class));
         connectionCircle = new ConnectionCircle(game.assets);
         connectionCircle.toFront();
         game.client.reconnectCheck();
