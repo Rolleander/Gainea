@@ -12,6 +12,8 @@ import com.broll.gainea.client.ui.elements.ClosableWindow;
 import com.broll.gainea.client.ui.elements.LabelUtils;
 import com.broll.gainea.client.ui.elements.TableUtils;
 import com.broll.gainea.client.ui.elements.TextureUtils;
+import com.broll.gainea.net.NT_Card;
+import com.broll.gainea.server.core.GameContainer;
 
 public class CardWindow extends ClosableWindow {
     private Table content;
@@ -36,19 +38,25 @@ public class CardWindow extends ClosableWindow {
         content.pad(10);
         content.defaults().space(10);
         game.state.getCards().forEach(card -> {
-            Table table = new Table(skin);
-            table.defaults().space(15);
-            table.left();
-            table.setBackground("menu-bg");
-            Table box = new Table(skin);
-            box.top();
-            box.add(LabelUtils.label(skin, card.title)).left().row();
-            int w = 600;
-            box.add(LabelUtils.autoWrap(LabelUtils.info(skin, card.text), w)).width(w).left().row();
-            box.add(new TextButton("Einsetzen!", skin)).right().bottom();
-            table.add(new Image(new TextureRegionDrawable(TextureUtils.cardPicture(game, card.picture)))).top();
-            table.add(box).top();
+            Table table = renderCard(game, card);
+            table.add(new TextButton("Einsetzen!", skin)).right().bottom();
             content.add(table).expandX().fillX().row();
         });
+    }
+
+    public static Table renderCard(Gainea game, NT_Card card) {
+        Skin skin = game.ui.skin;
+        Table table = new Table(skin);
+        table.defaults().space(15);
+        table.left();
+        table.setBackground("menu-bg");
+        Table box = new Table(skin);
+        box.top();
+        box.add(LabelUtils.label(skin, card.title)).left().row();
+        int w = 600;
+        box.add(LabelUtils.autoWrap(LabelUtils.info(skin, card.text), w)).width(w).left().row();
+        table.add(new Image(new TextureRegionDrawable(TextureUtils.cardPicture(game, card.picture)))).top();
+        table.add(box).top().row();
+        return table;
     }
 }

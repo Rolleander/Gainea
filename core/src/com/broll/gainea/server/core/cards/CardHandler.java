@@ -31,18 +31,20 @@ public class CardHandler {
 
     public void onTurnStart(TurnBuilder builder, ActionHandlers actionHandlers) {
         CardAction cardAction = actionHandlers.getHandler(CardAction.class);
-        cards.stream().filter(AbstractCard::isPlayable).forEach(card -> builder.action(cardAction.playableCard(player,card)));
+        cards.stream().filter(AbstractCard::isPlayable).forEach(card -> builder.action(cardAction.playableCard(player, card)));
     }
 
     public void receiveCard(AbstractCard card) {
         if (card instanceof DirectlyPlayedCard) {
-            game.getReactionHandler().getActionHandlers().getHandler(CardAction.class).playCard(player,card);
+            game.getReactionHandler().getActionHandlers().getHandler(CardAction.class).playCard(player, card);
             return;
         }
         this.cards.add(card);
         NT_Event_ReceivedCard nt = new NT_Event_ReceivedCard();
         nt.card = card.nt();
-        GameUtils.sendUpdate(game, player, nt, new NT_Event_OtherPlayerReceivedCard());
+        NT_Event_OtherPlayerReceivedCard nt2 = new NT_Event_OtherPlayerReceivedCard();
+        nt2.player = player.getServerPlayer().getId();
+        GameUtils.sendUpdate(game, player, nt, nt2);
     }
 
     public void discardCard(AbstractCard card) {

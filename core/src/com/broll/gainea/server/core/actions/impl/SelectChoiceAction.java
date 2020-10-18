@@ -41,12 +41,27 @@ public class SelectChoiceAction extends AbstractActionHandler<NT_Action_SelectCh
     }
 
     public int selectObject(Player player, String message, List<? extends Object> choices) {
+        assureNotEmpty(choices);
         NT_Action_SelectChoice action = new NT_Action_SelectChoice();
         action.objectChoices = choices.toArray(new Object[0]);
         Context context = new Context(action);
         actionHandlers.getReactionActions().requireAction(player, new RequiredActionContext<>(context, message));
         processingBlock.waitFor();
         return context.selectedOption;
+    }
+
+    public Location selectLocation(String message, List<Location> choices) {
+        return selectLocation(game.getPlayers().get(game.getCurrentPlayer()), message, choices);
+    }
+
+    public Location selectLocation(Player player, String message, List<Location> choices) {
+        assureNotEmpty(choices);
+        NT_Action_SelectChoice action = new NT_Action_SelectChoice();
+        action.objectChoices = choices.stream().map(Location::getNumber).toArray();
+        Context context = new Context(action);
+        actionHandlers.getReactionActions().requireAction(player, new RequiredActionContext<>(context, message));
+        processingBlock.waitFor();
+        return choices.get(context.selectedOption);
     }
 
     public Player selectOtherPlayer(Player player, String message) {
@@ -63,7 +78,14 @@ public class SelectChoiceAction extends AbstractActionHandler<NT_Action_SelectCh
         return players.get(selectedOption);
     }
 
+    private void assureNotEmpty(List choices) {
+        if (choices.isEmpty()) {
+            throw new RuntimeException("Invalid select choice context: list of choices is empty");
+        }
+    }
+
     private Context build(List<String> choices) {
+        assureNotEmpty(choices);
         NT_Action_SelectChoice action = new NT_Action_SelectChoice();
         action.choices = choices.toArray(new String[0]);
         return new Context(action);

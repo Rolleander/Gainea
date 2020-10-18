@@ -24,6 +24,16 @@ public class MapObjectContainer {
         this.game = game;
     }
 
+    public MapObjectRender getObjectRender(NT_BoardObject object) {
+        for (Object value : objectRenders.values()) {
+            MapObjectRender render = (MapObjectRender) value;
+            if (render.getObject() == object) {
+                return render;
+            }
+        }
+        return null;
+    }
+
     public void update(List<NT_BoardObject> update) {
         List<MapObjectRender> renders = new ArrayList<>();
         //remove old renders

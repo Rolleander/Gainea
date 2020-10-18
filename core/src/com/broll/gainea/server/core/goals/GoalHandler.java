@@ -59,7 +59,9 @@ public class GoalHandler {
         game.getUpdateReceiver().register(goal);
         NT_Event_ReceivedGoal nt = new NT_Event_ReceivedGoal();
         nt.goal = goal.nt();
-        GameUtils.sendUpdate(game, player, nt, new NT_Event_OtherPlayerReceivedGoal());
+        NT_Event_OtherPlayerReceivedGoal nt2 = new NT_Event_OtherPlayerReceivedGoal();
+        nt2.player = player.getServerPlayer().getId();
+        GameUtils.sendUpdate(game, player, nt, nt2);
     }
 
     public NT_Goal[] ntGoals() {

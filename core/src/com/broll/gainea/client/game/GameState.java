@@ -44,6 +44,10 @@ public class GameState {
         this.turnNumber = update.turns;
         this.objects = Arrays.asList(update.objects);
         this.players = Arrays.asList(update.players);
+        updateMapObjects();
+    }
+
+    public void updateMapObjects() {
         mapObjectsContainer.update(Streams.concat(objects.stream(), players.stream().flatMap(p -> Arrays.stream(p.units))).collect(Collectors.toList()));
     }
 
@@ -89,5 +93,9 @@ public class GameState {
 
     public List<NT_Goal> getGoals() {
         return goals;
+    }
+
+    public MapObjectContainer getMapObjectsContainer() {
+        return mapObjectsContainer;
     }
 }

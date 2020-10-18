@@ -1,5 +1,6 @@
 package com.broll.gainea.client.ui.elements;
 
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
@@ -33,7 +34,7 @@ public class TableUtils {
         return button;
     }
 
-    public static Container removeAfter(Widget widget, int milliseconds) {
+    public static Container removeAfter(Actor widget, int milliseconds) {
         Container container = new Container(widget) {
             float duration = 0;
 

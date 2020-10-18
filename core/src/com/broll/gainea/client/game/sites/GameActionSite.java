@@ -1,6 +1,8 @@
 package com.broll.gainea.client.game.sites;
 
 import com.broll.gainea.client.game.PlayerPerformAction;
+import com.broll.gainea.client.ui.elements.LabelUtils;
+import com.broll.gainea.client.ui.elements.MessageUtils;
 import com.broll.gainea.net.NT_Action;
 import com.broll.gainea.net.NT_PlayerAction;
 import com.broll.gainea.net.NT_Reaction;
@@ -15,7 +17,7 @@ public class GameActionSite extends AbstractGameSite {
     public void received(NT_PlayerAction action) {
         if (action.text != null) {
             //show instruction message to player
-
+            MessageUtils.showActionMessage(game, action.text);
         }
         game.state.performAction(action.action, playerPerformAction);
     }

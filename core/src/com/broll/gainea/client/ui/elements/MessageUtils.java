@@ -1,14 +1,8 @@
 package com.broll.gainea.client.ui.elements;
 
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.broll.gainea.Gainea;
-import com.google.common.util.concurrent.AsyncCallable;
-import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.MoreExecutors;
-
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 
 public final class MessageUtils {
 
@@ -17,8 +11,11 @@ public final class MessageUtils {
     private MessageUtils() {
     }
 
-    public static void showCenterMessage(Gainea game, String message) {
-        game.ui.inGameUI.showCenterOverlay(TableUtils.removeAfter(LabelUtils.title(game.ui.skin, message), MESSAGE_DURATION)).center();
+    public static Cell<Actor> showCenterMessage(Gainea game, String message) {
+        return game.ui.inGameUI.showCenterOverlay(TableUtils.removeAfter(LabelUtils.title(game.ui.skin, message), MESSAGE_DURATION)).center();
     }
 
+    public static Cell<Actor> showActionMessage(Gainea game, String message) {
+        return showCenterMessage(game, message).top().padTop(100);
+    }
 }
