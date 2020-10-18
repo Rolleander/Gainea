@@ -1,4 +1,4 @@
-package com.broll.gainea.server.core.utils;
+package com.broll.gainea.server.core.processing;
 
 import com.esotericsoftware.minlog.Log;
 

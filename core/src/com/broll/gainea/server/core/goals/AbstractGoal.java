@@ -7,16 +7,10 @@ import java.util.stream.Collectors;
 import com.broll.gainea.net.NT_Event_FinishedGoal;
 import com.broll.gainea.net.NT_Goal;
 import com.broll.gainea.server.core.GameContainer;
-import com.broll.gainea.server.core.battle.BattleResult;
-import com.broll.gainea.server.core.cards.AbstractCard;
 import com.broll.gainea.server.core.map.ExpansionType;
-import com.broll.gainea.server.core.map.Location;
-import com.broll.gainea.server.core.objects.BattleObject;
-import com.broll.gainea.server.core.objects.MapObject;
 import com.broll.gainea.server.core.player.Player;
-import com.broll.gainea.server.core.utils.GameUpdateReceiverAdapter;
+import com.broll.gainea.server.core.processing.GameUpdateReceiverAdapter;
 import com.broll.gainea.server.core.utils.GameUtils;
-import com.broll.gainea.server.core.utils.IGameUpdateReceiver;
 
 public abstract class AbstractGoal extends GameUpdateReceiverAdapter {
 

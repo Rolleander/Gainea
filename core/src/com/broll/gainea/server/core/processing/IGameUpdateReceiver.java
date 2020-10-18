@@ -1,4 +1,4 @@
-package com.broll.gainea.server.core.utils;
+package com.broll.gainea.server.core.processing;
 
 import com.broll.gainea.server.core.battle.BattleResult;
 import com.broll.gainea.server.core.battle.FightResult;

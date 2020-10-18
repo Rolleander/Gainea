@@ -4,7 +4,7 @@ import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.net.NT_Action;
 import com.broll.gainea.net.NT_Reaction;
-import com.broll.gainea.server.core.utils.ProcessingBlock;
+import com.broll.gainea.server.core.processing.ProcessingBlock;
 
 public abstract class AbstractActionHandler<T extends NT_Action, C> {
 

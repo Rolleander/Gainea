@@ -16,10 +16,9 @@ import com.broll.gainea.server.core.player.PlayerFactory;
 import com.broll.gainea.net.NT_BoardObject;
 import com.broll.gainea.net.NT_BoardUpdate;
 import com.broll.gainea.net.NT_Player;
-import com.broll.gainea.server.core.utils.GameUpdateReceiverProxy;
-import com.broll.gainea.server.core.utils.ProcessingCore;
-import com.broll.gainea.server.init.ExpansionSetting;
-import com.broll.gainea.server.init.GoalTypes;
+import com.broll.gainea.server.core.processing.GameUpdateReceiverProxy;
+import com.broll.gainea.server.core.processing.ProcessingCore;
+import com.broll.gainea.server.core.stats.GameStatistic;
 import com.broll.gainea.server.init.LobbyData;
 import com.broll.gainea.server.init.PlayerData;
 import com.broll.gainea.server.core.actions.ActionHandlers;
@@ -29,7 +28,6 @@ import com.broll.gainea.server.core.map.Location;
 import com.broll.networklib.server.impl.ServerLobby;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,6 +51,7 @@ public class GameContainer {
     private MonsterFactory monsterFactory;
     private GameUpdateReceiverProxy gameUpdateReceiver;
     private ServerLobby<LobbyData, PlayerData> lobby;
+    private GameStatistic statistic;
     private boolean gameOver = false;
 
     public GameContainer(ServerLobby<LobbyData, PlayerData> lobby) {
@@ -62,6 +61,7 @@ public class GameContainer {
         this.map = new MapContainer(lobby.getData().getExpansionSetting());
         this.players = PlayerFactory.create(this, lobby.getPlayers());
         this.monsterFactory = new MonsterFactory();
+        this.statistic = new GameStatistic(this);
     }
 
     public void initHandlers(ReactionActions reactionResult) {
@@ -154,6 +154,7 @@ public class GameContainer {
         currentPlayer++;
         if (currentPlayer >= players.size()) {
             currentPlayer = 0;
+            statistic.nextTurn();
             turns++;
         }
         return players.get(currentPlayer);

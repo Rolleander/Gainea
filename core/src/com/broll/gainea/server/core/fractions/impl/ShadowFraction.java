@@ -1,11 +1,9 @@
 package com.broll.gainea.server.core.fractions.impl;
 
 import com.badlogic.gdx.math.MathUtils;
-import com.broll.gainea.client.ui.elements.LabelUtils;
 import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.battle.BattleResult;
 import com.broll.gainea.server.core.battle.FightingPower;
-import com.broll.gainea.server.core.cards.AbstractCard;
 import com.broll.gainea.server.core.fractions.Fraction;
 import com.broll.gainea.server.core.fractions.FractionDescription;
 import com.broll.gainea.server.core.fractions.FractionType;
@@ -15,7 +13,7 @@ import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.Commander;
 import com.broll.gainea.server.core.objects.Soldier;
 import com.broll.gainea.server.core.player.Player;
-import com.broll.gainea.server.core.utils.GameUpdateReceiverAdapter;
+import com.broll.gainea.server.core.processing.GameUpdateReceiverAdapter;
 import com.broll.gainea.server.core.utils.LocationUtils;
 import com.broll.gainea.server.core.utils.UnitControl;
 
