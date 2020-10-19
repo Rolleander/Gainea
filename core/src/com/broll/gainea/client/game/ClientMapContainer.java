@@ -1,7 +1,7 @@
 package com.broll.gainea.client.game;
 
 import com.broll.gainea.Gainea;
-import com.broll.gainea.client.ui.render.ExpansionRender;
+import com.broll.gainea.client.ui.elements.render.ExpansionRender;
 import com.broll.gainea.server.core.map.Expansion;
 import com.broll.gainea.server.core.map.ExpansionFactory;
 import com.broll.gainea.server.core.map.MapContainer;

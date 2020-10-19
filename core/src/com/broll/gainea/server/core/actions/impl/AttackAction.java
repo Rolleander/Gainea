@@ -65,8 +65,8 @@ public class AttackAction extends AbstractActionHandler<NT_Action_Attack, Attack
             for (int selection : reaction.options) {
                 BattleObject attacker = context.attackers.get(selection);
                 selectedAttackers.add(attacker);
-                context.attackers.remove(attacker);
             }
+            context.attackers.removeAll(selectedAttackers);
             startFight(selectedAttackers, attackLocation);
             if (!context.attackLocations.isEmpty() && !context.attackers.isEmpty()) {
                 //other attack locations and attackers remain => push new attack action

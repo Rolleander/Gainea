@@ -1,6 +1,6 @@
 package com.broll.gainea.server.core.map;
 
-import com.broll.gainea.client.ui.render.ExpansionRender;
+import com.broll.gainea.client.ui.elements.render.ExpansionRender;
 
 import java.util.ArrayList;
 import java.util.Arrays;

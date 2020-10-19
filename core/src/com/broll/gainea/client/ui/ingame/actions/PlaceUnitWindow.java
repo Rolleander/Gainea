@@ -3,7 +3,7 @@ package com.broll.gainea.client.ui.ingame.actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.broll.gainea.Gainea;
-import com.broll.gainea.client.ui.render.MapObjectRender;
+import com.broll.gainea.client.ui.elements.render.MapObjectRender;
 import com.broll.gainea.client.ui.elements.LabelUtils;
 import com.broll.gainea.client.ui.elements.MapAction;
 import com.broll.gainea.client.ui.elements.TableUtils;

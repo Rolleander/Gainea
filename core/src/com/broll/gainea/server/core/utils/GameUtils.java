@@ -18,6 +18,6 @@ public final class GameUtils {
     }
 
     public static void sendUpdate(GameContainer game, Object update) {
-        GameUtils.sendUpdate(game, update);
+        game.getReactionHandler().getActionHandlers().getReactionActions().sendGameUpdate(update);
     }
 }

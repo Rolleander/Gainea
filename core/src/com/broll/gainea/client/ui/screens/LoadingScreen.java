@@ -43,8 +43,8 @@ public class LoadingScreen extends AbstractScreen {
 
     private void loadingDone() {
         game.ui.assetsLoaded();
-     //   game.ui.showScreen(new StartScreen());
-       game.ui.showScreen(new TestMapScreen(game));
+       game.ui.showScreen(new StartScreen());
+     //  game.ui.showScreen(new TestMapScreen(game));
     }
 
     @Override

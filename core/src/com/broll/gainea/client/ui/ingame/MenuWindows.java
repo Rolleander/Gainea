@@ -3,6 +3,10 @@ package com.broll.gainea.client.ui.ingame;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.broll.gainea.Gainea;
+import com.broll.gainea.client.game.PlayerPerformOptionalAction;
+import com.broll.gainea.net.NT_Action_Card;
+
+import java.util.List;
 
 
 public class MenuWindows {
@@ -58,4 +62,9 @@ public class MenuWindows {
         table.setVisible(false);
         game.uiStage.addActor(table);
     }
+
+    public CardWindow getCardWindow() {
+        return cardWindow;
+    }
+
 }

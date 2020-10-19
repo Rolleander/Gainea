@@ -25,7 +25,7 @@ public class GaineaServer {
         ServerLobby<LobbyData, PlayerData> lobby = server.getLobbyHandler().openLobby("Testlobby");
         LobbyFactory.initLobby(lobby, ExpansionSetting.BASIC_GAME);
         lobby.setAutoClose(false);
-        PlayerData data = new PlayerData();
+     /*   PlayerData data = new PlayerData();
         data.setReady(true);
         lobby.createBot("bot_hans", data).ifPresent(bot -> {
             bot.register(new BotSite<PlayerData>() {
@@ -34,7 +34,7 @@ public class GaineaServer {
 
                 }
             });
-        });
+        });*/
         LobbyServerCLI.open(server);
     }
 

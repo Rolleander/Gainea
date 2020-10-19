@@ -56,6 +56,7 @@ public class PlayerWindow extends ClosableWindow {
         content.add(LabelUtils.info(skin, "Einheiten")).padRight(space).left();
         content.add(new IconLabel(game, skin, 0, "")).padRight(space).left();
         content.add(new IconLabel(game, skin, 1, "")).left().row();
+        content.defaults().padTop(15).left();
         players.stream().sorted((p2, p1) -> {
             int p = Integer.compare(p1.points, p2.points);
             if (p == 0) {
@@ -63,13 +64,12 @@ public class PlayerWindow extends ClosableWindow {
             }
             return p;
         }).forEach(player -> {
-            int pad = 15;
-            content.add(LabelUtils.info(skin, player.name)).padTop(15).fillX().expandX().left();
-            content.add(LabelUtils.info(skin, FractionType.values()[player.fraction].getName())).padTop(15).left();
-            content.add(LabelUtils.info(skin, "" + player.points)).padTop(15).left();
-            content.add(LabelUtils.info(skin, "" + player.stars)).padTop(15).left();
-            content.add(LabelUtils.info(skin, "" + player.cards)).padTop(15).left();
-            content.add(LabelUtils.info(skin, "" + player.units.length)).padTop(15).left();
+            content.add(LabelUtils.info(skin, player.name)).fillX().expandX();
+            content.add(LabelUtils.info(skin, FractionType.values()[player.fraction].getName()));
+            content.add(LabelUtils.info(skin, "" + player.points));
+            content.add(LabelUtils.info(skin, "" + player.stars));
+            content.add(LabelUtils.info(skin, "" + player.cards));
+            content.add(LabelUtils.info(skin, "" + player.units.length)).padTop(15);
             int power = 0;
             int health = 0;
             int maxHealth = 0;
@@ -78,8 +78,8 @@ public class PlayerWindow extends ClosableWindow {
                 health += unit.health;
                 maxHealth += unit.maxHealth;
             }
-            content.add(LabelUtils.info(skin, "" + power)).padTop(15).left();
-            content.add(LabelUtils.info(skin, health + "/" + maxHealth)).padTop(15).left().row();
+            content.add(LabelUtils.info(skin, "" + power));
+            content.add(LabelUtils.info(skin, health + "/" + maxHealth)).row();
         });
     }
 

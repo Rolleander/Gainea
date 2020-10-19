@@ -4,6 +4,7 @@ import com.broll.gainea.net.NT_Battle_Start;
 import com.broll.gainea.net.NT_Battle_Update;
 import com.broll.gainea.net.NT_Unit;
 import com.broll.networklib.PackageReceiver;
+import com.google.common.collect.Lists;
 
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -18,10 +19,11 @@ public class GameBattleSite extends AbstractGameSite {
 
     @PackageReceiver
     public void received(NT_Battle_Start battle) {
-        this.attackers = Arrays.asList(battle.attackers);
-        this.defenders = Arrays.asList(battle.defenders);
+        game.ui.inGameUI.activeCards(new ArrayList<>(), null);
+        this.attackers = Lists.newArrayList(battle.attackers);
+        this.defenders = Lists.newArrayList(battle.defenders);
         int location = defenders.get(0).location;
-        game.ui.inGameUI.startBattle(attackers, defenders,  game.state.getMap().getLocation(location));
+        game.ui.inGameUI.startBattle(attackers, defenders, game.state.getMap().getLocation(location));
     }
 
     private List<Pair<NT_Unit, Integer>> doDamageUpdates(List<NT_Unit> before, List<NT_Unit> after) {
@@ -42,10 +44,10 @@ public class GameBattleSite extends AbstractGameSite {
     public void received(NT_Battle_Update battle) {
         int[] attackRolls = battle.attackerRolls;
         int[] defenderRolls = battle.defenderRolls;
-        List<NT_Unit> attackers = Arrays.asList(battle.attackers);
-        List<NT_Unit> defenders = Arrays.asList(battle.defenders);
+        List<NT_Unit> attackers = Lists.newArrayList(battle.attackers);
+        List<NT_Unit> defenders = Lists.newArrayList(battle.defenders);
         List<Pair<NT_Unit, Integer>> damagedAttackers = doDamageUpdates(this.attackers, attackers);
         List<Pair<NT_Unit, Integer>> damagedDefenders = doDamageUpdates(this.defenders, defenders);
-        game.ui.inGameUI.updateBattle(attackRolls,defenderRolls,damagedAttackers,damagedDefenders,battle.state);
+        game.ui.inGameUI.updateBattle(attackRolls, defenderRolls, damagedAttackers, damagedDefenders, battle.state);
     }
 }

@@ -26,6 +26,9 @@ public class GameUtils {
     public static void addMapObject(Gainea game, NT_BoardObject object) {
         if (object instanceof NT_Unit) {
             NT_Unit unit = (NT_Unit) object;
+            if (unit.health <= 0) {
+                return;
+            }
             if (unit.owner == NT_Unit.NO_OWNER) {
                 game.state.getObjects().add(object);
             } else {

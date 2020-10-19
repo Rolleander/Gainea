@@ -48,6 +48,14 @@ public class MapAction extends Image {
     }
 
     @Override
+    public void toFront() {
+        if (trail != null) {
+            trail.toFront();
+        }
+        super.toFront();
+    }
+
+    @Override
     public void setPosition(float x, float y) {
         super.setPosition(x - SIZE / 2, y - SIZE / 2);
     }

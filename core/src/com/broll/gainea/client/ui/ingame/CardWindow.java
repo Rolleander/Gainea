@@ -8,15 +8,24 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.broll.gainea.Gainea;
+import com.broll.gainea.client.game.PlayerPerformOptionalAction;
 import com.broll.gainea.client.ui.elements.ClosableWindow;
 import com.broll.gainea.client.ui.elements.LabelUtils;
 import com.broll.gainea.client.ui.elements.TableUtils;
 import com.broll.gainea.client.ui.elements.TextureUtils;
+import com.broll.gainea.net.NT_Action_Card;
 import com.broll.gainea.net.NT_Card;
 import com.broll.gainea.server.core.GameContainer;
 
+import org.apache.commons.lang3.ArrayUtils;
+
+import java.util.List;
+import java.util.Optional;
+
 public class CardWindow extends ClosableWindow {
     private Table content;
+    private List<NT_Action_Card> playableCards;
+    private PlayerPerformOptionalAction playerPerformAction;
 
     public CardWindow(Gainea game, Skin skin) {
         super(game, "Karten", skin);
@@ -32,6 +41,12 @@ public class CardWindow extends ClosableWindow {
         update();
     }
 
+    public void updatePlayableCards(List<NT_Action_Card> cards, PlayerPerformOptionalAction playerPerformAction) {
+        this.playableCards = cards;
+        this.playerPerformAction = playerPerformAction;
+        update();
+    }
+
     public void update() {
         content.clear();
         content.top().left();
@@ -39,7 +54,12 @@ public class CardWindow extends ClosableWindow {
         content.defaults().space(10);
         game.state.getCards().forEach(card -> {
             Table table = renderCard(game, card);
-            table.add(new TextButton("Einsetzen!", skin)).right().bottom();
+            Optional<NT_Action_Card> playableCard = playableCards.stream().filter(it -> it.cardId == card.id).findFirst();
+            if (playableCard.isPresent() && !game.ui.inGameUI.isBattleOpen()) {
+                table.add(TableUtils.textButton(game.ui.skin, "Aktivieren!", () -> {
+                    playerPerformAction.perform(playableCard.get(), 0, null);
+                })).right().bottom();
+            }
             content.add(table).expandX().fillX().row();
         });
     }
@@ -59,4 +79,5 @@ public class CardWindow extends ClosableWindow {
         table.add(box).top().row();
         return table;
     }
+
 }

@@ -1,16 +1,21 @@
 package com.broll.gainea.client.ui.ingame;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.broll.gainea.Gainea;
-import com.broll.gainea.client.ui.render.MapObjectRender;
-import com.broll.gainea.client.ui.render.UnitRender;
+import com.broll.gainea.client.ui.elements.LabelUtils;
+import com.broll.gainea.client.ui.elements.render.MapObjectRender;
+import com.broll.gainea.client.ui.elements.render.UnitRender;
 import com.broll.gainea.client.ui.elements.BattleRollRender;
 import com.broll.gainea.client.ui.elements.IRollAnimationListener;
 import com.broll.gainea.client.ui.elements.TableUtils;
 import com.broll.gainea.client.ui.elements.TextureUtils;
+import com.broll.gainea.net.NT_Battle_Reaction;
+import com.broll.gainea.net.NT_Battle_Update;
 import com.broll.gainea.net.NT_Unit;
 import com.broll.gainea.server.core.map.Area;
 import com.broll.gainea.server.core.map.Location;
@@ -34,7 +39,7 @@ public class BattleHandler {
         this.skin = skin;
     }
 
-    public BattleBoard startBattle(Table table, List<NT_Unit> attackers, List<NT_Unit> defenders, Location location) {
+    public BattleBoard startBattle(List<NT_Unit> attackers, List<NT_Unit> defenders, Location location) {
         if (battleBoard != null) {
             battleBoard.remove();
         }
@@ -62,6 +67,7 @@ public class BattleHandler {
             public void rollingDone() {
                 doRemainingDamage(damageOrderAttacker);
                 doRemainingDamage(damageOrderDefender);
+                checkBattleState(state);
             }
 
             private void doRemainingDamage(Stack<NT_Unit> units) {
@@ -79,10 +85,48 @@ public class BattleHandler {
         });
     }
 
+    private void checkBattleState(int state) {
+        battleBoard.addAction(Actions.delay(2, Actions.run(() -> {
+            if (state == NT_Battle_Update.STATE_FIGHTING) {
+                //if we are attacker we can decide if keep on attacking
+                if (game.state.getPlayer().getId() == attackers.get(0).owner) {
+                    Table dialog = new Table(game.ui.skin);
+                    dialog.setBackground("menu-bg");
+                    dialog.pad(10, 20, 10, 20);
+                    dialog.defaults().space(20);
+                    dialog.add(LabelUtils.label(game.ui.skin, "Eure Truppe erwartet Befehle!")).row();
+                    dialog.add(TableUtils.textButton(game.ui.skin, "Anrgiff fortfahren", () -> sendBattleResponse(dialog, true))).left();
+                    dialog.add(TableUtils.textButton(game.ui.skin, "Rückzug", () -> sendBattleResponse(dialog, false))).right();
+                    game.ui.inGameUI.showCenterOverlay(dialog).bottom();
+                }
+            } else {
+                //battle done
+                String text = "Sieg der Verteidiger!";
+                if (state == NT_Battle_Update.STATE_ATTACKER_WON) {
+                    text = "Sieg der Angreifer!";
+                }
+                Label label = LabelUtils.title(game.ui.skin, text);
+                label.addAction(Actions.delay(2, Actions.run(() -> {
+                    label.remove();
+                    battleBoard.remove();
+                })));
+                game.ui.inGameUI.showCenterOverlay(label);
+                game.ui.inGameUI.setBattleOpen(false);
+            }
+        })));
+    }
+
+    private void sendBattleResponse(Table dialog, boolean continueFight) {
+        dialog.remove();
+        NT_Battle_Reaction reaction = new NT_Battle_Reaction();
+        reaction.keepAttacking = continueFight;
+        game.client.getClient().sendTCP(reaction);
+    }
+
     private Stack<NT_Unit> flattenDamage(List<Pair<NT_Unit, Integer>> damage) {
         Stack<NT_Unit> damageOrder = new Stack<>();
         damage.forEach(it -> {
-            for (int i = 0; i < it.getRight().intValue(); i++) {
+            for (int i = 0; i < it.getRight(); i++) {
                 damageOrder.push(it.getLeft());
             }
         });

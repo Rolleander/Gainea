@@ -42,6 +42,9 @@ public abstract class AbstractGoal extends GameUpdateReceiverAdapter {
     }
 
     protected boolean validForGame() {
+        if (requiredExpansions == null) {
+            return true;
+        }
         List<ExpansionType> activeExpansions = game.getMap().getActiveExpansionTypes();
         for (ExpansionType type : requiredExpansions) {
             if (!activeExpansions.contains(type)) {

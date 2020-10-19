@@ -62,8 +62,7 @@ public class MonsterFactory {
         add("Waldriese", 87, 4, 4, new AreaType[]{AreaType.PLAINS});
         add("Felsgolem", 88, 4, 4, new AreaType[]{AreaType.MOUNTAIN});
         add("Skelett", 89, 1, 1, new AreaType[]{AreaType.BOG});
-        add("Felsgolem", 90, 4, 4, new AreaType[]{AreaType.MOUNTAIN});
-        add("Schnitter", 91, 3, 2, new AreaType[]{AreaType.BOG});
+        add("Schnitter", 90, 3, 2, new AreaType[]{AreaType.BOG});
         add("Zombiekrieger", 91, 2, 2, new AreaType[]{AreaType.BOG});
         add("Skelettdrache", 92, 5, 5, new AreaType[]{AreaType.BOG, AreaType.MOUNTAIN});
         add("Wüstenkoloss", 97, 6, 6, new AreaType[]{AreaType.DESERT});

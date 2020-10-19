@@ -2,7 +2,7 @@ package com.broll.gainea.server.core.map;
 
 import java.awt.geom.Point2D;
 
-public class Coordinates {
+public class Coordinates implements Comparable<Coordinates> {
 
     private float x;
     private float y;
@@ -52,5 +52,14 @@ public class Coordinates {
 
     public void mirrorY(float mirrorY) {
         this.y = mirrorY - y;
+    }
+
+    @Override
+    public int compareTo(Coordinates o) {
+        int compare = Float.compare(y, o.y);
+        if (compare != 0) {
+            return compare;
+        }
+        return Float.compare(x, o.x);
     }
 }

@@ -19,6 +19,7 @@ public class PlayerFactory {
         while (iterator.hasNext()) {
             Player player = create(game, iterator.next());
             player.setColor(color);
+            players.add(player);
             color++;
         }
         return players;

@@ -41,10 +41,10 @@ public class MoveUnitAction extends AbstractActionHandler<NT_Action_Move, MoveUn
             Location pickedLocation = context.locations.get(reaction.option);
             List<MapObject> selectedUnits = new ArrayList<>();
             for (int selection : reaction.options) {
-                BattleObject attacker = context.unitsToMove.get(selection);
-                selectedUnits.add(attacker);
-                context.unitsToMove.remove(attacker);
+                BattleObject unit = context.unitsToMove.get(selection);
+                selectedUnits.add(unit);
             }
+            context.unitsToMove.removeAll(selectedUnits);
             context.locations.remove(pickedLocation);
             //perform move
             UnitControl.move(game, selectedUnits, pickedLocation);

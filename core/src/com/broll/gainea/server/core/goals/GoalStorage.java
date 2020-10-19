@@ -71,10 +71,12 @@ public class GoalStorage {
     public AbstractGoal newGoal(Player forPlayer, Function<AbstractGoal, Boolean> condition) {
         for (Class clazz : goalClasses) {
             AbstractGoal goal = loader.instantiate(clazz);
-            if (goalTypes.contains(goal.getDifficulty()) && goal.init(game, forPlayer)) {
-                if (condition.apply(goal)) {
-                    goalClasses.remove(clazz);
-                    return goal;
+            if (goalTypes.contains(goal.getDifficulty())) {
+                if (goal.init(game, forPlayer)) {
+                    if (condition.apply(goal)) {
+                        goalClasses.remove(clazz);
+                        return goal;
+                    }
                 }
             }
         }

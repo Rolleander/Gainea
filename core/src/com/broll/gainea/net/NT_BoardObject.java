@@ -21,4 +21,8 @@ public class NT_BoardObject {
         return id == that.id;
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

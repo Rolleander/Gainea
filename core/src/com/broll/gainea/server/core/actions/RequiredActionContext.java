@@ -30,4 +30,8 @@ public class RequiredActionContext<T extends NT_Action> extends ActionContext<T>
         action.text = text;
         return action;
     }
+
+    public ActionContext<T> getActionContext() {
+        return actionContext;
+    }
 }

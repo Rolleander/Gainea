@@ -1,4 +1,4 @@
-package com.broll.gainea.client.ui.render;
+package com.broll.gainea.client.ui.elements.render;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;

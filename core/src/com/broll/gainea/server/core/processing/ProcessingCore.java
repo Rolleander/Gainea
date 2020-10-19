@@ -1,6 +1,7 @@
 package com.broll.gainea.server.core.processing;
 
 import com.broll.gainea.server.core.GameContainer;
+import com.esotericsoftware.minlog.Log;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -52,7 +53,11 @@ public class ProcessingCore {
 
         @Override
         public void run() {
-            runnable.run();
+            try {
+                runnable.run();
+            } catch (Exception e) {
+                Log.error("Processing exception:", e);
+            }
             //check if it was the last runnable
             if (lastWrapper == this) {
                 finishedProcessingListener.run();

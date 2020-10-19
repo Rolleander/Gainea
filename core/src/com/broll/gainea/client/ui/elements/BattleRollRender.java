@@ -36,7 +36,6 @@ public class BattleRollRender {
         rolllose = new TextureRegion(rolls, 2 * rs, 0, rs, rs);
         numberLabel = LabelUtils.info(skin, "");
         rollSound = game.assets.get("sounds/roll.ogg", Sound.class);
-        rollSound.play();
     }
 
     public void start(int[] attackRolls, int[] defenderRolls, IRollAnimationListener listener) {
@@ -45,6 +44,7 @@ public class BattleRollRender {
         this.listener = listener;
         showRolls = 0;
         rollAnimation = 0;
+        rollSound.play();
     }
 
     public void update(float delta) {

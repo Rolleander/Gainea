@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.broll.gainea.Gainea;
+import com.broll.gainea.client.MapScrollHandler;
 import com.broll.gainea.client.game.GameState;
 import com.broll.gainea.client.game.sites.GameEventSite;
 import com.broll.gainea.client.ui.AbstractScreen;
@@ -40,30 +41,30 @@ public class TestMapScreen extends AbstractScreen {
     public TestMapScreen(Gainea game) {
         this.game = game;
         state = new GameState(game);
-        state.init(ExpansionSetting.FULL);
         game.state = state;
     }
 
     @Override
     public Actor build() {
+        state.init(ExpansionSetting.FULL, null);
         game.ui.initInGameUi();
         game.ui.inGameUI.show();
-        for(int i=0; i<3; i++){
+        for (int i = 0; i < 3; i++) {
             NT_Card card = new NT_Card();
-            card.picture = i+5;
-            card.title="Testkarte #"+i;
-            card.text= StringUtils.repeat("Wenn du diese Kart ausspielst dann geht es richtig ab. Du könntest das Spiel gewinnen vermutlich. Aber man weiß es nicht so wirklich :)",i+1);
+            card.picture = i + 5;
+            card.title = "Testkarte #" + i;
+            card.text = StringUtils.repeat("Wenn du diese Kart ausspielst dann geht es richtig ab. Du könntest das Spiel gewinnen vermutlich. Aber man weiß es nicht so wirklich :)", i + 1);
             game.state.getCards().add(card);
             NT_Goal goal = new NT_Goal();
-            goal.points=i+1;
-            goal.description = StringUtils.repeat("Erobere mindestens "+i*3+" verschiedene Gebiete und das sehr schnell bitte!",i+1);
-            goal.restriction="Gainea";
+            goal.points = i + 1;
+            goal.description = StringUtils.repeat("Erobere mindestens " + i * 3 + " verschiedene Gebiete und das sehr schnell bitte!", i + 1);
+            goal.restriction = "Gainea";
             game.state.getGoals().add(goal);
         }
         NT_Goal goal = new NT_Goal();
-        goal.points=3;
+        goal.points = 3;
         goal.description = "Mach erst das zuerst\nund dann das bitte....";
-        goal.restriction="Alle";
+        goal.restriction = "Alle";
         game.state.getGoals().add(goal);
         state.getMap().getRenders().forEach(render -> game.gameStage.addActor(render));
         NT_BoardUpdate update = new NT_BoardUpdate();
@@ -79,6 +80,7 @@ public class TestMapScreen extends AbstractScreen {
             bo.maxHealth = 3;
             bo.location = i * 2;
             bo.id = i;
+            bo.owner = NT_Unit.NO_OWNER;
             bo.icon = 50 + i;
             update.objects[i] = bo;
         }
@@ -149,7 +151,7 @@ public class TestMapScreen extends AbstractScreen {
             u.health = 1;
             u.maxHealth = 1;
             u.power = 1;
-            u.icon = i+1;
+            u.icon = i + 1;
             u.id = i;
             attackers.add(u);
         }
@@ -158,7 +160,7 @@ public class TestMapScreen extends AbstractScreen {
             u.health = 1;
             u.maxHealth = 1;
             u.power = 1;
-            u.icon = i+20;
+            u.icon = i + 20;
             u.id = i + 100;
             defenders.add(u);
         }
@@ -180,14 +182,21 @@ public class TestMapScreen extends AbstractScreen {
                 damagedAttackers.add(Pair.of(attackers.get(i), 1));
             }
         }
-    //    game.ui.inGameUI.startBattle(attackers, defenders, state.getMap().getArea(GaineaMap.Areas.MITSUMA_SEE));
-     //   game.ui.inGameUI.updateBattle(attackRolls, defendRolls, damagedAttackers, damagedDefenders, 0);
+        //    game.ui.inGameUI.startBattle(attackers, defenders, state.getMap().getArea(GaineaMap.Areas.MITSUMA_SEE));
+        //   game.ui.inGameUI.updateBattle(attackRolls, defendRolls, damagedAttackers, damagedDefenders, 0);
         game.ui.inGameUI.updateWindows();
 
         GameEventSite eventSite = new GameEventSite();
         eventSite.init(game);
         NT_Event_MovedObject event = new NT_Event_MovedObject();
-        //event.objects =
+        NT_Monster monster = (NT_Monster) Arrays.stream(update.objects).filter(it -> it.location == game.state.getMap().getArea(GaineaMap.Areas.MOORKUESTE).getNumber()).findFirst().get();
+        NT_Monster unit = new NT_Monster();
+        unit.id = monster.id;
+        unit.owner = monster.owner;
+        unit.location = game.state.getMap().getArea(GaineaMap.Areas.XOMDELTA).getNumber();
+        unit.icon = monster.icon;
+        unit.name = monster.name;
+        event.objects = new NT_Unit[]{unit};
         eventSite.received(event);
         return new Table();
     }

@@ -7,9 +7,11 @@ import com.broll.gainea.server.core.actions.ActionContext;
 import com.broll.gainea.server.core.actions.ReactionActions;
 import com.broll.gainea.server.core.actions.RequiredActionContext;
 import com.broll.gainea.server.core.player.Player;
+import com.broll.gainea.server.core.utils.GameUtils;
 import com.broll.gainea.server.init.LobbyData;
 import com.broll.gainea.server.init.PlayerData;
 import com.broll.networklib.server.impl.ServerLobby;
+import com.esotericsoftware.minlog.Log;
 
 public class ReactionResultHandler implements ReactionActions {
 
@@ -28,6 +30,8 @@ public class ReactionResultHandler implements ReactionActions {
 
     @Override
     public void endTurn() {
+        //reset actions
+        game.clearActions();
         Player player = game.nextTurn();
         if (player.getSkipRounds() > 0) {
             player.consumeSkippedRound();
@@ -44,8 +48,6 @@ public class ReactionResultHandler implements ReactionActions {
     }
 
     private void doPlayerTurn(Player player, NT_PlayerTurn turn) {
-        //reset actions
-        game.clearActions();
         game.getReactionHandler().getActionHandlers().getReactionActions().sendBoardUpdate();
         //send turn to player
         player.getServerPlayer().sendTCP(turn);
@@ -67,7 +69,7 @@ public class ReactionResultHandler implements ReactionActions {
         game.getReactionHandler().requireAction(player, action);
         player.getServerPlayer().sendTCP(action.nt());
         if (action.getMessageForOtherPlayer() != null) {
-            game.getPlayers().stream().filter(p -> p != player).forEach(p -> p.getServerPlayer().sendTCP(action.getMessageForOtherPlayer()));
+            GameUtils.sendUpdateExceptFor(game, action.getMessageForOtherPlayer(), player);
         }
         return action;
     }

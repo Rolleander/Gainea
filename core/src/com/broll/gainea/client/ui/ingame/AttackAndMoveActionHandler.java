@@ -84,7 +84,10 @@ public class AttackAndMoveActionHandler {
 
     public void showFor(List<NT_Unit> units) {
         this.selectedUnits = units;
-        mapActions.forEach(it -> it.setVisible(false));
+        mapActions.forEach(it -> {
+            it.setVisible(false);
+            it.toFront();
+        });
         int[] locations = units.stream().mapToInt(it -> it.location).distinct().toArray();
         mapActions.stream().filter(it -> ArrayUtils.contains(locations, it.getLocationId())).filter(it -> isActionForUnits(it.getAction(), units)).forEach(it -> it.setVisible(true));
     }

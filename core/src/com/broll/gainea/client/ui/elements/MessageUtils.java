@@ -6,16 +6,16 @@ import com.broll.gainea.Gainea;
 
 public final class MessageUtils {
 
-    private final static int MESSAGE_DURATION = 2000;
+    private final static int MESSAGE_DURATION = 2;
 
     private MessageUtils() {
     }
 
     public static Cell<Actor> showCenterMessage(Gainea game, String message) {
-        return game.ui.inGameUI.showCenterOverlay(TableUtils.removeAfter(LabelUtils.title(game.ui.skin, message), MESSAGE_DURATION)).center();
+        return game.ui.inGameUI.showCenterOverlay(TableUtils.removeAfter(LabelUtils.title(game.ui.skin, message), MESSAGE_DURATION)).expandY().center();
     }
 
     public static Cell<Actor> showActionMessage(Gainea game, String message) {
-        return showCenterMessage(game, message).top().padTop(100);
+        return game.ui.inGameUI.showCenterOverlay(TableUtils.removeAfter(LabelUtils.title(game.ui.skin, message), MESSAGE_DURATION)).expandY().top().padTop(100);
     }
 }

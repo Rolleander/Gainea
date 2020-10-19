@@ -13,6 +13,7 @@ import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.MapObject;
 import com.broll.gainea.server.core.objects.Monster;
 import com.broll.gainea.server.core.player.Player;
+import com.esotericsoftware.minlog.Log;
 
 import java.util.Collections;
 import java.util.Iterator;
@@ -29,7 +30,7 @@ public class UnitControl {
         units.forEach(unit -> unit.setLocation(location));
         NT_Event_MovedObject movedObject = new NT_Event_MovedObject();
         movedObject.objects = units.stream().map(MapObject::nt).toArray(NT_BoardObject[]::new);
-        GameUtils.sendUpdate(game,movedObject);
+        GameUtils.sendUpdate(game, movedObject);
         game.getUpdateReceiver().moved(units, location);
         ProcessingUtils.pause(MOVE_PAUSE);
     }
@@ -50,7 +51,7 @@ public class UnitControl {
         if (consumer != null) {
             consumer.accept(nt);
         }
-        GameUtils.sendUpdate(game,nt);
+        GameUtils.sendUpdate(game, nt);
         ProcessingUtils.pause(DAMAGE_PAUSE);
     }
 
@@ -73,7 +74,7 @@ public class UnitControl {
         if (consumer != null) {
             consumer.accept(nt);
         }
-        GameUtils.sendUpdate(game,nt);
+        GameUtils.sendUpdate(game, nt);
         game.getUpdateReceiver().damaged(unit, damage);
         ProcessingUtils.pause(DAMAGE_PAUSE);
     }
@@ -90,7 +91,7 @@ public class UnitControl {
         if (consumer != null) {
             consumer.accept(placedObject);
         }
-        GameUtils.sendUpdate(game,placedObject);
+        GameUtils.sendUpdate(game, placedObject);
         game.getUpdateReceiver().spawned(object, location);
         ProcessingUtils.pause(SPAWN_PAUSE);
     }
@@ -110,6 +111,7 @@ public class UnitControl {
         List<Monster> activeMonsters = game.getObjects().stream().filter(it -> it instanceof Monster).map(it -> (Monster) it).collect(Collectors.toList());
         Monster monster = game.getMonsterFactory().spawn(area.getType(), activeMonsters);
         if (monster != null) {
+            Log.info("spawn monster " + monster.getName() + " on " + area);
             game.getObjects().add(monster);
             spawn(game, monster, area);
         }

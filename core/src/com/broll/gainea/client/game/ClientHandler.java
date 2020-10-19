@@ -121,4 +121,7 @@ public class ClientHandler {
         client.shutdown();
     }
 
+    public LobbyGameClient getClient() {
+        return client;
+    }
 }

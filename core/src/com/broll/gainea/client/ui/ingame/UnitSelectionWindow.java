@@ -8,7 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.broll.gainea.Gainea;
-import com.broll.gainea.client.ui.render.MapObjectRender;
+import com.broll.gainea.client.ui.elements.render.MapObjectRender;
 import com.broll.gainea.client.ui.elements.ActionListener;
 import com.broll.gainea.client.ui.elements.IconLabel;
 import com.broll.gainea.client.ui.elements.LabelUtils;

@@ -10,6 +10,7 @@ import com.broll.gainea.net.NT_Action_PlaceUnit;
 import com.broll.gainea.net.NT_Reaction;
 import com.broll.gainea.server.core.actions.AbstractActionHandler;
 import com.broll.gainea.server.core.map.Location;
+import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.server.core.utils.UnitControl;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -28,15 +29,15 @@ public class PlaceUnitAction extends AbstractActionHandler<NT_Action_PlaceUnit, 
         }
     }
 
-    public Pair<BattleObject, Location> placeSoldier(List<Location> locations) {
-        return placeUnit(createSoldier(), locations, "Platziere einen Soldat");
+    public Pair<BattleObject, Location> placeSoldier(Player player, List<Location> locations) {
+        return placeUnit(player, createSoldier(), locations, "Platziere einen Soldat");
     }
 
-    public Pair<BattleObject, Location> placeCommander(List<Location> locations) {
-        return placeUnit(createCommander(), locations, "Platziere deinen Feldherr");
+    public Pair<BattleObject, Location> placeCommander(Player player, List<Location> locations) {
+        return placeUnit(player, createCommander(), locations, "Platziere deinen Feldherr");
     }
 
-    public Pair<BattleObject, Location> placeMonster(Monster monster) {
+    public Pair<BattleObject, Location> placeMonster(Player player, Monster monster) {
         return null;
     }
 
@@ -48,7 +49,7 @@ public class PlaceUnitAction extends AbstractActionHandler<NT_Action_PlaceUnit, 
         return player.getFraction().createCommander(null);
     }
 
-    public Pair<BattleObject, Location> placeUnit(BattleObject object, List<Location> locations, String message) {
+    public Pair<BattleObject, Location> placeUnit(Player player, BattleObject object, List<Location> locations, String message) {
         NT_Action_PlaceUnit placeUnit = new NT_Action_PlaceUnit();
         placeUnit.unitToPlace = object.nt();
         placeUnit.possibleLocations = locations.stream().mapToInt(Location::getNumber).toArray();

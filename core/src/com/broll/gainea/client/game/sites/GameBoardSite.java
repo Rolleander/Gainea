@@ -15,6 +15,7 @@ public class GameBoardSite extends AbstractGameSite {
     @PackageReceiver
     public void received(NT_BoardUpdate update) {
         game.state.update(update);
+        game.ui.inGameUI.updateWindows();
     }
 
 }

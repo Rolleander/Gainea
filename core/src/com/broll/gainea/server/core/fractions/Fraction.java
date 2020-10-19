@@ -49,7 +49,7 @@ public abstract class Fraction {
         //default place one new soldier on an occupied location
         List<Location> spawnLocations = owner.getControlledLocations();
         PlaceUnitAction placeUnitAction = actionHandlers.getHandler(PlaceUnitAction.class);
-        placeUnitAction.placeSoldier(spawnLocations);
+        placeUnitAction.placeSoldier(owner,spawnLocations);
     }
 
     public void turnStarted(ActionHandlers actionHandlers) {

@@ -50,7 +50,7 @@ public class GameStartSite extends AbstractGameSite {
 
     public void startGame() {
         ServerLobby<LobbyData, PlayerData> lobby = getLobby();
-        lobby.chat(null,"Starte Spiel...");
+        lobby.chat(null, "Starte Spiel...");
         GameContainer game = new GameContainer(lobby);
         game.initHandlers(new ReactionResultHandler(game, lobby));
         gameStart.loading = true;
@@ -59,28 +59,31 @@ public class GameStartSite extends AbstractGameSite {
         lobby.getPlayers().forEach(p -> gameStart.playerData.put(p.getData().getGamePlayer(), new PlayerStartData()));
         lobby.setLocked(true);
         lobby.sendToAllTCP(game.start());
-        Log.info("Started game in lobby "+lobby.getName());
+        Log.info("Started game in lobby " + lobby.getName());
     }
 
     private void gameLoaded() {
-        //give random goals and start locations to everyone
-        drawStartLocations();
-        assignGoals();
         getGame().getProcessingCore().execute(() -> {
             //spawn monsters
             int totalMonsters = getLobby().getData().getMonsterCount() * getGame().getMap().getActiveExpansionTypes().size();
+            Log.info("Spawn Monsters: " + totalMonsters);
             UnitControl.spawnMonsters(getGame(), totalMonsters);
             ProcessingUtils.pause(2000);
+            //give random goals and start locations to everyone
+            drawStartLocations();
+            assignGoals();
             //players start placing units
             placeUnit();
-        }, 5000);
+        }, 3000);
     }
 
     private void assignGoals() {
+        Log.info("Assign Goals");
         GameContainer game = getGame();
         int startGoalsCount = getLobby().getData().getStartGoals();
         for (int i = 0; i < startGoalsCount; i++) {
             game.getPlayers().forEach(game.getGoalStorage()::assignNewRandomGoal);
+            ProcessingUtils.pause(3000);
         }
     }
 
@@ -88,7 +91,7 @@ public class GameStartSite extends AbstractGameSite {
         GameContainer game = getGame();
         int startLocationsCount = getLobby().getData().getStartLocations();
         int playerCount = game.getPlayers().size();
-        List<Area> startLocations = LocationPicker.pickRandom(game.getMap(), playerCount * startLocationsCount);
+        List<Area> startLocations = LocationPicker.pickRandomEmpty(game.getMap(), playerCount * startLocationsCount);
         for (Player player : game.getPlayers()) {
             List<Location> playerStartLocations = startLocations.stream().limit(startLocationsCount).collect(Collectors.toList());
             startLocations.removeAll(playerStartLocations);
@@ -97,6 +100,7 @@ public class GameStartSite extends AbstractGameSite {
     }
 
     private void placeUnit() {
+        Log.info("placeUnit");
         GameContainer game = getGame();
         int playerCount = getPlayersCount();
         int placingRound = gameStart.startUnitsPlaced / playerCount;
@@ -111,11 +115,12 @@ public class GameStartSite extends AbstractGameSite {
         String text = "Setze " + unitToPlace.getName() + " auf einen Startpunkt";
         ActionHandlers actionHandlers = game.getTurnBuilder().getActionHandlers();
         PlaceUnitAction placeUnitAction = actionHandlers.getHandler(PlaceUnitAction.class);
-        Pair<BattleObject, Location> result = placeUnitAction.placeUnit(unitToPlace, locations, text);
+        Pair<BattleObject, Location> result = placeUnitAction.placeUnit(player, unitToPlace, locations, text);
         placedUnit(result.getLeft(), result.getRight());
     }
 
     private void placedUnit(BattleObject battleObject, Location location) {
+        Log.info("player placedUnit");
         GameContainer game = getGame();
         int startLocationsCount = getLobby().getData().getStartLocations();
         Player player = getPlacingPlayer();

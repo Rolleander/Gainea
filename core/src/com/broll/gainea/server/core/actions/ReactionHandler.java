@@ -16,7 +16,7 @@ public class ReactionHandler {
 
     private GameContainer game;
     private ReactionActions reactionActions;
-    private Map<ActionContext, RequiredAction> requiredActions = Collections.synchronizedMap(new HashMap<>());
+    private Map<RequiredActionContext, RequiredAction> requiredActions = Collections.synchronizedMap(new HashMap<>());
     private ActionHandlers actionHandlers;
     private List<ActionContext> furtherActions = new ArrayList<>();
 
@@ -26,11 +26,12 @@ public class ReactionHandler {
         this.reactionActions = actionHandlers.getReactionActions();
     }
 
-    public void requireAction(Player target, ActionContext requiredAction) {
-        RequiredAction ra = new RequiredAction();
-        ra.player = target;
-        ra.context = requiredAction;
-        requiredActions.put(requiredAction, ra);
+    public void requireAction(Player target, RequiredActionContext context) {
+        RequiredAction action = new RequiredAction();
+        action.player = target;
+        action.context = context;
+        game.pushAction(context);
+        requiredActions.put(context, action);
     }
 
     public void optionalAction(ActionContext furtherAction) {
@@ -88,9 +89,10 @@ public class ReactionHandler {
             RequiredAction ra = requiredActions.get(actionContext);
             if (ra != null) {
                 if (gamePlayer == ra.player) {
-                    handleReaction(gamePlayer, actionContext, reaction);
+                    handleReaction(gamePlayer, ra.context.getActionContext(), reaction);
                     //consume required action
                     requiredActions.remove(actionContext);
+                    game.consumeAction(ra.context.getAction().actionId);
                 }
             }
         }
@@ -116,7 +118,7 @@ public class ReactionHandler {
     }
 
     private class RequiredAction {
-        public ActionContext context;
+        public RequiredActionContext context;
         public Player player;
     }
 }

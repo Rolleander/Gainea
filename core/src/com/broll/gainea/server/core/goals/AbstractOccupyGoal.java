@@ -49,7 +49,8 @@ public abstract class AbstractOccupyGoal extends AbstractGoal {
 
     private boolean hasLocationsOf(ExpansionType type) {
         for (Location location : locations) {
-            if (map.getExpansion(type).getAllLocations().contains(location)) {
+            Expansion expansion = map.getExpansion(type);
+            if (expansion != null && expansion.getAllLocations().contains(location)) {
                 return true;
             }
         }

@@ -7,7 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.broll.gainea.Gainea;
 import com.broll.gainea.client.game.PlayerPerformAction;
 import com.broll.gainea.client.game.PlayerPerformOptionalAction;
-import com.broll.gainea.client.ui.render.MapObjectRender;
+import com.broll.gainea.client.ui.elements.render.MapObjectRender;
 import com.broll.gainea.client.ui.elements.TableUtils;
 import com.broll.gainea.client.ui.ingame.AttackAndMoveActionHandler;
 import com.broll.gainea.client.ui.ingame.BattleHandler;
@@ -18,6 +18,7 @@ import com.broll.gainea.net.NT_Action;
 import com.broll.gainea.net.NT_Action_Attack;
 import com.broll.gainea.net.NT_Action_Card;
 import com.broll.gainea.net.NT_Action_Move;
+import com.broll.gainea.net.NT_Card;
 import com.broll.gainea.net.NT_Unit;
 import com.broll.gainea.server.core.map.Location;
 
@@ -41,6 +42,7 @@ public class InGameUI {
     private RequiredActionHandler requiredActionHandler;
     private BattleHandler battleHandler;
     private MenuWindows windows;
+    private boolean battleOpen=false;
 
     public InGameUI(Gainea game, Skin skin) {
         this.attackAndMoveHandler = new AttackAndMoveActionHandler(game);
@@ -90,12 +92,14 @@ public class InGameUI {
     public void selectStack(Location location, Collection<MapObjectRender> stack) {
         clearSelection();
         Table window = UnitSelectionWindow.create(game, skin, location, stack);
-        center.add(window).right().top().expand().width(230);
+        center.add(window).right().top().expand();
         center.layout();
     }
 
     public void selectedUnits(List<NT_Unit> units) {
-        attackAndMoveHandler.showFor(units);
+        if(!battleOpen){
+            attackAndMoveHandler.showFor(units);
+        }
     }
 
     public void clearSelection() {
@@ -106,8 +110,12 @@ public class InGameUI {
     public void optionalActions(List<NT_Action> actions, PlayerPerformOptionalAction playerPerformAction) {
         List<NT_Action_Move> moves = actions.stream().filter(it -> it instanceof NT_Action_Move).map(it -> (NT_Action_Move) it).collect(Collectors.toList());
         List<NT_Action_Attack> attacks = actions.stream().filter(it -> it instanceof NT_Action_Attack).map(it -> (NT_Action_Attack) it).collect(Collectors.toList());
-        List<NT_Action_Card> cards = actions.stream().filter(it -> it instanceof NT_Action_Card).map(it -> (NT_Action_Card) it).collect(Collectors.toList());
+        activeCards(actions.stream().filter(it -> it instanceof NT_Action_Card).map(it -> (NT_Action_Card) it).collect(Collectors.toList()), playerPerformAction);
         attackAndMoveHandler.update(moves, attacks, playerPerformAction);
+    }
+
+    public void activeCards(List<NT_Action_Card> cards, PlayerPerformOptionalAction playerPerformAction) {
+        windows.getCardWindow().updatePlayableCards(cards, playerPerformAction);
     }
 
     //required ui action
@@ -118,7 +126,8 @@ public class InGameUI {
 
     public void startBattle(List<NT_Unit> attackers, List<NT_Unit> defenders, Location location) {
         clearSelection();
-        showCenter(battleHandler.startBattle(center, attackers, defenders, location));
+        battleOpen = true;
+        showCenter(battleHandler.startBattle(attackers, defenders, location));
     }
 
     public void updateBattle(int[] attackRolls, int[] defenderRolls, List<Pair<NT_Unit, Integer>> damagedAttackers, List<Pair<NT_Unit, Integer>> damagedDefenders, int state) {
@@ -127,5 +136,13 @@ public class InGameUI {
 
     public void updateWindows() {
         windows.updateWindows();
+    }
+
+    public boolean isBattleOpen() {
+        return battleOpen;
+    }
+
+    public void setBattleOpen(boolean battleOpen) {
+        this.battleOpen = battleOpen;
     }
 }

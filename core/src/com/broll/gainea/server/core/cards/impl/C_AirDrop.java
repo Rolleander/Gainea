@@ -8,13 +8,13 @@ import java.util.stream.Collectors;
 
 public class C_AirDrop extends DirectlyPlayedCard {
     public C_AirDrop() {
-        super(8,"Verstärkung", "Jeder Spieler platziert einen Soldat");
+        super(8, "Verstärkung", "Jeder Spieler platziert einen Soldat");
     }
 
     @Override
     public void play() {
         PlayerUtils.iteratePlayers(game, 1000, player -> {
-            placeUnitHandler.placeSoldier(player.getControlledLocations());
+            placeUnitHandler.placeSoldier(player, player.getControlledLocations());
         });
     }
 

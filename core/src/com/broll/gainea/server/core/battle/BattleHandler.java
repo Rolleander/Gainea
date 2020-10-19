@@ -12,6 +12,7 @@ import com.broll.gainea.net.NT_Unit;
 import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.actions.ReactionActions;
 import com.broll.gainea.server.core.map.Location;
+import com.broll.gainea.server.core.utils.GameUtils;
 import com.broll.gainea.server.core.utils.UnitControl;
 import com.esotericsoftware.minlog.Log;
 
@@ -172,6 +173,7 @@ public class BattleHandler {
         }
         battleActive = false;
         game.getUpdateReceiver().battleResult(result);
+        GameUtils.sendUpdate(game, game.nt());
     }
 
     private void unitDied(BattleObject unit) {

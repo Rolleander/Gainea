@@ -1,4 +1,4 @@
-package com.broll.gainea.client.ui.render;
+package com.broll.gainea.client.ui.elements.render;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;

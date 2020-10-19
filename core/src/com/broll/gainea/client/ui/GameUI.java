@@ -5,6 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.broll.gainea.Gainea;
 import com.broll.gainea.client.Assets;
 import com.broll.gainea.client.IClientListener;
+import com.broll.gainea.client.MapScrollHandler;
 import com.broll.gainea.client.ui.screens.LoadingScreen;
 import com.broll.gainea.client.ui.screens.LobbyScreen;
 import com.broll.gainea.client.ui.screens.StartScreen;
@@ -32,12 +33,13 @@ public class GameUI implements IClientListener {
         this.skin = game.assets.get("ui/cloud-form-ui.json", Skin.class);
         connectionCircle = new ConnectionCircle(game.assets);
         connectionCircle.toFront();
-        game.client.reconnectCheck();
+      //  game.client.reconnectCheck();
     }
 
     public void initInGameUi(){
         game.gameStage.clear();
         inGameUI = new InGameUI(game, skin);
+        game.gameStage.addListener(new MapScrollHandler(game, game.gameStage));
     }
 
     public void showScreen(AbstractScreen screen) {

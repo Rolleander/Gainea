@@ -7,6 +7,9 @@ import com.broll.gainea.net.NT_Action;
 import com.broll.gainea.net.NT_PlayerAction;
 import com.broll.gainea.net.NT_Reaction;
 import com.broll.networklib.PackageReceiver;
+import com.esotericsoftware.minlog.Log;
+
+import java.util.ArrayList;
 
 public class GameActionSite extends AbstractGameSite {
 
@@ -15,6 +18,8 @@ public class GameActionSite extends AbstractGameSite {
     //player has to perform this action
     @PackageReceiver
     public void received(NT_PlayerAction action) {
+        Log.info("received action " + action);
+        game.ui.inGameUI.activeCards(new ArrayList<>(), null);
         if (action.text != null) {
             //show instruction message to player
             MessageUtils.showActionMessage(game, action.text);
@@ -28,5 +33,6 @@ public class GameActionSite extends AbstractGameSite {
         reaction.option = option;
         reaction.options = options;
         client.sendTCP(reaction);
+        Log.info("sent reaction for action " + reaction.actionId);
     }
 }

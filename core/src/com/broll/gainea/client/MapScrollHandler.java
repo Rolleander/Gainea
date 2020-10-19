@@ -18,6 +18,7 @@ public class MapScrollHandler extends InputListener {
     private static float SCROLL_SPEED = 30;
 
     private float lastX, lastY;
+    private boolean dragging=false;
 
     public MapScrollHandler(Gainea game, Stage stage) {
         this.game = game;
@@ -32,11 +33,16 @@ public class MapScrollHandler extends InputListener {
         y = screenVec.y;
         this.lastX = x;
         this.lastY = y;
+        dragging = false;
+        return true;
+    }
+
+    @Override
+    public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
         InGameUI ui = game.ui.inGameUI;
-        if (ui != null) {
+        if (!dragging && ui != null) {
             ui.clearSelection();
         }
-        return true;
     }
 
     @Override
@@ -49,6 +55,7 @@ public class MapScrollHandler extends InputListener {
         camera.translate(-dx, dy);
         this.lastX = x;
         this.lastY = y;
+        dragging = true;
     }
 
     @Override

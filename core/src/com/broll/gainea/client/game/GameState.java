@@ -9,7 +9,13 @@ import com.broll.gainea.net.NT_Goal;
 import com.broll.gainea.net.NT_Player;
 import com.broll.gainea.net.NT_Unit;
 import com.broll.gainea.server.init.ExpansionSetting;
+import com.broll.networklib.client.GameClient;
+import com.broll.networklib.client.impl.LobbyPlayer;
+import com.esotericsoftware.minlog.Log;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Streams;
+
+import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,21 +34,25 @@ public class GameState {
     //my player specific data:
     private List<NT_Goal> goals;
     private List<NT_Card> cards;
+    private LobbyPlayer player;
+    private GameClient client;
 
     public GameState(Gainea game) {
         this.game = game;
     }
 
-    public void init(ExpansionSetting setting) {
+    public void init(ExpansionSetting setting, LobbyPlayer player) {
+        this.player = player;
         mapContainer = new ClientMapContainer(game, setting);
         mapObjectsContainer = new MapObjectContainer(this);
         goals = new ArrayList<>();
         cards = new ArrayList<>();
+        objects = new ArrayList<>();
     }
 
     public void update(NT_BoardUpdate update) {
         this.turnNumber = update.turns;
-        this.objects = Arrays.asList(update.objects);
+        this.objects = Lists.newArrayList(update.objects);
         this.players = Arrays.asList(update.players);
         updateMapObjects();
     }
@@ -98,4 +108,9 @@ public class GameState {
     public MapObjectContainer getMapObjectsContainer() {
         return mapObjectsContainer;
     }
+
+    public LobbyPlayer getPlayer() {
+        return player;
+    }
+
 }
