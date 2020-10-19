@@ -50,9 +50,9 @@ public abstract class AbstractCard {
     public abstract boolean isPlayable();
 
     public void play(ActionHandlers actionHandlers) {
+        this.actions = actionHandlers;
         placeUnitHandler = actions.getHandler(PlaceUnitAction.class);
         selectHandler = actions.getHandler(SelectChoiceAction.class);
-        this.actions = actionHandlers;
         play();
     }
 

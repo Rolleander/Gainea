@@ -6,6 +6,7 @@ import com.broll.gainea.net.NT_ReconnectGame;
 import com.broll.gainea.net.NT_StartGame;
 import com.broll.gainea.server.init.ExpansionSetting;
 import com.broll.networklib.PackageReceiver;
+import com.esotericsoftware.minlog.Log;
 
 import java.util.Arrays;
 
@@ -19,6 +20,7 @@ public class GameStartSite extends AbstractGameSite {
 
     @PackageReceiver
     public void received(NT_ReconnectGame reconnectGame) {
+        Log.info("player reconnected!");
         start(reconnectGame);
         //add goals and cards
         game.state.getGoals().addAll(Arrays.asList(reconnectGame.goals));

@@ -63,6 +63,7 @@ public class GameStartSite extends AbstractGameSite {
     }
 
     private void gameLoaded() {
+        gameStart.loading = false;
         getGame().getProcessingCore().execute(() -> {
             //spawn monsters
             int totalMonsters = getLobby().getData().getMonsterCount() * getGame().getMap().getActiveExpansionTypes().size();

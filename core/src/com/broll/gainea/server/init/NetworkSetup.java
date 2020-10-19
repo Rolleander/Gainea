@@ -1,5 +1,6 @@
 package com.broll.gainea.server.init;
 
+import com.broll.gainea.net.NT_Card;
 import com.broll.gainea.server.sites.GameLobbySite;
 import com.broll.gainea.net.NT_Action;
 import com.broll.gainea.net.NT_BoardObject;
@@ -30,6 +31,7 @@ public class NetworkSetup {
         register.registerNetworkType(NT_Unit[].class);
         register.registerNetworkType(NT_Player[].class);
         register.registerNetworkType(NT_Goal[].class);
+        register.registerNetworkType(NT_Card[].class);
         register.registerNetworkType(int[].class);
         register.registerNetworkType(String[].class);
         register.registerNetworkType(Object[].class);

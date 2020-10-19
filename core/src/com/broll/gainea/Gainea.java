@@ -12,6 +12,7 @@ import com.broll.gainea.client.game.ClientHandler;
 import com.broll.gainea.client.MapScrollHandler;
 import com.broll.gainea.client.game.GameState;
 import com.broll.gainea.client.ui.GameUI;
+import com.esotericsoftware.minlog.Log;
 
 public class Gainea extends ApplicationAdapter {
 
@@ -24,7 +25,7 @@ public class Gainea extends ApplicationAdapter {
     public Assets assets;
     public ShapeRenderer shapeRenderer;
     public GameState state;
-    public boolean shutdown=false;
+    public boolean shutdown = false;
 
     @Override
     public void create() {
@@ -35,7 +36,7 @@ public class Gainea extends ApplicationAdapter {
         ui = new GameUI(this);
         client.setClientListener(ui);
         Gdx.input.setInputProcessor(new InputMultiplexer(uiStage, gameStage));
-        shapeRenderer= new ShapeRenderer();
+        shapeRenderer = new ShapeRenderer();
     }
 
     @Override
@@ -64,6 +65,11 @@ public class Gainea extends ApplicationAdapter {
         gameStage.dispose();
         uiStage.dispose();
         client.shutdown();
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            Log.error("", e);
+        }
         shapeRenderer.dispose();
     }
 }

@@ -5,6 +5,7 @@ import com.broll.gainea.net.NT_PlayerTurnContinue;
 import com.broll.gainea.net.NT_Reaction;
 import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.player.Player;
+import com.esotericsoftware.minlog.Log;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -58,6 +59,7 @@ public class ReactionHandler {
     }
 
     public void playerReconnected(Player player) {
+        Log.info(player+" reconnected to game");
         //re send required actions for this player
         requiredActions.values().stream().filter(ra -> ra.player == player).forEach(requiredAction -> {
             player.getServerPlayer().sendTCP(requiredAction.context.getAction());

@@ -14,6 +14,7 @@ public class ProcessingCore {
 
     private GameContainer game;
     private ScheduledExecutorService executor;
+    private ScheduledExecutorService parallalExecutor;
     private ScheduledFuture<?> lastFuture;
     private RunnableWrapper lastWrapper;
     private Runnable finishedProcessingListener;
@@ -22,6 +23,15 @@ public class ProcessingCore {
         this.game = game;
         this.finishedProcessingListener = finishedProcessingListener;
         this.executor = Executors.newScheduledThreadPool(1);
+        this.parallalExecutor = Executors.newScheduledThreadPool(3);
+    }
+
+    public void executeParallel(Runnable runnable) {
+        executeParallel(runnable, 0);
+    }
+
+    public synchronized void executeParallel(Runnable runnable, int afterDelay) {
+        parallalExecutor.schedule(runnable, afterDelay, TimeUnit.MILLISECONDS);
     }
 
     public void execute(Runnable runnable) {

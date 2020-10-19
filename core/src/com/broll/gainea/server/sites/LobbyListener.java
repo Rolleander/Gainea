@@ -9,6 +9,7 @@ import com.broll.gainea.server.core.fractions.FractionType;
 import com.broll.networklib.server.impl.Player;
 import com.broll.networklib.server.impl.ServerLobby;
 import com.broll.networklib.server.impl.ServerLobbyListener;
+import com.esotericsoftware.minlog.Log;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -54,14 +55,14 @@ public class LobbyListener implements ServerLobbyListener<LobbyData, PlayerData>
     public void playerReconnected(ServerLobby<LobbyData, PlayerData> lobby, Player<PlayerData> player) {
         GameContainer game = lobby.getData().getGame();
         if (game != null) {
-            game.getProcessingCore().execute(() -> {
+            game.getProcessingCore().executeParallel(() -> {
                 MessageUtils.gameLog(game, player.getName() + " ist zurück!");
                 //send game reconnect update to reconnecting player
                 com.broll.gainea.server.core.player.Player gamePlayer = player.getData().getGamePlayer();
                 player.sendTCP(game.reconnect(gamePlayer));
                 //check for open actions and resend them
                 game.getReactionHandler().playerReconnected(gamePlayer);
-            }, 500);
+            }, 100);
         }
     }
 

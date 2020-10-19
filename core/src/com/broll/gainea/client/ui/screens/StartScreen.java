@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.broll.gainea.client.ui.AbstractScreen;
+import com.broll.gainea.client.ui.elements.LabelUtils;
 import com.broll.networklib.client.impl.GameLobby;
 import com.broll.networklib.client.tasks.DiscoveredLobbies;
 import com.esotericsoftware.minlog.Log;
@@ -39,6 +40,7 @@ public class StartScreen extends AbstractScreen {
     }
 
     public void showLobbies(DiscoveredLobbies lobbies) {
+        this.lobbies.clear();
         lobbies.getLobbies().forEach(lobby -> {
             Table table = new Table(skin);
             table.setFillParent(true);
@@ -56,6 +58,9 @@ public class StartScreen extends AbstractScreen {
             StartScreen.this.lobbies.add(table);
             StartScreen.this.lobbies.row();
         });
+        if (lobbies.getLobbies().isEmpty()) {
+            this.lobbies.add(LabelUtils.label(skin, "Keine offenen Lobbies auf dem Server gefunden!"));
+        }
     }
 
     public void showInfo(String text) {
