@@ -33,7 +33,7 @@ public class MecenaryFraction extends Fraction {
 
     @Override
     public void prepareTurn(ActionHandlers actionHandlers) {
-        super.turnStarted(actionHandlers);
+        super.prepareTurn(actionHandlers);
         turns++;
         if (turns >= SPAWN_TURN) {
             //spawn another soldier

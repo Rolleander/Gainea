@@ -2,7 +2,6 @@ package com.broll.gainea.client.game.sites;
 
 import com.broll.gainea.client.game.PlayerPerformOptionalAction;
 import com.broll.gainea.client.ui.elements.MessageUtils;
-import com.broll.gainea.client.ui.elements.TableUtils;
 import com.broll.gainea.net.NT_Action;
 import com.broll.gainea.net.NT_EndTurn;
 import com.broll.gainea.net.NT_PlayerTurn;
@@ -41,6 +40,7 @@ public class GameTurnSite extends AbstractGameSite {
 
     @PackageReceiver
     public void received(NT_PlayerTurn turnStart) {
+        game.state.playerTurnStart();
         actions.clear();
         actions.addAll(Arrays.asList(turnStart.actions));
         turnStartMessage(getPlayer());
@@ -53,10 +53,17 @@ public class GameTurnSite extends AbstractGameSite {
         playerPickAction();
     }
 
+
+    @PackageReceiver
+    public void received(NT_EndTurn endTurn) {
+        //no more actions, player can only end turn now
+        game.state.turnIdle();
+    }
+
     @PackageReceiver
     public void received(NT_PlayerWait wait) {
         //other players turn
-        game.ui.inGameUI.activeCards(new ArrayList<>(), null);
+        game.state.playerTurnEnded();
         LobbyPlayer otherPlayer = getLobby().getPlayer(wait.playersTurn);
         actions.clear();
         turnStartMessage(otherPlayer);
@@ -71,7 +78,7 @@ public class GameTurnSite extends AbstractGameSite {
             //other players turn
             message = turnPlayer.getName() + "'s Zug!";
         }
-       MessageUtils.showCenterMessage(game, message);
+        MessageUtils.showCenterMessage(game, message);
     }
 
     private void playerPickAction() {

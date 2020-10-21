@@ -35,7 +35,9 @@ public class GameState {
     private List<NT_Goal> goals;
     private List<NT_Card> cards;
     private LobbyPlayer player;
-    private GameClient client;
+    private List<GameStateListener> stateListeners = new ArrayList<>();
+    private boolean playersTurn;
+    private boolean actionsAllowed;
 
     public GameState(Gainea game) {
         this.game = game;
@@ -50,6 +52,44 @@ public class GameState {
         objects = new ArrayList<>();
     }
 
+    public void addListener(GameStateListener listener) {
+        this.stateListeners.add(listener);
+    }
+
+    public void playerTurnStart() {
+        this.playersTurn = true;
+    }
+
+    public void turnIdle() {
+        if (playersTurn) {
+            updateIdleState(true);
+        }
+    }
+
+    public void playerTurnEnded() {
+        this.playersTurn = false;
+        updateIdleState(false);
+    }
+
+    public boolean isPlayersTurn() {
+        return playersTurn;
+    }
+
+    public void updateIdleState(boolean idle) {
+        actionsAllowed = idle;
+        stateListeners.forEach(listener -> {
+            if (idle) {
+                listener.playerTurnIdle();
+            } else {
+                listener.gameBusy();
+            }
+        });
+    }
+
+    public boolean areActionsAllowed() {
+        return actionsAllowed;
+    }
+
     public void update(NT_BoardUpdate update) {
         this.turnNumber = update.turns;
         this.objects = Lists.newArrayList(update.objects);
@@ -62,11 +102,13 @@ public class GameState {
     }
 
     public void performAction(NT_Action action, PlayerPerformAction playerPerformAction) {
+        updateIdleState(false);
         game.ui.inGameUI.action(action, playerPerformAction);
     }
 
     public void performOptionalAction(List<NT_Action> actions, PlayerPerformOptionalAction playerPerformAction) {
         game.ui.inGameUI.optionalActions(actions, playerPerformAction);
+        updateIdleState(true);
     }
 
     public List<NT_Unit> getUnits(int playerId) {

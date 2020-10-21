@@ -19,7 +19,6 @@ public class GameActionSite extends AbstractGameSite {
     @PackageReceiver
     public void received(NT_PlayerAction action) {
         Log.info("received action " + action);
-        game.ui.inGameUI.activeCards(new ArrayList<>(), null);
         if (action.text != null) {
             //show instruction message to player
             MessageUtils.showActionMessage(game, action.text);

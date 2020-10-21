@@ -61,7 +61,7 @@ public class GameEventSite extends AbstractGameSite {
 
     @PackageReceiver
     public void received(NT_Event_ReceivedCard card) {
-        //TODO show card
+        game.ui.inGameUI.showCenterOverlay(TableUtils.removeAfter(CardWindow.renderCard(game, card.card), 3));
         game.state.getCards().add(card.card);
         game.ui.inGameUI.updateWindows();
     }
@@ -121,7 +121,7 @@ public class GameEventSite extends AbstractGameSite {
 
     @PackageReceiver
     public void received(NT_Event_FocusLocation location) {
-        MapScrollUtils.showLocation(game, location.location);
+        MapScrollUtils.showLocations(game, location.location);
     }
 
     @PackageReceiver

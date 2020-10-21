@@ -81,9 +81,6 @@ public class ClientHandler {
 
     public void reconnectCheck() {
         clientExecute(() -> client.reconnectCheck(), lobby -> {
-            if (lobby != null) {
-                connectedLobby(lobby);
-            }
         }, "Unable to reconnect to lobby");
     }
 

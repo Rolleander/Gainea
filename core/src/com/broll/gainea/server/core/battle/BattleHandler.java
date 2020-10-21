@@ -18,6 +18,7 @@ import com.esotericsoftware.minlog.Log;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -58,9 +59,13 @@ public class BattleHandler {
 
     private void sendFightStart() {
         NT_Battle_Start start = new NT_Battle_Start();
-        start.attackers = aliveAttackers.stream().map(BattleObject::nt).toArray(NT_Unit[]::new);
-        start.defenders = defendingArmy.stream().map(BattleObject::nt).toArray(NT_Unit[]::new);
+        start.attackers = aliveAttackers.stream().sorted(sortById()).map(BattleObject::nt).toArray(NT_Unit[]::new);
+        start.defenders = defendingArmy.stream().sorted(sortById()).map(BattleObject::nt).toArray(NT_Unit[]::new);
         reactionResult.sendGameUpdate(start);
+    }
+
+    private Comparator<BattleObject> sortById() {
+        return (o1, o2) -> Integer.compare(o1.getId(), o2.getId());
     }
 
     public void playerReaction(Player player, NT_Battle_Reaction battle_reaction) {
@@ -83,19 +88,21 @@ public class BattleHandler {
 
     private void fight() {
         Battle battle;
+        Log.info("Fight!  Attackers: (" + aliveAttackers.stream().map(it -> it.getId() + "| " + it.getName() + " " + it.getPower() + " " + it.getHealth()).collect(Collectors.joining(", ")) + ")   Defenders: (" + defendingArmy.stream().map(it -> it.getId() + "| " + it.getName() + " " + it.getPower() + " " + it.getHealth()).collect(Collectors.joining(", ")) + ")");
         if (defenderOwner == null) {
             //fight against neutral enemies (monsters)
             battle = new Battle(battleLocation, attackerOwner, aliveAttackers, defendingArmy);
         } else {
             //fight against player
-            battle = new Battle(battleLocation, attackerOwner, attackers, defenderOwner, defendingArmy);
+            battle = new Battle(battleLocation, attackerOwner, aliveAttackers, defenderOwner, defendingArmy);
         }
         FightResult result = battle.fight();
         NT_Battle_Update update = new NT_Battle_Update();
         update.attackerRolls = result.getAttackRolls().stream().mapToInt(i -> i).toArray();
         update.defenderRolls = result.getDefenderRolls().stream().mapToInt(i -> i).toArray();
-        update.attackers = aliveAttackers.stream().map(BattleObject::nt).toArray(NT_Unit[]::new);
-        update.defenders = defendingArmy.stream().map(BattleObject::nt).toArray(NT_Unit[]::new);
+        update.attackers = aliveAttackers.stream().sorted(sortById()).map(BattleObject::nt).toArray(NT_Unit[]::new);
+        update.defenders = defendingArmy.stream().sorted(sortById()).map(BattleObject::nt).toArray(NT_Unit[]::new);
+        Log.info("Fight result:  Attackers: (" + aliveAttackers.stream().map(it -> it.getId() + "| " + it.getName() + " " + it.getPower() + " " + it.getHealth()).collect(Collectors.joining(", ")) + ")   Defenders: (" + defendingArmy.stream().map(it -> it.getId() + "| " + it.getName() + " " + it.getPower() + " " + it.getHealth()).collect(Collectors.joining(", ")) + ")");
         result.getDeadAttackers().forEach(unit -> {
             aliveAttackers.remove(unit);
             unitDied(unit);
@@ -162,18 +169,19 @@ public class BattleHandler {
 
     private void battleFinished() {
         BattleResult result = new BattleResult(attackers, defenders, battleLocation);
+        Log.info("Battle over! Surviving Attackers: (" + aliveAttackers.stream().map(it -> it.getId() + "| " + it.getName() + " " + it.getPower() + " " + it.getHealth()).collect(Collectors.joining(", ")) + ")  Surviving Defenders: (" + aliveDefenders.stream().map(it -> it.getId() + "| " + it.getName() + " " + it.getPower() + " " + it.getHealth()).collect(Collectors.joining(", "))+")");
         //if defenders lost, move surviving attackers to location
         if (result.attackersWon()) {
             UnitControl.move(game, attackers.stream().filter(BattleObject::isAlive).collect(Collectors.toList()), battleLocation);
         }
-        //find monsters to give killing player rewards
+        battleActive = false;
+        game.getUpdateReceiver().battleResult(result);
+        GameUtils.sendUpdate(game, game.nt());
+        //find dead monsters to give killing player rewards
         if (attackerOwner != null) {
             Fraction fraction = attackerOwner.getFraction();
             killedDefenders.stream().filter(it -> it instanceof Monster && it.getOwner() == null).map(it -> (Monster) it).forEach(fraction::killedMonster);
         }
-        battleActive = false;
-        game.getUpdateReceiver().battleResult(result);
-        GameUtils.sendUpdate(game, game.nt());
     }
 
     private void unitDied(BattleObject unit) {

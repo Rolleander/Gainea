@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.broll.gainea.Gainea;
 import com.broll.gainea.client.game.PlayerPerformAction;
 import com.broll.gainea.client.game.PlayerPerformOptionalAction;
+import com.broll.gainea.client.ui.elements.EndTurnButton;
 import com.broll.gainea.client.ui.elements.render.MapObjectRender;
 import com.broll.gainea.client.ui.elements.TableUtils;
 import com.broll.gainea.client.ui.ingame.AttackAndMoveActionHandler;
@@ -27,6 +28,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Stack;
 import java.util.stream.Collectors;
 
 public class InGameUI {
@@ -42,7 +44,7 @@ public class InGameUI {
     private RequiredActionHandler requiredActionHandler;
     private BattleHandler battleHandler;
     private MenuWindows windows;
-    private boolean battleOpen=false;
+    private EndTurnButton endTurnButton;
 
     public InGameUI(Gainea game, Skin skin) {
         this.attackAndMoveHandler = new AttackAndMoveActionHandler(game);
@@ -59,6 +61,9 @@ public class InGameUI {
         bottomBar.add(TableUtils.textButton(skin, "Spieler", () -> windows.showPlayerWindow()));
         bottomBar.add(TableUtils.textButton(skin, "Ziele", () -> windows.showGoalWindow()));
         bottomBar.add(TableUtils.textButton(skin, "Karten", () -> windows.showCardWindow()));
+        endTurnButton = new EndTurnButton(skin);
+        topBar.add(endTurnButton).left().space(15);
+        game.state.addListener(endTurnButton);
     }
 
     public Cell<Actor> showCenter(Actor actor) {
@@ -97,7 +102,7 @@ public class InGameUI {
     }
 
     public void selectedUnits(List<NT_Unit> units) {
-        if(!battleOpen){
+        if(game.state.areActionsAllowed()){
             attackAndMoveHandler.showFor(units);
         }
     }
@@ -112,9 +117,10 @@ public class InGameUI {
         List<NT_Action_Attack> attacks = actions.stream().filter(it -> it instanceof NT_Action_Attack).map(it -> (NT_Action_Attack) it).collect(Collectors.toList());
         activeCards(actions.stream().filter(it -> it instanceof NT_Action_Card).map(it -> (NT_Action_Card) it).collect(Collectors.toList()), playerPerformAction);
         attackAndMoveHandler.update(moves, attacks, playerPerformAction);
+        endTurnButton.update(playerPerformAction);
     }
 
-    public void activeCards(List<NT_Action_Card> cards, PlayerPerformOptionalAction playerPerformAction) {
+    private void activeCards(List<NT_Action_Card> cards, PlayerPerformOptionalAction playerPerformAction) {
         windows.getCardWindow().updatePlayableCards(cards, playerPerformAction);
     }
 
@@ -126,23 +132,14 @@ public class InGameUI {
 
     public void startBattle(List<NT_Unit> attackers, List<NT_Unit> defenders, Location location) {
         clearSelection();
-        battleOpen = true;
         showCenter(battleHandler.startBattle(attackers, defenders, location));
     }
 
-    public void updateBattle(int[] attackRolls, int[] defenderRolls, List<Pair<NT_Unit, Integer>> damagedAttackers, List<Pair<NT_Unit, Integer>> damagedDefenders, int state) {
+    public void updateBattle(int[] attackRolls, int[] defenderRolls, Stack<NT_Unit> damagedAttackers, Stack<NT_Unit>  damagedDefenders, int state) {
         battleHandler.updateBattle(attackRolls, defenderRolls, damagedAttackers, damagedDefenders, state);
     }
 
     public void updateWindows() {
         windows.updateWindows();
-    }
-
-    public boolean isBattleOpen() {
-        return battleOpen;
-    }
-
-    public void setBattleOpen(boolean battleOpen) {
-        this.battleOpen = battleOpen;
     }
 }

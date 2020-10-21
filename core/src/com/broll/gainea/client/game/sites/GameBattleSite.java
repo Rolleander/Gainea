@@ -4,6 +4,7 @@ import com.broll.gainea.net.NT_Battle_Start;
 import com.broll.gainea.net.NT_Battle_Update;
 import com.broll.gainea.net.NT_Unit;
 import com.broll.networklib.PackageReceiver;
+import com.esotericsoftware.minlog.Log;
 import com.google.common.collect.Lists;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -11,6 +12,8 @@ import org.apache.commons.lang3.tuple.Pair;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Stack;
+import java.util.stream.Collectors;
 
 public class GameBattleSite extends AbstractGameSite {
 
@@ -19,25 +22,24 @@ public class GameBattleSite extends AbstractGameSite {
 
     @PackageReceiver
     public void received(NT_Battle_Start battle) {
-        game.ui.inGameUI.activeCards(new ArrayList<>(), null);
+        game.state.updateIdleState(false);
         this.attackers = Lists.newArrayList(battle.attackers);
         this.defenders = Lists.newArrayList(battle.defenders);
         int location = defenders.get(0).location;
+        Log.info("Start fight: Attackers (" + attackers.stream().map(it -> it.id + "| " + it.name + " " + it.power + " " + it.health).collect(Collectors.joining(", ")) + ") Defenders (" + defenders.stream().map(it -> it.id + "| " + it.name + " " + it.power + " " + it.health).collect(Collectors.joining(", ")) + ")");
         game.ui.inGameUI.startBattle(attackers, defenders, game.state.getMap().getLocation(location));
     }
 
-    private List<Pair<NT_Unit, Integer>> doDamageUpdates(List<NT_Unit> before, List<NT_Unit> after) {
-        List<Pair<NT_Unit, Integer>> updates = new ArrayList<>();
+
+    private Stack<NT_Unit> calcDamageUpdates(List<NT_Unit> before, List<NT_Unit> after) {
+        Stack<NT_Unit> damages = new Stack<>();
         for (int i = 0; i < after.size(); i++) {
             int delta = before.get(i).health - after.get(i).health;
-            if (after.get(i).health <= 0) {
-                before.remove(i);
-            }
-            if (delta != 0) {
-                updates.add(Pair.of(after.get(i), delta));
+            for (int d = 0; d < delta; d++) {
+                damages.push(after.get(i));
             }
         }
-        return updates;
+        return damages;
     }
 
     @PackageReceiver
@@ -46,8 +48,11 @@ public class GameBattleSite extends AbstractGameSite {
         int[] defenderRolls = battle.defenderRolls;
         List<NT_Unit> attackers = Lists.newArrayList(battle.attackers);
         List<NT_Unit> defenders = Lists.newArrayList(battle.defenders);
-        List<Pair<NT_Unit, Integer>> damagedAttackers = doDamageUpdates(this.attackers, attackers);
-        List<Pair<NT_Unit, Integer>> damagedDefenders = doDamageUpdates(this.defenders, defenders);
+        Log.info("Update fight: Attackers (" + attackers.stream().map(it -> it.id + "| " + it.name + " " + it.power + " " + it.health).collect(Collectors.joining(", ")) + ") Defenders (" + defenders.stream().map(it -> it.id + "| " + it.name + " " + it.power + " " + it.health).collect(Collectors.joining(", ")) + ")");
+        Stack<NT_Unit> damagedAttackers = calcDamageUpdates(this.attackers, attackers);
+        Stack<NT_Unit> damagedDefenders = calcDamageUpdates(this.defenders, defenders);
+        this.attackers = attackers;
+        this.defenders = defenders;
         game.ui.inGameUI.updateBattle(attackRolls, defenderRolls, damagedAttackers, damagedDefenders, battle.state);
     }
 }

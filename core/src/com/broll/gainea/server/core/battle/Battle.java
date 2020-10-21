@@ -33,6 +33,8 @@ public class Battle {
     public FightResult fight() {
         int attacks = attackPower.getDiceCount();
         int blocks = defendingPower.getDiceCount();
+        int rawAttackerPower = attackers.stream().map(BattleObject::getPower).reduce(0,Integer::sum);
+        int rawDefenderPower = defenders.stream().map(BattleObject::getPower).reduce(0,Integer::sum);
         int deltaAttacks = attacks - blocks;
         int battleSize = Math.min(attacks, blocks);
         List<Integer> allAttackRolls = attackPower.roll();
@@ -50,10 +52,10 @@ public class Battle {
         int blockWins = battleSize - attackWins;
         if (deltaAttacks < 0) {
             //less attacker dices => deal remaining damage to attacking units without dices
-            blockWins += Math.min(deltaAttacks * -1, attackers.size() - attacks);
+            blockWins += Math.min(deltaAttacks * -1, rawAttackerPower- attacks);
         } else if (deltaAttacks > 0) {
             //less defender dices => deal remaining damage to defending units without dices
-            attackWins += Math.min(deltaAttacks, defenders.size() - blocks);
+            attackWins += Math.min(deltaAttacks, rawDefenderPower - blocks);
         }
         //sort ascending (so that weakest power level units die first)
         attackers.sort((o1, o2) -> Integer.compare(o1.getPower(), o2.getPower()));

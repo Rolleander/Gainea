@@ -1,6 +1,7 @@
 package com.broll.gainea.server.core.actions;
 
 import com.broll.gainea.net.NT_Action;
+import com.broll.gainea.net.NT_EndTurn;
 import com.broll.gainea.net.NT_PlayerTurnContinue;
 import com.broll.gainea.net.NT_Reaction;
 import com.broll.gainea.server.core.GameContainer;
@@ -54,12 +55,15 @@ public class ReactionHandler {
                 continueTurn.actions = furtherActions.stream().map(ActionContext::getAction).toArray(NT_Action[]::new);
                 furtherActions.clear();
                 activePlayer.getServerPlayer().sendTCP(continueTurn);
+            } else {
+                //player has no more actions to do, can only end turn
+                activePlayer.getServerPlayer().sendTCP(new NT_EndTurn());
             }
         }
     }
 
     public void playerReconnected(Player player) {
-        Log.info(player+" reconnected to game");
+        Log.info(player + " reconnected to game");
         //re send required actions for this player
         requiredActions.values().stream().filter(ra -> ra.player == player).forEach(requiredAction -> {
             player.getServerPlayer().sendTCP(requiredAction.context.getAction());

@@ -3,6 +3,7 @@ package com.broll.gainea.client.ui.ingame.actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.broll.gainea.Gainea;
+import com.broll.gainea.client.game.MapScrollUtils;
 import com.broll.gainea.client.ui.elements.render.MapObjectRender;
 import com.broll.gainea.client.ui.elements.LabelUtils;
 import com.broll.gainea.client.ui.elements.MapAction;
@@ -23,6 +24,7 @@ public class PlaceUnitWindow {
         window.add(render).spaceRight(10);
         window.add(LabelUtils.label(skin, unit.name));
         showLocationMapActions(game, action.possibleLocations, action, container);
+        MapScrollUtils.showLocations(game, action.possibleLocations);
         TableUtils.consumeClicks(window);
         return window;
     }

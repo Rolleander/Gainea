@@ -19,6 +19,7 @@ import com.broll.gainea.net.NT_Battle_Update;
 import com.broll.gainea.net.NT_Unit;
 import com.broll.gainea.server.core.map.Area;
 import com.broll.gainea.server.core.map.Location;
+import com.esotericsoftware.minlog.Log;
 
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -50,9 +51,9 @@ public class BattleHandler {
         return battleBoard;
     }
 
-    public void updateBattle(int[] attackRolls, int[] defenderRolls, List<Pair<NT_Unit, Integer>> damagedAttackers, List<Pair<NT_Unit, Integer>> damagedDefenders, int state) {
-        Stack<NT_Unit> damageOrderAttacker = flattenDamage(damagedAttackers);
-        Stack<NT_Unit> damageOrderDefender = flattenDamage(damagedDefenders);
+    public void updateBattle(int[] attackRolls, int[] defenderRolls, Stack<NT_Unit>  damageOrderAttacker, Stack<NT_Unit>  damageOrderDefender, int state) {
+        Log.info("damage to attackers: "+damageOrderAttacker.stream().map(it->it.name).collect(Collectors.joining(",")));
+        Log.info("damage to defenders: "+damageOrderDefender.stream().map(it->it.name).collect(Collectors.joining(",")));
         battleBoard.attackRolls(attackRolls, defenderRolls, new IRollAnimationListener() {
             @Override
             public void diceSet(boolean attackerWon) {
@@ -60,7 +61,9 @@ public class BattleHandler {
                 if (attackerWon) {
                     damageOrder = damageOrderDefender;
                 }
-                damage(damageOrder.pop());
+                if(!damageOrder.empty()){
+                    damage(damageOrder.pop());
+                }
             }
 
             @Override
@@ -97,7 +100,7 @@ public class BattleHandler {
                     dialog.add(LabelUtils.label(game.ui.skin, "Eure Truppe erwartet Befehle!")).row();
                     dialog.add(TableUtils.textButton(game.ui.skin, "Anrgiff fortfahren", () -> sendBattleResponse(dialog, true))).left();
                     dialog.add(TableUtils.textButton(game.ui.skin, "Rückzug", () -> sendBattleResponse(dialog, false))).right();
-                    game.ui.inGameUI.showCenterOverlay(dialog).bottom();
+                    game.ui.inGameUI.showCenterOverlay(dialog).expandY().bottom();
                 }
             } else {
                 //battle done
@@ -105,15 +108,19 @@ public class BattleHandler {
                 if (state == NT_Battle_Update.STATE_ATTACKER_WON) {
                     text = "Sieg der Angreifer!";
                 }
-                Label label = LabelUtils.title(game.ui.skin, text);
-                label.addAction(Actions.delay(2, Actions.run(() -> {
-                    label.remove();
-                    battleBoard.remove();
-                })));
-                game.ui.inGameUI.showCenterOverlay(label);
-                game.ui.inGameUI.setBattleOpen(false);
+                battleEnd(text);
             }
         })));
+    }
+
+    private void battleEnd(String text) {
+        Label label = LabelUtils.title(game.ui.skin, text);
+        label.addAction(Actions.delay(2, Actions.run(() -> {
+            label.remove();
+            battleBoard.remove();
+            game.state.turnIdle();
+        })));
+        game.ui.inGameUI.showCenterOverlay(label).expandY().bottom();
     }
 
     private void sendBattleResponse(Table dialog, boolean continueFight) {
@@ -121,6 +128,9 @@ public class BattleHandler {
         NT_Battle_Reaction reaction = new NT_Battle_Reaction();
         reaction.keepAttacking = continueFight;
         game.client.getClient().sendTCP(reaction);
+        if (!continueFight) {
+            battleEnd("Rückzug der Angreifer!");
+        }
     }
 
     private Stack<NT_Unit> flattenDamage(List<Pair<NT_Unit, Integer>> damage) {

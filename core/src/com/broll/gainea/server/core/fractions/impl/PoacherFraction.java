@@ -35,6 +35,7 @@ public class PoacherFraction extends Fraction {
         if (PlayerUtils.isCommanderAlive(owner)) {
             //recruit monster in player army
             monster.heal();
+            monster.setOwner(owner);
             monster.getLocation().getInhabitants().add(monster);
             owner.getUnits().add(monster);
         }

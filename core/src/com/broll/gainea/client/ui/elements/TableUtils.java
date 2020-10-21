@@ -30,6 +30,7 @@ public class TableUtils {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 listener.action();
+                event.stop();
             }
         });
         return button;

@@ -112,6 +112,7 @@ public class UnitControl {
         Monster monster = game.getMonsterFactory().spawn(area.getType(), activeMonsters);
         if (monster != null) {
             Log.info("spawn monster " + monster.getName() + " on " + area);
+            monster.init(game);
             game.getObjects().add(monster);
             spawn(game, monster, area);
         }

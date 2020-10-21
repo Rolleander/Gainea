@@ -99,6 +99,7 @@ public class GaineaMap extends ExpansionFactory {
         connect(MOORKUESTE, MOORWUESTE);
         connect(Areas.MOOR, MOORTEICH);
         connect(MOORWUESTE, MOORTEICH);
+        connect(MOORWUESTE, Areas.MOOR);
     }
 
     private void zuba() {

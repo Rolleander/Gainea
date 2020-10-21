@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.broll.gainea.Gainea;
+import com.broll.gainea.client.game.GameStateListener;
 import com.broll.gainea.client.game.PlayerPerformOptionalAction;
 import com.broll.gainea.client.ui.elements.ClosableWindow;
 import com.broll.gainea.client.ui.elements.LabelUtils;
@@ -26,6 +27,7 @@ public class CardWindow extends ClosableWindow {
     private Table content;
     private List<NT_Action_Card> playableCards;
     private PlayerPerformOptionalAction playerPerformAction;
+    private boolean cardsPlayable = false;
 
     public CardWindow(Gainea game, Skin skin) {
         super(game, "Karten", skin);
@@ -39,12 +41,24 @@ public class CardWindow extends ClosableWindow {
         TableUtils.consumeClicks(this);
         center(1000, 500);
         update();
+        game.state.addListener(new GameStateListener() {
+            @Override
+            public void gameBusy() {
+                cardsPlayable = false;
+                update();
+            }
+
+            @Override
+            public void playerTurnIdle() {
+                cardsPlayable = true;
+                update();
+            }
+        });
     }
 
     public void updatePlayableCards(List<NT_Action_Card> cards, PlayerPerformOptionalAction playerPerformAction) {
         this.playableCards = cards;
         this.playerPerformAction = playerPerformAction;
-        update();
     }
 
     public void update() {
@@ -55,7 +69,7 @@ public class CardWindow extends ClosableWindow {
         game.state.getCards().forEach(card -> {
             Table table = renderCard(game, card);
             Optional<NT_Action_Card> playableCard = playableCards.stream().filter(it -> it.cardId == card.id).findFirst();
-            if (playableCard.isPresent() && !game.ui.inGameUI.isBattleOpen()) {
+            if (cardsPlayable && playableCard.isPresent()) {
                 table.add(TableUtils.textButton(game.ui.skin, "Aktivieren!", () -> {
                     playerPerformAction.perform(playableCard.get(), 0, null);
                 })).right().bottom();

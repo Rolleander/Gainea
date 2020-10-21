@@ -21,6 +21,11 @@ public class GameStartSite extends AbstractGameSite {
     @PackageReceiver
     public void received(NT_ReconnectGame reconnectGame) {
         Log.info("player reconnected!");
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         start(reconnectGame);
         //add goals and cards
         game.state.getGoals().addAll(Arrays.asList(reconnectGame.goals));

@@ -3,12 +3,12 @@ package com.broll.gainea.server.core.objects;
 import com.broll.gainea.net.NT_Unit;
 import com.broll.gainea.server.core.player.Player;
 
-public abstract class BattleObject extends MapObject {
+public abstract class BattleObject extends MapObject  {
 
     private int maxHealth;
     private int power, health;
     private Player owner;
-    protected boolean rooted=false;
+    protected boolean rooted = false;
 
     public BattleObject(Player owner) {
         this.owner = owner;
@@ -84,6 +84,10 @@ public abstract class BattleObject extends MapObject {
 
     public int getPower() {
         return power;
+    }
+
+    public void setOwner(Player owner) {
+        this.owner = owner;
     }
 
     @Override
