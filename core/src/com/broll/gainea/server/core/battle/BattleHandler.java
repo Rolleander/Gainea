@@ -50,6 +50,8 @@ public class BattleHandler {
         if (battleActive == false) {
             this.attackers = attackers;
             this.defenders = defenders;
+            killedDefenders.clear();
+            killedAttackers.clear();
             battleActive = true;
             prepareFight();
             sendFightStart();

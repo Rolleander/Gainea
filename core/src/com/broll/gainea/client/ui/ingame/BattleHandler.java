@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.broll.gainea.Gainea;
 import com.broll.gainea.client.ui.elements.LabelUtils;
+import com.broll.gainea.client.ui.elements.Popup;
 import com.broll.gainea.client.ui.elements.render.MapObjectRender;
 import com.broll.gainea.client.ui.elements.render.UnitRender;
 import com.broll.gainea.client.ui.elements.BattleRollRender;
@@ -51,9 +52,9 @@ public class BattleHandler {
         return battleBoard;
     }
 
-    public void updateBattle(int[] attackRolls, int[] defenderRolls, Stack<NT_Unit>  damageOrderAttacker, Stack<NT_Unit>  damageOrderDefender, int state) {
-        Log.info("damage to attackers: "+damageOrderAttacker.stream().map(it->it.name).collect(Collectors.joining(",")));
-        Log.info("damage to defenders: "+damageOrderDefender.stream().map(it->it.name).collect(Collectors.joining(",")));
+    public void updateBattle(int[] attackRolls, int[] defenderRolls, Stack<NT_Unit> damageOrderAttacker, Stack<NT_Unit> damageOrderDefender, int state) {
+        Log.info("damage to attackers: " + damageOrderAttacker.stream().map(it -> it.name).collect(Collectors.joining(",")));
+        Log.info("damage to defenders: " + damageOrderDefender.stream().map(it -> it.name).collect(Collectors.joining(",")));
         battleBoard.attackRolls(attackRolls, defenderRolls, new IRollAnimationListener() {
             @Override
             public void diceSet(boolean attackerWon) {
@@ -61,7 +62,7 @@ public class BattleHandler {
                 if (attackerWon) {
                     damageOrder = damageOrderDefender;
                 }
-                if(!damageOrder.empty()){
+                if (!damageOrder.empty()) {
                     damage(damageOrder.pop());
                 }
             }
@@ -100,7 +101,7 @@ public class BattleHandler {
                     dialog.add(LabelUtils.label(game.ui.skin, "Eure Truppe erwartet Befehle!")).row();
                     dialog.add(TableUtils.textButton(game.ui.skin, "Anrgiff fortfahren", () -> sendBattleResponse(dialog, true))).left();
                     dialog.add(TableUtils.textButton(game.ui.skin, "Rückzug", () -> sendBattleResponse(dialog, false))).right();
-                    game.ui.inGameUI.showCenterOverlay(dialog).expandY().bottom();
+                    Popup.show(game, dialog);
                 }
             } else {
                 //battle done
@@ -120,7 +121,7 @@ public class BattleHandler {
             battleBoard.remove();
             game.state.turnIdle();
         })));
-        game.ui.inGameUI.showCenterOverlay(label).expandY().bottom();
+        game.ui.inGameUI.showCenterOverlay(label).padTop(100).top();
     }
 
     private void sendBattleResponse(Table dialog, boolean continueFight) {
@@ -131,16 +132,6 @@ public class BattleHandler {
         if (!continueFight) {
             battleEnd("Rückzug der Angreifer!");
         }
-    }
-
-    private Stack<NT_Unit> flattenDamage(List<Pair<NT_Unit, Integer>> damage) {
-        Stack<NT_Unit> damageOrder = new Stack<>();
-        damage.forEach(it -> {
-            for (int i = 0; i < it.getRight(); i++) {
-                damageOrder.push(it.getLeft());
-            }
-        });
-        return damageOrder;
     }
 
     private class BattleBoard extends Table {

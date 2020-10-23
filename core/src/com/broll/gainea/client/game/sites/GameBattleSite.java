@@ -53,6 +53,8 @@ public class GameBattleSite extends AbstractGameSite {
         Stack<NT_Unit> damagedDefenders = calcDamageUpdates(this.defenders, defenders);
         this.attackers = attackers;
         this.defenders = defenders;
+        this.attackers.removeIf(it -> it.health <= 0);
+        this.defenders.removeIf(it -> it.health <= 0);
         game.ui.inGameUI.updateBattle(attackRolls, defenderRolls, damagedAttackers, damagedDefenders, battle.state);
     }
 }

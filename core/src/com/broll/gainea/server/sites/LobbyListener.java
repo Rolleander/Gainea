@@ -3,6 +3,7 @@ package com.broll.gainea.server.sites;
 import com.broll.gainea.net.NT_Battle_Reaction;
 import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.utils.MessageUtils;
+import com.broll.gainea.server.core.utils.ProcessingUtils;
 import com.broll.gainea.server.init.LobbyData;
 import com.broll.gainea.server.init.PlayerData;
 import com.broll.gainea.server.core.fractions.FractionType;
@@ -60,6 +61,7 @@ public class LobbyListener implements ServerLobbyListener<LobbyData, PlayerData>
                 //send game reconnect update to reconnecting player
                 com.broll.gainea.server.core.player.Player gamePlayer = player.getData().getGamePlayer();
                 player.sendTCP(game.reconnect(gamePlayer));
+                ProcessingUtils.pause(1000);
                 //check for open actions and resend them
                 game.getReactionHandler().playerReconnected(gamePlayer);
             }, 100);

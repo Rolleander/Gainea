@@ -10,7 +10,8 @@ import static com.esotericsoftware.minlog.Log.LEVEL_TRACE;
 
 public class DesktopLauncher {
 	public static void main (String[] arg) {
-		Log.INFO();
+//		Log.INFO();
+		Log.DEBUG();
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		//config.width=1920;
 //		config.height=1080;

@@ -8,6 +8,7 @@ import com.broll.gainea.Gainea;
 import com.broll.gainea.client.game.PlayerPerformAction;
 import com.broll.gainea.client.ui.elements.LabelUtils;
 import com.broll.gainea.client.ui.elements.MapAction;
+import com.broll.gainea.client.ui.elements.Popup;
 import com.broll.gainea.client.ui.ingame.CardWindow;
 import com.broll.gainea.client.ui.ingame.GoalWindow;
 import com.broll.gainea.net.NT_Action;
@@ -44,7 +45,7 @@ public class RequiredActionHandler {
         }
         mapActions.forEach(it -> game.gameStage.addActor(it));
         if (window != null) {
-            game.ui.inGameUI.showCenter(window);
+            game.ui.inGameUI.showCenter(new Popup(skin, window));
         }
     }
 

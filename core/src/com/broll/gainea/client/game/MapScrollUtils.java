@@ -1,6 +1,7 @@
 package com.broll.gainea.client.game;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.math.MathUtils;
 import com.broll.gainea.Gainea;
 import com.broll.gainea.client.ui.elements.render.MapObjectRender;
 import com.broll.gainea.net.NT_BoardObject;
@@ -10,28 +11,25 @@ import com.esotericsoftware.minlog.Log;
 public class MapScrollUtils {
 
     public static void showLocations(Gainea game, int... locations) {
-        float minx = Float.MAX_VALUE;
-        float maxx = Float.MIN_VALUE;
-        float miny = Float.MAX_VALUE;
-        float maxy = Float.MIN_VALUE;
+        float minx = 100000;
+        float maxx = -100000;
+        float miny = 100000;
+        float maxy = -100000;
         for (int location : locations) {
             Coordinates coords = game.state.getMap().getLocation(location).getCoordinates();
             float cx = coords.getDisplayX();
             float cy = coords.getDisplayY();
-            minx = Math.min(minx, cx);
-            maxx = Math.max(maxx, cx);
-            miny = Math.min(miny, cy);
-            maxy = Math.max(maxy, cy);
+            maxx = Math.max(cx, maxx);
+            minx = Math.min(cx, minx);
+            maxy = Math.max(cy, maxy);
+            miny = Math.min(cy, miny);
         }
         float width = maxx - minx;
         float height = maxy - miny;
         float x = minx + width / 2;
         float y = miny + height / 2;
         float size = Math.max(width, height);
-        float zoom = size / 750;
-        if (zoom < 1) {
-            zoom = 1;
-        }
+        float zoom = Math.max(size / 750, 1);
         show(game, x, y, zoom);
     }
 
