@@ -10,6 +10,7 @@ import java.util.Set;
 public abstract class Location {
 
     private int number;
+    private AreaCollection container;
 
     private Coordinates coordinates;
 
@@ -36,4 +37,13 @@ public abstract class Location {
     public int getNumber() {
         return number;
     }
+
+    public void setContainer(AreaCollection container) {
+        this.container = container;
+    }
+
+    public AreaCollection getContainer() {
+        return container;
+    }
+
 }

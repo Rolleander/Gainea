@@ -14,12 +14,13 @@ import com.broll.gainea.server.core.utils.GameUtils;
 
 public abstract class AbstractGoal extends GameUpdateReceiverAdapter {
 
-    private String text;
+    protected String text;
     private GoalDifficulty difficulty;
     private String restrictionInfo;
     private ExpansionType[] requiredExpansions;
     protected GameContainer game;
     protected Player player;
+    private boolean finished = false;
 
     public AbstractGoal(GoalDifficulty difficulty, String text) {
         this.difficulty = difficulty;
@@ -55,14 +56,19 @@ public abstract class AbstractGoal extends GameUpdateReceiverAdapter {
         return true;
     }
 
-    protected void success() {
-        player.getGoalHandler().removeGoal(this);
-        player.getGoalHandler().addPoints(difficulty.getPoints());
-        NT_Event_FinishedGoal finishedGoal = new NT_Event_FinishedGoal();
-        finishedGoal.player = player.getServerPlayer().getId();
-        finishedGoal.goal = this.nt();
-        GameUtils.sendUpdate(game, finishedGoal);
+    protected synchronized void success() {
+        if (!finished) {
+            player.getGoalHandler().removeGoal(this);
+            player.getGoalHandler().addPoints(difficulty.getPoints());
+            NT_Event_FinishedGoal finishedGoal = new NT_Event_FinishedGoal();
+            finishedGoal.player = player.getServerPlayer().getId();
+            finishedGoal.goal = this.nt();
+            GameUtils.sendUpdate(game, finishedGoal);
+            finished = true;
+        }
     }
+
+    public abstract void check();
 
     public GoalDifficulty getDifficulty() {
         return difficulty;

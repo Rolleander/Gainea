@@ -26,13 +26,17 @@ public class UnitControl {
     private final static int SPAWN_PAUSE = 1000;
     private final static int DAMAGE_PAUSE = 500;
 
-    public static void move(GameContainer game, List<MapObject> units, Location location) {
+    public static void move(GameContainer game, List<? extends MapObject> units, Location location) {
         units.forEach(unit -> unit.setLocation(location));
         NT_Event_MovedObject movedObject = new NT_Event_MovedObject();
         movedObject.objects = units.stream().map(MapObject::nt).toArray(NT_BoardObject[]::new);
         GameUtils.sendUpdate(game, movedObject);
-        game.getUpdateReceiver().moved(units, location);
+        game.getUpdateReceiver().moved((List<MapObject>) units, location);
         ProcessingUtils.pause(MOVE_PAUSE);
+    }
+
+    public static void kill(GameContainer game, BattleObject unit) {
+        damage(game, unit, Integer.MAX_VALUE, null);
     }
 
     public static void damage(GameContainer game, BattleObject unit, int damage) {

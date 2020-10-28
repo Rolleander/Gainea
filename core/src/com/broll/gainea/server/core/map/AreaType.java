@@ -1,7 +1,7 @@
 package com.broll.gainea.server.core.map;
 
 public enum AreaType {
-    PLAINS("Grassland"),DESERT("Desert"),LAKE("Lake"),MOUNTAIN("Mountain"),BOG("Bog"),SNOW("Snow");
+    PLAINS("Steppe"),DESERT("Wüste"),LAKE("Meer"),MOUNTAIN("Berg"),BOG("Sumpf"),SNOW("Eisland");
     private String name;
 
     AreaType(String name){

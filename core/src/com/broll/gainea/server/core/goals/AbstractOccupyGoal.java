@@ -65,6 +65,13 @@ public abstract class AbstractOccupyGoal extends AbstractGoal {
         return list;
     }
 
+    protected List<Area> occupy(Function<Area, Boolean> filter, AreaID... areas) {
+        List<Area> list = Arrays.stream(areas).map(map::getArea).collect(Collectors.toList());
+        list.removeIf(it -> !filter.apply(it));
+        this.locations.addAll(list);
+        return list;
+    }
+
     protected List<Area> occupy(IslandID... islands) {
         List<Area> list = new ArrayList<>();
         Arrays.stream(islands).map(map::getIsland).map(AreaCollection::getAreas).forEach(areas -> list.addAll(areas));
@@ -110,6 +117,11 @@ public abstract class AbstractOccupyGoal extends AbstractGoal {
         return list;
     }
 
+    protected List<Location> occupy(List<Location> locations) {
+        this.locations.addAll(locations);
+        return locations;
+    }
+
     protected List<Location> occupy(Location... locations) {
         this.locations.addAll(Arrays.asList(locations));
         return Arrays.asList(locations);
@@ -134,24 +146,25 @@ public abstract class AbstractOccupyGoal extends AbstractGoal {
         };
     }
 
-    public boolean checkCondition() {
+    @Override
+    public void check() {
         List<Location> occupiedLocations = player.getControlledLocations();
         for (Location location : occupiedLocations) {
             Function<Location, Boolean> condition = conditions.get(location);
             if (condition != null) {
                 if (!condition.apply(location)) {
                     //condition for the location not satisfied
-                    return false;
+                    return;
                 }
             } else {
                 //default condition: simply occupied
                 if (!locations.contains(location)) {
                     //area not occupied by player
-                    return false;
+                    return;
                 }
             }
         }
-        return true;
+        success();
     }
 
     @Override
@@ -160,7 +173,7 @@ public abstract class AbstractOccupyGoal extends AbstractGoal {
         if (mo instanceof BattleObject) {
             if (((BattleObject) mo).getOwner() == player) {
                 //unit of this player moved, check occupy condition
-                checkCondition();
+                check();
             }
         }
     }

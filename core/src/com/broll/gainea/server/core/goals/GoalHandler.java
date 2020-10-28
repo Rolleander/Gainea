@@ -62,6 +62,8 @@ public class GoalHandler {
         NT_Event_OtherPlayerReceivedGoal nt2 = new NT_Event_OtherPlayerReceivedGoal();
         nt2.player = player.getServerPlayer().getId();
         GameUtils.sendUpdate(game, player, nt, nt2);
+        //directly check goal for completion
+        game.getProcessingCore().execute(goal::check, 2000);
     }
 
     public NT_Goal[] ntGoals() {

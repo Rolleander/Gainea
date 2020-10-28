@@ -8,7 +8,6 @@ public class Area extends Location {
     private Set<Location> adjacentLocations = new HashSet<>();
     private AreaType type;
     private String name;
-    private AreaCollection container;
     private AreaID id;
 
     public Area(AreaID id) {
@@ -31,19 +30,18 @@ public class Area extends Location {
         return name;
     }
 
-    public void setContainer(AreaCollection container) {
-        this.container = container;
-    }
-
-    public AreaCollection getContainer() {
-        return container;
-    }
-
     public void addAdjacentLocation(Location location) {
         adjacentLocations.add(location);
         if (location instanceof Area) {
             ((Area) location).adjacentLocations.add(this);
         }
+    }
+
+    public boolean equals(Object o) {
+        if (o instanceof Area) {
+            return ((Area) o).getNumber() == getNumber();
+        }
+        return false;
     }
 
     @Override

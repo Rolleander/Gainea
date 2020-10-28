@@ -44,6 +44,24 @@ public class BattleResult {
         return defenders.stream().map(BattleObject::isDead).reduce(true, Boolean::logicalAnd);
     }
 
+    public Player getWinnerPlayer() {
+        if (attackersWon()) {
+            return getAttacker();
+        } else if (defendersWon()) {
+            return getDefender();
+        }
+        return null;
+    }
+
+    public Player getLoserPlayer() {
+        if (attackersWon()) {
+            return getDefender();
+        } else if (defendersWon()) {
+            return getAttacker();
+        }
+        return null;
+    }
+
     public boolean attackersRetreated() {
         return !attackersWon() && !defendersWon();
     }

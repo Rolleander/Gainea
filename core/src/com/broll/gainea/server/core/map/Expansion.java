@@ -27,6 +27,12 @@ public class Expansion {
         return locations;
     }
 
+    public List<Ship> getAllShips() {
+        List<Ship> locations = new ArrayList<>();
+        contents.stream().map(AreaCollection::getShips).forEach(locations::addAll);
+        return locations;
+    }
+
     public void setType(ExpansionType type) {
         this.type = type;
     }
@@ -49,6 +55,14 @@ public class Expansion {
 
     public List<Island> getIslands() {
         return contents.stream().filter(it -> it instanceof Island).map(it -> (Island) it).collect(Collectors.toList());
+    }
+
+    public Island getIsland(IslandID id) {
+        return getIslands().stream().filter(it -> it.getId() == id).findFirst().orElse(null);
+    }
+
+    public Continent getContinent(ContinentID id) {
+        return getContinents().stream().filter(it -> it.getId() == id).findFirst().orElse(null);
     }
 
     public List<Continent> getContinents() {

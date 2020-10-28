@@ -40,6 +40,7 @@ public class BattleHandler {
     private CompletableFuture<Boolean> keepAttacking;
     private List<BattleObject> defendingArmy;
     private Location battleLocation;
+    private boolean allowRetreat = true;
 
     public BattleHandler(GameContainer gameContainer, ReactionActions reactionResult) {
         this.game = gameContainer;
@@ -47,7 +48,12 @@ public class BattleHandler {
     }
 
     public void startBattle(List<BattleObject> attackers, List<BattleObject> defenders) {
+        startBattle(attackers, defenders, true);
+    }
+
+    public void startBattle(List<BattleObject> attackers, List<BattleObject> defenders, boolean allowRetreat) {
         if (battleActive == false) {
+            this.allowRetreat = allowRetreat;
             this.attackers = attackers;
             this.defenders = defenders;
             killedDefenders.clear();
@@ -81,6 +87,10 @@ public class BattleHandler {
         this.aliveDefenders = defenders.stream().filter(BattleObject::isAlive).collect(Collectors.toList());
         //attackers are always of one owner
         attackerOwner = aliveAttackers.get(0).getOwner();
+        if (attackerOwner == null) {
+            //wild monsters are attackers, will always keep attacking
+            allowRetreat = false;
+        }
         //there can be defenders of multiple owners, so attack the army of a random owner first
         Collections.shuffle(aliveDefenders);
         defenderOwner = aliveDefenders.get(0).getOwner();
@@ -91,13 +101,7 @@ public class BattleHandler {
     private void fight() {
         Battle battle;
         Log.info("Fight!  Attackers: (" + aliveAttackers.stream().map(it -> it.getId() + "| " + it.getName() + " " + it.getPower() + " " + it.getHealth()).collect(Collectors.joining(", ")) + ")   Defenders: (" + defendingArmy.stream().map(it -> it.getId() + "| " + it.getName() + " " + it.getPower() + " " + it.getHealth()).collect(Collectors.joining(", ")) + ")");
-        if (defenderOwner == null) {
-            //fight against neutral enemies (monsters)
-            battle = new Battle(battleLocation, attackerOwner, aliveAttackers, defendingArmy);
-        } else {
-            //fight against player
-            battle = new Battle(battleLocation, attackerOwner, aliveAttackers, defenderOwner, defendingArmy);
-        }
+        battle = new Battle(battleLocation, attackerOwner, aliveAttackers, defenderOwner, defendingArmy);
         FightResult result = battle.fight();
         NT_Battle_Update update = new NT_Battle_Update();
         update.attackerRolls = result.getAttackRolls().stream().mapToInt(i -> i).toArray();
@@ -130,7 +134,9 @@ public class BattleHandler {
         int delay = BATTLE_ANIMATION_DELAY + 1500 * Math.min(result.getAttackRolls().size(), result.getDefenderRolls().size());
         if (state == NT_Battle_Update.STATE_FIGHTING) {
             //wait for player if he wants to keep attacking
-            keepAttacking = new CompletableFuture<>();
+            if (allowRetreat) {
+                keepAttacking = new CompletableFuture<>();
+            }
             game.getProcessingCore().execute(this::prepareNextRound, delay);
         } else {
             //battle finished, all attackers or defenders died
@@ -154,11 +160,13 @@ public class BattleHandler {
 
     private void prepareNextRound() {
         //wait for player if he wants to keep attacking
-        boolean startNextRound = false;
-        try {
-            startNextRound = keepAttacking.get().booleanValue();
-        } catch (InterruptedException | ExecutionException e) {
-            Log.error("Failed getting future", e);
+        boolean startNextRound = true;
+        if (allowRetreat) {
+            try {
+                startNextRound = keepAttacking.get().booleanValue();
+            } catch (InterruptedException | ExecutionException e) {
+                Log.error("Failed getting future", e);
+            }
         }
         if (startNextRound) {
             //schedule next fight round
@@ -171,8 +179,8 @@ public class BattleHandler {
 
     private void battleFinished() {
         BattleResult result = new BattleResult(attackers, defenders, battleLocation);
-        Log.info("Battle over! Surviving Attackers: (" + aliveAttackers.stream().map(it -> it.getId() + "| " + it.getName() + " " + it.getPower() + " " + it.getHealth()).collect(Collectors.joining(", ")) + ")  Surviving Defenders: (" + aliveDefenders.stream().map(it -> it.getId() + "| " + it.getName() + " " + it.getPower() + " " + it.getHealth()).collect(Collectors.joining(", "))+")");
-        //if defenders lost, move surviving attackers to location
+        Log.info("Battle over! Surviving Attackers: (" + aliveAttackers.stream().map(it -> it.getId() + "| " + it.getName() + " " + it.getPower() + " " + it.getHealth()).collect(Collectors.joining(", ")) + ")  Surviving Defenders: (" + aliveDefenders.stream().map(it -> it.getId() + "| " + it.getName() + " " + it.getPower() + " " + it.getHealth()).collect(Collectors.joining(", ")) + ")");
+        //if defenders lost, move surviving attackers to location (unless attackers are wild monsters)
         if (result.attackersWon()) {
             UnitControl.move(game, attackers.stream().filter(BattleObject::isAlive).collect(Collectors.toList()), battleLocation);
         }

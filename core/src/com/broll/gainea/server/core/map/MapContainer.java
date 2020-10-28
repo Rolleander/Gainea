@@ -38,6 +38,12 @@ public class MapContainer {
         return areas;
     }
 
+    public List<Location> getAllLocations() {
+        List<Location> areas = new ArrayList<>();
+        expansions.forEach(e -> e.getAllLocations().forEach(areas::add));
+        return areas;
+    }
+
     public Expansion getExpansion(ExpansionType type) {
         return expansions.stream().filter(it -> it.getType() == type).findFirst().orElse(null);
     }

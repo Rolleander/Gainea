@@ -11,6 +11,7 @@ import com.broll.gainea.net.NT_Reaction;
 import com.broll.gainea.net.NT_Unit;
 import com.broll.gainea.server.core.actions.AbstractActionHandler;
 import com.broll.gainea.server.core.map.Location;
+import com.broll.gainea.server.core.utils.PlayerUtils;
 
 import java.util.Collection;
 import java.util.stream.Collectors;
@@ -38,24 +39,6 @@ public class AttackAction extends AbstractActionHandler<NT_Action_Attack, Attack
         return context;
     }
 
-    public List<BattleObject> getFighters(Player player, Location location) {
-        return location.getInhabitants().stream().filter(inhabitant -> {
-            if (inhabitant instanceof BattleObject) {
-                return ((BattleObject) inhabitant).getOwner() == player;
-            }
-            return false;
-        }).map(o -> (BattleObject) o).collect(Collectors.toList());
-    }
-
-    public List<BattleObject> getEnemyArmy(Player player, Location location) {
-        return location.getInhabitants().stream().filter(inhabitant -> {
-            if (inhabitant instanceof BattleObject) {
-                return player.getFraction().isHostile((BattleObject) inhabitant);
-            }
-            return false;
-        }).map(o -> (BattleObject) o).collect(Collectors.toList());
-    }
-
     @Override
     public void handleReaction(Context context, NT_Action_Attack action, NT_Reaction reaction) {
         game.getProcessingCore().execute(() -> {
@@ -76,7 +59,7 @@ public class AttackAction extends AbstractActionHandler<NT_Action_Attack, Attack
     }
 
     private void startFight(List<BattleObject> attackers, Location attackLocation) {
-        List<BattleObject> defenders = getEnemyArmy(player, attackLocation);
+        List<BattleObject> defenders = PlayerUtils.getHostileArmy(player, attackLocation);
         game.getBattleHandler().startBattle(attackers, defenders);
     }
 }

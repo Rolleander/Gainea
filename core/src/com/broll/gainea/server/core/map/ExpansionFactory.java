@@ -104,6 +104,7 @@ public abstract class ExpansionFactory {
     protected Ship ship(AreaID from, AreaID to, float x, float y) {
         Ship ship = ship(get(from), get(to), x, y);
         get(from).getContainer().getShips().add(ship);
+        ship.setContainer(get(from).getContainer());
         return ship;
     }
 
@@ -111,8 +112,11 @@ public abstract class ExpansionFactory {
         List<Ship> ships = new ArrayList<>();
         Location current = get(fromId);
         Area to = get(toId);
+        AreaCollection container = get(fromId).getContainer();
         for (int i = 0; i < x.length; i++) {
-            ships.add(ship(current, null, x[i], y[i]));
+            Ship ship = ship(current, null, x[i], y[i]);
+            ship.setContainer(container);
+            ships.add(ship);
             current = ships.get(i);
         }
         for (int i = 0; i < x.length; i++) {
@@ -124,7 +128,7 @@ public abstract class ExpansionFactory {
             }
             ships.get(i).setTo(next);
         }
-        get(fromId).getContainer().getShips().addAll(ships);
+        container.getShips().addAll(ships);
         return ships;
     }
 
@@ -138,6 +142,8 @@ public abstract class ExpansionFactory {
         contents.addAll(islands.values());
         contents.addAll(continents.values());
         expansion.setContents(contents);
+        islands.values().forEach(it -> it.init(expansion));
+        continents.values().forEach(it -> it.init(expansion));
         return expansion;
     }
 

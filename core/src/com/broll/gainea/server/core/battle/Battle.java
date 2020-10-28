@@ -18,23 +18,23 @@ public class Battle {
     public Battle(Location location, Player attackingPlayer, List<BattleObject> attackingUnits, Player defendingPlayer, List<BattleObject> defendingUnits) {
         this.attackers = attackingUnits;
         this.defenders = defendingUnits;
-        this.attackPower = attackingPlayer.getFraction().calcPower(location, attackingUnits, defendingUnits, true);
-        this.defendingPower = defendingPlayer.getFraction().calcPower(location, defendingUnits, attackingUnits, false);
-    }
-
-    public Battle(Location location, Player attackingPlayer, List<BattleObject> attackingUnits, List<BattleObject> monsters) {
-        this.attackers = attackingUnits;
-        this.defenders = monsters;
-        this.attackPower = attackingPlayer.getFraction().calcPower(location, attackingUnits, this.defenders, true);
-        this.defendingPower = new FightingPower();
-        this.defendingPower.setDiceCount(monsters.stream().map(BattleObject::getPower).reduce(0, Integer::sum));
+        if (attackingPlayer == null) {
+            this.attackPower = new FightingPower();
+        } else {
+            this.attackPower = attackingPlayer.getFraction().calcPower(location, attackingUnits, defendingUnits, true);
+        }
+        if (defendingPlayer == null) {
+            this.defendingPower = new FightingPower();
+        } else {
+            this.defendingPower = defendingPlayer.getFraction().calcPower(location, defendingUnits, attackingUnits, false);
+        }
     }
 
     public FightResult fight() {
         int attacks = attackPower.getDiceCount();
         int blocks = defendingPower.getDiceCount();
-        int rawAttackerPower = attackers.stream().map(BattleObject::getPower).reduce(0,Integer::sum);
-        int rawDefenderPower = defenders.stream().map(BattleObject::getPower).reduce(0,Integer::sum);
+        int rawAttackerPower = attackers.stream().map(BattleObject::getPower).reduce(0, Integer::sum);
+        int rawDefenderPower = defenders.stream().map(BattleObject::getPower).reduce(0, Integer::sum);
         int deltaAttacks = attacks - blocks;
         int battleSize = Math.min(attacks, blocks);
         List<Integer> allAttackRolls = attackPower.roll();
@@ -52,7 +52,7 @@ public class Battle {
         int blockWins = battleSize - attackWins;
         if (deltaAttacks < 0) {
             //less attacker dices => deal remaining damage to attacking units without dices
-            blockWins += Math.min(deltaAttacks * -1, rawAttackerPower- attacks);
+            blockWins += Math.min(deltaAttacks * -1, rawAttackerPower - attacks);
         } else if (deltaAttacks > 0) {
             //less defender dices => deal remaining damage to defending units without dices
             attackWins += Math.min(deltaAttacks, rawDefenderPower - blocks);

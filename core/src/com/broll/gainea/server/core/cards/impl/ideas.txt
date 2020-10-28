@@ -1,0 +1,12 @@
+bonus auf nächste schlacht
+bonus auf nächsten angriff
+bonus auf nächste verteidigung
+
+piraten
++2 angriff auf eine einheit
++2 leben auf eine einheit
+
+einheiten heilen
+
+
+

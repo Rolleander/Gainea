@@ -46,4 +46,11 @@ public class Ship extends Location {
         set.add(to);
         return set;
     }
+
+    public boolean equals(Object o) {
+        if (o instanceof Ship) {
+            return ((Ship) o).getNumber() == getNumber();
+        }
+        return false;
+    }
 }

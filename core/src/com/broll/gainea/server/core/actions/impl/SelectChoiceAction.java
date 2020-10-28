@@ -50,11 +50,11 @@ public class SelectChoiceAction extends AbstractActionHandler<NT_Action_SelectCh
         return context.selectedOption;
     }
 
-    public Location selectLocation(String message, List<Location> choices) {
+    public Location selectLocation(String message, List<? extends Location> choices) {
         return selectLocation(game.getPlayers().get(game.getCurrentPlayer()), message, choices);
     }
 
-    public Location selectLocation(Player player, String message, List<Location> choices) {
+    public Location selectLocation(Player player, String message, List<? extends Location> choices) {
         assureNotEmpty(choices);
         NT_Action_SelectChoice action = new NT_Action_SelectChoice();
         action.objectChoices = choices.stream().map(Location::getNumber).toArray();

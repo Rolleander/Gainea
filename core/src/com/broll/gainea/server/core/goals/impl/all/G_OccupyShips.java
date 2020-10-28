@@ -10,14 +10,20 @@ import com.broll.gainea.server.core.player.Player;
 import java.util.List;
 
 public class G_OccupyShips extends AbstractGoal {
-    private final static int SHIPS = 7;
+    private final int ships;
 
     public G_OccupyShips() {
-        super(GoalDifficulty.MEDIUM, "Erobere " + SHIPS + " Schiffe");
+        this(GoalDifficulty.EASY, 6);
     }
 
-    private void check() {
-        if (player.getControlledLocations().stream().filter(it -> it instanceof Ship).count() >= SHIPS) {
+    public G_OccupyShips(GoalDifficulty difficulty, int ships) {
+        super(difficulty, "Erobere " + ships + " Schiffe");
+        this.ships = ships;
+    }
+
+    @Override
+    public void check() {
+        if (player.getControlledLocations().stream().filter(it -> it instanceof Ship).count() >= ships) {
             success();
         }
     }
