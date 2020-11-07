@@ -73,7 +73,9 @@ public class RequiredActionHandler {
     private void close() {
         mapActions.forEach(Actor::remove);
         mapActions.clear();
-        window.remove();
+        if (window != null) {
+            window.remove();
+        }
         window = null;
     }
 

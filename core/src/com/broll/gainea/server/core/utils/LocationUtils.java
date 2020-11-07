@@ -46,6 +46,15 @@ public final class LocationUtils {
         }).reduce(true, Boolean::logicalAnd);
     }
 
+    public static boolean emptyOrWildMonster(Location location) {
+        return location.getInhabitants().stream().map(it -> {
+            if (it instanceof Monster) {
+                return ((Monster) it).getOwner() == null;
+            }
+            return false;
+        }).reduce(true, Boolean::logicalAnd);
+    }
+
     public static List<Location> getWildMonsterLocations(GameContainer game) {
         return game.getMap().getAllLocations().stream().filter(it -> getWildMonster(it) != null).collect(Collectors.toList());
     }

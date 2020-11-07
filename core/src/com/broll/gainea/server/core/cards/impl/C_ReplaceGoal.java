@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 public class C_ReplaceGoal extends AbstractCard {
     public C_ReplaceGoal() {
-        super(50,"Zielstrategie", "Ersetze eines deiner Ziele durch ein neues Ziel einer beliebigen Schwierigkeitsstufe");
+        super(40,"Zielstrategie", "Ersetze eines deiner Ziele durch ein neues Ziel einer beliebigen Schwierigkeitsstufe");
         setDrawChance(0.5f);
     }
 

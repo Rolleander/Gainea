@@ -9,6 +9,7 @@ import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.MapObject;
 import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.server.core.map.Location;
+import com.broll.gainea.server.core.utils.PlayerUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -61,7 +62,7 @@ public class TurnBuilder {
         player.getControlledLocations().forEach(location -> {
             List<Location> moveLocations = player.getFraction().getMoveLocations(location);
             List<Location> attackLocations = moveLocations.stream().filter(
-                    moveLocation -> !attackHandler.getEnemyArmy(player, moveLocation).isEmpty()).collect(Collectors.toList());
+                    moveLocation -> !PlayerUtils.getHostileArmy(player, moveLocation).isEmpty()).collect(Collectors.toList());
             moveLocations.removeAll(attackLocations);
             List<BattleObject> units = player.getUnits().stream().filter(it -> location == it.getLocation() && it.isRooted() == false).collect(Collectors.toList());
             if (!attackLocations.isEmpty()) {
