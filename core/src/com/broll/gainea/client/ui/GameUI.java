@@ -25,7 +25,7 @@ public class GameUI implements IClientListener {
 
     public GameUI(Gainea game) {
         this.game = game;
-        game.assets = new Assets();
+        game.assets = new Assets(true);
         showScreen(new LoadingScreen());
     }
 

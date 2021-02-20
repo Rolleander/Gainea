@@ -1,0 +1,23 @@
+package com.broll.gainea.client.ui.ingame;
+
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.broll.gainea.Gainea;
+import com.broll.gainea.client.ui.elements.ClosableWindow;
+
+public abstract class MenuWindow extends ClosableWindow {
+
+    public MenuWindow(Gainea game, String title, Skin skin) {
+        super(game, title, skin);
+    }
+
+    public void toggleVisiblity() {
+        if (isVisible()) {
+            setVisible(true);
+            toFront();
+        } else {
+            setVisible(false);
+        }
+    }
+
+    public abstract void update();
+}

@@ -48,6 +48,8 @@ public class GameStartSite extends AbstractGameSite {
     @Autoshared(ShareLevel.LOBBY)
     private GameStartData gameStart;
 
+    private final static int DELAY = 1000;
+
     public void startGame() {
         ServerLobby<LobbyData, PlayerData> lobby = getLobby();
         lobby.chat(null, "Starte Spiel...");
@@ -69,13 +71,13 @@ public class GameStartSite extends AbstractGameSite {
             int totalMonsters = getLobby().getData().getMonsterCount() * getGame().getMap().getActiveExpansionTypes().size();
             Log.info("Spawn Monsters: " + totalMonsters);
             UnitControl.spawnMonsters(getGame(), totalMonsters);
-            ProcessingUtils.pause(2000);
+            ProcessingUtils.pause(DELAY);
             //give random goals and start locations to everyone
             drawStartLocations();
             assignGoals();
             //players start placing units
             placeUnit();
-        }, 3000);
+        }, DELAY);
     }
 
     private void assignGoals() {
@@ -84,7 +86,7 @@ public class GameStartSite extends AbstractGameSite {
         int startGoalsCount = getLobby().getData().getStartGoals();
         for (int i = 0; i < startGoalsCount; i++) {
             game.getPlayers().forEach(game.getGoalStorage()::assignNewRandomGoal);
-            ProcessingUtils.pause(3000);
+            ProcessingUtils.pause(DELAY);
         }
     }
 
@@ -117,10 +119,10 @@ public class GameStartSite extends AbstractGameSite {
         ActionHandlers actionHandlers = game.getTurnBuilder().getActionHandlers();
         PlaceUnitAction placeUnitAction = actionHandlers.getHandler(PlaceUnitAction.class);
         Pair<BattleObject, Location> result = placeUnitAction.placeUnit(player, unitToPlace, locations, text);
-        placedUnit(result.getLeft(), result.getRight());
+        placedUnit(result.getRight());
     }
 
-    private void placedUnit(BattleObject battleObject, Location location) {
+    private void placedUnit(Location location) {
         Log.info("player placedUnit");
         GameContainer game = getGame();
         int startLocationsCount = getLobby().getData().getStartLocations();

@@ -11,6 +11,7 @@ import com.broll.gainea.server.core.map.ExpansionType;
 import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.server.core.processing.GameUpdateReceiverAdapter;
 import com.broll.gainea.server.core.utils.GameUtils;
+import com.esotericsoftware.minlog.Log;
 
 public abstract class AbstractGoal extends GameUpdateReceiverAdapter {
 
@@ -30,6 +31,7 @@ public abstract class AbstractGoal extends GameUpdateReceiverAdapter {
     public boolean init(GameContainer game, Player player) {
         this.game = game;
         this.player = player;
+        Log.info("init goal "+text+" with player "+player);
         return validForGame();
     }
 

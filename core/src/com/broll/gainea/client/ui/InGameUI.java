@@ -102,7 +102,7 @@ public class InGameUI {
     }
 
     public void selectedUnits(List<NT_Unit> units) {
-        if(game.state.areActionsAllowed()){
+        if (game.state.areActionsAllowed()) {
             attackAndMoveHandler.showFor(units);
         }
     }
@@ -135,11 +135,15 @@ public class InGameUI {
         showCenter(battleHandler.startBattle(attackers, defenders, location));
     }
 
-    public void updateBattle(int[] attackRolls, int[] defenderRolls, Stack<NT_Unit> damagedAttackers, Stack<NT_Unit>  damagedDefenders, int state) {
+    public void updateBattle(int[] attackRolls, int[] defenderRolls, Stack<NT_Unit> damagedAttackers, Stack<NT_Unit> damagedDefenders, int state) {
         battleHandler.updateBattle(attackRolls, defenderRolls, damagedAttackers, damagedDefenders, state);
     }
 
     public void updateWindows() {
         windows.updateWindows();
+    }
+
+    public void hideWindows() {
+        windows.hideWindows();
     }
 }

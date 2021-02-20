@@ -78,7 +78,7 @@ public class AttackAndMoveActionHandler {
     }
 
     public void clear() {
-        mapActions.forEach(Actor::remove);
+        mapActions.forEach(MapAction::remove);
         mapActions.clear();
     }
 

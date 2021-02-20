@@ -117,11 +117,11 @@ public class BattleHandler {
     private void battleEnd(String text) {
         Label label = LabelUtils.title(game.ui.skin, text);
         label.addAction(Actions.delay(2, Actions.run(() -> {
-            label.remove();
             battleBoard.remove();
             game.state.turnIdle();
         })));
-        game.ui.inGameUI.showCenterOverlay(label).padTop(100).top();
+        battleBoard.add(label).padTop(100).top();
+//        game.ui.inGameUI.showCenterOverlay(label).padTop(100).top();
     }
 
     private void sendBattleResponse(Table dialog, boolean continueFight) {

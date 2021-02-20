@@ -78,6 +78,7 @@ public class GameTurnSite extends AbstractGameSite {
             //other players turn
             message = turnPlayer.getName() + "'s Zug!";
         }
+        game.ui.inGameUI.hideWindows();
         MessageUtils.showCenterMessage(game, message);
     }
 

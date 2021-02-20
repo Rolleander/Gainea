@@ -1,4 +1,4 @@
-package com.broll.gainea.client.ui.ingame;
+package com.broll.gainea.client.ui.ingame.windows;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
@@ -13,6 +13,7 @@ import com.broll.gainea.client.ui.elements.IconLabel;
 import com.broll.gainea.client.ui.elements.LabelUtils;
 import com.broll.gainea.client.ui.elements.MenuUnit;
 import com.broll.gainea.client.ui.elements.TableUtils;
+import com.broll.gainea.client.ui.ingame.MenuWindow;
 import com.broll.gainea.server.core.fractions.Fraction;
 import com.broll.gainea.server.core.fractions.FractionDescription;
 import com.broll.gainea.server.core.fractions.FractionFactory;
@@ -20,7 +21,7 @@ import com.broll.gainea.server.core.objects.BattleObject;
 
 import java.util.List;
 
-public class FractionWindow extends ClosableWindow {
+public class FractionWindow extends MenuWindow {
     public FractionWindow(Gainea game, Skin skin) {
         super(game, "Fraktionen", skin);
         TableUtils.consumeClicks(this);
@@ -72,5 +73,10 @@ public class FractionWindow extends ClosableWindow {
         });
         unit.setTouchable(Touchable.disabled);
         return unit;
+    }
+
+    @Override
+    public void update() {
+
     }
 }

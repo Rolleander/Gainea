@@ -39,6 +39,7 @@ public class C_Panic extends AbstractCard {
                 for (MapObject object : inhabitants) {
                     Location target = emptyNeighbours.get(index);
                     UnitControl.move(game, Lists.newArrayList(object), target);
+                    index++;
                     if (index >= emptyNeighbours.size()) {
                         index = 0;
                     }

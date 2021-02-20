@@ -1,4 +1,4 @@
-package com.broll.gainea.client.ui.ingame;
+package com.broll.gainea.client.ui.ingame.windows;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -6,10 +6,11 @@ import com.broll.gainea.Gainea;
 import com.broll.gainea.client.ui.elements.ClosableWindow;
 import com.broll.gainea.client.ui.elements.LabelUtils;
 import com.broll.gainea.client.ui.elements.TableUtils;
+import com.broll.gainea.client.ui.ingame.MenuWindow;
 import com.broll.gainea.net.NT_Goal;
 
 
-public class GoalWindow extends ClosableWindow {
+public class GoalWindow extends MenuWindow {
     private Table content;
 
     public GoalWindow(Gainea game, Skin skin) {

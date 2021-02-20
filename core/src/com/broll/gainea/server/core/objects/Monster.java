@@ -6,7 +6,7 @@ import com.broll.gainea.net.NT_Unit;
 public class Monster extends BattleObject {
 
     public Monster() {
-        super(null);
+        super( null);
     }
 
     public int getStars() {

@@ -1,6 +1,7 @@
 package com.broll.gainea.server.core.objects;
 
 import com.broll.gainea.net.NT_Unit;
+import com.broll.gainea.server.core.battle.Battle;
 import com.broll.gainea.server.core.player.Player;
 
 public abstract class BattleObject extends MapObject  {
@@ -12,6 +13,18 @@ public abstract class BattleObject extends MapObject  {
 
     public BattleObject(Player owner) {
         this.owner = owner;
+    }
+
+    public static void copy(BattleObject from, BattleObject to){
+        to.maxHealth = from.maxHealth;
+        to.power = from.power;
+        to.health = from.health;
+        to.owner = from.owner;
+        to.rooted = from.rooted;
+        to.setIcon(from.getIcon());
+        to.setLocation(from.getLocation());
+        to.setName(from.getName());
+        to.setScale(from.getScale());
     }
 
     public void setStats(int power, int health) {

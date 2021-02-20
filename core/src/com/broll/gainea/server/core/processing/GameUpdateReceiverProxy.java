@@ -7,48 +7,78 @@ import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.MapObject;
 import com.broll.gainea.server.core.player.Player;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 public class GameUpdateReceiverProxy implements IGameUpdateReceiver {
 
     private List<IGameUpdateReceiver> proxies = new ArrayList<>();
+    private int nestLevel;
+
+    private List<Pair<IGameUpdateReceiver, Boolean>> updates = new ArrayList<>();
 
     public void register(IGameUpdateReceiver receiver) {
-        this.proxies.add(receiver);
+        updates.add(Pair.of(receiver, true));
     }
 
     public void unregister(IGameUpdateReceiver receiver) {
-        this.proxies.remove(receiver);
+        updates.add(Pair.of(receiver, false));
+    }
+
+    private void runNested(Runnable run) {
+        nestLevel++;
+        run.run();
+        nestLevel--;
+        if (nestLevel == 0) {
+            //do modifications
+            performUpdates();
+        }
+    }
+
+    private void performUpdates() {
+        Iterator<Pair<IGameUpdateReceiver, Boolean>> iterator = updates.iterator();
+        while (iterator.hasNext()) {
+            Pair<IGameUpdateReceiver, Boolean> pair = iterator.next();
+            if (pair.getRight()) {
+                proxies.add(pair.getLeft());
+            } else {
+                proxies.remove(pair.getLeft());
+            }
+            iterator.remove();
+        }
     }
 
     @Override
     public void battleResult(BattleResult result) {
-        proxies.forEach(proxy -> proxy.battleResult(result));
+        runNested(() -> proxies.forEach(proxy -> proxy.battleResult(result)));
     }
 
     @Override
     public void playedCard(AbstractCard card) {
-        proxies.forEach(proxy -> proxy.playedCard(card));
+        runNested(() -> proxies.forEach(proxy -> proxy.playedCard(card)));
     }
 
     @Override
     public void moved(List<MapObject> units, Location location) {
-        proxies.forEach(proxy -> proxy.moved(units, location));
+        runNested(() -> proxies.forEach(proxy -> proxy.moved(units, location)));
     }
 
     @Override
     public void spawned(MapObject object, Location location) {
-        proxies.forEach(proxy -> proxy.spawned(object, location));
+        runNested(() -> proxies.forEach(proxy -> proxy.spawned(object, location)));
     }
 
     @Override
     public void damaged(BattleObject unit, int damage) {
-        proxies.forEach(proxy -> proxy.damaged(unit, damage));
+        runNested(() -> proxies.forEach(proxy -> proxy.damaged(unit, damage)));
     }
 
     @Override
     public void earnedStars(Player player, int stars) {
-        proxies.forEach(proxy -> proxy.earnedStars(player, stars));
+        runNested(() -> proxies.forEach(proxy -> proxy.earnedStars(player, stars)));
     }
 }

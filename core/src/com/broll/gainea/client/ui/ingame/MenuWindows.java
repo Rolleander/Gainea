@@ -3,68 +3,68 @@ package com.broll.gainea.client.ui.ingame;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.broll.gainea.Gainea;
-import com.broll.gainea.client.game.PlayerPerformOptionalAction;
-import com.broll.gainea.net.NT_Action_Card;
+import com.broll.gainea.client.ui.elements.ClosableWindow;
+import com.broll.gainea.client.ui.ingame.windows.CardWindow;
+import com.broll.gainea.client.ui.ingame.windows.FractionWindow;
+import com.broll.gainea.client.ui.ingame.windows.GoalWindow;
+import com.broll.gainea.client.ui.ingame.windows.PlayerWindow;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class MenuWindows {
 
     private Gainea game;
-    private FractionWindow fractionWindow;
-    private PlayerWindow playerWindow;
-    private GoalWindow goalWindow;
-    private CardWindow cardWindow;
+    private Map<Class<? extends MenuWindow>, MenuWindow> windows = new HashMap<>();
 
     public MenuWindows(Gainea game, Skin skin) {
         this.game = game;
-        fractionWindow = new FractionWindow(game, skin);
-        addWindow(fractionWindow);
-        playerWindow = new PlayerWindow(game, skin);
-        addWindow(playerWindow);
-        goalWindow = new GoalWindow(game,skin);
-        addWindow(goalWindow);
-        cardWindow = new CardWindow(game,skin);
-        addWindow(cardWindow);
+        addWindow(new FractionWindow(game, skin));
+        addWindow(new PlayerWindow(game, skin));
+        addWindow(new GoalWindow(game, skin));
+        addWindow(new CardWindow(game, skin));
     }
 
     public void showFractionWindow() {
-        fractionWindow.setVisible(true);
-        fractionWindow.toFront();
+        toggle(FractionWindow.class);
     }
 
     public void showPlayerWindow() {
-        playerWindow.setVisible(true);
-        playerWindow.toFront();
+        toggle(PlayerWindow.class);
     }
 
-    public void showGoalWindow(){
-        goalWindow.setVisible(true);
-        goalWindow.toFront();
+    public void showGoalWindow() {
+        toggle(GoalWindow.class);
     }
 
-    public void showCardWindow(){
-        cardWindow.setVisible(true);
-        cardWindow.toFront();
+    public void showCardWindow() {
+        toggle(CardWindow.class);
+    }
+
+    public void hideWindows() {
+        windows.values().forEach(it -> it.setVisible(false));
+    }
+
+    private void toggle(Class<? extends MenuWindow> window) {
+        windows.get(window).toggleVisiblity();
     }
 
     public void updateWindows() {
-        playerWindow.update();
-        goalWindow.update();
-        cardWindow.update();
+        windows.values().forEach(MenuWindow::update);
     }
 
-    private void addWindow(Table table) {
+    private void addWindow(MenuWindow window) {
         Table pop = new Table();
         pop.setFillParent(true);
-        pop.add(table).expand().fill().center();
-        table.setVisible(false);
-        game.uiStage.addActor(table);
+        pop.add(window).expand().fill().center();
+        window.setVisible(false);
+        game.uiStage.addActor(window);
+        windows.put(window.getClass(), window);
     }
 
     public CardWindow getCardWindow() {
-        return cardWindow;
+        return (CardWindow) windows.get(CardWindow.class);
     }
 
 }

@@ -19,15 +19,21 @@ public class Battle {
         this.attackers = attackingUnits;
         this.defenders = defendingUnits;
         if (attackingPlayer == null) {
-            this.attackPower = new FightingPower();
+            this.defendingPower = initWildAnimalPower(attackingUnits);
         } else {
             this.attackPower = attackingPlayer.getFraction().calcPower(location, attackingUnits, defendingUnits, true);
         }
         if (defendingPlayer == null) {
-            this.defendingPower = new FightingPower();
+            this.defendingPower = initWildAnimalPower(defendingUnits);
         } else {
             this.defendingPower = defendingPlayer.getFraction().calcPower(location, defendingUnits, attackingUnits, false);
         }
+    }
+
+    private FightingPower initWildAnimalPower(List<BattleObject> units){
+        FightingPower power = new FightingPower();
+        power.setDiceCount(units.stream().map(BattleObject::getPower).reduce(0,Integer::sum));
+        return power;
     }
 
     public FightResult fight() {

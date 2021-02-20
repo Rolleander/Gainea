@@ -9,8 +9,8 @@ import com.broll.gainea.client.game.MapScrollUtils;
 import com.broll.gainea.client.ui.elements.LabelUtils;
 import com.broll.gainea.client.ui.elements.MessageUtils;
 import com.broll.gainea.client.ui.elements.TableUtils;
-import com.broll.gainea.client.ui.ingame.CardWindow;
-import com.broll.gainea.client.ui.ingame.GoalWindow;
+import com.broll.gainea.client.ui.ingame.windows.CardWindow;
+import com.broll.gainea.client.ui.ingame.windows.GoalWindow;
 import com.broll.gainea.client.ui.elements.render.MapObjectRender;
 import com.broll.gainea.net.NT_Abstract_Event;
 import com.broll.gainea.net.NT_BoardObject;
@@ -61,6 +61,7 @@ public class GameEventSite extends AbstractGameSite {
 
     @PackageReceiver
     public void received(NT_Event_ReceivedCard card) {
+        game.ui.inGameUI.hideWindows();
         game.ui.inGameUI.showCenterOverlay(TableUtils.removeAfter(CardWindow.renderCard(game, card.card), 3));
         game.state.getCards().add(card.card);
         game.ui.inGameUI.updateWindows();
@@ -68,6 +69,7 @@ public class GameEventSite extends AbstractGameSite {
 
     @PackageReceiver
     public void received(NT_Event_FocusObject focus) {
+        game.ui.inGameUI.hideWindows();
         GameUtils.updateMapObjects(game, focus.object);
         MapScrollUtils.showObject(game, focus.object);
         game.state.updateMapObjects();
@@ -76,6 +78,7 @@ public class GameEventSite extends AbstractGameSite {
 
     @PackageReceiver
     public void received(NT_Event_MovedObject moved) {
+        game.ui.inGameUI.hideWindows();
         game.assets.get("sounds/move.ogg", Sound.class).play();
         NT_BoardObject moveObject = moved.objects[0];
         int from = GameUtils.findObject(game, moveObject.id).location;
@@ -103,6 +106,7 @@ public class GameEventSite extends AbstractGameSite {
 
     @PackageReceiver
     public void received(NT_Event_PlacedObject placed) {
+        game.ui.inGameUI.hideWindows();
         NT_BoardObject object = placed.object;
         MapScrollUtils.showObject(game, object);
         GameUtils.addMapObject(game, object);
@@ -112,6 +116,7 @@ public class GameEventSite extends AbstractGameSite {
 
     @PackageReceiver
     public void received(NT_Event_PlayedCard card) {
+        game.ui.inGameUI.hideWindows();
         game.ui.inGameUI.showCenterOverlay(TableUtils.removeAfter(CardWindow.renderCard(game, card.card), 3));
         if (card.player == getPlayer().getId()) {
             game.state.getCards().remove(card.card);
@@ -121,11 +126,13 @@ public class GameEventSite extends AbstractGameSite {
 
     @PackageReceiver
     public void received(NT_Event_FocusLocation location) {
+        game.ui.inGameUI.hideWindows();
         MapScrollUtils.showLocations(game, location.location);
     }
 
     @PackageReceiver
     public void received(NT_Event_ReceivedGoal goal) {
+        game.ui.inGameUI.hideWindows();
         Log.info("received goal");
         game.ui.inGameUI.showCenterOverlay(TableUtils.removeAfter(GoalWindow.renderGoal(game.ui.skin, goal.goal), 3));
         game.state.getGoals().add(goal.goal);
@@ -134,18 +141,21 @@ public class GameEventSite extends AbstractGameSite {
 
     @PackageReceiver
     public void received(NT_Event_OtherPlayerReceivedCard card) {
+        game.ui.inGameUI.hideWindows();
         String info = game.state.getPlayer(card.player).name + " hat eine Karte erhalten!";
         MessageUtils.showActionMessage(game, info);
     }
 
     @PackageReceiver
     public void received(NT_Event_OtherPlayerReceivedGoal goal) {
+        game.ui.inGameUI.hideWindows();
         String info = game.state.getPlayer(goal.player).name + " hat ein neues Ziel erhalten!";
         MessageUtils.showActionMessage(game, info);
     }
 
     @PackageReceiver
     public void received(NT_Event_FinishedGoal goal) {
+        game.ui.inGameUI.hideWindows();
         String text = "";
         if (goal.player == getPlayer().getId()) {
             text = "Du hast ein Ziel erreicht!";

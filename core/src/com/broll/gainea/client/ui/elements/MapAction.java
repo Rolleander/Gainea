@@ -82,6 +82,14 @@ public class MapAction extends Image {
         this.trail = trail;
     }
 
+    @Override
+    public boolean remove() {
+         if(trail!=null){
+             trail.remove();
+         }
+        return super.remove();
+    }
+
     public int getLocationId() {
         return locationId;
     }

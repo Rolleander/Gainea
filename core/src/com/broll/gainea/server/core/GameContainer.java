@@ -119,7 +119,7 @@ public class GameContainer {
     public void end() {
         processingCore.execute(() -> {
             NT_GameOver gameOver = new NT_GameOver();
-            gameOver.players = players.stream().map(Player::nt).toArray(NT_Player[]::new);
+            fillUpdate(gameOver);
             reactionHandler.getActionHandlers().getReactionActions().sendGameUpdate(gameOver);
             lobby.setLocked(false);
             lobby.getData().setGame(null);

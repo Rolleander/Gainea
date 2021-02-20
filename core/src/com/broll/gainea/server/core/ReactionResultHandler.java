@@ -48,7 +48,7 @@ public class ReactionResultHandler implements ReactionActions {
     }
 
     private void doPlayerTurn(Player player, NT_PlayerTurn turn) {
-        game.getReactionHandler().getActionHandlers().getReactionActions().sendBoardUpdate();
+        sendBoardUpdate();
         //send turn to player
         player.getServerPlayer().sendTCP(turn);
         NT_PlayerWait wait = new NT_PlayerWait();

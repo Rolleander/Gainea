@@ -65,11 +65,13 @@ public class TurnBuilder {
                     moveLocation -> !PlayerUtils.getHostileArmy(player, moveLocation).isEmpty()).collect(Collectors.toList());
             moveLocations.removeAll(attackLocations);
             List<BattleObject> units = player.getUnits().stream().filter(it -> location == it.getLocation() && it.isRooted() == false).collect(Collectors.toList());
-            if (!attackLocations.isEmpty()) {
-                action(attackHandler.attack(units, attackLocations));
-            }
-            if (!moveLocations.isEmpty()) {
-                action(moveHandler.move(units, moveLocations));
+            if(!units.isEmpty()){
+                if (!attackLocations.isEmpty()) {
+                    action(attackHandler.attack(units, attackLocations));
+                }
+                if (!moveLocations.isEmpty()) {
+                    action(moveHandler.move(units, moveLocations));
+                }
             }
         });
     }

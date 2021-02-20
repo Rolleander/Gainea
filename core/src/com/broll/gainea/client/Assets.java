@@ -11,10 +11,12 @@ public class Assets {
 
     private AssetManager manager = new AssetManager();
 
-    public Assets() {
-        loadTextures();
+    public Assets(boolean full) {
+        if(full){
+            loadTextures();
+            loadSounds();
+        }
         loadUi();
-        loadSounds();
     }
 
     private void loadSounds() {

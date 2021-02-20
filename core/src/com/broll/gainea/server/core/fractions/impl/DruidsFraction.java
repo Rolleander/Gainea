@@ -49,6 +49,7 @@ public class DruidsFraction extends Fraction {
         if (unit instanceof Tree == false && MathUtils.randomBoolean(SPAWN_CHANCE)) {
             Tree tree = new Tree(owner);
             tree.init(game);
+            owner.getUnits().add(tree);
             UnitControl.spawn(game, tree, unit.getLocation());
         }
     }

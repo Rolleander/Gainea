@@ -177,4 +177,9 @@ public abstract class AbstractOccupyGoal extends AbstractGoal {
             }
         }
     }
+
+    @Override
+    public void spawned(MapObject object, Location location) {
+
+    }
 }

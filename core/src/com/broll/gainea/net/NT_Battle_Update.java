@@ -10,7 +10,5 @@ public class NT_Battle_Update {
     public int[] defenderRolls;
     public NT_Unit[] attackers;
     public NT_Unit[] defenders;
-    public int[] damageToAttackers;
-    public int[] damageToDefenders;
     public int state;
 }

@@ -30,6 +30,7 @@ public class C_ReplaceGoal extends AbstractCard {
         List<String> difficulties = Arrays.stream(GoalDifficulty.values()).map(GoalDifficulty::getLabel).collect(Collectors.toList());
         GoalDifficulty difficulty = GoalDifficulty.values()[selectHandler.selection("Welche Schwierigkeit soll das neue Ziel sein?", difficulties)];
         game.getGoalStorage().assignNewGoal(owner, difficulty);
+        //todo: broken
     }
 
 }

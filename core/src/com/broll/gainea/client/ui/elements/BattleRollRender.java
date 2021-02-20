@@ -9,10 +9,12 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.broll.gainea.Gainea;
+import com.esotericsoftware.minlog.Log;
 
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Arrays;
+import java.util.stream.Collectors;
 
 public class BattleRollRender {
 
@@ -41,6 +43,8 @@ public class BattleRollRender {
     public void start(int[] attackRolls, int[] defenderRolls, IRollAnimationListener listener) {
         this.attacker = new Rolls(attackRolls);
         this.defender = new Rolls(defenderRolls);
+        Log.info("attacker rolls "+Arrays.stream(attackRolls).boxed().collect(Collectors.toList()));
+        Log.info("defender rolls "+Arrays.stream(defenderRolls).boxed().collect(Collectors.toList()));
         this.listener = listener;
         showRolls = 0;
         rollAnimation = 0;

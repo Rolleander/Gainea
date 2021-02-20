@@ -1,4 +1,4 @@
-package com.broll.gainea.client.ui.ingame;
+package com.broll.gainea.client.ui.ingame.windows;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -14,6 +14,7 @@ import com.broll.gainea.client.ui.elements.ClosableWindow;
 import com.broll.gainea.client.ui.elements.LabelUtils;
 import com.broll.gainea.client.ui.elements.TableUtils;
 import com.broll.gainea.client.ui.elements.TextureUtils;
+import com.broll.gainea.client.ui.ingame.MenuWindow;
 import com.broll.gainea.net.NT_Action_Card;
 import com.broll.gainea.net.NT_Card;
 import com.broll.gainea.server.core.GameContainer;
@@ -23,7 +24,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import java.util.List;
 import java.util.Optional;
 
-public class CardWindow extends ClosableWindow {
+public class CardWindow extends MenuWindow {
     private Table content;
     private List<NT_Action_Card> playableCards;
     private PlayerPerformOptionalAction playerPerformAction;
