@@ -85,8 +85,10 @@ public class GameStartSite extends AbstractGameSite {
         GameContainer game = getGame();
         int startGoalsCount = getLobby().getData().getStartGoals();
         for (int i = 0; i < startGoalsCount; i++) {
-            game.getPlayers().forEach(game.getGoalStorage()::assignNewRandomGoal);
-            ProcessingUtils.pause(DELAY);
+            game.getPlayers().forEach(player -> {
+                game.getGoalStorage().assignNewRandomGoal(player);
+                ProcessingUtils.pause(DELAY);
+            });
         }
     }
 

@@ -33,7 +33,7 @@ public class GameUI implements IClientListener {
         this.skin = game.assets.get("ui/cloud-form-ui.json", Skin.class);
         connectionCircle = new ConnectionCircle(game.assets);
         connectionCircle.toFront();
-        game.client.reconnectCheck();
+      //  game.client.reconnectCheck();
     }
 
     public void initInGameUi(){

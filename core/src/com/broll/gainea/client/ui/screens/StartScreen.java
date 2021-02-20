@@ -75,7 +75,7 @@ public class StartScreen extends AbstractScreen {
         loadingInfo.setVisible(false);
         //"192.168.0.137"
         serverIp = new TextField("localhost", skin);
-        name = new TextField("TimoTester", skin);
+        name = new TextField("Razor", skin);
         Table vg = new Table();
         vg.setFillParent(true);
         vg.setBackground(new TextureRegionDrawable(game.assets.get("textures/title.png", Texture.class)));
