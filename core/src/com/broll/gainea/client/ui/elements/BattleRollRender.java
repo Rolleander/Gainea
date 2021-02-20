@@ -48,6 +48,7 @@ public class BattleRollRender {
         this.listener = listener;
         showRolls = 0;
         rollAnimation = 0;
+        showAnimation = 0;
         rollSound.play();
     }
 

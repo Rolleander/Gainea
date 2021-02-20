@@ -12,10 +12,10 @@ public abstract class MenuWindow extends ClosableWindow {
 
     public void toggleVisiblity() {
         if (isVisible()) {
+            setVisible(false);
+        } else {
             setVisible(true);
             toFront();
-        } else {
-            setVisible(false);
         }
     }
 

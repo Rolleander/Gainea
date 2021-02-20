@@ -8,6 +8,7 @@ import com.broll.gainea.client.game.PlayerPerformAction;
 import com.broll.gainea.client.ui.elements.LabelUtils;
 import com.broll.gainea.client.ui.elements.MapAction;
 import com.broll.gainea.client.ui.elements.Popup;
+import com.broll.gainea.client.ui.elements.render.MapObjectRender;
 import com.broll.gainea.client.ui.ingame.windows.CardWindow;
 import com.broll.gainea.client.ui.ingame.windows.GoalWindow;
 import com.broll.gainea.net.NT_Action;
@@ -62,8 +63,7 @@ public class RequiredActionHandler {
             } else if (objectChoice instanceof NT_Card) {
                 options = Arrays.stream(action.objectChoices).map(choice -> CardWindow.renderCard(game, (NT_Card) choice)).collect(Collectors.toList());
             } else if (objectChoice instanceof NT_Unit) {
-                //TODO
-//                options = Arrays.stream(action.objectChoices).map(choice -> CardWindow.renderCard(game, (NT_Card) choice)).collect(Collectors.toList());
+                options = Arrays.stream(action.objectChoices).map(choice -> MapObjectRender.createRender(game, skin, (NT_Unit) choice)).collect(Collectors.toList());
             }
         } else {
             //text selection

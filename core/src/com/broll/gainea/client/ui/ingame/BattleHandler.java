@@ -71,7 +71,13 @@ public class BattleHandler {
             public void rollingDone() {
                 doRemainingDamage(damageOrderAttacker);
                 doRemainingDamage(damageOrderDefender);
+                removeDeadUnits();
                 checkBattleState(state);
+            }
+
+            private void removeDeadUnits() {
+                battleBoard.attackerRenders.forEach(UnitRender::removeIfDead);
+                battleBoard.defenderRenders.forEach(UnitRender::removeIfDead);
             }
 
             private void doRemainingDamage(Stack<NT_Unit> units) {
@@ -151,12 +157,10 @@ public class BattleHandler {
             defenderRenders = defenders.stream().map(it -> (UnitRender) MapObjectRender.createRender(game, skin, it)).collect(Collectors.toList());
             attackerRenders.forEach(it -> {
                 it.setAlwaysDrawPlate(true);
-                it.setDeathListener(() -> it.setVisible(false));
             });
             defenderRenders.forEach(it -> {
                 it.setAlwaysDrawPlate(true);
                 it.flip();
-                it.setDeathListener(() -> it.setVisible(false));
             });
             this.rollRender = new BattleRollRender(game, skin);
         }

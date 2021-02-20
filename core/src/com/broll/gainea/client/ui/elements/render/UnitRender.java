@@ -15,6 +15,7 @@ import com.broll.gainea.client.ui.elements.ActionListener;
 import com.broll.gainea.client.ui.elements.LabelUtils;
 import com.broll.gainea.client.ui.elements.TextureUtils;
 import com.broll.gainea.net.NT_Unit;
+import com.esotericsoftware.minlog.Log;
 
 public class UnitRender extends MapObjectRender {
 
@@ -27,7 +28,6 @@ public class UnitRender extends MapObjectRender {
     private float bloodAnimation;
     private static int BLOOD_SIZE = 150;
     private boolean showBlood = false;
-    private ActionListener deathListener;
 
     public UnitRender(Gainea game, Skin skin, NT_Unit unit) {
         super(game, skin, unit);
@@ -42,10 +42,6 @@ public class UnitRender extends MapObjectRender {
 
     public void setHidePlate(boolean hidePlate) {
         this.hidePlate = hidePlate;
-    }
-
-    public void setDeathListener(ActionListener deathListener) {
-        this.deathListener = deathListener;
     }
 
     @Override
@@ -98,16 +94,15 @@ public class UnitRender extends MapObjectRender {
             NT_Unit unit = (NT_Unit) getObject();
             batch.draw(plate, getX() - 37 - R, getY() + 20 - R);
             numberLabel.setStyle(blackStyle);
-            numberLabel.setPosition(getX() - 70, getY() - 17);
+            numberLabel.setPosition(getX() - 74, getY() - 16);
             numberLabel.setText("" + unit.power);
             numberLabel.draw(batch, parentAlpha);
-            numberLabel.setPosition(getX() + 64, getY() - 17);
+            numberLabel.setPosition(getX() + 58, getY() - 16);
             numberLabel.setText("" + unit.health);
             if (unit.health < unit.maxHealth) {
                 numberLabel.setStyle(redStyle);
             }
             numberLabel.draw(batch, parentAlpha);
-
         }
         super.draw(batch, parentAlpha);
         if (showBlood) {
@@ -115,13 +110,13 @@ public class UnitRender extends MapObjectRender {
             batch.draw(blood.getKeyFrame(bloodAnimation), getX() - BLOOD_SIZE / 2, getY() - BLOOD_SIZE / 2);
             if (blood.isAnimationFinished(bloodAnimation)) {
                 showBlood = false;
-                if (getUnit().health <= 0) {
-                    remove();
-                    if (deathListener != null) {
-                        deathListener.action();
-                    }
-                }
             }
+        }
+    }
+
+    public void removeIfDead() {
+        if (getUnit().health <= 0) {
+            setVisible(false);
         }
     }
 

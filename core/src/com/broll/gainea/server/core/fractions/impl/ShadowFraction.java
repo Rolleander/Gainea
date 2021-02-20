@@ -30,7 +30,7 @@ public class ShadowFraction extends Fraction {
     protected FractionDescription description() {
         FractionDescription desc = new FractionDescription("");
         desc.contra("Auf Grasland -2 Würfel");
-        desc.plus("Bei gewonnen Kämpfen können gefallene Feinde zu Skeletten (1/1) werden");
+        desc.plus("Bei siegreichen Angriffen können gefallene Feinde zu Skeletten (1/1) werden");
         return desc;
     }
 
