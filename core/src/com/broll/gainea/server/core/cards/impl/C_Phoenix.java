@@ -27,6 +27,7 @@ public class C_Phoenix extends DirectlyPlayedCard {
         monster.setHealth(2);
         monster.setPower(2);
         monster.setIcon(124);
+        monster.setOwner(owner);
         placeUnitHandler.placeUnit(owner, monster, owner.getControlledLocations(), "Ort der Beschwörung wählen");
     }
 

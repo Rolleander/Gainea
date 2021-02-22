@@ -65,6 +65,7 @@ public class GameContainer {
         this.monsterFactory = new MonsterFactory();
         this.statistic = new GameStatistic(this);
         this.buffDurationProcessor = new BuffDurationProcessor(this);
+        this.gameUpdateReceiver.register(new TurnEvents(this));
     }
 
     public void initHandlers(ReactionActions reactionResult) {

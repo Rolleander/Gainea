@@ -29,10 +29,12 @@ public class C_StealCard extends AbstractCard {
     protected void play() {
         Player player = selectHandler.selectOtherPlayer(owner, "Welchen Spieler bekehren?");
         List<AbstractCard> cards = player.getCardHandler().getCards();
-        AbstractCard card = cards.get(selectHandler.selection("Wählt eine Karte", cards.stream().map(AbstractCard::getTitle).collect(Collectors.toList())));
-        player.getCardHandler().discardCard(card);
-        card.init(game, owner, card.getId());
-        owner.getCardHandler().receiveCard(card);
+        if(!cards.isEmpty()){
+            AbstractCard card = cards.get(selectHandler.selection("Wählt eine Karte", cards.stream().map(AbstractCard::getTitle).collect(Collectors.toList())));
+            player.getCardHandler().discardCard(card);
+            card.init(game, owner, card.getId());
+            owner.getCardHandler().receiveCard(card);
+        }
     }
 
 }

@@ -4,8 +4,9 @@ import com.broll.gainea.server.core.cards.EventCard;
 import com.broll.gainea.server.core.cards.events.E_SpawnGoddrake;
 import com.broll.gainea.server.core.cards.events.E_SpawnMonster;
 import com.broll.gainea.server.core.player.Player;
+import com.broll.gainea.server.core.processing.GameUpdateReceiverAdapter;
 
-public class TurnEvents {
+public class TurnEvents extends GameUpdateReceiverAdapter {
 
     private final static int SPAWN_MONSTER_TURNS = 2;
     private final static int SPAWN_GODDRAKE_TURNS = SPAWN_MONSTER_TURNS * 5;
@@ -17,9 +18,10 @@ public class TurnEvents {
         this.game = game;
     }
 
-    public void turnStarted(Player player, boolean newRound) {
+    @Override
+    public void roundStarted() {
         int turn = game.getTurns();
-        if (newRound && turn >= SPAWN_TURNS_START) {
+        if (turn >= SPAWN_TURNS_START) {
             if (turn % SPAWN_GODDRAKE_TURNS == 0) {
                 if (!E_SpawnGoddrake.isGoddrakeAlive(game)) {
                     EventCard.run(E_SpawnGoddrake.class, game);

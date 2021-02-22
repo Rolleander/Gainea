@@ -114,8 +114,7 @@ public class MonsterFactory {
                     Monster monster = new Monster();
                     monster.setName(init.name);
                     monster.setIcon(init.icon);
-                    monster.setPower(init.power);
-                    monster.setHealth(init.health);
+                    monster.setStats(init.power, init.health);
                     return monster;
                 }
             }

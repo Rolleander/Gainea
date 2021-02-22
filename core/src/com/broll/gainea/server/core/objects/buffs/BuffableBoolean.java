@@ -6,6 +6,7 @@ public class BuffableBoolean<T> extends AbstractBuffableValue<T, BooleanBuff, Bo
     public BuffableBoolean(T object, boolean value) {
         super(object);
         this.value = value;
+        recalc();
     }
 
     protected void recalc() {

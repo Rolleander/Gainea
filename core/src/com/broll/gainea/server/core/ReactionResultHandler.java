@@ -21,12 +21,10 @@ public class ReactionResultHandler implements ReactionActions {
 
     private GameContainer game;
     private ServerLobby<LobbyData, PlayerData> lobby;
-    private TurnEvents turnEvents;
 
     public ReactionResultHandler(GameContainer game, ServerLobby<LobbyData, PlayerData> lobby) {
         this.game = game;
         this.lobby = lobby;
-        this.turnEvents = new TurnEvents(game);
     }
 
     @Override
@@ -44,7 +42,6 @@ public class ReactionResultHandler implements ReactionActions {
                 game.getUpdateReceiver().roundStarted();
             }
             game.getUpdateReceiver().turnStarted(player);
-            turnEvents.turnStarted(player, newRound);
             if (!checkPlayerSkipped(player)) {
                 doPlayerTurn(player);
             }

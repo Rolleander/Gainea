@@ -39,6 +39,7 @@ public abstract class AbstractBuffableValue<T, B extends AbstractBuff, V> {
 
     public void setValue(V value) {
         this.value = value;
+        recalc();
     }
 
     public V getValue() {

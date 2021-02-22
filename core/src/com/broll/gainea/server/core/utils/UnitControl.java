@@ -40,12 +40,12 @@ public class UnitControl {
         ProcessingUtils.pause(MOVE_PAUSE);
     }
 
-    public static void kill(GameContainer game, BattleObject unit) {
-        damage(game, unit, Integer.MAX_VALUE, null);
-    }
-
     public static void damage(GameContainer game, BattleObject unit, int damage) {
         damage(game, unit, damage, null);
+    }
+
+    public static void kill(GameContainer game, BattleObject unit) {
+        damage(game, unit, Integer.MAX_VALUE, null);
     }
 
     public static void heal(GameContainer game, BattleObject unit, int heal) {
@@ -80,10 +80,15 @@ public class UnitControl {
         if (unit.isDead()) {
             //remove unit
             Player owner = unit.getOwner();
+            boolean removed = false;
             if (owner == null) {
-                game.getObjects().remove(unit);
+                removed = game.getObjects().remove(unit);
             } else {
-                owner.getUnits().remove(unit);
+                removed = owner.getUnits().remove(unit);
+            }
+            if (!removed) {
+                //was already killed/removed, do nothing
+                return;
             }
         }
         //send update to focus clients on object
@@ -98,13 +103,14 @@ public class UnitControl {
         ProcessingUtils.pause(DAMAGE_PAUSE);
     }
 
+
     public static void spawn(GameContainer game, MapObject object, Location location) {
         spawn(game, object, location, null);
     }
 
     public static void spawn(GameContainer game, MapObject object, Location location, Consumer<NT_Event_PlacedObject> consumer) {
-        if(location==null){
-            Log.error("Cannot spawn object "+object+" on null location");
+        if (location == null) {
+            Log.error("Cannot spawn object " + object + " on null location");
             return;
         }
         object.init(game);

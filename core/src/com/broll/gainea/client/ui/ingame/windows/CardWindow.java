@@ -69,11 +69,13 @@ public class CardWindow extends MenuWindow {
         content.defaults().space(10);
         game.state.getCards().forEach(card -> {
             Table table = renderCard(game, card);
-            Optional<NT_Action_Card> playableCard = playableCards.stream().filter(it -> it.cardId == card.id).findFirst();
-            if (cardsPlayable && playableCard.isPresent()) {
-                table.add(TableUtils.textButton(game.ui.skin, "Aktivieren!", () -> {
-                    playerPerformAction.perform(playableCard.get(), 0, null);
-                })).right().bottom();
+            if(playableCards!=null){
+                Optional<NT_Action_Card> playableCard = playableCards.stream().filter(it -> it.cardId == card.id).findFirst();
+                if (cardsPlayable && playableCard.isPresent()) {
+                    table.add(TableUtils.textButton(game.ui.skin, "Aktivieren!", () -> {
+                        playerPerformAction.perform(playableCard.get(), 0, null);
+                    })).right().bottom();
+                }
             }
             content.add(table).expandX().fillX().row();
         });

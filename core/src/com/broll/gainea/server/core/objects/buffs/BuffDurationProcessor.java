@@ -8,7 +8,9 @@ import com.broll.gainea.server.core.utils.UnitControl;
 
 import org.apache.commons.collections4.map.MultiValueMap;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public class BuffDurationProcessor extends GameUpdateReceiverAdapter {
 
@@ -26,13 +28,17 @@ public class BuffDurationProcessor extends GameUpdateReceiverAdapter {
     public void turnStarted(Player player) {
         currentTurnCount++;
         Collection<AbstractBuff> timedout = timedBuffs.getCollection(currentTurnCount);
-        timedout.forEach(this::timedout);
-        timedBuffs.remove(currentTurnCount);
+        if(timedout!=null){
+            timedout.forEach(this::timedout);
+            timedBuffs.remove(currentTurnCount);
+        }
     }
 
     private void timedout(AbstractBuff buff) {
+        List<Object> affectedObjects = new ArrayList<>(buff.getAffectedObjects());
+        buff.remove();
         //check if any unit died because of removal of buffs
-        for (Object object : buff.getAffectedObjects()) {
+        for (Object object : affectedObjects) {
             if (object instanceof BattleObject) {
                 BattleObject unit = (BattleObject) object;
                 if (unit.isDead()) {
@@ -40,11 +46,10 @@ public class BuffDurationProcessor extends GameUpdateReceiverAdapter {
                 }
             }
         }
-        buff.remove();
     }
 
     public void timeoutBuff(AbstractBuff buff, int turns) {
-        int timeoutTurn = currentTurnCount + game.getPlayers().size() * Math.min(1, turns);
+        int timeoutTurn = currentTurnCount + game.getPlayers().size() * Math.max(1, turns);
         timedBuffs.put(timeoutTurn, buff);
     }
 

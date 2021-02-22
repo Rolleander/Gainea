@@ -9,6 +9,7 @@ public class BuffableInt<T> extends AbstractBuffableValue<T, IntBuff, Integer> {
     public BuffableInt(T object, int value) {
         super(object);
         this.value = value;
+        recalc();
     }
 
     public BuffableInt copy(T object) {
@@ -44,10 +45,17 @@ public class BuffableInt<T> extends AbstractBuffableValue<T, IntBuff, Integer> {
 
     public void setMinValue(int minValue) {
         this.minValue = minValue;
+        recalc();
+    }
+
+    public void setMaxValue(int maxValue) {
+        this.maxValue = maxValue;
+        recalc();
     }
 
     public void addValue(int value) {
         this.value += value;
+        recalc();
     }
 
 
