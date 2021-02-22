@@ -30,17 +30,22 @@ public class CardStorage {
     }
 
     public void drawRandomCard(Player player) {
+        AbstractCard card = getRandomCard();
+        card.init(game, player, game.newObjectId());
+        player.getCardHandler().receiveCard(card);
+    }
+
+    public AbstractCard getRandomCard() {
         float chanceSum = 0;
         float chance = MathUtils.random(0, totalDrawChances);
         for (int i = 0; i < drawChances.length; i++) {
             if (chance <= chanceSum) {
                 AbstractCard card = loader.instantiate(i);
-                card.init(game, player, i);
-                player.getCardHandler().receiveCard(card);
-                return;
+                return card;
             }
             chanceSum += drawChances[i];
         }
+        return null;
     }
 
 }

@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 public class C_TeleportLake extends AbstractTeleportCard {
     public C_TeleportLake() {
-        super(48, "Küstenreise", "Bewegt eine Truppe zu einem beliebigem Meer auf der gleichen Karte");
+        super(47, "Küstenreise", "Bewegt eine Truppe zu einem beliebigem Meer auf der gleichen Karte");
     }
 
     @Override

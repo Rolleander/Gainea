@@ -39,4 +39,14 @@ public abstract class GameUpdateReceiverAdapter implements IGameUpdateReceiver {
     public void earnedStars(Player player, int stars) {
 
     }
+
+    @Override
+    public void turnStarted(Player player) {
+
+    }
+
+    @Override
+    public void roundStarted() {
+
+    }
 }

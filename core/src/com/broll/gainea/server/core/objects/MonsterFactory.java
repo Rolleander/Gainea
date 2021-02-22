@@ -116,7 +116,6 @@ public class MonsterFactory {
                     monster.setIcon(init.icon);
                     monster.setPower(init.power);
                     monster.setHealth(init.health);
-                    monster.setMaxHealth(init.health);
                     return monster;
                 }
             }

@@ -1,11 +1,10 @@
-package com.broll.gainea.server.core.actions.impl;
+package com.broll.gainea.server.core.actions.optional;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.broll.gainea.server.core.actions.ActionContext;
 import com.broll.gainea.server.core.objects.BattleObject;
-import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.net.NT_Action_Attack;
 import com.broll.gainea.net.NT_Reaction;
 import com.broll.gainea.net.NT_Unit;
@@ -14,7 +13,6 @@ import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.utils.PlayerUtils;
 
 import java.util.Collection;
-import java.util.stream.Collectors;
 
 public class AttackAction extends AbstractActionHandler<NT_Action_Attack, AttackAction.Context> {
 
@@ -50,16 +48,13 @@ public class AttackAction extends AbstractActionHandler<NT_Action_Attack, Attack
                 selectedAttackers.add(attacker);
             }
             context.attackers.removeAll(selectedAttackers);
+            selectedAttackers.forEach(BattleObject::attacked);
             startFight(selectedAttackers, attackLocation);
-            if (!context.attackLocations.isEmpty() && !context.attackers.isEmpty()) {
-                //other attack locations and attackers remain => push new attack action
-                reactionResult.optionalAction(attack(context.attackers, context.attackLocations));
-            }
         });
     }
 
     private void startFight(List<BattleObject> attackers, Location attackLocation) {
         List<BattleObject> defenders = PlayerUtils.getHostileArmy(player, attackLocation);
-        game.getBattleHandler().startBattle(attackers, defenders);
+        game.getProcessingCore().execute(()-> game.getBattleHandler().startBattle(attackers, defenders));
     }
 }

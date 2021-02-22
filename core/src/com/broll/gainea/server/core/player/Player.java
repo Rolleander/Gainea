@@ -7,15 +7,13 @@ import com.broll.gainea.server.core.goals.GoalHandler;
 import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.net.NT_Player;
 import com.broll.gainea.net.NT_Unit;
+import com.broll.gainea.server.core.objects.buffs.BuffableBoolean;
 import com.broll.gainea.server.init.PlayerData;
 import com.broll.gainea.server.core.map.Location;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class Player {
 
@@ -26,6 +24,7 @@ public class Player {
     private CardHandler cardHandler;
     private int skipRounds;
     private int color;
+    private BuffableBoolean<Player> attackingAllowed = new BuffableBoolean<>(this, true);
 
     public Player(GameContainer game, Fraction fraction, com.broll.networklib.server.impl.Player<PlayerData> serverPlayer) {
         this.fraction = fraction;
@@ -61,7 +60,7 @@ public class Player {
         player.fraction = fraction.getType().ordinal();
         player.id = serverPlayer.getId();
         player.color = color;
-        player.stars=goalHandler.getStars();
+        player.stars = goalHandler.getStars();
         player.name = serverPlayer.getName();
         player.points = goalHandler.getScore();
         player.units = units.stream().map(BattleObject::nt).toArray(NT_Unit[]::new);
@@ -88,4 +87,7 @@ public class Player {
         return cardHandler;
     }
 
+    public BuffableBoolean<Player> getAttackingAllowed() {
+        return attackingAllowed;
+    }
 }

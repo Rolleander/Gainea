@@ -37,10 +37,8 @@ public class PoacherFraction extends Fraction {
             //recruit monster in player army
             Monster recruited = new Monster();
             BattleObject.copy(monster, recruited);
-            recruited.init(game);
             recruited.heal();
             recruited.setOwner(owner);
-            owner.getUnits().add(recruited);
             UnitControl.spawn(game, recruited, recruited.getLocation());
         }
     }

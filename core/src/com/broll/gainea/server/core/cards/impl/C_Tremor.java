@@ -8,12 +8,12 @@ import com.broll.gainea.server.core.utils.UnitControl;
 
 public class C_Tremor extends DirectlyPlayedCard {
     public C_Tremor() {
-        super(22,"Wilde Schlacht", "Verursacht 1 Schaden an einer zufälligen Einheit jedes Spielers");
+        super(23,"Auge um Auge", "Verursacht 1 Schaden an einer zufälligen Einheit jedes Spielers");
     }
 
     @Override
-    public void play() {
-        PlayerUtils.iteratePlayers(game, 1500, player -> {
+    protected void play() {
+        PlayerUtils.iteratePlayers(game, 500, player -> {
             BattleObject unit = RandomUtils.pickRandom(player.getUnits());
             if (unit != null) {
                 //deal 1 damage

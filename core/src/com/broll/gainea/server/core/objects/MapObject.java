@@ -3,8 +3,11 @@ package com.broll.gainea.server.core.objects;
 import com.broll.gainea.net.NT_BoardObject;
 import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.map.Location;
+import com.broll.gainea.server.core.objects.buffs.BuffableInt;
+import com.broll.gainea.server.core.player.Player;
 
 public abstract class MapObject {
+    protected Player owner;
 
     private Location location;
 
@@ -16,12 +19,40 @@ public abstract class MapObject {
 
     private float scale = 1;
 
+    protected int moveCount;
+
+    protected BuffableInt<MapObject> movesPerTurn = new BuffableInt<>(this,1); //default 1 move
+
     public void init(GameContainer game) {
         this.id = game.newObjectId();
     }
 
+    public void turnStart() {
+        moveCount = 0;
+    }
+
+    public boolean canMove() {
+        return moveCount < movesPerTurn.getValue();
+    }
+
+    public void moved() {
+        moveCount++;
+    }
+
+    public BuffableInt<MapObject> getMovesPerTurn() {
+        return movesPerTurn;
+    }
+
     public Location getLocation() {
         return location;
+    }
+
+    public MapObject() {
+        this(null);
+    }
+
+    public MapObject(Player owner) {
+        this.owner = owner;
     }
 
     public void setLocation(Location location) {
@@ -76,5 +107,9 @@ public abstract class MapObject {
         if (location != null) {
             object.location = location.getNumber();
         }
+    }
+
+    public Player getOwner() {
+        return owner;
     }
 }

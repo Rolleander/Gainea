@@ -8,5 +8,16 @@ piraten
 
 einheiten heilen
 
+feldherr wiederbeleben
+
+einheit kopieren
+
+teleport einzelne einheit
+
+directly played:
+
+heilwelle : alle einheiten volles leben
+fette jahre: neue monster spawnen
+
 
 

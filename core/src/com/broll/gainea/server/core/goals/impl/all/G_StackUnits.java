@@ -27,12 +27,7 @@ public class G_StackUnits extends AbstractOccupyGoal {
 
     @Override
     protected void initOccupations() {
-        condition(occupy(area), location -> location.getInhabitants().stream().filter(it -> {
-            if (it instanceof BattleObject && ((BattleObject) it).getOwner() == player) {
-                return true;
-            }
-            return false;
-        }).count() >= COUNT);
+        condition(occupy(area), minPlayerUnitCount(COUNT));
     }
 
 }

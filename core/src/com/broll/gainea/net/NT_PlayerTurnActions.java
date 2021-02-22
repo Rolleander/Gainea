@@ -1,7 +1,6 @@
 package com.broll.gainea.net;
 
-public class NT_PlayerTurn {
-
+public class NT_PlayerTurnActions {
     public NT_Action[] actions;
 
 }

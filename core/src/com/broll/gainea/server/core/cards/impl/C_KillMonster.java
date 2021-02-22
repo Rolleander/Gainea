@@ -4,9 +4,11 @@ import com.broll.gainea.net.NT_Monster;
 import com.broll.gainea.server.core.cards.AbstractCard;
 import com.broll.gainea.server.core.goals.AbstractGoal;
 import com.broll.gainea.server.core.goals.GoalDifficulty;
+import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.GodDragon;
 import com.broll.gainea.server.core.objects.MapObject;
 import com.broll.gainea.server.core.objects.Monster;
+import com.broll.gainea.server.core.utils.SelectionUtils;
 import com.broll.gainea.server.core.utils.UnitControl;
 
 import java.util.Arrays;
@@ -20,20 +22,13 @@ public class C_KillMonster extends AbstractCard {
 
     @Override
     public boolean isPlayable() {
-        return !getMonsters().isEmpty();
+        return true;
     }
 
     @Override
-    public void play() {
-        List<Monster> monsters = getMonsters();
-        if (!monsters.isEmpty()) {
-            Monster monster = monsters.get(selectHandler.selectObject("Wählt ein Monster das vernichtet werden soll", monsters.stream().map(Monster::nt).collect(Collectors.toList())));
-            UnitControl.kill(game, monster);
-        }
-    }
-
-    private List<Monster> getMonsters() {
-        return game.getObjects().stream().filter(it -> it instanceof Monster && it instanceof GodDragon == false).map(it -> (Monster) it).collect(Collectors.toList());
+    protected void play() {
+        BattleObject monster = SelectionUtils.selectWildUnit(game, "Wählt ein Monster das vernichtet werden soll", it -> it instanceof GodDragon == false);
+        UnitControl.kill(game, monster);
     }
 
 }

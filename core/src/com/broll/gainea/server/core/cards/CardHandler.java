@@ -4,12 +4,9 @@ import com.broll.gainea.net.NT_Card;
 import com.broll.gainea.net.NT_Event_OtherPlayerReceivedCard;
 import com.broll.gainea.net.NT_Event_ReceivedCard;
 import com.broll.gainea.server.core.GameContainer;
-import com.broll.gainea.server.core.actions.ActionHandlers;
-import com.broll.gainea.server.core.actions.TurnBuilder;
-import com.broll.gainea.server.core.actions.impl.CardAction;
+import com.broll.gainea.server.core.actions.optional.CardAction;
 import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.server.core.utils.GameUtils;
-import com.broll.gainea.server.core.utils.MessageUtils;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -29,9 +26,8 @@ public class CardHandler {
         game.getCardStorage().drawRandomCard(player);
     }
 
-    public void onTurnStart(TurnBuilder builder, ActionHandlers actionHandlers) {
-        CardAction cardAction = actionHandlers.getHandler(CardAction.class);
-        cards.stream().filter(AbstractCard::isPlayable).forEach(card -> builder.action(cardAction.playableCard(player, card)));
+    public List<AbstractCard> getCards() {
+        return cards;
     }
 
     public void receiveCard(AbstractCard card) {

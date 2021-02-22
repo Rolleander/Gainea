@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 public class C_TeleportPlains extends AbstractTeleportCard {
     public C_TeleportPlains() {
-        super(44, "Steppentrip", "Bewegt eine Truppe zu einer beliebigen Steppe auf der gleichen Karte");
+        super(43, "Steppentrip", "Bewegt eine Truppe zu einer beliebigen Steppe auf der gleichen Karte");
     }
 
     @Override

@@ -44,6 +44,12 @@ public class MapContainer {
         return areas;
     }
 
+    public List<Ship> getAllShips(){
+        List<Ship> ships = new ArrayList<>();
+        expansions.forEach(e -> e.getAllShips().forEach(ships::add));
+        return ships;
+    }
+
     public Expansion getExpansion(ExpansionType type) {
         return expansions.stream().filter(it -> it.getType() == type).findFirst().orElse(null);
     }

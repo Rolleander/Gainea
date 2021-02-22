@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 public class C_TeleportShip extends AbstractTeleportCard {
     public C_TeleportShip() {
-        super(32, "Seeleute", "Bewegt eine Truppe zu einem beliebigen Schiff auf der gleichen Karte");
+        super(31, "Seeleute", "Bewegt eine Truppe zu einem beliebigen Schiff auf der gleichen Karte");
     }
 
     @Override

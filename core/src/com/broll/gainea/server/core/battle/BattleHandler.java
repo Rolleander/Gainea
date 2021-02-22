@@ -13,6 +13,7 @@ import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.actions.ReactionActions;
 import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.utils.GameUtils;
+import com.broll.gainea.server.core.utils.ProcessingUtils;
 import com.broll.gainea.server.core.utils.UnitControl;
 import com.esotericsoftware.minlog.Log;
 
@@ -47,21 +48,22 @@ public class BattleHandler {
         this.reactionResult = reactionResult;
     }
 
-    public void startBattle(List<BattleObject> attackers, List<BattleObject> defenders) {
+    public void startBattle(List<? extends BattleObject> attackers, List<? extends BattleObject> defenders) {
         startBattle(attackers, defenders, true);
     }
 
-    public void startBattle(List<BattleObject> attackers, List<BattleObject> defenders, boolean allowRetreat) {
+    public void startBattle(List<? extends BattleObject> attackers, List<? extends BattleObject> defenders, boolean allowRetreat) {
         if (battleActive == false) {
             this.allowRetreat = allowRetreat;
-            this.attackers = attackers;
-            this.defenders = defenders;
+            this.attackers = new ArrayList<>(attackers);
+            this.defenders = new ArrayList<>(defenders);
             killedDefenders.clear();
             killedAttackers.clear();
             battleActive = true;
             prepareFight();
             sendFightStart();
-            game.getProcessingCore().execute(this::fight, BATTLE_ANIMATION_DELAY);
+            ProcessingUtils.pause(BATTLE_ANIMATION_DELAY);
+            fight();
         }
     }
 
@@ -126,7 +128,7 @@ public class BattleHandler {
         } else if (aliveDefenders.isEmpty()) {
             state = NT_Battle_Update.STATE_ATTACKER_WON;
             //attackers won, move them to the fight location
-            attackers.forEach(attacker -> game.moveObject(attacker, battleLocation));
+            attackers.forEach(attacker -> attacker.setLocation(battleLocation));
         }
         update.state = state;
         //send update
@@ -137,10 +139,12 @@ public class BattleHandler {
             if (allowRetreat) {
                 keepAttacking = new CompletableFuture<>();
             }
-            game.getProcessingCore().execute(this::prepareNextRound, delay);
+            ProcessingUtils.pause(delay);
+            prepareNextRound();
         } else {
             //battle finished, all attackers or defenders died
-            game.getProcessingCore().execute(this::battleFinished, delay);
+            ProcessingUtils.pause(delay);
+            battleFinished();
         }
     }
 
@@ -151,11 +155,9 @@ public class BattleHandler {
             //next round is against other owner, send new battle start to clients before this round
             sendFightStart();
             //start next round after wait
-            game.getProcessingCore().execute(this::fight, BATTLE_ANIMATION_DELAY);
-        } else {
-            //directly continue with next round
-            fight();
+            ProcessingUtils.pause(BATTLE_ANIMATION_DELAY);
         }
+        fight();
     }
 
     private void prepareNextRound() {
@@ -170,10 +172,10 @@ public class BattleHandler {
         }
         if (startNextRound) {
             //schedule next fight round
-            game.getProcessingCore().execute(this::fightRound);
+            fightRound();
         } else {
             //end battle, attackers retreat
-            game.getProcessingCore().execute(this::battleFinished);
+            battleFinished();
         }
     }
 

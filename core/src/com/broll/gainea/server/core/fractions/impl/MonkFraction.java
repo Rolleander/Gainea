@@ -34,9 +34,9 @@ public class MonkFraction extends Fraction {
     @Override
     public void turnStarted(ActionHandlers actionHandlers) {
         if (!owner.getUnits().isEmpty()) {
-            BattleObject randomUnit = owner.getUnits().get(MathUtils.random(owner.getUnits().size()-1));
+            BattleObject randomUnit = owner.getUnits().get(MathUtils.random(owner.getUnits().size() - 1));
             //inc life
-            randomUnit.setMaxHealth(randomUnit.getMaxHealth() + 1);
+            randomUnit.getMaxHealth().addValue(1);
             //heal
             UnitControl.heal(game, randomUnit, 1);
         }

@@ -7,11 +7,13 @@ import com.broll.gainea.server.core.map.ExpansionType;
 import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.GodDragon;
+import com.broll.gainea.server.core.objects.MapObject;
 import com.broll.gainea.server.core.objects.Monster;
 import com.broll.gainea.server.core.player.Player;
 
 import org.apache.commons.lang3.ArrayUtils;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -55,12 +57,30 @@ public final class LocationUtils {
         }).reduce(true, Boolean::logicalAnd);
     }
 
-    public static List<Location> getWildMonsterLocations(GameContainer game) {
-        return game.getMap().getAllLocations().stream().filter(it -> getWildMonster(it) != null).collect(Collectors.toList());
+    public static boolean noControlledUnits(Location location) {
+        return !location.getInhabitants().stream().anyMatch(it -> {
+            if (it instanceof BattleObject) {
+                return ((BattleObject) it).getOwner() != null;
+            }
+            return false;
+        });
     }
 
-    public static Monster getWildMonster(Location location) {
-        return location.getInhabitants().stream().filter(it -> it instanceof Monster && it instanceof GodDragon == false).map(it -> (Monster) it).filter(it -> it.getOwner() == null).findFirst().orElse(null);
+    public static List<Location> getWildMonsterLocations(GameContainer game) {
+        return game.getObjects().stream().filter(it -> it instanceof Monster).map(MapObject::getLocation).distinct().collect(Collectors.toList());
+    }
+
+    public static List<Monster> getMonsters(Location location) {
+        return location.getInhabitants().stream().filter(it -> it instanceof Monster).map(it -> (Monster) it).collect(Collectors.toList());
+    }
+
+    public static Location getRandomFree(List<? extends Location> locations) {
+        List<Location> free = locations.stream().filter(Location::isFree).collect(Collectors.toList());
+        if (free.isEmpty()) {
+            return null;
+        }
+        Collections.shuffle(free);
+        return free.get(0);
     }
 
 }

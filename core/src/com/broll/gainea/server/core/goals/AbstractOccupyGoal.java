@@ -12,6 +12,7 @@ import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.map.MapContainer;
 import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.MapObject;
+import com.esotericsoftware.minlog.Log;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -149,7 +150,7 @@ public abstract class AbstractOccupyGoal extends AbstractGoal {
     @Override
     public void check() {
         List<Location> occupiedLocations = player.getControlledLocations();
-        for (Location location : occupiedLocations) {
+        for (Location location : locations) {
             Function<Location, Boolean> condition = conditions.get(location);
             if (condition != null) {
                 if (!condition.apply(location)) {
@@ -158,7 +159,7 @@ public abstract class AbstractOccupyGoal extends AbstractGoal {
                 }
             } else {
                 //default condition: simply occupied
-                if (!locations.contains(location)) {
+                if (!occupiedLocations.contains(location)) {
                     //area not occupied by player
                     return;
                 }

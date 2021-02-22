@@ -5,7 +5,7 @@ public enum FractionType {
     FIRE("Feuermagier"),   SHADOW("Schatten"),BARBARIANS("Barbaren"), VIKINGS("Wikinger"),
     DRUIDS("Druiden"), KNIGHTS("Kreuzritter"), SAMURAI("Samurai"), MONKS("Mönche"),
     POACHER("Wilderer"),RANGER("Waldläufer"),MERCENARY("Söldner"),GUARDS("Königsgarde"),
-    WATER("Wassermagier");
+    WATER("Wassermagier"), LIZARDS("Echsenvolk");
 
     private String name;
 

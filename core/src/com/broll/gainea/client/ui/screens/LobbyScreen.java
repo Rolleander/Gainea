@@ -104,7 +104,7 @@ public class LobbyScreen extends AbstractScreen {
             lobbyTable.add(label(player.getName()));
             NT_PlayerSettings settings = (NT_PlayerSettings) player.getSettings();
             Fraction fraction = FractionFactory.create(FractionType.values()[settings.fraction]);
-            lobbyTable.add(new Image(TextureUtils.unitIcon(game, fraction.createCommander(null).getIcon()))).size(41).spaceRight(10);
+            lobbyTable.add(new Image(TextureUtils.unitIcon(game, fraction.createCommander().getIcon()))).size(41).spaceRight(10);
             CheckBox playerReady = new CheckBox("Bereit", skin);
             playerReady.setChecked(settings.ready);
             if (player == lobby.getMyPlayer()) {

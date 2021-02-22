@@ -1,8 +1,6 @@
 package com.broll.gainea.server.sites;
 
 import com.broll.gainea.server.core.player.Player;
-import com.broll.gainea.net.NT_PlayerTurn;
-import com.broll.gainea.net.NT_PlayerWait;
 import com.broll.gainea.server.init.LobbyData;
 import com.broll.gainea.server.init.PlayerData;
 import com.broll.gainea.server.core.GameContainer;

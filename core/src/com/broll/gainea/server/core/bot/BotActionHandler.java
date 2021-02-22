@@ -2,7 +2,8 @@ package com.broll.gainea.server.core.bot;
 
 import com.broll.gainea.misc.PackageLoader;
 import com.broll.gainea.net.NT_Action;
-import com.broll.gainea.net.NT_PlayerTurn;
+import com.broll.gainea.net.NT_PlayerTurnActions;
+import com.broll.gainea.net.NT_PlayerTurnStart;
 import com.broll.gainea.net.NT_Reaction;
 import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.player.Player;
@@ -40,7 +41,7 @@ public class BotActionHandler {
         return botAction.perform(action);
     }
 
-    public Pair<BotDecision, NT_Action> bestScore(NT_PlayerTurn turn) {
+    public Pair<BotDecision, NT_Action> bestScore(NT_PlayerTurnActions turn) {
         BotDecision decision = null;
         float score = Float.MIN_VALUE;
         NT_Action chosenAction = null;

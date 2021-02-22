@@ -11,6 +11,7 @@ import com.broll.gainea.server.core.goals.GoalStorage;
 import com.broll.gainea.server.core.map.MapContainer;
 import com.broll.gainea.server.core.objects.MapObject;
 import com.broll.gainea.server.core.objects.MonsterFactory;
+import com.broll.gainea.server.core.objects.buffs.BuffDurationProcessor;
 import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.server.core.player.PlayerFactory;
 import com.broll.gainea.net.NT_BoardObject;
@@ -50,6 +51,7 @@ public class GameContainer {
     private ProcessingCore processingCore;
     private MonsterFactory monsterFactory;
     private GameUpdateReceiverProxy gameUpdateReceiver;
+    private BuffDurationProcessor buffDurationProcessor;
     private ServerLobby<LobbyData, PlayerData> lobby;
     private GameStatistic statistic;
     private boolean gameOver = false;
@@ -62,13 +64,14 @@ public class GameContainer {
         this.players = PlayerFactory.create(this, lobby.getPlayers());
         this.monsterFactory = new MonsterFactory();
         this.statistic = new GameStatistic(this);
+        this.buffDurationProcessor = new BuffDurationProcessor(this);
     }
 
     public void initHandlers(ReactionActions reactionResult) {
         ActionHandlers actionHandlers = new ActionHandlers(this, reactionResult);
-        reactionHandler = new ReactionHandler(this, actionHandlers);
+        this.reactionHandler = new ReactionHandler(this, actionHandlers);
         this.processingCore = new ProcessingCore(this, reactionHandler::finishedProcessing);
-        turnBuilder = new TurnBuilder(this, actionHandlers);
+        this.turnBuilder = new TurnBuilder(this, actionHandlers);
         this.battleHandler = new BattleHandler(this, reactionResult);
         this.goalStorage = new GoalStorage(this, actionHandlers, lobby.getData().getGoalTypes());
         this.cardStorage = new CardStorage(this, actionHandlers);
@@ -77,14 +80,6 @@ public class GameContainer {
     public synchronized int newObjectId() {
         boardObjectCounter++;
         return boardObjectCounter;
-    }
-
-    public void moveObject(MapObject object, Location target) {
-        if (object.getLocation() != null) {
-            object.getLocation().getInhabitants().remove(object);
-        }
-        object.setLocation(target);
-        target.getInhabitants().add(object);
     }
 
     public synchronized void pushAction(ActionContext action) {
@@ -103,10 +98,6 @@ public class GameContainer {
 
     public void clearActions() {
         actions.clear();
-    }
-
-    public boolean hasRemainingActions() {
-        return !actions.isEmpty();
     }
 
     public NT_StartGame start() {
@@ -222,5 +213,9 @@ public class GameContainer {
 
     public boolean isGameOver() {
         return gameOver;
+    }
+
+    public BuffDurationProcessor getBuffDurationProcessor() {
+        return buffDurationProcessor;
     }
 }

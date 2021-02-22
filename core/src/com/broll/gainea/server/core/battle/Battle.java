@@ -32,15 +32,15 @@ public class Battle {
 
     private FightingPower initWildAnimalPower(List<BattleObject> units){
         FightingPower power = new FightingPower();
-        power.setDiceCount(units.stream().map(BattleObject::getPower).reduce(0,Integer::sum));
+        power.setDiceCount(units.stream().map(it->it.getPower().getValue()).reduce(0,Integer::sum));
         return power;
     }
 
     public FightResult fight() {
         int attacks = attackPower.getDiceCount();
         int blocks = defendingPower.getDiceCount();
-        int rawAttackerPower = attackers.stream().map(BattleObject::getPower).reduce(0, Integer::sum);
-        int rawDefenderPower = defenders.stream().map(BattleObject::getPower).reduce(0, Integer::sum);
+        int rawAttackerPower = attackers.stream().map(it->it.getPower().getValue()).reduce(0, Integer::sum);
+        int rawDefenderPower = defenders.stream().map(it->it.getPower().getValue()).reduce(0, Integer::sum);
         int deltaAttacks = attacks - blocks;
         int battleSize = Math.min(attacks, blocks);
         List<Integer> allAttackRolls = attackPower.roll();
@@ -64,8 +64,8 @@ public class Battle {
             attackWins += Math.min(deltaAttacks, rawDefenderPower - blocks);
         }
         //sort ascending (so that weakest power level units die first)
-        attackers.sort((o1, o2) -> Integer.compare(o1.getPower(), o2.getPower()));
-        defenders.sort((o1, o2) -> Integer.compare(o1.getPower(), o2.getPower()));
+        attackers.sort((o1, o2) -> Integer.compare(o1.getPower().getValue(), o2.getPower().getValue()));
+        defenders.sort((o1, o2) -> Integer.compare(o1.getPower().getValue(), o2.getPower().getValue()));
         //deal damage
         do {
             if (attackWins > 0) {

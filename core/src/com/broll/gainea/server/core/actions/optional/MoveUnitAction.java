@@ -1,4 +1,4 @@
-package com.broll.gainea.server.core.actions.impl;
+package com.broll.gainea.server.core.actions.optional;
 
 import com.broll.gainea.net.NT_Unit;
 import com.broll.gainea.server.core.actions.ActionContext;
@@ -47,11 +47,8 @@ public class MoveUnitAction extends AbstractActionHandler<NT_Action_Move, MoveUn
             context.unitsToMove.removeAll(selectedUnits);
             context.locations.remove(pickedLocation);
             //perform move
+            selectedUnits.forEach(MapObject::moved);
             UnitControl.move(game, selectedUnits, pickedLocation);
-            //check for remaining moves
-            if (!context.unitsToMove.isEmpty() && !context.locations.isEmpty()) {
-                reactionResult.optionalAction(move(context.unitsToMove, context.locations));
-            }
         });
     }
 

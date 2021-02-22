@@ -3,16 +3,9 @@ package com.broll.gainea.server.core.cards;
 import com.broll.gainea.net.NT_Card;
 import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.actions.ActionHandlers;
-import com.broll.gainea.server.core.actions.impl.PlaceUnitAction;
-import com.broll.gainea.server.core.actions.impl.SelectChoiceAction;
+import com.broll.gainea.server.core.actions.required.PlaceUnitAction;
+import com.broll.gainea.server.core.actions.required.SelectChoiceAction;
 import com.broll.gainea.server.core.player.Player;
-
-import org.apache.commons.lang3.concurrent.ConcurrentUtils;
-
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Future;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
 
 public abstract class AbstractCard {
 
@@ -56,7 +49,7 @@ public abstract class AbstractCard {
         play();
     }
 
-    public abstract void play();
+    protected abstract void play();
 
     public NT_Card nt() {
         NT_Card card = new NT_Card();

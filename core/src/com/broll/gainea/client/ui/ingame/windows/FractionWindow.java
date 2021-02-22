@@ -56,9 +56,9 @@ public class FractionWindow extends MenuWindow {
         table.add(LabelUtils.title(skin, fraction.getType().getName())).left().row();
         Table t = new Table();
         t.add(LabelUtils.info(skin, "Kommandant")).left();
-        t.add(unit(fraction.createCommander(null))).left().spaceLeft(50).row();
+        t.add(unit(fraction.createCommander())).left().spaceLeft(50).row();
         t.add(LabelUtils.info(skin, "Soldaten")).left();
-        t.add(unit(fraction.createSoldier(null))).left().spaceLeft(50).row();
+        t.add(unit(fraction.createSoldier())).left().spaceLeft(50).row();
         table.add(t).left().row();
         FractionDescription description = fraction.getDescription();
         int w = 450;

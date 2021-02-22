@@ -1,4 +1,4 @@
-package com.broll.gainea.server.core.actions.impl;
+package com.broll.gainea.server.core.actions.optional;
 
 import com.broll.gainea.net.NT_Action_Card;
 import com.broll.gainea.net.NT_Event_PlayedCard;
@@ -9,9 +9,6 @@ import com.broll.gainea.server.core.cards.AbstractCard;
 import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.server.core.utils.MessageUtils;
 import com.broll.gainea.server.core.utils.ProcessingUtils;
-
-import java.util.Stack;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class CardAction extends AbstractActionHandler<NT_Action_Card, CardAction.Context> {
 

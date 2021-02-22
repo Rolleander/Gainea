@@ -46,4 +46,8 @@ public abstract class Location {
         return container;
     }
 
+    public boolean isFree(){
+        return inhabitants.isEmpty();
+    }
+
 }

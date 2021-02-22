@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 public class C_PlaceWatersnake extends AbstractCard {
     public C_PlaceWatersnake() {
-        super(50, "Verseuchte Gewässer", "Platziert eine wilde Seeschlange auf ein beliebiges unbesetztes Meer");
+        super(49, "Verseuchte Gewässer", "Platziert eine wilde Seeschlange auf ein beliebiges unbesetztes Meer");
         setDrawChance(0.8f);
     }
 
@@ -23,17 +23,15 @@ public class C_PlaceWatersnake extends AbstractCard {
     }
 
     @Override
-    public void play() {
+    protected void play() {
         Monster monster = new Monster();
         monster.setName("Seeschlange");
         monster.setIcon(120);
         monster.setPower(4);
         monster.setHealth(4);
-        monster.setMaxHealth(4);
         List<Area> locations = game.getMap().getAllAreas().stream().filter(it -> it.getType() == AreaType.LAKE && LocationUtils.emptyOrWildMonster(it)).collect(Collectors.toList());
         if(!locations.isEmpty()){
             Location target = selectHandler.selectLocation("Wählt einen Ort", locations);
-            game.getObjects().add(monster);
             UnitControl.spawn(game, monster, target);
         }
     }

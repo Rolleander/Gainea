@@ -23,7 +23,7 @@ public abstract class AbstractTeleportCard extends AbstractCard {
     }
 
     @Override
-    public void play() {
+    protected void play() {
         Location from = selectHandler.selectLocation("Wählt eine Truppe die bewegt werden soll", owner.getControlledLocations());
         //filter target locations to empty or locations controlled by the player (cant teleport into enemy location)
         List<? extends Location> targets = getTeleportTargets(from).stream().filter(it -> LocationUtils.emptyOrControlled(it, owner)).collect(Collectors.toList());

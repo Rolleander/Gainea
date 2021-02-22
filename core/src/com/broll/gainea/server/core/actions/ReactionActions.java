@@ -10,8 +10,6 @@ public interface ReactionActions {
 
     ActionContext requireAction(Player player, RequiredActionContext action);
 
-    ActionContext optionalAction(ActionContext action);
-
     void sendGameUpdate(Object update);
 
 }

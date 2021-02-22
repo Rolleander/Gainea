@@ -4,8 +4,8 @@ import com.broll.gainea.client.game.PlayerPerformOptionalAction;
 import com.broll.gainea.client.ui.elements.MessageUtils;
 import com.broll.gainea.net.NT_Action;
 import com.broll.gainea.net.NT_EndTurn;
-import com.broll.gainea.net.NT_PlayerTurn;
-import com.broll.gainea.net.NT_PlayerTurnContinue;
+import com.broll.gainea.net.NT_PlayerTurnStart;
+import com.broll.gainea.net.NT_PlayerTurnActions;
 import com.broll.gainea.net.NT_PlayerWait;
 import com.broll.networklib.PackageReceiver;
 import com.broll.networklib.client.impl.LobbyPlayer;
@@ -39,16 +39,14 @@ public class GameTurnSite extends AbstractGameSite {
     }
 
     @PackageReceiver
-    public void received(NT_PlayerTurn turnStart) {
+    public void received(NT_PlayerTurnStart turnStart) {
         game.state.playerTurnStart();
-        actions.clear();
-        actions.addAll(Arrays.asList(turnStart.actions));
         turnStartMessage(getPlayer());
-        playerPickAction();
     }
 
     @PackageReceiver
-    public void received(NT_PlayerTurnContinue turnContinue) {
+    public void received(NT_PlayerTurnActions turnContinue) {
+        actions.clear();
         actions.addAll(Arrays.asList(turnContinue.actions));
         playerPickAction();
     }

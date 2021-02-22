@@ -2,7 +2,7 @@ package com.broll.gainea.server.core.actions;
 
 import com.broll.gainea.net.NT_Action;
 import com.broll.gainea.net.NT_EndTurn;
-import com.broll.gainea.net.NT_PlayerTurnContinue;
+import com.broll.gainea.net.NT_PlayerTurnActions;
 import com.broll.gainea.net.NT_Reaction;
 import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.player.Player;
@@ -20,7 +20,6 @@ public class ReactionHandler {
     private ReactionActions reactionActions;
     private Map<RequiredActionContext, RequiredAction> requiredActions = Collections.synchronizedMap(new HashMap<>());
     private ActionHandlers actionHandlers;
-    private List<ActionContext> furtherActions = new ArrayList<>();
 
     public ReactionHandler(GameContainer game, ActionHandlers actionHandlers) {
         this.game = game;
@@ -36,29 +35,25 @@ public class ReactionHandler {
         requiredActions.put(context, action);
     }
 
-    public void optionalAction(ActionContext furtherAction) {
-        game.pushAction(furtherAction);
-        furtherActions.add(furtherAction);
-    }
-
     public ActionHandlers getActionHandlers() {
         return actionHandlers;
     }
 
     public synchronized void finishedProcessing() {
         if (requiredActions.isEmpty()) {
-            Player activePlayer = game.getPlayers().get(game.getCurrentPlayer());
-            if (game.hasRemainingActions()) {
-                //player still can do further actions, remind client so next action or turn end can be done
-                NT_PlayerTurnContinue continueTurn = new NT_PlayerTurnContinue();
-                //pass further actions to player
-                continueTurn.actions = furtherActions.stream().map(ActionContext::getAction).toArray(NT_Action[]::new);
-                furtherActions.clear();
-                activePlayer.getServerPlayer().sendTCP(continueTurn);
-            } else {
-                //player has no more actions to do, can only end turn
-                activePlayer.getServerPlayer().sendTCP(new NT_EndTurn());
-            }
+            continueTurn();
+        }
+    }
+
+    private void continueTurn(){
+        Player activePlayer = game.getPlayers().get(game.getCurrentPlayer());
+        NT_PlayerTurnActions turn = game.getTurnBuilder().build(activePlayer);
+        if(turn.actions.length == 0){
+            //no more actions available, player can only end turn
+            activePlayer.getServerPlayer().sendTCP(new NT_EndTurn());
+        }
+        else{
+            activePlayer.getServerPlayer().sendTCP(turn);
         }
     }
 

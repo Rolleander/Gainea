@@ -1,44 +1,98 @@
 package com.broll.gainea.server.core.objects;
 
 import com.broll.gainea.net.NT_Unit;
-import com.broll.gainea.server.core.battle.Battle;
+import com.broll.gainea.server.core.objects.buffs.IntBuff;
+import com.broll.gainea.server.core.objects.buffs.BuffableInt;
 import com.broll.gainea.server.core.player.Player;
 
-public abstract class BattleObject extends MapObject  {
+public abstract class BattleObject extends MapObject {
 
-    private int maxHealth;
-    private int power, health;
-    private Player owner;
-    protected boolean rooted = false;
+    private BuffableInt<MapObject> maxHealth = new BuffableInt<>(this, 0);
+    private BuffableInt<MapObject> power = new BuffableInt<>(this, 0);
+    private BuffableInt<MapObject> health = new BuffableInt<>(this, 0);
+    private BuffableInt<MapObject> attacksPerTurn = new BuffableInt<>(this, 1); //default 1 attack
+    private int attackCount;
+    private boolean moveOrAttackRestriction = true; //usually units can only attack or move in one turn
+    private boolean attacked = false;
+    private boolean moved = false;
 
     public BattleObject(Player owner) {
-        this.owner = owner;
+        super(owner);
+        health.setMinValue(0);
+        maxHealth.setMinValue(1);
+        power.setMinValue(0);
     }
 
-    public static void copy(BattleObject from, BattleObject to){
-        to.maxHealth = from.maxHealth;
-        to.power = from.power;
-        to.health = from.health;
+    public static void copy(BattleObject from, BattleObject to) {
+        to.maxHealth = from.maxHealth.copy(to);
+        to.power = from.power.copy(to);
+        to.health = from.health.copy(to);
         to.owner = from.owner;
-        to.rooted = from.rooted;
+        to.attackCount = from.attackCount;
+        to.moveCount = from.moveCount;
+        to.attacksPerTurn = from.attacksPerTurn.copy(to);
+        to.movesPerTurn = from.movesPerTurn.copy(to);
+        to.setMoveOrAttackRestriction(from.isMoveOrAttackRestriction());
         to.setIcon(from.getIcon());
         to.setLocation(from.getLocation());
         to.setName(from.getName());
         to.setScale(from.getScale());
     }
 
+    @Override
+    public void turnStart() {
+        super.turnStart();
+        attackCount = 0;
+        moved = false;
+        attacked = false;
+    }
+
+    @Override
+    public boolean canMove() {
+        if (moveOrAttackRestriction && attacked) {
+            return false;
+        }
+        return super.canMove();
+    }
+
+    public boolean canAttack() {
+        if (moveOrAttackRestriction && moved) {
+            return false;
+        }
+        return attackCount < attacksPerTurn.getValue();
+    }
+
+    @Override
+    public void moved() {
+        super.moved();
+        moved = true;
+    }
+
+    public void attacked() {
+        attackCount++;
+        attacked = true;
+    }
+
     public void setStats(int power, int health) {
-        this.power = power;
-        this.maxHealth = health;
-        this.health = health;
+        setPower(power);
+        setHealth(health);
     }
 
     protected void onDeath() {
 
     }
 
-    public boolean isRooted() {
-        return rooted;
+    public boolean isMoveOrAttackRestriction() {
+        return moveOrAttackRestriction;
+    }
+
+    public void setMoveOrAttackRestriction(boolean moveOrAttackRestriction) {
+        this.moveOrAttackRestriction = moveOrAttackRestriction;
+    }
+
+    @Override
+    public BuffableInt<MapObject> getMovesPerTurn() {
+        return super.getMovesPerTurn();
     }
 
     public Player getOwner() {
@@ -50,53 +104,72 @@ public abstract class BattleObject extends MapObject  {
     }
 
     public void takeDamage(int damage) {
-        health -= damage;
+        health.addValue(-damage);
         if (isDead()) {
             onDeath();
         }
     }
 
     public void heal(int heal) {
-        health += heal;
-        if (health > maxHealth) {
-            health = maxHealth;
+        health.addValue(heal);
+        if (health.getValue() > maxHealth.getValue()) {
+            heal();
         }
     }
 
     public boolean isDead() {
-        return health <= 0;
+        return health.getValue() <= 0;
     }
 
     public boolean isAlive() {
-        return health > 0;
+        return !isDead();
     }
 
     public void heal() {
-        health = maxHealth;
+        health.setValue(maxHealth.getRootValue());
     }
 
     public void setHealth(int health) {
-        this.health = health;
+        this.health.setValue(health);
+        this.maxHealth.setValue(health);
     }
 
-    public void setMaxHealth(int maxHealth) {
-        this.maxHealth = maxHealth;
-    }
-
-    public int getMaxHealth() {
-        return maxHealth;
+    public void changeHealth(int change) {
+        this.health.addValue(change);
+        this.maxHealth.addValue(change);
     }
 
     public void setPower(int power) {
-        this.power = power;
+        this.power.setValue(power);
     }
 
-    public int getHealth() {
+    public BuffableInt<MapObject> getPower() {
+        return power;
+    }
+
+    public void addHealthBuff(IntBuff buff) {
+        health.addBuff(buff);
+        maxHealth.addBuff(buff);
+    }
+
+    public void clearBuffs() {
+        power.clearBuffs();
+        health.clearBuffs();
+        maxHealth.clearBuffs();
+        attacksPerTurn.clearBuffs();
+        movesPerTurn.clearBuffs();
+    }
+
+    public BuffableInt<MapObject> getHealth() {
         return health;
     }
 
-    public int getPower() {
-        return power;
+    public BuffableInt<MapObject> getMaxHealth() {
+        return maxHealth;
+    }
+
+    public BuffableInt<MapObject> getAttacksPerTurn() {
+        return attacksPerTurn;
     }
 
     public void setOwner(Player owner) {
@@ -112,12 +185,15 @@ public abstract class BattleObject extends MapObject  {
 
     protected void fillBattleObject(NT_Unit unit) {
         fillObject(unit);
-        unit.health = health;
-        unit.maxHealth = maxHealth;
-        unit.power = power;
+        unit.health = health.getValue();
+        unit.maxHealth = maxHealth.getValue();
+        unit.power = power.getValue();
         if (owner != null) {
             unit.owner = owner.getServerPlayer().getId();
         }
     }
 
+    public boolean isHurt() {
+        return health.getValue() < maxHealth.getValue();
+    }
 }

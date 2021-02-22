@@ -1,4 +1,4 @@
-package com.broll.gainea.server.core.actions.impl;
+package com.broll.gainea.server.core.actions.required;
 
 import com.broll.gainea.server.core.actions.ActionContext;
 import com.broll.gainea.server.core.actions.RequiredActionContext;
@@ -42,11 +42,11 @@ public class PlaceUnitAction extends AbstractActionHandler<NT_Action_PlaceUnit, 
     }
 
     private Soldier createSoldier(Player player) {
-        return player.getFraction().createSoldier(null);
+        return player.getFraction().createSoldier();
     }
 
     private Commander createCommander(Player player) {
-        return player.getFraction().createCommander(null);
+        return player.getFraction().createCommander();
     }
 
     public Pair<BattleObject, Location> placeUnit(Player player, BattleObject object, List<Location> locations, String message) {
@@ -67,7 +67,6 @@ public class PlaceUnitAction extends AbstractActionHandler<NT_Action_PlaceUnit, 
         BattleObject unit = context.unitToPlace;
         Location location = context.locations.get(nr);
         context.selectedLocation = location;
-        player.getUnits().add(unit);
         UnitControl.spawn(game, unit, location);
         processingBlock.resume();
     }

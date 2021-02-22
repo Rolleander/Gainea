@@ -6,7 +6,7 @@ import com.broll.gainea.net.NT_Unit;
 public class Monster extends BattleObject {
 
     public Monster() {
-        super( null);
+        super(null);
     }
 
     public int getStars() {
@@ -22,7 +22,7 @@ public class Monster extends BattleObject {
     }
 
     public static int getStars(Monster monster) {
-        return stars(monster.getPower(), monster.getMaxHealth());
+        return stars(monster.getPower().getRootValue(), monster.getMaxHealth().getRootValue());
     }
 
     public static int stars(int power, int health) {

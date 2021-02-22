@@ -23,4 +23,8 @@ public interface IGameUpdateReceiver {
     void damaged(BattleObject unit, int damage);
 
     void earnedStars(Player player, int stars);
+
+    void turnStarted(Player player);
+
+    void roundStarted();
 }

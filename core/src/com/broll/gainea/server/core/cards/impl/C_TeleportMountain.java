@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 public class C_TeleportMountain extends AbstractTeleportCard {
     public C_TeleportMountain() {
-        super(45, "Bergwanderung", "Bewegt eine Truppe zu einem beliebigen Berg auf der gleichen Karte");
+        super(44, "Bergwanderung", "Bewegt eine Truppe zu einem beliebigen Berg auf der gleichen Karte");
     }
 
     @Override

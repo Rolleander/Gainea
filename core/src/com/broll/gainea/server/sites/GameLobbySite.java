@@ -60,6 +60,7 @@ public class GameLobbySite extends LobbyServerSite<LobbyData, PlayerData> {
     @ConnectionRestriction(RestrictionType.LOBBY_UNLOCKED)
     public void ready(NT_PlayerReady ready) {
         getPlayer().getData().setReady(ready.ready);
+        getLobby().sendLobbyUpdate();
         //check for all ready, then lock lobby and start game
         ServerLobby<LobbyData, PlayerData> lobby = getLobby();
         synchronized (lobby) {

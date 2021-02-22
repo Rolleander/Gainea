@@ -5,14 +5,12 @@ import java.util.List;
 
 import com.broll.gainea.net.NT_LoadedGame;
 import com.broll.gainea.server.core.ReactionResultHandler;
-import com.broll.gainea.server.core.actions.RequiredActionContext;
-import com.broll.gainea.server.core.actions.impl.PlaceUnitAction;
+import com.broll.gainea.server.core.actions.required.PlaceUnitAction;
 import com.broll.gainea.server.core.map.LocationPicker;
 import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.server.core.utils.ProcessingUtils;
 import com.broll.gainea.server.core.utils.UnitControl;
-import com.broll.gainea.server.init.ExpansionSetting;
 import com.broll.gainea.server.init.LobbyData;
 import com.broll.gainea.server.init.PlayerData;
 import com.broll.gainea.server.core.GameContainer;
@@ -113,12 +111,12 @@ public class GameStartSite extends AbstractGameSite {
         List<Location> locations = gameStart.playerData.get(player).startLocations;
         BattleObject unitToPlace;
         if (placingRound == 0) {
-            unitToPlace = player.getFraction().createCommander(null);
+            unitToPlace = player.getFraction().createCommander();
         } else {
-            unitToPlace = player.getFraction().createSoldier(null);
+            unitToPlace = player.getFraction().createSoldier();
         }
         String text = "Setze " + unitToPlace.getName() + " auf einen Startpunkt";
-        ActionHandlers actionHandlers = game.getTurnBuilder().getActionHandlers();
+        ActionHandlers actionHandlers = game.getReactionHandler().getActionHandlers();
         PlaceUnitAction placeUnitAction = actionHandlers.getHandler(PlaceUnitAction.class);
         Pair<BattleObject, Location> result = placeUnitAction.placeUnit(player, unitToPlace, locations, text);
         placedUnit(result.getRight());

@@ -64,10 +64,9 @@ public class ShadowFraction extends Fraction {
     }
 
     private void summon(Location location) {
-        Soldier skeleton = createSoldier(location);
+        Soldier skeleton = createSoldier();
         skeleton.setIcon(94);
         skeleton.setName("Skelett");
-        owner.getUnits().add(skeleton);
         UnitControl.spawn(game, skeleton, location);
     }
 

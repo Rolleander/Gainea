@@ -1,7 +1,8 @@
 package com.broll.gainea.server.core.bot.impl;
 
 import com.broll.gainea.net.NT_Action_Move;
-import com.broll.gainea.net.NT_PlayerTurn;
+import com.broll.gainea.net.NT_PlayerTurnActions;
+import com.broll.gainea.net.NT_PlayerTurnStart;
 import com.broll.gainea.net.NT_Reaction;
 import com.broll.gainea.server.core.bot.BotAction;
 
@@ -18,7 +19,7 @@ public class BotMoveUnit extends BotAction<NT_Action_Move> {
 
 
     @Override
-    public float score(NT_Action_Move action, NT_PlayerTurn turn) {
+    public float score(NT_Action_Move action, NT_PlayerTurnActions turn) {
         return -1;
     }
 }

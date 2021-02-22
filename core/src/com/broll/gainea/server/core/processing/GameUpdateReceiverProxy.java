@@ -11,28 +11,36 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 public class GameUpdateReceiverProxy implements IGameUpdateReceiver {
 
-    private List<IGameUpdateReceiver> proxies = new ArrayList<>();
+    private Set<IGameUpdateReceiver> proxies = new HashSet<>();
     private int nestLevel;
 
     private List<Pair<IGameUpdateReceiver, Boolean>> updates = new ArrayList<>();
 
     public void register(IGameUpdateReceiver receiver) {
         updates.add(Pair.of(receiver, true));
+        checkUpdates();
     }
 
     public void unregister(IGameUpdateReceiver receiver) {
         updates.add(Pair.of(receiver, false));
+        checkUpdates();
     }
 
     private void runNested(Runnable run) {
         nestLevel++;
         run.run();
         nestLevel--;
+        checkUpdates();
+    }
+
+    private void checkUpdates(){
         if (nestLevel == 0) {
             //do modifications
             performUpdates();
@@ -80,5 +88,15 @@ public class GameUpdateReceiverProxy implements IGameUpdateReceiver {
     @Override
     public void earnedStars(Player player, int stars) {
         runNested(() -> proxies.forEach(proxy -> proxy.earnedStars(player, stars)));
+    }
+
+    @Override
+    public void turnStarted(Player player) {
+        runNested(() -> proxies.forEach(proxy -> proxy.turnStarted(player)));
+    }
+
+    @Override
+    public void roundStarted() {
+        runNested(() -> proxies.forEach(IGameUpdateReceiver::roundStarted));
     }
 }

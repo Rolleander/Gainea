@@ -74,4 +74,18 @@ public class BattleResult {
         return defenders;
     }
 
+    public List<BattleObject> getWinnerUnits(){
+        if(getWinnerPlayer() == getAttacker()){
+            return getAttackers();
+        }
+        return getDefenders();
+    }
+
+    public List<BattleObject> getLoserUnits(){
+        if(getWinnerPlayer() == getAttacker()){
+            return getDefenders();
+        }
+        return getAttackers();
+    }
+
 }

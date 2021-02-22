@@ -38,6 +38,9 @@ public class FightingPower {
 
     public void setDiceCount(int diceCount) {
         this.diceCount = diceCount;
+        if (diceCount < 1) {
+            diceCount = 1;
+        }
     }
 
     public void setHighestNumber(int highestNumber) {

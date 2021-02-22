@@ -1,14 +1,11 @@
-package com.broll.gainea.server.core.actions.impl;
+package com.broll.gainea.server.core.actions.required;
 
-import com.broll.gainea.net.NT_Action_PlaceUnit;
 import com.broll.gainea.net.NT_Action_SelectChoice;
 import com.broll.gainea.net.NT_Reaction;
 import com.broll.gainea.server.core.actions.AbstractActionHandler;
 import com.broll.gainea.server.core.actions.ActionContext;
-import com.broll.gainea.server.core.actions.NoActionContext;
 import com.broll.gainea.server.core.actions.RequiredActionContext;
 import com.broll.gainea.server.core.map.Location;
-import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.player.Player;
 
 import java.util.List;

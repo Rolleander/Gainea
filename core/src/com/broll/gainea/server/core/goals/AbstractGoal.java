@@ -61,11 +61,11 @@ public abstract class AbstractGoal extends GameUpdateReceiverAdapter {
     protected synchronized void success() {
         if (!finished) {
             player.getGoalHandler().removeGoal(this);
-            player.getGoalHandler().addPoints(difficulty.getPoints());
             NT_Event_FinishedGoal finishedGoal = new NT_Event_FinishedGoal();
             finishedGoal.player = player.getServerPlayer().getId();
             finishedGoal.goal = this.nt();
             GameUtils.sendUpdate(game, finishedGoal);
+            player.getGoalHandler().addPoints(difficulty.getPoints());
             finished = true;
         }
     }

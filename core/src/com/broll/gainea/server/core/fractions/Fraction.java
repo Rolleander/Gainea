@@ -7,11 +7,12 @@ import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.Commander;
 import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.actions.ActionHandlers;
-import com.broll.gainea.server.core.actions.impl.PlaceUnitAction;
+import com.broll.gainea.server.core.actions.required.PlaceUnitAction;
 import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.objects.Monster;
 import com.broll.gainea.server.core.objects.Soldier;
 import com.broll.gainea.server.core.player.Player;
+import com.broll.gainea.server.core.utils.LocationUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -48,8 +49,17 @@ public abstract class Fraction {
     public void prepareTurn(ActionHandlers actionHandlers) {
         //default place one new soldier on an occupied location
         List<Location> spawnLocations = owner.getControlledLocations();
+        if (spawnLocations.isEmpty()) {
+            //player has no more controlled locations. give him a random free one
+            Location location = LocationUtils.getRandomFree(game.getMap().getAllAreas());
+            if (location == null) {
+                //no more free locations, just skip
+                return;
+            }
+            spawnLocations.add(location);
+        }
         PlaceUnitAction placeUnitAction = actionHandlers.getHandler(PlaceUnitAction.class);
-        placeUnitAction.placeSoldier(owner,spawnLocations);
+        placeUnitAction.placeSoldier(owner, spawnLocations);
     }
 
     public void turnStarted(ActionHandlers actionHandlers) {
@@ -65,7 +75,7 @@ public abstract class Fraction {
 
     public FightingPower calcPower(Location location, List<BattleObject> fighters, List<BattleObject> enemies, boolean isAttacker) {
         FightingPower power = new FightingPower();
-        int dice = fighters.stream().map(BattleObject::getPower).reduce(0, Integer::sum);
+        int dice = fighters.stream().map(it->it.getPower().getValue()).reduce(0, Integer::sum);
         power.setDiceCount(dice);
         if (location instanceof Area) {
             powerMutatorArea(power, (Area) location);
@@ -74,14 +84,6 @@ public abstract class Fraction {
     }
 
     protected void powerMutatorArea(FightingPower power, Area area) {
-    }
-
-    private void fillSoldier(Soldier soldier, Location location) {
-        //fix for clientside
-        if(game!=null){
-            soldier.setLocation(location);
-            soldier.init(game);
-        }
     }
 
     public List<Location> getMoveLocations(Location from) {
@@ -103,19 +105,16 @@ public abstract class Fraction {
 
     protected abstract void initCommander(Commander commander);
 
-
-    public final Soldier createSoldier(Location location) {
+    public final Soldier createSoldier() {
         Soldier soldier = new Soldier(owner);
         soldier.setStats(SOLDIER_POWER, SOLDIER_HEALTH);
-        fillSoldier(soldier, location);
         initSoldier(soldier);
         return soldier;
     }
 
-    public final Commander createCommander(Location location) {
+    public final Commander createCommander() {
         Commander commander = new Commander(owner);
         commander.setStats(COMMANDER_POWER, COMMANDER_HEALTH);
-        fillSoldier(commander, location);
         initCommander(commander);
         return commander;
     }

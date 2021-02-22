@@ -66,8 +66,6 @@ public class BarbarianFraction extends Fraction {
     private void summon() {
         PlayerUtils.getCommander(owner).ifPresent(commander -> {
             brother = new BarbarianBrother(owner);
-            brother.init(game);
-            owner.getUnits().add(brother);
             UnitControl.spawn(game, brother, commander.getLocation());
         });
     }

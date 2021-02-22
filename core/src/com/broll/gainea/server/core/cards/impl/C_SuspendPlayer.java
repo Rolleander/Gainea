@@ -1,8 +1,5 @@
 package com.broll.gainea.server.core.cards.impl;
 
-import com.broll.gainea.server.core.actions.ActionHandlers;
-import com.broll.gainea.server.core.actions.RequiredActionContext;
-import com.broll.gainea.server.core.actions.impl.SelectChoiceAction;
 import com.broll.gainea.server.core.cards.AbstractCard;
 
 public class C_SuspendPlayer extends AbstractCard {
@@ -16,7 +13,7 @@ public class C_SuspendPlayer extends AbstractCard {
     }
 
     @Override
-    public void play() {
+    protected void play() {
         selectHandler.selectOtherPlayer(owner, "Spieler der Aussetzen muss:").skipRounds(1);
     }
 }

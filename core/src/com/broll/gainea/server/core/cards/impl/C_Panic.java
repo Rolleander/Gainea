@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 public class C_Panic extends AbstractCard {
     public C_Panic() {
-        super(47, "Massenpanik", "Wählt ein Ort mit mindestens einer Einheit. Alle Einheiten des gewählten Ortes werden auf freie angrenzende Orte verteilt.");
+        super(46, "Massenpanik", "Wählt ein Ort mit mindestens einer Einheit. Alle Einheiten des gewählten Ortes werden auf freie angrenzende Orte verteilt.");
         setDrawChance(0.9f);
     }
 
@@ -27,7 +27,7 @@ public class C_Panic extends AbstractCard {
     }
 
     @Override
-    public void play() {
+    protected void play() {
         List<Location> locations = game.getMap().getAllLocations().stream().filter(it -> !it.getInhabitants().isEmpty()).collect(Collectors.toList());
         if (!locations.isEmpty()) {
             Location source = selectHandler.selectLocation("Wählt einen Zielort für die Panik", locations);

@@ -14,6 +14,7 @@ import com.broll.gainea.server.core.objects.MapObject;
 import com.broll.gainea.server.core.objects.Monster;
 import com.broll.gainea.server.core.player.Player;
 import com.esotericsoftware.minlog.Log;
+import com.google.common.collect.Lists;
 
 import java.util.Collections;
 import java.util.Iterator;
@@ -25,6 +26,10 @@ public class UnitControl {
     private final static int MOVE_PAUSE = 1000;
     private final static int SPAWN_PAUSE = 1000;
     private final static int DAMAGE_PAUSE = 500;
+
+    public static void move(GameContainer game, MapObject unit, Location location) {
+        move(game, Lists.newArrayList(unit), location);
+    }
 
     public static void move(GameContainer game, List<? extends MapObject> units, Location location) {
         units.forEach(unit -> unit.setLocation(location));
@@ -47,11 +52,20 @@ public class UnitControl {
         heal(game, unit, heal, null);
     }
 
+    public static void focus(GameContainer game, BattleObject unit, int effect) {
+        NT_Event_FocusObject nt = new NT_Event_FocusObject();
+        nt.screenEffect = effect;
+        nt.object = unit.nt();
+        GameUtils.sendUpdate(game, nt);
+        ProcessingUtils.pause(DAMAGE_PAUSE);
+    }
+
     public static void heal(GameContainer game, BattleObject unit, int heal, Consumer<NT_Event_FocusObject> consumer) {
-        heal = Math.max(unit.getMaxHealth() - unit.getHealth(), heal);
+        heal = Math.max(unit.getMaxHealth().getValue() - unit.getHealth().getValue(), heal);
         unit.heal(heal);
         NT_Event_FocusObject nt = new NT_Event_FocusObject();
         nt.object = unit.nt();
+        nt.screenEffect = NT_Abstract_Event.EFFECT_HEAL;
         if (consumer != null) {
             consumer.accept(nt);
         }
@@ -61,7 +75,7 @@ public class UnitControl {
 
     public static void damage(GameContainer game, BattleObject unit, int damage, Consumer<NT_Event_FocusObject> consumer) {
         //dont overkill
-        damage = Math.max(unit.getHealth(), damage);
+        damage = Math.max(unit.getHealth().getValue(), damage);
         unit.takeDamage(damage);
         if (unit.isDead()) {
             //remove unit
@@ -75,6 +89,7 @@ public class UnitControl {
         //send update to focus clients on object
         NT_Event_FocusObject nt = new NT_Event_FocusObject();
         nt.object = unit.nt();
+        nt.screenEffect = NT_Abstract_Event.EFFECT_DAMAGE;
         if (consumer != null) {
             consumer.accept(nt);
         }
@@ -88,6 +103,17 @@ public class UnitControl {
     }
 
     public static void spawn(GameContainer game, MapObject object, Location location, Consumer<NT_Event_PlacedObject> consumer) {
+        if(location==null){
+            Log.error("Cannot spawn object "+object+" on null location");
+            return;
+        }
+        object.init(game);
+        Player owner = object.getOwner();
+        if (owner == null) {
+            game.getObjects().add(object);
+        } else {
+            owner.getUnits().add((BattleObject) object);
+        }
         object.setLocation(location);
         location.getInhabitants().add(object);
         NT_Event_PlacedObject placedObject = new NT_Event_PlacedObject();
@@ -103,7 +129,7 @@ public class UnitControl {
     public static void spawnMonsters(GameContainer game, int count) {
         List<Area> areas = game.getMap().getAllAreas();
         Collections.shuffle(areas);
-        Iterator<Area> freeAreas = areas.stream().filter(it -> it.getInhabitants().isEmpty()).iterator();
+        Iterator<Area> freeAreas = areas.stream().filter(Area::isFree).iterator();
         int spawned = 0;
         while (spawned < count && freeAreas.hasNext()) {
             spawnMonster(game, freeAreas.next());
@@ -116,8 +142,6 @@ public class UnitControl {
         Monster monster = game.getMonsterFactory().spawn(area.getType(), activeMonsters);
         if (monster != null) {
             Log.info("spawn monster " + monster.getName() + " on " + area);
-            monster.init(game);
-            game.getObjects().add(monster);
             spawn(game, monster, area);
         }
     }

@@ -48,8 +48,6 @@ public class DruidsFraction extends Fraction {
     private void druidDied(BattleObject unit) {
         if (unit instanceof Tree == false && MathUtils.randomBoolean(SPAWN_CHANCE)) {
             Tree tree = new Tree(owner);
-            tree.init(game);
-            owner.getUnits().add(tree);
             UnitControl.spawn(game, tree, unit.getLocation());
         }
     }
@@ -89,7 +87,9 @@ public class DruidsFraction extends Fraction {
             setStats(2, 2);
             setName("Wurzelgolem");
             setIcon(99);
-            rooted = true;
+            //cant move or attack
+            getAttacksPerTurn().setValue(0);
+            getMovesPerTurn().setValue(0);
         }
     }
 }

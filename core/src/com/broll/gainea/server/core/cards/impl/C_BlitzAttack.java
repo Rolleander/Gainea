@@ -24,7 +24,7 @@ public class C_BlitzAttack extends AbstractCard {
     }
 
     @Override
-    public void play() {
+    protected void play() {
         Location from = selectHandler.selectLocation("Wählt eure Angriffstruppe", owner.getControlledLocations());
         List<BattleObject> attackers = PlayerUtils.getUnits(owner, from);
         List<Location> attackLocations = PlayerUtils.getHostileLocations(game, owner).stream()

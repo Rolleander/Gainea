@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 public class C_TeleportSwamp extends AbstractTeleportCard {
     public C_TeleportSwamp() {
-        super(46, "Sumpferkundung", "Bewegt eine Truppe zu einem beliebigen Sumpf auf der gleichen Karte");
+        super(45, "Sumpferkundung", "Bewegt eine Truppe zu einem beliebigen Sumpf auf der gleichen Karte");
     }
 
     @Override

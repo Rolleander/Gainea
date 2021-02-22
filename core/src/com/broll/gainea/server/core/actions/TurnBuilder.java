@@ -1,62 +1,44 @@
 package com.broll.gainea.server.core.actions;
 
 import com.broll.gainea.net.NT_Action;
-import com.broll.gainea.net.NT_PlayerTurn;
+import com.broll.gainea.net.NT_PlayerTurnActions;
 import com.broll.gainea.server.core.GameContainer;
-import com.broll.gainea.server.core.actions.impl.AttackAction;
-import com.broll.gainea.server.core.actions.impl.MoveUnitAction;
+import com.broll.gainea.server.core.actions.optional.AttackAction;
+import com.broll.gainea.server.core.actions.optional.CardAction;
+import com.broll.gainea.server.core.actions.optional.MoveUnitAction;
+import com.broll.gainea.server.core.cards.AbstractCard;
 import com.broll.gainea.server.core.objects.BattleObject;
-import com.broll.gainea.server.core.objects.MapObject;
 import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.utils.PlayerUtils;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class TurnBuilder {
 
     private GameContainer game;
-
     private ActionHandlers actionHandlers;
-    private Player player;
-    private List<ActionContext> turnActions = new ArrayList<>();
 
     public TurnBuilder(GameContainer game, ActionHandlers actionHandlers) {
         this.game = game;
         this.actionHandlers = actionHandlers;
     }
 
-    public NT_PlayerTurn build(Player player) {
-        this.player = player;
-        turnActions.clear();
-        NT_PlayerTurn turn = new NT_PlayerTurn();
-        buildActions();
-        turn.actions = turnActions.stream().map(ActionContext::getAction).toArray(NT_Action[]::new);
-        turnActions.forEach(game::pushAction);
+    public NT_PlayerTurnActions build(Player player) {
+        game.clearActions();
+        NT_PlayerTurnActions turn = new NT_PlayerTurnActions();
+        List<ActionContext> actions = new ArrayList<>();
+        actions.addAll(buildMoveAndAttackActions(player));
+        actions.addAll(buildCardActions(player));
+        turn.actions = actions.stream().map(ActionContext::getAction).toArray(NT_Action[]::new);
+        actions.forEach(game::pushAction);
         return turn;
     }
 
-    public ActionHandlers getActionHandlers() {
-        return actionHandlers;
-    }
-
-    public void action(ActionContext action) {
-        this.turnActions.add(action);
-    }
-
-    private void buildActions() {
-        //1. fraction
-        player.getFraction().prepareTurn(actionHandlers);
-        //2. create move and battle actions
-        buildMoveAndAttackActions();
-        //3. card actions
-        player.getCardHandler().onTurnStart(this, actionHandlers);
-    }
-
-    private void buildMoveAndAttackActions() {
+    private List<ActionContext> buildMoveAndAttackActions(Player player) {
+        List<ActionContext> actions = new ArrayList<>();
         AttackAction attackHandler = actionHandlers.getHandler(AttackAction.class);
         MoveUnitAction moveHandler = actionHandlers.getHandler(MoveUnitAction.class);
         player.getControlledLocations().forEach(location -> {
@@ -64,15 +46,21 @@ public class TurnBuilder {
             List<Location> attackLocations = moveLocations.stream().filter(
                     moveLocation -> !PlayerUtils.getHostileArmy(player, moveLocation).isEmpty()).collect(Collectors.toList());
             moveLocations.removeAll(attackLocations);
-            List<BattleObject> units = player.getUnits().stream().filter(it -> location == it.getLocation() && it.isRooted() == false).collect(Collectors.toList());
-            if(!units.isEmpty()){
-                if (!attackLocations.isEmpty()) {
-                    action(attackHandler.attack(units, attackLocations));
-                }
-                if (!moveLocations.isEmpty()) {
-                    action(moveHandler.move(units, moveLocations));
-                }
+            List<BattleObject> moveableUnits = player.getUnits().stream().filter(it -> location == it.getLocation() && it.canMove()).collect(Collectors.toList());
+            List<BattleObject> attackingUnits = player.getUnits().stream().filter(it -> location == it.getLocation() && it.canAttack()).collect(Collectors.toList());
+            if (player.getAttackingAllowed().getValue() && !attackLocations.isEmpty() && !attackingUnits.isEmpty()) {
+                actions.add(attackHandler.attack(attackingUnits, attackLocations));
+            }
+            if (!moveLocations.isEmpty() && !moveableUnits.isEmpty()) {
+                actions.add(moveHandler.move(moveableUnits, moveLocations));
             }
         });
+        return actions;
     }
+
+    private List<ActionContext> buildCardActions(Player player) {
+        CardAction cardAction = actionHandlers.getHandler(CardAction.class);
+        return player.getCardHandler().getCards().stream().filter(AbstractCard::isPlayable).map(card -> (ActionContext) cardAction.playableCard(player, card)).collect(Collectors.toList());
+    }
+
 }

@@ -25,17 +25,15 @@ public class C_PlaceDragon extends AbstractCard {
     }
 
     @Override
-    public void play() {
+    protected void play() {
         Monster monster = new Monster();
         monster.setName("Feuerdrache");
         monster.setIcon(119);
         monster.setPower(4);
         monster.setHealth(5);
-        monster.setMaxHealth(5);
         List<Area> locations = game.getMap().getAllAreas().stream().filter(it -> it.getType() == AreaType.MOUNTAIN && LocationUtils.emptyOrWildMonster(it)).collect(Collectors.toList());
         if (!locations.isEmpty()) {
             Location target = selectHandler.selectLocation("Wählt einen Ort", locations);
-            game.getObjects().add(monster);
             UnitControl.spawn(game, monster, target);
         }
     }
