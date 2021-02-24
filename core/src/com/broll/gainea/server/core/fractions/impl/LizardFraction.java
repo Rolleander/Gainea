@@ -26,6 +26,15 @@ public class LizardFraction extends Fraction {
     }
 
     @Override
+    protected FractionDescription description() {
+        FractionDescription desc = new FractionDescription("");
+        desc.plus("Einheiten können Laufen und Angreifen im gleichen Zug");
+        desc.contra("Erhält nur jeden zweiten Zug einen Soldat");
+        desc.contra("Im Schnee -1 Würfel");
+        return desc;
+    }
+
+    @Override
     public void prepareTurn(ActionHandlers actionHandlers) {
         turns++;
         if (turns >= SPAWN_TURN) {
@@ -59,12 +68,4 @@ public class LizardFraction extends Fraction {
         commander.setMoveOrAttackRestriction(false);
     }
 
-    @Override
-    protected FractionDescription description() {
-        FractionDescription desc = new FractionDescription("");
-        desc.plus("Einheiten können Laufen und Angreifen im gleichen Zug");
-        desc.contra("Erhält nur jeden zweiten Zug einen Soldat");
-        desc.contra("Im Schnee -1 Würfel");
-        return desc;
-    }
 }

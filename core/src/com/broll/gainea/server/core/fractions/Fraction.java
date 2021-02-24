@@ -12,12 +12,13 @@ import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.objects.Monster;
 import com.broll.gainea.server.core.objects.Soldier;
 import com.broll.gainea.server.core.player.Player;
+import com.broll.gainea.server.core.processing.GameUpdateReceiverAdapter;
 import com.broll.gainea.server.core.utils.LocationUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-public abstract class Fraction {
+public abstract class Fraction extends GameUpdateReceiverAdapter {
 
     private final static int SOLDIER_HEALTH = 1;
     private final static int SOLDIER_POWER = 1;

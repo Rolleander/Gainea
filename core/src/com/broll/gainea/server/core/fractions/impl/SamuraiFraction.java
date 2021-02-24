@@ -21,6 +21,15 @@ public class SamuraiFraction extends Fraction {
     }
 
     @Override
+    protected FractionDescription description() {
+        FractionDescription desc = new FractionDescription("");
+        desc.plus("Als Angreifer +1 Zahl");
+        desc.plus("Auf Bergen +1 Zahl");
+        desc.contra("Als Verteidiger höchste Würfelzahl 5");
+        return desc;
+    }
+
+    @Override
     public FightingPower calcPower(Location location, List<BattleObject> fighters, List<BattleObject> enemies, boolean isAttacker) {
         FightingPower power = super.calcPower(location, fighters, enemies, isAttacker);
         if (isAttacker) {
@@ -46,12 +55,5 @@ public class SamuraiFraction extends Fraction {
         commander.setIcon(113);
     }
 
-    @Override
-    protected FractionDescription description() {
-        FractionDescription desc = new FractionDescription("");
-        desc.plus("Als Angreifer +1 Zahl");
-        desc.plus("Auf Bergen +1 Zahl");
-        desc.contra("Als Verteidiger höchste Würfelzahl 5");
-        return desc;
-    }
+
 }

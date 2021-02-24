@@ -170,17 +170,17 @@ public abstract class AbstractOccupyGoal extends AbstractGoal {
 
     @Override
     public void moved(List<MapObject> units, Location location) {
-        MapObject mo = units.get(0);
-        if (mo instanceof BattleObject) {
-            if (((BattleObject) mo).getOwner() == player) {
-                //unit of this player moved, check occupy condition
-                check();
-            }
+        if (units.get(0).getOwner() == player) {
+            //unit of this player moved, check occupy condition
+            check();
         }
     }
 
     @Override
     public void spawned(MapObject object, Location location) {
-
+        if (object.getOwner() == player) {
+            //unit of this player spawned, check occupy condition
+            check();
+        }
     }
 }

@@ -24,7 +24,7 @@ public class Player {
     private CardHandler cardHandler;
     private int skipRounds;
     private int color;
-    private BuffableBoolean<Player> attackingAllowed = new BuffableBoolean<>(this, true);
+  
 
     public Player(GameContainer game, Fraction fraction, com.broll.networklib.server.impl.Player<PlayerData> serverPlayer) {
         this.fraction = fraction;
@@ -52,6 +52,10 @@ public class Player {
 
     public List<Location> getControlledLocations() {
         return units.stream().map(BattleObject::getLocation).distinct().collect(Collectors.toList());
+    }
+
+    private boolean onlyController(Location location){
+        return !location.getInhabitants().stream().anyMatch(it-> it.getOwner() != this);
     }
 
     public NT_Player nt() {
@@ -87,7 +91,4 @@ public class Player {
         return cardHandler;
     }
 
-    public BuffableBoolean<Player> getAttackingAllowed() {
-        return attackingAllowed;
-    }
 }

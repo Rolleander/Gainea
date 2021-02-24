@@ -11,7 +11,10 @@ import com.broll.gainea.client.Assets;
 import com.broll.gainea.client.game.ClientHandler;
 import com.broll.gainea.client.MapScrollHandler;
 import com.broll.gainea.client.game.GameState;
+import com.broll.gainea.client.ui.AbstractScreen;
 import com.broll.gainea.client.ui.GameUI;
+import com.broll.gainea.client.ui.screens.LoadingScreen;
+import com.broll.gainea.client.ui.screens.StartScreen;
 import com.esotericsoftware.minlog.Log;
 
 public class Gainea extends ApplicationAdapter {
@@ -26,6 +29,15 @@ public class Gainea extends ApplicationAdapter {
     public ShapeRenderer shapeRenderer;
     public GameState state;
     public boolean shutdown = false;
+    private AbstractScreen startScreen;
+
+    public Gainea(){
+        this(new StartScreen());
+    }
+
+    public Gainea(AbstractScreen startScreen){
+        this.startScreen = startScreen;
+    }
 
     @Override
     public void create() {
@@ -33,7 +45,7 @@ public class Gainea extends ApplicationAdapter {
         client = new ClientHandler(this);
         gameStage = new Stage(new ScreenViewport());
         uiStage = new Stage(new ScreenViewport());
-        ui = new GameUI(this);
+        ui = new GameUI(this, new LoadingScreen(startScreen));
         client.setClientListener(ui);
         Gdx.input.setInputProcessor(new InputMultiplexer(uiStage, gameStage));
         shapeRenderer = new ShapeRenderer();

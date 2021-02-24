@@ -3,11 +3,14 @@ package com.broll.gainea.server.core.goals;
 import com.broll.gainea.net.NT_Card;
 import com.broll.gainea.net.NT_Event_OtherPlayerReceivedGoal;
 import com.broll.gainea.net.NT_Event_ReceivedGoal;
+import com.broll.gainea.net.NT_Event_ReceivedPoints;
+import com.broll.gainea.net.NT_Event_ReceivedStars;
 import com.broll.gainea.net.NT_Goal;
 import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.cards.AbstractCard;
 import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.server.core.utils.GameUtils;
+import com.broll.gainea.server.core.utils.ProcessingUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +30,11 @@ public class GoalHandler {
 
     public void addPoints(int points) {
         this.score += points;
+        NT_Event_ReceivedPoints nt = new NT_Event_ReceivedPoints();
+        nt.player = player.getServerPlayer().getId();
+        nt.points = points;
+        GameUtils.sendUpdate(game, nt);
+        ProcessingUtils.pause(500);
         if (this.score >= game.getGameSettings().getPointLimit()) {
             game.end();
         }
@@ -34,6 +42,11 @@ public class GoalHandler {
 
     public void addStars(int stars) {
         this.stars += stars;
+        NT_Event_ReceivedStars nt = new NT_Event_ReceivedStars();
+        nt.player = player.getServerPlayer().getId();
+        nt.stars = stars;
+        GameUtils.sendUpdate(game, nt);
+        ProcessingUtils.pause(500);
         game.getUpdateReceiver().earnedStars(player, stars);
     }
 
@@ -63,7 +76,7 @@ public class GoalHandler {
         nt2.player = player.getServerPlayer().getId();
         GameUtils.sendUpdate(game, player, nt, nt2);
         //directly check goal for completion
-      //  game.getProcessingCore().execute(goal::check, 2000);
+        game.getProcessingCore().execute(goal::check, 2000);
     }
 
     public NT_Goal[] ntGoals() {

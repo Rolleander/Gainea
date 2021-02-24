@@ -22,6 +22,14 @@ public class PoacherFraction extends Fraction {
     }
 
     @Override
+    protected FractionDescription description() {
+        FractionDescription desc = new FractionDescription("");
+        desc.plus("Solange Kommandant lebt werden besiegte wilde Monster rekrutiert");
+        desc.contra("Gegen menschliche Truppen -2 Würfel");
+        return desc;
+    }
+
+    @Override
     public FightingPower calcPower(Location location, List<BattleObject> fighters, List<BattleObject> enemies, boolean isAttacker) {
         FightingPower power = super.calcPower(location, fighters, enemies, isAttacker);
         if (enemies.stream().map(it -> it instanceof Monster == false).reduce(true, Boolean::logicalAnd)) {
@@ -56,11 +64,5 @@ public class PoacherFraction extends Fraction {
         commander.setStats(1, 5);
     }
 
-    @Override
-    protected FractionDescription description() {
-        FractionDescription desc = new FractionDescription("");
-        desc.plus("Solange Kommandant lebt werden besiegte wilde Monster rekrutiert");
-        desc.contra("Gegen menschliche Truppen -2 Würfel");
-        return desc;
-    }
+
 }

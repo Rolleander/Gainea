@@ -7,6 +7,7 @@ import com.broll.gainea.server.core.battle.FightingPower;
 import com.broll.gainea.server.core.fractions.Fraction;
 import com.broll.gainea.server.core.fractions.FractionDescription;
 import com.broll.gainea.server.core.fractions.FractionType;
+import com.broll.gainea.server.core.map.Area;
 import com.broll.gainea.server.core.map.AreaType;
 import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.objects.BattleObject;
@@ -29,18 +30,16 @@ public class ShadowFraction extends Fraction {
     @Override
     protected FractionDescription description() {
         FractionDescription desc = new FractionDescription("");
+        desc.plus("Bei siegreichen Kämpfen können gefallene Feinde zu Skeletten (1/1) werden");
         desc.contra("Auf Grasland -2 Würfel");
-        desc.plus("Bei siegreichen Angriffen können gefallene Feinde zu Skeletten (1/1) werden");
         return desc;
     }
 
     @Override
-    public FightingPower calcPower(Location location, List<BattleObject> fighters, List<BattleObject> enemies, boolean isAttacker) {
-        FightingPower power = super.calcPower(location, fighters, enemies, isAttacker);
-        if(LocationUtils.isAreaType(location, AreaType.PLAINS)){
+    protected void powerMutatorArea(FightingPower power, Area area) {
+        if (area.getType() == AreaType.PLAINS) {
             power.changeDiceNumber(-2);
         }
-        return power;
     }
 
     @Override
@@ -55,8 +54,8 @@ public class ShadowFraction extends Fraction {
         commander.setIcon(21);
     }
 
-    private void afterAttack(List<BattleObject> defenders, Location location) {
-        defenders.stream().filter(BattleObject::isDead).forEach(it -> {
+    private void afterAttack(List<BattleObject> enemies, Location location) {
+        enemies.stream().filter(BattleObject::isDead).forEach(it -> {
             if (MathUtils.randomBoolean(SUMMON_CHANCE)) {
                 summon(location);
             }
@@ -76,8 +75,8 @@ public class ShadowFraction extends Fraction {
         game.getUpdateReceiver().register(new GameUpdateReceiverAdapter() {
             @Override
             public void battleResult(BattleResult result) {
-                if (result.getAttacker() == ShadowFraction.this.owner && result.attackersWon()) {
-                    afterAttack(result.getDefenders(), result.getLocation());
+                if (result.getWinnerPlayer() == ShadowFraction.this.owner) {
+                    afterAttack(result.getLoserUnits(), result.getLocation());
                 }
             }
         });

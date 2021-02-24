@@ -22,6 +22,8 @@ public interface IGameUpdateReceiver {
 
     void damaged(BattleObject unit, int damage);
 
+    void killed(BattleObject unit, BattleResult throughBattle);
+
     void earnedStars(Player player, int stars);
 
     void turnStarted(Player player);

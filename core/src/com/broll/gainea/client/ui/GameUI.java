@@ -23,10 +23,10 @@ public class GameUI implements IClientListener {
     private ConnectionCircle connectionCircle;
     private AbstractScreen currentScreen;
 
-    public GameUI(Gainea game) {
+    public GameUI(Gainea game, AbstractScreen startScreen) {
         this.game = game;
         game.assets = new Assets(true);
-        showScreen(new LoadingScreen());
+        showScreen(startScreen);
     }
 
     public void assetsLoaded() {

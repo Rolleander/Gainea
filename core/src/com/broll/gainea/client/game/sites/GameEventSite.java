@@ -25,7 +25,10 @@ import com.broll.gainea.net.NT_Event_MovedObject;
 import com.broll.gainea.net.NT_Event_PlacedObject;
 import com.broll.gainea.net.NT_Event_PlayedCard;
 import com.broll.gainea.net.NT_Event_ReceivedGoal;
+import com.broll.gainea.net.NT_Event_ReceivedPoints;
+import com.broll.gainea.net.NT_Event_ReceivedStars;
 import com.broll.gainea.net.NT_Event_TextInfo;
+import com.broll.gainea.net.NT_Player;
 import com.broll.gainea.server.core.map.Location;
 import com.broll.networklib.PackageReceiver;
 import com.esotericsoftware.minlog.Log;
@@ -61,6 +64,7 @@ public class GameEventSite extends AbstractGameSite {
 
     @PackageReceiver
     public void received(NT_Event_ReceivedCard card) {
+        game.state.getPlayer(getPlayer().getId()).cards++;
         game.ui.inGameUI.hideWindows();
         game.ui.inGameUI.showCenterOverlay(TableUtils.removeAfter(CardWindow.renderCard(game, card.card), 3));
         game.state.getCards().add(card.card);
@@ -118,10 +122,12 @@ public class GameEventSite extends AbstractGameSite {
     public void received(NT_Event_PlayedCard card) {
         game.ui.inGameUI.hideWindows();
         game.ui.inGameUI.showCenterOverlay(TableUtils.removeAfter(CardWindow.renderCard(game, card.card), 3));
+        NT_Player owner = game.state.getPlayer(card.player);
+        owner.cards--;
         if (card.player == getPlayer().getId()) {
             game.state.getCards().remove(card.card);
-            game.ui.inGameUI.updateWindows();
         }
+        game.ui.inGameUI.updateWindows();
     }
 
     @PackageReceiver
@@ -142,15 +148,31 @@ public class GameEventSite extends AbstractGameSite {
     @PackageReceiver
     public void received(NT_Event_OtherPlayerReceivedCard card) {
         game.ui.inGameUI.hideWindows();
-        String info = game.state.getPlayer(card.player).name + " hat eine Karte erhalten!";
+        NT_Player owner = game.state.getPlayer(card.player);
+        owner.cards++;
+        String info = owner.name + " hat eine Karte erhalten!";
+        game.ui.inGameUI.updateWindows();
         MessageUtils.showActionMessage(game, info);
     }
 
     @PackageReceiver
     public void received(NT_Event_OtherPlayerReceivedGoal goal) {
         game.ui.inGameUI.hideWindows();
-        String info = game.state.getPlayer(goal.player).name + " hat ein neues Ziel erhalten!";
+        NT_Player owner = game.state.getPlayer(goal.player);
+        String info = owner.name + " hat ein neues Ziel erhalten!";
         MessageUtils.showActionMessage(game, info);
+    }
+
+    @PackageReceiver
+    public void received(NT_Event_ReceivedPoints points) {
+        game.state.getPlayer(points.player).points += points.points;
+        game.ui.inGameUI.updateWindows();
+    }
+
+    @PackageReceiver
+    public void received(NT_Event_ReceivedStars stars) {
+        game.state.getPlayer(stars.player).stars += stars.stars;
+        game.ui.inGameUI.updateWindows();
     }
 
     @PackageReceiver

@@ -21,6 +21,16 @@ public class VikingFraction extends Fraction {
     }
 
     @Override
+    protected FractionDescription description() {
+        FractionDescription desc = new FractionDescription("");
+        desc.plus("Können Schiffe in jede Richtung gehen");
+        desc.plus("Auf Schiffen Zahl +1");
+        desc.plus("Auf Eis Zahl +1");
+        desc.contra("Auf Wüste Zahl -2");
+        return desc;
+    }
+
+    @Override
     public FightingPower calcPower(Location location, List<BattleObject> fighters, List<BattleObject> enemies, boolean isAttacker) {
         FightingPower power = super.calcPower(location, fighters, enemies, isAttacker);
         if (location instanceof Ship || LocationUtils.isAreaType(location, AreaType.SNOW)) {
@@ -51,13 +61,5 @@ public class VikingFraction extends Fraction {
         commander.setIcon(104);
     }
 
-    @Override
-    protected FractionDescription description() {
-        FractionDescription desc = new FractionDescription("");
-        desc.plus("Können Schiffe in jede Richtung gehen");
-        desc.plus("Auf Schiffen Zahl +1");
-        desc.plus("Auf Eis Zahl +1");
-        desc.contra("Auf Wüste Zahl -2");
-        return desc;
-    }
+
 }

@@ -78,10 +78,6 @@ public abstract class BattleObject extends MapObject {
         setHealth(health);
     }
 
-    protected void onDeath() {
-
-    }
-
     public boolean isMoveOrAttackRestriction() {
         return moveOrAttackRestriction;
     }
@@ -105,9 +101,6 @@ public abstract class BattleObject extends MapObject {
 
     public void takeDamage(int damage) {
         health.addValue(-damage);
-        if (isDead()) {
-            onDeath();
-        }
     }
 
     public void heal(int heal) {

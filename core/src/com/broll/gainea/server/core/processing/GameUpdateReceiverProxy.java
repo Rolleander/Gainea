@@ -40,7 +40,7 @@ public class GameUpdateReceiverProxy implements IGameUpdateReceiver {
         checkUpdates();
     }
 
-    private void checkUpdates(){
+    private void checkUpdates() {
         if (nestLevel == 0) {
             //do modifications
             performUpdates();
@@ -83,6 +83,11 @@ public class GameUpdateReceiverProxy implements IGameUpdateReceiver {
     @Override
     public void damaged(BattleObject unit, int damage) {
         runNested(() -> proxies.forEach(proxy -> proxy.damaged(unit, damage)));
+    }
+
+    @Override
+    public void killed(BattleObject unit, BattleResult throughBattle) {
+        runNested(() -> proxies.forEach(proxy -> proxy.killed(unit, throughBattle)));
     }
 
     @Override

@@ -12,12 +12,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.broll.gainea.client.ui.AbstractScreen;
 import com.broll.gainea.client.ui.elements.TextureUtils;
+import com.broll.gainea.client.ui.ingame.windows.FractionWindow;
 import com.broll.gainea.misc.EnumUtils;
 import com.broll.gainea.net.NT_PlayerChangeFraction;
 import com.broll.gainea.net.NT_PlayerReady;
@@ -30,6 +32,7 @@ import com.broll.networklib.client.impl.ChatMessageListener;
 import com.broll.networklib.client.impl.GameLobby;
 import com.broll.networklib.client.impl.LobbyPlayer;
 import com.broll.networklib.client.impl.LobbyUpdateListener;
+import com.esotericsoftware.minlog.Log;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -179,7 +182,25 @@ public class LobbyScreen extends AbstractScreen {
         window.defaults().space(15);
         window.setBackground("window");
         window.top();
-        window.add(title(lobby.getServerIp() + ": " + lobby.getName())).left().row();
+        window.add(title(lobby.getServerIp() + ": " + lobby.getName())).left();
+        FractionWindow fractionWindow =new FractionWindow(game, skin);
+        TextButton showFractions = new TextButton("Fraktionen",skin);
+        showFractions.addListener(new ClickListener(){
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                Log.info("show");
+                fractionWindow.toFront();
+                fractionWindow.setVisible(!fractionWindow.isVisible());
+                return true;
+            }
+        });
+        Table pop = new Table();
+        pop.setFillParent(true);
+        pop.add(fractionWindow).expand().fill().center();
+        fractionWindow.setVisible(false);
+        game.uiStage.addActor(fractionWindow);
+        window.add(showFractions).right();
+        window.row();
         lobbyTable = new Table(skin);
         lobbyTable.top();
         lobbyTable.left();
@@ -216,7 +237,7 @@ public class LobbyScreen extends AbstractScreen {
             }
 
         });
-        Button sendChat = new Button(skin);
+        TextButton sendChat = new TextButton("Send",skin);
         sendChat.addListener(new ClickListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -228,7 +249,6 @@ public class LobbyScreen extends AbstractScreen {
                 return false;
             }
         });
-        sendChat.add(label("Send"));
         window.add(chatText).expandX().fillX();
         window.add(sendChat).row();
         vg.add(window).expand().fill();

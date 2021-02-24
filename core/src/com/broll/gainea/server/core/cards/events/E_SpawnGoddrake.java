@@ -9,7 +9,7 @@ import com.broll.gainea.server.core.utils.UnitControl;
 
 public class E_SpawnGoddrake extends EventCard {
     public E_SpawnGoddrake() {
-        super(59, "Rückkehr der Natur", "Der Götterdrache erscheint!");
+        super(59, "Gaineas Herrscher", "Der Götterdrache erscheint!");
     }
 
     @Override

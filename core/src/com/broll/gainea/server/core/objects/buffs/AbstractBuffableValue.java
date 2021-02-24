@@ -3,14 +3,16 @@ package com.broll.gainea.server.core.objects.buffs;
 import com.broll.gainea.server.core.objects.MapObject;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public abstract class AbstractBuffableValue<T, B extends AbstractBuff, V> {
 
     private T object;
     protected V value;
     protected V buffedValue;
-    protected List<B> buffs = new ArrayList<>();
+    protected Set<B> buffs = new HashSet<>();
 
     public AbstractBuffableValue(T object) {
         this.object = object;

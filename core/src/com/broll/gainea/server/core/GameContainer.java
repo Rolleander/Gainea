@@ -11,7 +11,7 @@ import com.broll.gainea.server.core.goals.GoalStorage;
 import com.broll.gainea.server.core.map.MapContainer;
 import com.broll.gainea.server.core.objects.MapObject;
 import com.broll.gainea.server.core.objects.MonsterFactory;
-import com.broll.gainea.server.core.objects.buffs.BuffDurationProcessor;
+import com.broll.gainea.server.core.objects.buffs.BuffProcessor;
 import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.server.core.player.PlayerFactory;
 import com.broll.gainea.net.NT_BoardObject;
@@ -25,7 +25,6 @@ import com.broll.gainea.server.init.PlayerData;
 import com.broll.gainea.server.core.actions.ActionHandlers;
 import com.broll.gainea.server.core.actions.ReactionHandler;
 import com.broll.gainea.server.core.actions.TurnBuilder;
-import com.broll.gainea.server.core.map.Location;
 import com.broll.networklib.server.impl.ServerLobby;
 
 import java.util.ArrayList;
@@ -51,7 +50,7 @@ public class GameContainer {
     private ProcessingCore processingCore;
     private MonsterFactory monsterFactory;
     private GameUpdateReceiverProxy gameUpdateReceiver;
-    private BuffDurationProcessor buffDurationProcessor;
+    private BuffProcessor buffProcessor;
     private ServerLobby<LobbyData, PlayerData> lobby;
     private GameStatistic statistic;
     private boolean gameOver = false;
@@ -64,7 +63,7 @@ public class GameContainer {
         this.players = PlayerFactory.create(this, lobby.getPlayers());
         this.monsterFactory = new MonsterFactory();
         this.statistic = new GameStatistic(this);
-        this.buffDurationProcessor = new BuffDurationProcessor(this);
+        this.buffProcessor = new BuffProcessor(this);
         this.gameUpdateReceiver.register(new TurnEvents(this));
     }
 
@@ -216,7 +215,7 @@ public class GameContainer {
         return gameOver;
     }
 
-    public BuffDurationProcessor getBuffDurationProcessor() {
-        return buffDurationProcessor;
+    public BuffProcessor getBuffProcessor() {
+        return buffProcessor;
     }
 }

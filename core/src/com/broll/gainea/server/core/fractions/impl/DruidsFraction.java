@@ -27,18 +27,20 @@ public class DruidsFraction extends Fraction {
     }
 
     @Override
+    protected FractionDescription description() {
+        FractionDescription desc = new FractionDescription("");
+        desc.plus("Gefallene Einheiten können zu unbeweglichen Wurzelgolems (1/2) werden");
+        desc.contra("Auf Schiffen -1 Zahl");
+        return desc;
+    }
+
+    @Override
     public void init(GameContainer game, Player owner) {
         super.init(game, owner);
         game.getUpdateReceiver().register(new GameUpdateReceiverAdapter() {
             @Override
-            public void battleResult(BattleResult result) {
-                result.getAttackers().stream().filter(it -> it.getOwner() == owner && it.isDead()).forEach(DruidsFraction.this::druidDied);
-                result.getDefenders().stream().filter(it -> it.getOwner() == owner && it.isDead()).forEach(DruidsFraction.this::druidDied);
-            }
-
-            @Override
-            public void damaged(BattleObject unit, int damage) {
-                if (unit.isDead() && unit.getOwner() == owner) {
+            public void killed(BattleObject unit, BattleResult throughBattle) {
+                if(unit.getOwner()==owner){
                     druidDied(unit);
                 }
             }
@@ -65,14 +67,6 @@ public class DruidsFraction extends Fraction {
     }
 
     @Override
-    protected FractionDescription description() {
-        FractionDescription desc = new FractionDescription("");
-        desc.plus("Gefallene Einheiten können zu unbeweglichen Wurzelgolems (2/2) werden");
-        desc.contra("Auf Schiffen -1 Zahl");
-        return desc;
-    }
-
-    @Override
     public FightingPower calcPower(Location location, List<BattleObject> fighters, List<BattleObject> enemies, boolean isAttacker) {
         FightingPower power= super.calcPower(location, fighters, enemies, isAttacker);
         if(location instanceof Ship){
@@ -84,7 +78,7 @@ public class DruidsFraction extends Fraction {
     private class Tree extends Soldier {
         public Tree(Player owner) {
             super(owner);
-            setStats(2, 2);
+            setStats(1, 2);
             setName("Wurzelgolem");
             setIcon(99);
             //cant move or attack

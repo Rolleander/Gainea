@@ -2,7 +2,6 @@ package com.broll.gainea.server.core.utils;
 
 import com.broll.gainea.net.NT_Abstract_Event;
 import com.broll.gainea.net.NT_BoardObject;
-import com.broll.gainea.net.NT_Event_Bundle;
 import com.broll.gainea.net.NT_Event_FocusObject;
 import com.broll.gainea.net.NT_Event_MovedObject;
 import com.broll.gainea.net.NT_Event_PlacedObject;
@@ -52,10 +51,10 @@ public class UnitControl {
         heal(game, unit, heal, null);
     }
 
-    public static void focus(GameContainer game, BattleObject unit, int effect) {
+    public static void focus(GameContainer game, MapObject object, int effect) {
         NT_Event_FocusObject nt = new NT_Event_FocusObject();
         nt.screenEffect = effect;
-        nt.object = unit.nt();
+        nt.object = object.nt();
         GameUtils.sendUpdate(game, nt);
         ProcessingUtils.pause(DAMAGE_PAUSE);
     }
@@ -100,6 +99,9 @@ public class UnitControl {
         }
         GameUtils.sendUpdate(game, nt);
         game.getUpdateReceiver().damaged(unit, damage);
+        if (unit.isDead()) {
+            game.getUpdateReceiver().killed(unit, null);
+        }
         ProcessingUtils.pause(DAMAGE_PAUSE);
     }
 
@@ -119,6 +121,9 @@ public class UnitControl {
             game.getObjects().add(object);
         } else {
             owner.getUnits().add((BattleObject) object);
+        }
+        if (object instanceof BattleObject) {
+            game.getBuffProcessor().applyGlobalBuffs((BattleObject) object);
         }
         object.setLocation(location);
         location.getInhabitants().add(object);

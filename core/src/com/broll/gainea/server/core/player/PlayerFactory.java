@@ -21,6 +21,7 @@ public class PlayerFactory {
             player.setColor(color);
             players.add(player);
             color++;
+            game.getUpdateReceiver().register(player.getFraction());
         }
         return players;
     }

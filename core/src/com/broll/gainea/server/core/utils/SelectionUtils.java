@@ -28,7 +28,7 @@ public final class SelectionUtils {
     }
 
     public static BattleObject selectOtherPlayersUnit(GameContainer game, Player player, String text) {
-        return selectOtherPlayersUnit(game, player, text, it->true);
+        return selectOtherPlayersUnit(game, player, text, it -> true);
     }
 
     public static BattleObject selectOtherPlayersUnit(GameContainer game, Player player, String text, Predicate<BattleObject> predicate) {
@@ -63,6 +63,9 @@ public final class SelectionUtils {
 
     private static MapObject selectFromLocations(GameContainer game, List<Location> locations, Predicate<MapObject> predicate, String text) {
         Location pickedLocation;
+        if (locations.isEmpty()) {
+            return null;
+        }
         if (locations.size() == 1) {
             pickedLocation = locations.get(0);
         } else {
@@ -74,6 +77,12 @@ public final class SelectionUtils {
 
     private static MapObject selectFromLocation(GameContainer game, Location location, Predicate<MapObject> predicate, String text) {
         List<MapObject> selection = location.getInhabitants().stream().filter(it -> predicate.test(it)).collect(Collectors.toList());
+        if (selection.isEmpty()) {
+            return null;
+        }
+        if (selection.size() == 1) {
+            return selection.get(0);
+        }
         SelectChoiceAction handler = game.getReactionHandler().getActionHandlers().getHandler(SelectChoiceAction.class);
         return selection.get(handler.selectObject(text, selection));
     }

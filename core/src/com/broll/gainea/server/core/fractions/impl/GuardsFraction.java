@@ -23,7 +23,7 @@ public class GuardsFraction extends Fraction {
     @Override
     protected FractionDescription description() {
         FractionDescription desc = new FractionDescription("");
-        desc.plus("Als Verteidiger ist die niedrigste Würfelzahl 4");
+        desc.plus("Als Verteidiger ist die niedrigste Würfelzahl 3");
         desc.contra("Als Angreifer -2 Würfel");
         return desc;
     }
@@ -34,7 +34,7 @@ public class GuardsFraction extends Fraction {
         if (isAttacker) {
             power.changeDiceNumber(-2);
         } else {
-            power.setLowestNumber(4);
+            power.setLowestNumber(3);
         }
         return power;
     }

@@ -11,6 +11,12 @@ public class LoadingScreen extends AbstractScreen {
 
     private LoadingActor loadingActor = new LoadingActor();
 
+    private AbstractScreen startScreen;
+
+    public LoadingScreen(AbstractScreen startScreen) {
+        this.startScreen = startScreen;
+    }
+
     private class LoadingActor extends Actor {
         @Override
         public void draw(Batch batch, float parentAlpha) {
@@ -43,8 +49,7 @@ public class LoadingScreen extends AbstractScreen {
 
     private void loadingDone() {
         game.ui.assetsLoaded();
-       game.ui.showScreen(new StartScreen());
-     //  game.ui.showScreen(new TestScreen());
+        game.ui.showScreen(startScreen);
     }
 
     @Override

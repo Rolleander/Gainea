@@ -12,6 +12,7 @@ import com.broll.gainea.net.NT_Unit;
 import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.actions.ReactionActions;
 import com.broll.gainea.server.core.map.Location;
+import com.broll.gainea.server.core.processing.GameUpdateReceiverProxy;
 import com.broll.gainea.server.core.utils.GameUtils;
 import com.broll.gainea.server.core.utils.ProcessingUtils;
 import com.broll.gainea.server.core.utils.UnitControl;
@@ -187,7 +188,10 @@ public class BattleHandler {
             UnitControl.move(game, attackers.stream().filter(BattleObject::isAlive).collect(Collectors.toList()), battleLocation);
         }
         battleActive = false;
-        game.getUpdateReceiver().battleResult(result);
+        GameUpdateReceiverProxy updateReceiver = game.getUpdateReceiver();
+        attackers.stream().filter(BattleObject::isDead).forEach(unit -> updateReceiver.killed(unit, result));
+        defenders.stream().filter(BattleObject::isDead).forEach(unit -> updateReceiver.killed(unit, result));
+        updateReceiver.battleResult(result);
         GameUtils.sendUpdate(game, game.nt());
         //find dead monsters to give killing player rewards
         if (attackerOwner != null) {

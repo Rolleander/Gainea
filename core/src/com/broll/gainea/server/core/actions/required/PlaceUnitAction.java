@@ -29,8 +29,16 @@ public class PlaceUnitAction extends AbstractActionHandler<NT_Action_PlaceUnit, 
         }
     }
 
+    public Pair<BattleObject, Location> placeSoldier(Player player) {
+        return placeSoldier(player, player.getControlledLocations());
+    }
+
     public Pair<BattleObject, Location> placeSoldier(Player player, List<Location> locations) {
         return placeUnit(player, createSoldier(player), locations, "Platziere einen Soldat");
+    }
+
+    public Pair<BattleObject, Location> placeCommander(Player player) {
+        return placeCommander(player, player.getControlledLocations());
     }
 
     public Pair<BattleObject, Location> placeCommander(Player player, List<Location> locations) {

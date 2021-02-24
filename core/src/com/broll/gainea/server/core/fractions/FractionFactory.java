@@ -2,6 +2,8 @@ package com.broll.gainea.server.core.fractions;
 
 import com.broll.gainea.misc.PackageLoader;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.List;
 
 public final class FractionFactory {

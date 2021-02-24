@@ -49,4 +49,9 @@ public abstract class GameUpdateReceiverAdapter implements IGameUpdateReceiver {
     public void roundStarted() {
 
     }
+
+    @Override
+    public void killed(BattleObject unit, BattleResult throughBattle) {
+
+    }
 }
