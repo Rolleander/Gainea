@@ -2,6 +2,7 @@ package com.broll.gainea.server.core.actions;
 
 import com.broll.gainea.net.NT_Action;
 import com.broll.gainea.net.NT_EndTurn;
+import com.broll.gainea.net.NT_PlayerAction;
 import com.broll.gainea.net.NT_PlayerTurnActions;
 import com.broll.gainea.net.NT_Reaction;
 import com.broll.gainea.server.core.GameContainer;
@@ -61,7 +62,7 @@ public class ReactionHandler {
         Log.info(player + " reconnected to game");
         //re send required actions for this player
         requiredActions.values().stream().filter(ra -> ra.player == player).forEach(requiredAction -> {
-            player.getServerPlayer().sendTCP(requiredAction.context.getAction());
+            player.getServerPlayer().sendTCP(requiredAction.context.nt());
         });
         if (game.isPlayersTurn(player)) {
             //re send remaining optional actions

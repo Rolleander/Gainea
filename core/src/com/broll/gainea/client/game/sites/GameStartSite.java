@@ -36,9 +36,9 @@ public class GameStartSite extends AbstractGameSite {
     private void start(NT_StartGame start) {
         ExpansionSetting setting = ExpansionSetting.values()[start.expansionsSetting];
         game.state.init(setting, getPlayer());
-        game.state.update(start);
         //switch to game screen
         game.ui.showScreen(new GameScreen());
+        game.state.update(start);
         //player has loaded
         finishedLoading();
     }

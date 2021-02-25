@@ -74,8 +74,8 @@ public class StartScreen extends AbstractScreen {
         loadingInfo.setAlignment(Align.center);
         loadingInfo.setVisible(false);
         //"192.168.0.137"
-        serverIp = new TextField("localhost", skin);
-        name = new TextField("Razor", skin);
+        serverIp = new TextField("gainea.de", skin);
+        name = new TextField("", skin);
         Table vg = new Table();
         vg.setFillParent(true);
         vg.setBackground(new TextureRegionDrawable(game.assets.get("textures/title.png", Texture.class)));
@@ -85,7 +85,7 @@ public class StartScreen extends AbstractScreen {
         table.pad(30, 30, 10, 30);
         table.add(label("Playername")).padRight(20);
         table.add(name).padRight(100);
-        table.add(label("Server IP")).padRight(20);
+        table.add(label("Server")).padRight(20);
         table.add(serverIp);
         connect = new TextButton("Connect", skin);
         connect.addListener(new ChangeListener() {
