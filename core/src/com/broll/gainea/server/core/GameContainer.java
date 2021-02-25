@@ -112,7 +112,7 @@ public class GameContainer {
             NT_GameOver gameOver = new NT_GameOver();
             fillUpdate(gameOver);
             reactionHandler.getActionHandlers().getReactionActions().sendGameUpdate(gameOver);
-            lobby.setLocked(false);
+            lobby.unlock();
             lobby.getData().setGame(null);
         }, 2000);
         gameOver = true;

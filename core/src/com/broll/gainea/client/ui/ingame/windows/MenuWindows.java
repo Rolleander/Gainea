@@ -1,13 +1,8 @@
-package com.broll.gainea.client.ui.ingame;
+package com.broll.gainea.client.ui.ingame.windows;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.broll.gainea.Gainea;
-import com.broll.gainea.client.ui.elements.ClosableWindow;
-import com.broll.gainea.client.ui.ingame.windows.CardWindow;
-import com.broll.gainea.client.ui.ingame.windows.FractionWindow;
-import com.broll.gainea.client.ui.ingame.windows.GoalWindow;
-import com.broll.gainea.client.ui.ingame.windows.PlayerWindow;
 
 import java.util.HashMap;
 import java.util.Map;

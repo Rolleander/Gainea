@@ -1,6 +1,5 @@
-package com.broll.gainea.client.ui.elements;
+package com.broll.gainea.client.ui.ingame.battle;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -9,9 +8,8 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.broll.gainea.Gainea;
+import com.broll.gainea.client.ui.utils.LabelUtils;
 import com.esotericsoftware.minlog.Log;
-
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;

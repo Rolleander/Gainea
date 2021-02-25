@@ -57,7 +57,7 @@ public class GameStartSite extends AbstractGameSite {
         gameStart.startUnitsPlaced = 0;
         gameStart.playerData = new HashMap<>();
         lobby.getPlayers().forEach(p -> gameStart.playerData.put(p.getData().getGamePlayer(), new PlayerStartData()));
-        lobby.setLocked(true);
+        lobby.lock();
         lobby.sendToAllTCP(game.start());
         Log.info("Started game in lobby " + lobby.getName());
     }

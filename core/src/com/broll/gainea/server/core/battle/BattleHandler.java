@@ -165,6 +165,13 @@ public class BattleHandler {
         //wait for player if he wants to keep attacking
         boolean startNextRound = true;
         if (allowRetreat) {
+            //disconnect check
+            if (attackerOwner != null) {
+                if (!attackerOwner.getServerPlayer().isOnline()) {
+                    //retreat cause offline
+                    battleFinished();
+                }
+            }
             try {
                 startNextRound = keepAttacking.get().booleanValue();
             } catch (InterruptedException | ExecutionException e) {

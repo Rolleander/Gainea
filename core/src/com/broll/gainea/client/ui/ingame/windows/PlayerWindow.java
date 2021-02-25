@@ -1,31 +1,16 @@
 package com.broll.gainea.client.ui.ingame.windows;
 
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.broll.gainea.Gainea;
-import com.broll.gainea.client.ui.elements.ClosableWindow;
-import com.broll.gainea.client.ui.elements.IconLabel;
-import com.broll.gainea.client.ui.elements.LabelUtils;
-import com.broll.gainea.client.ui.elements.MenuUnit;
-import com.broll.gainea.client.ui.elements.TableUtils;
-import com.broll.gainea.client.ui.ingame.MenuWindow;
+import com.broll.gainea.client.ui.components.IconLabel;
+import com.broll.gainea.client.ui.utils.LabelUtils;
+import com.broll.gainea.client.ui.utils.TableUtils;
 import com.broll.gainea.net.NT_Player;
 import com.broll.gainea.net.NT_Unit;
-import com.broll.gainea.server.core.fractions.Fraction;
-import com.broll.gainea.server.core.fractions.FractionDescription;
-import com.broll.gainea.server.core.fractions.FractionFactory;
 import com.broll.gainea.server.core.fractions.FractionType;
-import com.broll.gainea.server.core.objects.BattleObject;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class PlayerWindow extends MenuWindow {
 

@@ -1,6 +1,5 @@
 package com.broll.gainea.server.core.processing;
 
-import com.broll.gainea.client.ui.elements.ActionListener;
 import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.player.Player;
 

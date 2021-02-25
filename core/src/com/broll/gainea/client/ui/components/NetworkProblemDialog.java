@@ -1,4 +1,4 @@
-package com.broll.gainea.client.ui;
+package com.broll.gainea.client.ui.components;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;

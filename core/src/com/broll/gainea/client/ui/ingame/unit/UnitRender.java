@@ -1,4 +1,4 @@
-package com.broll.gainea.client.ui.elements.render;
+package com.broll.gainea.client.ui.ingame.unit;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
@@ -11,11 +11,10 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.broll.gainea.Gainea;
-import com.broll.gainea.client.ui.elements.ActionListener;
-import com.broll.gainea.client.ui.elements.LabelUtils;
-import com.broll.gainea.client.ui.elements.TextureUtils;
+import com.broll.gainea.client.ui.ingame.map.MapObjectRender;
+import com.broll.gainea.client.ui.utils.LabelUtils;
+import com.broll.gainea.client.ui.utils.TextureUtils;
 import com.broll.gainea.net.NT_Unit;
-import com.esotericsoftware.minlog.Log;
 
 public class UnitRender extends MapObjectRender {
 

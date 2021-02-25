@@ -1,6 +1,7 @@
 package com.broll.gainea.client.game.sites;
 
 import com.broll.gainea.client.ui.screens.GameScreen;
+import com.broll.gainea.net.NT_GameOver;
 import com.broll.gainea.net.NT_LoadedGame;
 import com.broll.gainea.net.NT_ReconnectGame;
 import com.broll.gainea.net.NT_StartGame;
@@ -10,7 +11,7 @@ import com.esotericsoftware.minlog.Log;
 
 import java.util.Arrays;
 
-public class GameStartSite extends AbstractGameSite {
+public class GameStateSite extends AbstractGameSite {
 
     @PackageReceiver
     public void received(NT_StartGame start) {
@@ -31,6 +32,14 @@ public class GameStartSite extends AbstractGameSite {
         game.state.getGoals().addAll(Arrays.asList(reconnectGame.goals));
         game.state.getCards().addAll(Arrays.asList(reconnectGame.cards));
         game.ui.inGameUI.updateWindows();
+    }
+
+    @PackageReceiver
+    public void received(NT_GameOver end) {
+        game.ui.inGameUI.hideWindows();
+        game.state.update(end);
+        game.ui.inGameUI.gameOver(end);
+        game.state.playerTurnEnded();
     }
 
     private void start(NT_StartGame start) {

@@ -1,12 +1,9 @@
 package com.broll.gainea.client.ui.ingame.actions;
 
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.broll.gainea.client.game.PlayerPerformAction;
-import com.broll.gainea.client.ui.elements.ActionListener;
-import com.broll.gainea.client.ui.elements.MapAction;
+import com.broll.gainea.client.ui.utils.ActionListener;
+import com.broll.gainea.client.ui.ingame.map.MapAction;
 import com.broll.gainea.net.NT_Action;
-import com.broll.gainea.net.NT_Action_PlaceUnit;
 
 import java.util.List;
 

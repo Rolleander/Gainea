@@ -1,4 +1,4 @@
-package com.broll.gainea.client.ui.elements.render;
+package com.broll.gainea.client.ui.ingame.map;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -10,7 +10,9 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.broll.gainea.Gainea;
-import com.broll.gainea.client.ui.elements.TextureUtils;
+import com.broll.gainea.client.ui.ingame.unit.MonsterRender;
+import com.broll.gainea.client.ui.ingame.unit.UnitRender;
+import com.broll.gainea.client.ui.utils.TextureUtils;
 import com.broll.gainea.net.NT_BoardObject;
 import com.broll.gainea.net.NT_Monster;
 import com.broll.gainea.net.NT_Unit;

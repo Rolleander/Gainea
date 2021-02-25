@@ -1,6 +1,6 @@
 package com.broll.gainea.server.core.map.impl;
 
-import com.broll.gainea.client.ui.elements.render.ExpansionRender;
+import com.broll.gainea.client.ui.ingame.map.ExpansionRender;
 import com.broll.gainea.server.core.map.AreaID;
 import com.broll.gainea.server.core.map.ContinentID;
 import com.broll.gainea.server.core.map.ExpansionFactory;

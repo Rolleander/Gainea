@@ -1,29 +1,31 @@
-package com.broll.gainea.client.ui;
+package com.broll.gainea.client.ui.ingame;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.broll.gainea.Gainea;
 import com.broll.gainea.client.game.PlayerPerformAction;
 import com.broll.gainea.client.game.PlayerPerformOptionalAction;
-import com.broll.gainea.client.ui.elements.EndTurnButton;
-import com.broll.gainea.client.ui.elements.render.MapObjectRender;
-import com.broll.gainea.client.ui.elements.TableUtils;
-import com.broll.gainea.client.ui.ingame.AttackAndMoveActionHandler;
-import com.broll.gainea.client.ui.ingame.BattleHandler;
-import com.broll.gainea.client.ui.ingame.MenuWindows;
+import com.broll.gainea.client.ui.ingame.actions.EndTurnButton;
+import com.broll.gainea.client.ui.ingame.windows.MenuWindows;
+import com.broll.gainea.client.ui.ingame.windows.UnitSelectionWindow;
+import com.broll.gainea.client.ui.screens.ScoreScreen;
+import com.broll.gainea.client.ui.utils.LabelUtils;
+import com.broll.gainea.client.ui.components.Popup;
+import com.broll.gainea.client.ui.ingame.map.MapObjectRender;
+import com.broll.gainea.client.ui.utils.TableUtils;
+import com.broll.gainea.client.ui.ingame.actions.AttackAndMoveActionHandler;
+import com.broll.gainea.client.ui.ingame.battle.BattleHandler;
 import com.broll.gainea.client.ui.ingame.actions.RequiredActionHandler;
-import com.broll.gainea.client.ui.ingame.UnitSelectionWindow;
 import com.broll.gainea.net.NT_Action;
 import com.broll.gainea.net.NT_Action_Attack;
 import com.broll.gainea.net.NT_Action_Card;
 import com.broll.gainea.net.NT_Action_Move;
-import com.broll.gainea.net.NT_Card;
+import com.broll.gainea.net.NT_GameOver;
 import com.broll.gainea.net.NT_Unit;
 import com.broll.gainea.server.core.map.Location;
-
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -146,4 +148,14 @@ public class InGameUI {
     public void hideWindows() {
         windows.hideWindows();
     }
+
+    public void gameOver(NT_GameOver end) {
+        Table table = new Table();
+        table.add(LabelUtils.label(game.ui.skin, "Game over!")).row();
+        TextButton button = new TextButton("Score screen",skin);
+        table.add(button);
+        game.ui.showScreen(new ScoreScreen(end));
+        Popup.show(game, table);
+    }
+
 }

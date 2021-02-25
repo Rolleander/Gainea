@@ -1,4 +1,4 @@
-package com.broll.gainea.client.ui.elements;
+package com.broll.gainea.client.ui.ingame.map;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;

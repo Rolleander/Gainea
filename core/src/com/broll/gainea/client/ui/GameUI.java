@@ -1,15 +1,15 @@
 package com.broll.gainea.client.ui;
 
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.broll.gainea.Gainea;
 import com.broll.gainea.client.Assets;
 import com.broll.gainea.client.IClientListener;
 import com.broll.gainea.client.MapScrollHandler;
-import com.broll.gainea.client.ui.screens.LoadingScreen;
+import com.broll.gainea.client.ui.components.ConnectionCircle;
+import com.broll.gainea.client.ui.components.NetworkProblemDialog;
+import com.broll.gainea.client.ui.ingame.InGameUI;
 import com.broll.gainea.client.ui.screens.LobbyScreen;
 import com.broll.gainea.client.ui.screens.StartScreen;
-import com.broll.networklib.client.auth.LastConnection;
 import com.broll.networklib.client.impl.GameLobby;
 import com.broll.networklib.client.tasks.DiscoveredLobbies;
 import com.esotericsoftware.minlog.Log;

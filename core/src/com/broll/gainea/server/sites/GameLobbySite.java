@@ -65,7 +65,7 @@ public class GameLobbySite extends LobbyServerSite<LobbyData, PlayerData> {
         ServerLobby<LobbyData, PlayerData> lobby = getLobby();
         synchronized (lobby) {
             if (lobby.streamData().map(PlayerData::isReady).reduce(true, Boolean::logicalAnd)) {
-                lobby.setLocked(true);
+                lobby.lock();
                 accessSite(GameStartSite.class).startGame();
             }
         }

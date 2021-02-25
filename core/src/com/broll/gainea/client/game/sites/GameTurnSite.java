@@ -1,7 +1,7 @@
 package com.broll.gainea.client.game.sites;
 
 import com.broll.gainea.client.game.PlayerPerformOptionalAction;
-import com.broll.gainea.client.ui.elements.MessageUtils;
+import com.broll.gainea.client.ui.utils.MessageUtils;
 import com.broll.gainea.net.NT_Action;
 import com.broll.gainea.net.NT_EndTurn;
 import com.broll.gainea.net.NT_PlayerTurnStart;
@@ -23,13 +23,11 @@ public class GameTurnSite extends AbstractGameSite {
         public void none() {
             //player wants to end turn
             client.sendTCP(new NT_EndTurn());
-            actions.clear();
         }
 
         @Override
         public void perform(NT_Action action, int option, int[] options) {
             //player selected action, send reaction
-            actions.remove(action);
             gameActionSite.performAction(action, option, options);
         }
     };
@@ -50,7 +48,6 @@ public class GameTurnSite extends AbstractGameSite {
         actions.addAll(Arrays.asList(turnContinue.actions));
         playerPickAction();
     }
-
 
     @PackageReceiver
     public void received(NT_EndTurn endTurn) {

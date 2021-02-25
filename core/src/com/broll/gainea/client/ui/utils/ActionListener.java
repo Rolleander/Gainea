@@ -1,4 +1,4 @@
-package com.broll.gainea.client.ui.elements;
+package com.broll.gainea.client.ui.utils;
 
 public interface ActionListener {
 

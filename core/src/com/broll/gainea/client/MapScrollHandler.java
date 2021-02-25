@@ -2,13 +2,11 @@ package com.broll.gainea.client;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.broll.gainea.Gainea;
-import com.broll.gainea.client.ui.InGameUI;
-import com.esotericsoftware.minlog.Log;
+import com.broll.gainea.client.ui.ingame.InGameUI;
 
 public class MapScrollHandler extends InputListener {
     private Gainea game;

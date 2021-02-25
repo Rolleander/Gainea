@@ -1,13 +1,12 @@
-package com.broll.gainea.client.ui.ingame;
+package com.broll.gainea.client.ui.ingame.actions;
 
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.broll.gainea.Gainea;
 import com.broll.gainea.client.game.ClientMapContainer;
 import com.broll.gainea.client.game.PlayerPerformOptionalAction;
-import com.broll.gainea.client.ui.elements.ActionListener;
-import com.broll.gainea.client.ui.elements.ActionTrail;
-import com.broll.gainea.client.ui.elements.MapAction;
+import com.broll.gainea.client.ui.utils.ActionListener;
+import com.broll.gainea.client.ui.ingame.map.ActionTrail;
+import com.broll.gainea.client.ui.ingame.map.MapAction;
 import com.broll.gainea.net.NT_Action_Attack;
 import com.broll.gainea.net.NT_Action_Move;
 import com.broll.gainea.net.NT_Unit;

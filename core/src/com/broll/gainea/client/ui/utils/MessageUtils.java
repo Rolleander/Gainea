@@ -1,8 +1,9 @@
-package com.broll.gainea.client.ui.elements;
+package com.broll.gainea.client.ui.utils;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.broll.gainea.Gainea;
+import com.broll.gainea.client.ui.components.Popup;
 
 public final class MessageUtils {
 

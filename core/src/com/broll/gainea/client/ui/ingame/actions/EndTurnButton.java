@@ -1,4 +1,4 @@
-package com.broll.gainea.client.ui.elements;
+package com.broll.gainea.client.ui.ingame.actions;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.broll.gainea.client.game.GameStateListener;
 import com.broll.gainea.client.game.PlayerPerformOptionalAction;
+import com.broll.gainea.client.ui.utils.LabelUtils;
 
 public class EndTurnButton extends Button implements GameStateListener {
 

@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
@@ -18,9 +17,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.broll.gainea.client.ui.AbstractScreen;
-import com.broll.gainea.client.ui.elements.TextureUtils;
+import com.broll.gainea.client.ui.components.GameChat;
+import com.broll.gainea.client.ui.utils.TextureUtils;
 import com.broll.gainea.client.ui.ingame.windows.FractionWindow;
-import com.broll.gainea.misc.EnumUtils;
 import com.broll.gainea.net.NT_PlayerChangeFraction;
 import com.broll.gainea.net.NT_PlayerReady;
 import com.broll.gainea.net.NT_PlayerSettings;
@@ -37,15 +36,12 @@ import com.esotericsoftware.minlog.Log;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
-import java.util.stream.Collectors;
 
 public class LobbyScreen extends AbstractScreen {
 
     private GameLobby lobby;
-    private Table lobbyTable, chatTable;
-    private ScrollPane chatScrollPane;
+    private Table lobbyTable;
 
     public LobbyScreen(GameLobby lobby) {
         this.lobby = lobby;
@@ -86,17 +82,6 @@ public class LobbyScreen extends AbstractScreen {
                     backToTitle();
                     game.ui.showErrorDialog("Connection problems");
                 }
-            }
-        });
-        lobby.setChatMessageListener(new ChatMessageListener() {
-            @Override
-            public void fromPlayer(String msg, LobbyPlayer from) {
-                addChatMessage(from, msg);
-            }
-
-            @Override
-            public void fromGame(String msg) {
-                addChatMessage(null, msg);
             }
         });
     }
@@ -151,25 +136,6 @@ public class LobbyScreen extends AbstractScreen {
         return selectBox;
     }
 
-    private void addChatMessage(LobbyPlayer from, String message) {
-        Table chat = new Table(skin);
-        chat.left();
-        chat.top();
-        if (from != null) {
-            chat.add(info(from.getName(), Color.BLUE)).padRight(10);
-        }
-        chat.add(info(message));
-        chatTable.add(chat).expandX().fillX().row();
-        chatScrollPane.invalidate();
-        chatScrollPane.layout();
-        chatScrollPane.setScrollY(chatScrollPane.getMaxY());
-    }
-
-    private void sendChatMessage(String text) {
-        lobby.sendChat(text);
-        addChatMessage(lobby.getMyPlayer(), text);
-    }
-
     @Override
     public Actor build() {
         Table vg = new Table();
@@ -211,46 +177,7 @@ public class LobbyScreen extends AbstractScreen {
         lobbyTable.defaults().spaceRight(100);
         updateLobby();
         window.add(lobbyTable).fill().expand().colspan(2).row();
-        chatTable = new Table(skin);
-        chatTable.top();
-        chatTable.setBackground("menu-bg");
-        chatTable.pad(10);
-        chatTable.defaults().space(5);
-        chatScrollPane = new ScrollPane(chatTable, skin);
-        chatScrollPane.setScrollBarPositions(false, true);
-        chatScrollPane.setOverscroll(false, false);
-        chatScrollPane.setScrollingDisabled(true, false);
-        chatScrollPane.setFadeScrollBars(false);
-        window.add(chatScrollPane).fillX().expandX().height(150).colspan(2).row();
-
-        TextField chatText = new TextField("", skin);
-        chatText.addListener(new InputListener() {
-
-            @Override
-            public boolean keyUp(InputEvent event, int keycode) {
-                if (keycode == Input.Keys.ENTER && !StringUtils.isEmpty(chatText.getText())) {
-                    sendChatMessage(chatText.getText());
-                    chatText.setText("");
-                    return true;
-                }
-                return false;
-            }
-
-        });
-        TextButton sendChat = new TextButton("Send",skin);
-        sendChat.addListener(new ClickListener() {
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                if (!StringUtils.isEmpty(chatText.getText())) {
-                    sendChatMessage(chatText.getText());
-                    chatText.setText("");
-                    return true;
-                }
-                return false;
-            }
-        });
-        window.add(chatText).expandX().fillX();
-        window.add(sendChat).row();
+        window.add(new GameChat(skin, lobby)).expandX().fillX();
         vg.add(window).expand().fill();
         return vg;
     }

@@ -5,7 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.broll.gainea.Gainea;
-import com.broll.gainea.client.ui.elements.LabelUtils;
+import com.broll.gainea.client.ui.utils.LabelUtils;
 import com.broll.gainea.client.ui.screens.StartScreen;
 
 public abstract class AbstractScreen {

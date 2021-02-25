@@ -1,4 +1,4 @@
-package com.broll.gainea.client.ui.ingame;
+package com.broll.gainea.client.ui.ingame.windows;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -8,12 +8,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.broll.gainea.Gainea;
-import com.broll.gainea.client.ui.elements.render.MapObjectRender;
-import com.broll.gainea.client.ui.elements.ActionListener;
-import com.broll.gainea.client.ui.elements.IconLabel;
-import com.broll.gainea.client.ui.elements.LabelUtils;
-import com.broll.gainea.client.ui.elements.MenuUnit;
-import com.broll.gainea.client.ui.elements.TableUtils;
+import com.broll.gainea.client.ui.ingame.map.MapObjectRender;
+import com.broll.gainea.client.ui.utils.ActionListener;
+import com.broll.gainea.client.ui.components.IconLabel;
+import com.broll.gainea.client.ui.utils.LabelUtils;
+import com.broll.gainea.client.ui.ingame.unit.MenuUnit;
+import com.broll.gainea.client.ui.utils.TableUtils;
 import com.broll.gainea.net.NT_Unit;
 import com.broll.gainea.server.core.map.Location;
 

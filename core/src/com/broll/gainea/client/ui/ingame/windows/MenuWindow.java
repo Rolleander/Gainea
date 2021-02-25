@@ -1,8 +1,8 @@
-package com.broll.gainea.client.ui.ingame;
+package com.broll.gainea.client.ui.ingame.windows;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.broll.gainea.Gainea;
-import com.broll.gainea.client.ui.elements.ClosableWindow;
+import com.broll.gainea.client.ui.ingame.windows.ClosableWindow;
 
 public abstract class MenuWindow extends ClosableWindow {
 

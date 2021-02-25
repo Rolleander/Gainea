@@ -1,25 +1,18 @@
 package com.broll.gainea.client.ui.ingame.windows;
 
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.broll.gainea.Gainea;
 import com.broll.gainea.client.game.GameStateListener;
 import com.broll.gainea.client.game.PlayerPerformOptionalAction;
-import com.broll.gainea.client.ui.elements.ClosableWindow;
-import com.broll.gainea.client.ui.elements.LabelUtils;
-import com.broll.gainea.client.ui.elements.TableUtils;
-import com.broll.gainea.client.ui.elements.TextureUtils;
-import com.broll.gainea.client.ui.ingame.MenuWindow;
+import com.broll.gainea.client.ui.utils.LabelUtils;
+import com.broll.gainea.client.ui.utils.TableUtils;
+import com.broll.gainea.client.ui.utils.TextureUtils;
 import com.broll.gainea.net.NT_Action_Card;
 import com.broll.gainea.net.NT_Card;
-import com.broll.gainea.server.core.GameContainer;
-
-import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.List;
 import java.util.Optional;

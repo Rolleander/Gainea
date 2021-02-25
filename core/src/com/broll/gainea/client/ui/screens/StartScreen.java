@@ -13,10 +13,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.broll.gainea.client.ui.AbstractScreen;
-import com.broll.gainea.client.ui.elements.LabelUtils;
+import com.broll.gainea.client.ui.utils.LabelUtils;
 import com.broll.networklib.client.impl.GameLobby;
 import com.broll.networklib.client.tasks.DiscoveredLobbies;
-import com.esotericsoftware.minlog.Log;
 
 public class StartScreen extends AbstractScreen {
 

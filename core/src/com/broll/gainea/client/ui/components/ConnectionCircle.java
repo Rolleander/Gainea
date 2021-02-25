@@ -1,4 +1,4 @@
-package com.broll.gainea.client.ui;
+package com.broll.gainea.client.ui.components;
 
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.broll.gainea.client.Assets;
-import com.broll.gainea.client.ui.elements.TextureUtils;
+import com.broll.gainea.client.ui.utils.TextureUtils;
 
 public class ConnectionCircle extends Actor {
 

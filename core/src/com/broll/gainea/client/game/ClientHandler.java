@@ -3,32 +3,23 @@ package com.broll.gainea.client.game;
 import com.badlogic.gdx.Gdx;
 import com.broll.gainea.Gainea;
 import com.broll.gainea.client.IClientListener;
-import com.broll.gainea.client.game.sites.AbstractGameSite;
 import com.broll.gainea.client.game.sites.GameActionSite;
 import com.broll.gainea.client.game.sites.GameBattleSite;
 import com.broll.gainea.client.game.sites.GameBoardSite;
 import com.broll.gainea.client.game.sites.GameEventSite;
-import com.broll.gainea.client.game.sites.GameLobbySite;
-import com.broll.gainea.client.game.sites.GameStartSite;
+import com.broll.gainea.client.game.sites.GameStateSite;
 import com.broll.gainea.client.game.sites.GameTurnSite;
 import com.broll.gainea.server.init.NetworkSetup;
 import com.broll.networklib.client.ClientSite;
 import com.broll.networklib.client.LobbyGameClient;
 import com.broll.networklib.client.impl.GameLobby;
-import com.broll.networklib.client.tasks.DiscoveredLobbies;
-import com.broll.networklib.network.INetworkRequestAttempt;
 import com.broll.networklib.site.SiteReceiver;
 import com.esotericsoftware.minlog.Log;
 import com.google.common.collect.Lists;
 
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
-
 import java.lang.reflect.Method;
-import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
@@ -57,7 +48,7 @@ public class ClientHandler {
         game.state = state;
         client.clearSites();
         GameActionSite actionSite = new GameActionSite();
-        Lists.newArrayList(actionSite, new GameBattleSite(), new GameBoardSite(), new GameEventSite(), new GameStartSite(), new GameTurnSite(actionSite)).forEach(site -> {
+        Lists.newArrayList(actionSite, new GameBattleSite(), new GameBoardSite(), new GameEventSite(), new GameStateSite(), new GameTurnSite(actionSite)).forEach(site -> {
             site.init(game);
             client.register(site);
         });

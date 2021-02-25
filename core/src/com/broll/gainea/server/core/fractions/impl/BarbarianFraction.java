@@ -1,6 +1,5 @@
 package com.broll.gainea.server.core.fractions.impl;
 
-import com.broll.gainea.client.ui.elements.LabelUtils;
 import com.broll.gainea.server.core.actions.ActionHandlers;
 import com.broll.gainea.server.core.battle.BattleResult;
 import com.broll.gainea.server.core.battle.FightingPower;
@@ -13,7 +12,6 @@ import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.Commander;
 import com.broll.gainea.server.core.objects.Soldier;
 import com.broll.gainea.server.core.player.Player;
-import com.broll.gainea.server.core.utils.LocationUtils;
 import com.broll.gainea.server.core.utils.PlayerUtils;
 import com.broll.gainea.server.core.utils.UnitControl;
 

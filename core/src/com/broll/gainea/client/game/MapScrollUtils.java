@@ -1,12 +1,10 @@
 package com.broll.gainea.client.game;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.math.MathUtils;
 import com.broll.gainea.Gainea;
-import com.broll.gainea.client.ui.elements.render.MapObjectRender;
+import com.broll.gainea.client.ui.ingame.map.MapObjectRender;
 import com.broll.gainea.net.NT_BoardObject;
 import com.broll.gainea.server.core.map.Coordinates;
-import com.esotericsoftware.minlog.Log;
 
 public class MapScrollUtils {
 
