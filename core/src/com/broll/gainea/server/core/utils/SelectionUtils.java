@@ -84,6 +84,6 @@ public final class SelectionUtils {
             return selection.get(0);
         }
         SelectChoiceAction handler = game.getReactionHandler().getActionHandlers().getHandler(SelectChoiceAction.class);
-        return selection.get(handler.selectObject(text, selection));
+        return selection.get(handler.selectObject(text, selection.stream().map(MapObject::nt).collect(Collectors.toList())));
     }
 }

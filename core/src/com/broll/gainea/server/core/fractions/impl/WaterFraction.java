@@ -92,6 +92,7 @@ public class WaterFraction extends Fraction {
         public IceSummon() {
             setIcon(117);
             setName("Eiskoloss");
+            setOwner(owner);
             setStats(2, 4);
             IntBuff debuff = new IntBuff(BuffType.SET, 0);
             getMovesPerTurn().addBuff(debuff);
