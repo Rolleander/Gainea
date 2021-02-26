@@ -15,7 +15,7 @@ import com.broll.gainea.server.core.utils.ShipUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
+/*
 public class G_GaineaShips extends AbstractOccupyGoal {
     public G_GaineaShips() {
         super(GoalDifficulty.MEDIUM, "Besetze alle Schiffe die von Moor, Zuba und der Vulkaninsel nach Gainea führen");
@@ -39,3 +39,4 @@ public class G_GaineaShips extends AbstractOccupyGoal {
     }
 
 }
+*/
