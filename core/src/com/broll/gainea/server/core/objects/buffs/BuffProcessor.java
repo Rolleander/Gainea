@@ -48,6 +48,7 @@ public class BuffProcessor extends GameUpdateReceiverAdapter {
         List<Object> affectedObjects = new ArrayList<>(buff.getAffectedObjects());
         buff.remove();
         gloabalBuffs.remove(buff);
+        //TODO update client
         //check if any unit died because of removal of buffs
         for (Object object : affectedObjects) {
             if (object instanceof BattleObject) {

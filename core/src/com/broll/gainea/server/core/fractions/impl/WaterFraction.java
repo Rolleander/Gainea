@@ -69,6 +69,7 @@ public class WaterFraction extends Fraction {
                 spawns.add(commander);
             } else if (unit instanceof Commander) {
                 BattleObject summon = new IceSummon();
+                summon.setOwner(owner);
                 summon.setLocation(unit.getLocation());
                 spawns.add(summon);
             }
@@ -92,7 +93,6 @@ public class WaterFraction extends Fraction {
         public IceSummon() {
             setIcon(117);
             setName("Eiskoloss");
-            setOwner(owner);
             setStats(2, 4);
             IntBuff debuff = new IntBuff(BuffType.SET, 0);
             getMovesPerTurn().addBuff(debuff);
