@@ -6,6 +6,10 @@ import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.MapObject;
 import com.broll.gainea.server.core.player.Player;
+import com.broll.networklib.server.impl.ConnectionSite;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -18,6 +22,7 @@ import java.util.Set;
 
 public class GameUpdateReceiverProxy implements IGameUpdateReceiver {
 
+    private final static Logger Log = LoggerFactory.getLogger(GameUpdateReceiverProxy.class);
     private Set<IGameUpdateReceiver> proxies = new HashSet<>();
     private int nestLevel;
 
@@ -51,10 +56,13 @@ public class GameUpdateReceiverProxy implements IGameUpdateReceiver {
         Iterator<Pair<IGameUpdateReceiver, Boolean>> iterator = updates.iterator();
         while (iterator.hasNext()) {
             Pair<IGameUpdateReceiver, Boolean> pair = iterator.next();
+            IGameUpdateReceiver receiver = pair.getLeft();
             if (pair.getRight()) {
-                proxies.add(pair.getLeft());
+                proxies.add(receiver);
+                Log.trace("Receiver added to proxy [total: "+proxies.size()+"] ("+receiver+")");
             } else {
-                proxies.remove(pair.getLeft());
+                Log.trace("Receiver removed from proxy [total: "+proxies.size()+"] ("+receiver+")");
+                proxies.remove(receiver);
             }
             iterator.remove();
         }

@@ -15,10 +15,12 @@ import com.broll.gainea.client.ui.AbstractScreen;
 import com.broll.gainea.client.ui.GameUI;
 import com.broll.gainea.client.ui.screens.LoadingScreen;
 import com.broll.gainea.client.ui.screens.StartScreen;
-import com.esotericsoftware.minlog.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Gainea extends ApplicationAdapter {
 
+    private final static Logger Log = LoggerFactory.getLogger(Gainea.class);
     public final static float EXPANSION_SIZE = 100;
 
     public ClientHandler client;
@@ -30,6 +32,8 @@ public class Gainea extends ApplicationAdapter {
     public GameState state;
     public boolean shutdown = false;
     private AbstractScreen startScreen;
+
+
 
     public Gainea(){
         this(new StartScreen());

@@ -9,8 +9,13 @@ import com.broll.gainea.server.core.cards.AbstractCard;
 import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.server.core.utils.MessageUtils;
 import com.broll.gainea.server.core.utils.ProcessingUtils;
+import com.broll.networklib.server.impl.ConnectionSite;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CardAction extends AbstractActionHandler<NT_Action_Card, CardAction.Context> {
+    private final static Logger Log = LoggerFactory.getLogger(CardAction.class);
 
     class Context extends ActionContext<NT_Action_Card> {
         AbstractCard card;
@@ -37,6 +42,7 @@ public class CardAction extends AbstractActionHandler<NT_Action_Card, CardAction
 
     public void playCard(Player player, AbstractCard card) {
         game.getProcessingCore().execute(() -> {
+            Log.trace("Handle card reaction");
             NT_Event_PlayedCard playedCard = new NT_Event_PlayedCard();
             playedCard.player = player.getServerPlayer().getId();
             playedCard.card = card.nt();

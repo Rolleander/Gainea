@@ -11,10 +11,15 @@ import com.broll.gainea.net.NT_Unit;
 import com.broll.gainea.server.core.actions.AbstractActionHandler;
 import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.utils.PlayerUtils;
+import com.broll.networklib.server.impl.ConnectionSite;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 
 public class AttackAction extends AbstractActionHandler<NT_Action_Attack, AttackAction.Context> {
+    private final static Logger Log = LoggerFactory.getLogger(AttackAction.class);
 
     class Context extends ActionContext<NT_Action_Attack> {
         List<BattleObject> attackers;
@@ -40,6 +45,7 @@ public class AttackAction extends AbstractActionHandler<NT_Action_Attack, Attack
     @Override
     public void handleReaction(Context context, NT_Action_Attack action, NT_Reaction reaction) {
         game.getProcessingCore().execute(() -> {
+            Log.trace("Handle attack reaction");
             Location attackLocation = context.attackLocations.get(reaction.option);
             context.attackLocations.remove(attackLocation);
             List<BattleObject> selectedAttackers = new ArrayList<>();

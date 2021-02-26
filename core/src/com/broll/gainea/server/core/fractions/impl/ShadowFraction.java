@@ -70,15 +70,10 @@ public class ShadowFraction extends Fraction {
     }
 
     @Override
-    public void init(GameContainer game, Player owner) {
-        super.init(game, owner);
-        game.getUpdateReceiver().register(new GameUpdateReceiverAdapter() {
-            @Override
-            public void battleResult(BattleResult result) {
-                if (result.getWinnerPlayer() == ShadowFraction.this.owner) {
-                    afterAttack(result.getLoserUnits(), result.getLocation());
-                }
-            }
-        });
+    public void battleResult(BattleResult result) {
+        if (result.getWinnerPlayer() == ShadowFraction.this.owner) {
+            afterAttack(result.getLoserUnits(), result.getLocation());
+        }
     }
+
 }

@@ -4,12 +4,12 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.broll.gainea.Gainea;
 import com.broll.gainea.client.ui.screens.TestScreen;
-import com.esotericsoftware.minlog.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DesktopTestLauncher {
 	public static void main (String[] arg) {
-//		Log.INFO();
-		Log.DEBUG();
+		System.setProperty("log4j.configuration", "log4j_client.properties");
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		//config.width=1920;
 //		config.height=1080;

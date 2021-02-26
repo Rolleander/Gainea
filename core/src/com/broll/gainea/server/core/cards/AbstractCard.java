@@ -67,4 +67,8 @@ public abstract class AbstractCard {
     public int getId() {
         return id;
     }
+
+    public String getText() {
+        return text;
+    }
 }

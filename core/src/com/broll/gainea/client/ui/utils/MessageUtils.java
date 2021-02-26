@@ -16,6 +16,6 @@ public final class MessageUtils {
     }
 
     public static Cell<Actor> showActionMessage(Gainea game, String message) {
-        return game.ui.inGameUI.showCenterOverlay(new Popup(game.ui.skin, LabelUtils.title(game.ui.skin, message))).padBottom(300);
+        return game.ui.inGameUI.showCenterOverlay(new Popup(game.ui.skin, LabelUtils.title(game.ui.skin, message))).padBottom(350);
     }
 }

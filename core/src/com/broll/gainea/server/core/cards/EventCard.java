@@ -4,9 +4,13 @@ import com.broll.gainea.net.NT_Event_PlayedCard;
 import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.utils.MessageUtils;
 import com.broll.gainea.server.core.utils.ProcessingUtils;
-import com.esotericsoftware.minlog.Log;
+import com.broll.networklib.server.impl.ConnectionSite;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class EventCard extends DirectlyPlayedCard {
+    private final static Logger Log = LoggerFactory.getLogger(EventCard.class);
     public EventCard(int picture, String title, String text) {
         super(picture, title, text);
     }

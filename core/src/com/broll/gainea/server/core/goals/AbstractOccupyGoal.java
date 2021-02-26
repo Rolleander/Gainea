@@ -12,7 +12,8 @@ import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.map.MapContainer;
 import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.MapObject;
-import com.esotericsoftware.minlog.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,6 +26,7 @@ import java.util.stream.Stream;
 
 public abstract class AbstractOccupyGoal extends AbstractGoal {
 
+    private final static Logger Log = LoggerFactory.getLogger(AbstractOccupyGoal.class);
     private List<Location> locations = new ArrayList<>();
     private Map<Location, Function<Location, Boolean>> conditions = new HashMap<>();
     protected MapContainer map;
@@ -149,6 +151,7 @@ public abstract class AbstractOccupyGoal extends AbstractGoal {
 
     @Override
     public void check() {
+        Log.trace("chekc occupy goal ("+this+") for player "+player);
         List<Location> occupiedLocations = player.getControlledLocations();
         for (Location location : locations) {
             Function<Location, Boolean> condition = conditions.get(location);

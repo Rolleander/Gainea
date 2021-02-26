@@ -13,8 +13,10 @@ import com.broll.gainea.server.init.NetworkSetup;
 import com.broll.networklib.client.ClientSite;
 import com.broll.networklib.client.LobbyGameClient;
 import com.broll.networklib.client.impl.GameLobby;
+import com.broll.networklib.server.impl.ConnectionSite;
 import com.broll.networklib.site.SiteReceiver;
-import com.esotericsoftware.minlog.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.google.common.collect.Lists;
 
 import java.lang.reflect.Method;
@@ -26,6 +28,7 @@ import java.util.function.Consumer;
 
 public class ClientHandler {
 
+    private final static Logger Log = LoggerFactory.getLogger(ClientHandler.class);
     private LobbyGameClient client;
     private ExecutorService executor = Executors.newSingleThreadExecutor();
     private boolean clientBusy = false;

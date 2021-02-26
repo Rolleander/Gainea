@@ -11,7 +11,6 @@ buildscript {
     }
     dependencies {
         classpath 'org.wisepersist:gwt-gradle-plugin:1.0.9'
-        
 
     }
 }
@@ -48,8 +47,6 @@ project(":desktop") {
         api "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
         api "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
         api "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
-        compile group: 'com.esotericsoftware.minlog', name: 'minlog', version: '1.2'
-
     }
 }
 
@@ -75,7 +72,6 @@ project(":core") {
 
 
     dependencies {
-        compile group: 'com.esotericsoftware.minlog', name: 'minlog', version: '1.2'
         implementation project(":netlib")
         implementation("com.google.guava:guava:28.2-jre")
         api "com.badlogicgames.gdx:gdx:$gdxVersion"
@@ -83,6 +79,7 @@ project(":core") {
         compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
         // https://mvnrepository.com/artifact/org.apache.commons/commons-collections4
         compile group: 'org.apache.commons', name: 'commons-collections4', version: '4.0'
+        compile group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.29'
     }
 }
 

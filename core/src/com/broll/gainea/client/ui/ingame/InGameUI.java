@@ -54,6 +54,7 @@ public class InGameUI {
         this.battleHandler = new BattleHandler(game, skin);
         this.game = game;
         this.skin = skin;
+        this.windows = new MenuWindows(game, skin);
         topBar = new Table(skin);
         bottomBar = new Table(skin);
         centerOverlay = new Table(skin);
@@ -78,6 +79,11 @@ public class InGameUI {
         return centerOverlay.add(actor);
     }
 
+    public void clearCenter(){
+        centerContent.clear();
+        centerOverlay.clear();
+    }
+
     public void show() {
         Table overlay = new Table();
         overlay.setFillParent(true);
@@ -93,7 +99,6 @@ public class InGameUI {
         overlay3.add(centerOverlay).expand().fill().row();
         overlay3.add(bottomBar).bottom().expandX().fillX().height(40);
         game.uiStage.addActor(overlay3);
-        this.windows = new MenuWindows(game, skin);
     }
 
     public void selectStack(Location location, Collection<MapObjectRender> stack) {

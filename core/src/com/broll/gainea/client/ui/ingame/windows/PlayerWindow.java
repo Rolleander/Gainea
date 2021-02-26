@@ -21,14 +21,11 @@ public class PlayerWindow extends MenuWindow {
         content = new Table();
         add(content).expand().fill();
         TableUtils.consumeClicks(this);
-        update();
+    //    update();
     }
 
     public void update() {
         List<NT_Player> players = game.state.getPlayers();
-        if (players == null) {
-            return;
-        }
         center(850, players.size() * 100 + 50);
         content.clear();
         content.top().left();

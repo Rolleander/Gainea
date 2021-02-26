@@ -1,0 +1,34 @@
+[pool-3-thread-1] INFO  com.esotericsoftware.minlog  - Connecting: gainea.de/217.160.69.131:54555/54777
+[pool-1-thread-1] ERROR com.esotericsoftware.minlog  - Unable to reconnect to lobby
+java.util.concurrent.ExecutionException: com.broll.networklib.network.NetworkException: Failed to connect with server gainea.de
+	at java.util.concurrent.CompletableFuture.reportGet(CompletableFuture.java:357)
+	at java.util.concurrent.CompletableFuture.get(CompletableFuture.java:1895)
+	at com.broll.gainea.client.game.ClientHandler.lambda$clientExecute$7(ClientHandler.java:85)
+	at com.broll.gainea.client.game.ClientHandler.lambda$clientExecute$10(ClientHandler.java:99)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:748)
+Caused by: com.broll.networklib.network.NetworkException: Failed to connect with server gainea.de
+	at com.broll.networklib.client.GameClient.connect(GameClient.java:53)
+	at com.broll.networklib.client.LobbyGameClient.connectToServer(LobbyGameClient.java:165)
+	at com.broll.networklib.client.tasks.AbstractClientTask.connect(AbstractClientTask.java:83)
+	at com.broll.networklib.client.tasks.AbstractClientTask.runOnClient(AbstractClientTask.java:61)
+	at com.broll.networklib.client.tasks.impl.ReconnectTask.run(ReconnectTask.java:26)
+	at com.broll.networklib.client.tasks.AbstractClientTask.run(AbstractClientTask.java:34)
+	at com.broll.networklib.client.LobbyGameClient.lambda$runTask$2(LobbyGameClient.java:91)
+	at java.util.concurrent.CompletableFuture$AsyncSupply.run(CompletableFuture.java:1590)
+	... 3 more
+Caused by: java.io.IOException: Unable to connect to: gainea.de/217.160.69.131:54555
+	at com.esotericsoftware.kryonet.TcpConnection.connect(TcpConnection.java:92)
+	at com.esotericsoftware.kryonet.Client.connect(Client.java:156)
+	at com.esotericsoftware.kryonet.Client.connect(Client.java:117)
+	at com.broll.networklib.client.GameClient.connect(GameClient.java:50)
+	... 10 more
+Caused by: java.net.ConnectException: Connection refused: no further information
+	at sun.nio.ch.SocketChannelImpl.checkConnect(Native Method)
+	at sun.nio.ch.SocketChannelImpl.finishConnect(SocketChannelImpl.java:717)
+	at sun.nio.ch.SocketAdaptor.connect(SocketAdaptor.java:111)
+	at com.esotericsoftware.kryonet.TcpConnection.connect(TcpConnection.java:77)
+	... 13 more
+[pool-1-thread-1] INFO  com.esotericsoftware.minlog  - failure Unable to reconnect to lobby
+ (Failed to connect with server gainea.de)

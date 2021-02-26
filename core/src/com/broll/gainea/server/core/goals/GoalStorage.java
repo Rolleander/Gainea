@@ -9,13 +9,17 @@ import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.actions.ActionHandlers;
 import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.server.init.GoalTypes;
-import com.esotericsoftware.minlog.Log;
+import com.broll.networklib.server.impl.ConnectionSite;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class GoalStorage {
 
+    private final static Logger Log = LoggerFactory.getLogger(GoalStorage.class);
     private final static String PACKAGE_PATH = "com.broll.gainea.server.core.goals.impl";
     private List<Class<? extends AbstractGoal>> goalClasses;
     private PackageLoader<AbstractGoal> loader;
@@ -69,12 +73,14 @@ public class GoalStorage {
     }
 
     public AbstractGoal newGoal(Player forPlayer, Function<AbstractGoal, Boolean> condition) {
+        Log.debug("Try to find new goal for "+forPlayer);
         for (Class clazz : goalClasses) {
             AbstractGoal goal = loader.instantiate(clazz);
             if (goalTypes.contains(goal.getDifficulty())) {
                 if (goal.init(game, forPlayer)) {
                     if (condition.apply(goal)) {
                         goalClasses.remove(clazz);
+                        Log.debug("Found goal "+goal);
                         return goal;
                     }
                 }

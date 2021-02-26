@@ -9,13 +9,17 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.broll.gainea.Gainea;
 import com.broll.gainea.client.ui.utils.LabelUtils;
-import com.esotericsoftware.minlog.Log;
+import com.broll.networklib.server.impl.ConnectionSite;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
 public class BattleRollRender {
 
+    private final static Logger Log = LoggerFactory.getLogger(BattleRollRender.class);
     private Rolls attacker;
     private Rolls defender;
     private int showRolls = 0;

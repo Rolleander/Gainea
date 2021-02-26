@@ -22,8 +22,10 @@ import com.broll.networklib.server.Autoshared;
 import com.broll.networklib.server.ConnectionRestriction;
 import com.broll.networklib.server.RestrictionType;
 import com.broll.networklib.server.ShareLevel;
+import com.broll.networklib.server.impl.ConnectionSite;
 import com.broll.networklib.server.impl.ServerLobby;
-import com.esotericsoftware.minlog.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -31,6 +33,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class GameStartSite extends AbstractGameSite {
+    private final static Logger Log = LoggerFactory.getLogger(GameStartSite.class);
 
     private class GameStartData {
         boolean loading = true;
@@ -84,6 +87,7 @@ public class GameStartSite extends AbstractGameSite {
         int startGoalsCount = getLobby().getData().getStartGoals();
         for (int i = 0; i < startGoalsCount; i++) {
             game.getPlayers().forEach(player -> {
+                Log.debug("Add goal to "+player);
                 game.getGoalStorage().assignNewRandomGoal(player);
                 ProcessingUtils.pause(DELAY);
             });
@@ -91,6 +95,7 @@ public class GameStartSite extends AbstractGameSite {
     }
 
     private void drawStartLocations() {
+        Log.info("Draw start locations");
         GameContainer game = getGame();
         int startLocationsCount = getLobby().getData().getStartLocations();
         int playerCount = game.getPlayers().size();

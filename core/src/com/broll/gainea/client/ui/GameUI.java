@@ -12,11 +12,15 @@ import com.broll.gainea.client.ui.screens.LobbyScreen;
 import com.broll.gainea.client.ui.screens.StartScreen;
 import com.broll.networklib.client.impl.GameLobby;
 import com.broll.networklib.client.tasks.DiscoveredLobbies;
-import com.esotericsoftware.minlog.Log;
+import com.broll.networklib.server.impl.ConnectionSite;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class GameUI implements IClientListener {
 
+    private final static Logger Log = LoggerFactory.getLogger(GameUI.class);
     public Skin skin;
     public InGameUI inGameUI;
     private Gainea game;

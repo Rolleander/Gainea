@@ -14,7 +14,6 @@ public class GameScreen extends AbstractScreen {
         game.ui.initInGameUi();
         game.ui.inGameUI.show();
         state.getMap().getRenders().forEach(render -> game.gameStage.addActor(render));
-        game.ui.inGameUI.updateWindows();
         return new Table();
     }
 }

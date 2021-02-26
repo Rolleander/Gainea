@@ -3,9 +3,9 @@ package com.broll.gainea.server.core;
 import com.broll.gainea.server.core.cards.EventCard;
 import com.broll.gainea.server.core.cards.events.E_SpawnGoddrake;
 import com.broll.gainea.server.core.cards.events.E_SpawnMonster;
-import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.server.core.processing.GameUpdateReceiverAdapter;
-import com.esotericsoftware.minlog.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TurnEvents extends GameUpdateReceiverAdapter {
 
@@ -21,8 +21,7 @@ public class TurnEvents extends GameUpdateReceiverAdapter {
 
     @Override
     public void roundStarted() {
-        int turn = game.getTurns();
-        Log.info("Turn started "+turn);
+        int turn = game.getRounds();
         if (turn >= SPAWN_TURNS_START) {
             if (turn % SPAWN_GODDRAKE_TURNS == 0) {
                 if (!E_SpawnGoddrake.isGoddrakeAlive(game)) {

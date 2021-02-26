@@ -6,7 +6,8 @@ import com.broll.gainea.server.core.cards.events.E_SpawnMonster;
 import com.broll.gainea.server.core.objects.GodDragon;
 import com.broll.gainea.server.core.objects.Monster;
 import com.broll.gainea.server.core.utils.UnitControl;
-import com.esotericsoftware.minlog.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.google.common.collect.Lists;
 
 public class C_KillAnimals extends DirectlyPlayedCard {

@@ -1,0 +1,406 @@
+2021-02-26 10:58:33 [main] INFO  com.broll.gainea.GaineaServer  - hi
+2021-02-26 10:58:34 [main] INFO  com.esotericsoftware.minlog  - kryonet: Server closed.
+2021-02-26 11:00:21 [main] INFO  com.broll.gainea.GaineaServer  - hi
+2021-02-26 11:00:21 [main] INFO  com.esotericsoftware.minlog  - kryonet: Server opened.
+2021-02-26 11:00:21 [main] INFO  com.broll.networklib.server.GameServer  - Server started
+2021-02-26 11:00:21 [main] INFO  com.broll.networklib.server.impl.LobbyHandler  - Server opened lobby [0]: Testlobby
+2021-02-26 11:00:50 [main] INFO  com.broll.gainea.GaineaServer  - hi
+2021-02-26 11:00:51 [main] INFO  com.esotericsoftware.minlog  - kryonet: Server closed.
+2021-02-26 11:00:51 [main] ERROR com.broll.gainea.desktop.ServerLauncher  - Failed to launch server!
+com.broll.networklib.network.NetworkException: java.net.BindException: Address already in use: bind
+	at com.broll.networklib.server.GameServer.open(GameServer.java:50)
+	at com.broll.networklib.server.LobbyGameServer.open(LobbyGameServer.java:94)
+	at com.broll.gainea.GaineaServer.<init>(GaineaServer.java:28)
+	at com.broll.gainea.desktop.ServerLauncher.main(ServerLauncher.java:14)
+Caused by: java.net.BindException: Address already in use: bind
+	at sun.nio.ch.Net.bind0(Native Method)
+	at sun.nio.ch.Net.bind(Net.java:433)
+	at sun.nio.ch.Net.bind(Net.java:425)
+	at sun.nio.ch.ServerSocketChannelImpl.bind(ServerSocketChannelImpl.java:223)
+	at sun.nio.ch.ServerSocketAdaptor.bind(ServerSocketAdaptor.java:74)
+	at sun.nio.ch.ServerSocketAdaptor.bind(ServerSocketAdaptor.java:67)
+	at com.esotericsoftware.kryonet.Server.bind(Server.java:140)
+	at com.esotericsoftware.kryonet.Server.bind(Server.java:130)
+	at com.broll.networklib.server.GameServer.open(GameServer.java:46)
+	... 3 more
+2021-02-26 11:43:23 [main] INFO  com.esotericsoftware.minlog  - kryonet: Server opened.
+2021-02-26 11:43:23 [main] INFO  com.broll.networklib.server.GameServer  - Server started
+2021-02-26 11:43:23 [main] INFO  com.broll.networklib.server.impl.LobbyHandler  - Server opened lobby [0]: Testlobby
+2021-02-26 11:43:59 [Server] INFO  com.esotericsoftware.minlog  - kryonet: Connection 1 connected: /127.0.0.1
+2021-02-26 11:43:59 [Server] INFO  com.broll.networklib.server.GameServer  - Connection 1 connected to server
+2021-02-26 11:43:59 [Server] INFO  com.broll.networklib.server.GameServer  - Connection 1 init connection
+2021-02-26 11:43:59 [Server] INFO  com.broll.networklib.site.MultiSitesHandler  - Connection 1 lock
+2021-02-26 11:43:59 [Server] INFO  com.broll.networklib.site.MultiSitesHandler  - Connection 1 clone sites
+2021-02-26 11:43:59 [Server] INFO  com.broll.networklib.site.MultiSitesHandler  - Connection 1 unlock
+2021-02-26 11:43:59 [Server] INFO  com.broll.networklib.server.GameServer  - Connection 1 pass sites
+2021-02-26 11:43:59 [Server] INFO  com.broll.networklib.server.GameServer  - received check reconnect :)
+2021-02-26 11:43:59 [Server] INFO  com.broll.networklib.server.impl.ConnectionSite  - check reconnect
+2021-02-26 11:44:04 [Server] INFO  com.broll.networklib.server.impl.ServerLobby  - Lobby update [0] Testlobby | Player er joined!
+2021-02-26 11:44:07 [Server] INFO  com.broll.gainea.server.sites.GameStartSite  - Started game in lobby Testlobby
+2021-02-26 11:44:08 [pool-1-thread-1] INFO  com.broll.gainea.server.sites.GameStartSite  - Spawn Monsters: 10
+2021-02-26 11:44:08 [pool-1-thread-1] DEBUG com.broll.gainea.server.core.utils.UnitControl  - spawn monster Panzerschildkröte on Küstengebiet
+2021-02-26 11:44:09 [pool-1-thread-1] DEBUG com.broll.gainea.server.core.utils.UnitControl  - spawn monster Grizzly on Große Steppe
+2021-02-26 11:44:10 [pool-1-thread-1] DEBUG com.broll.gainea.server.core.utils.UnitControl  - spawn monster Dämonenhyäne on Felsenwüste
+2021-02-26 11:44:11 [pool-1-thread-1] DEBUG com.broll.gainea.server.core.utils.UnitControl  - spawn monster Wüstenkoloss on Mistra Insel / Wüste
+2021-02-26 11:44:12 [pool-1-thread-1] DEBUG com.broll.gainea.server.core.utils.UnitControl  - spawn monster Giftkobra on Moorwüste
+2021-02-26 11:44:13 [pool-1-thread-1] DEBUG com.broll.gainea.server.core.utils.UnitControl  - spawn monster Ork on Moorküste
+2021-02-26 11:44:14 [pool-1-thread-1] DEBUG com.broll.gainea.server.core.utils.UnitControl  - spawn monster Felsgolem on Vulkanberg
+2021-02-26 11:44:15 [pool-1-thread-1] DEBUG com.broll.gainea.server.core.utils.UnitControl  - spawn monster Wyvern on Kiesstrand
+2021-02-26 11:44:16 [pool-1-thread-1] DEBUG com.broll.gainea.server.core.utils.UnitControl  - spawn monster Keiler on Weidesteppe
+2021-02-26 11:44:17 [pool-1-thread-1] DEBUG com.broll.gainea.server.core.utils.UnitControl  - spawn monster Waldwolf on Moor
+2021-02-26 11:44:19 [pool-1-thread-1] INFO  com.broll.gainea.server.sites.GameStartSite  - Draw start locations
+2021-02-26 11:44:19 [pool-1-thread-1] INFO  com.broll.gainea.server.sites.GameStartSite  - Assign Goals
+2021-02-26 11:44:19 [pool-1-thread-1] DEBUG com.broll.gainea.server.sites.GameStartSite  - Add goal to Player{name='er', id=0}
+2021-02-26 11:44:19 [pool-1-thread-1] DEBUG com.broll.gainea.server.core.goals.GoalStorage  - Try to find new goal for Player{name='er', id=0}
+2021-02-26 11:44:19 [pool-1-thread-1] INFO  com.broll.gainea.server.core.goals.AbstractGoal  - init goal Vernichte 13 Soldaten anderer Spieler durch Kämpfe with player Player{name='er', id=0}
+2021-02-26 11:44:19 [pool-1-thread-1] DEBUG com.broll.gainea.server.core.goals.GoalStorage  - Found goal com.broll.gainea.server.core.goals.impl.all.G_KillUnits2@251235eb
+2021-02-26 11:44:20 [pool-1-thread-1] DEBUG com.broll.gainea.server.sites.GameStartSite  - Add goal to Player{name='er', id=0}
+2021-02-26 11:44:20 [pool-1-thread-1] DEBUG com.broll.gainea.server.core.goals.GoalStorage  - Try to find new goal for Player{name='er', id=0}
+2021-02-26 11:44:20 [pool-1-thread-1] INFO  com.broll.gainea.server.core.goals.AbstractGoal  - init goal Erledige Monster mit insgesamt 14 Sternen with player Player{name='er', id=0}
+2021-02-26 11:44:20 [pool-1-thread-1] DEBUG com.broll.gainea.server.core.goals.GoalStorage  - Found goal com.broll.gainea.server.core.goals.impl.all.G_KillMonsters2@ab4c6fd
+2021-02-26 11:44:21 [pool-1-thread-1] DEBUG com.broll.gainea.server.sites.GameStartSite  - Add goal to Player{name='er', id=0}
+2021-02-26 11:44:21 [pool-1-thread-1] DEBUG com.broll.gainea.server.core.goals.GoalStorage  - Try to find new goal for Player{name='er', id=0}
+2021-02-26 11:44:21 [pool-1-thread-1] INFO  com.broll.gainea.server.core.goals.AbstractGoal  - init goal Erobere 6 Schiffe with player Player{name='er', id=0}
+2021-02-26 11:44:21 [pool-1-thread-1] DEBUG com.broll.gainea.server.core.goals.GoalStorage  - Found goal com.broll.gainea.server.core.goals.impl.all.G_OccupyShips@9837a24
+2021-02-26 11:44:22 [pool-1-thread-1] INFO  com.broll.gainea.server.sites.GameStartSite  - placeUnit
+2021-02-26 11:44:22 [pool-1-thread-1] DEBUG com.broll.gainea.server.core.actions.required.PlaceUnitAction  - Place unit action
+2021-02-26 11:45:30 [pool-1-thread-1] INFO  com.broll.gainea.server.sites.GameStartSite  - player placedUnit
+2021-02-26 11:45:30 [pool-1-thread-1] INFO  com.broll.gainea.server.sites.GameStartSite  - placeUnit
+2021-02-26 11:45:30 [pool-1-thread-1] DEBUG com.broll.gainea.server.core.actions.required.PlaceUnitAction  - Place unit action
+2021-02-26 11:45:32 [pool-1-thread-1] INFO  com.broll.gainea.server.sites.GameStartSite  - player placedUnit
+2021-02-26 11:45:32 [pool-1-thread-1] INFO  com.broll.gainea.server.sites.GameStartSite  - placeUnit
+2021-02-26 11:45:32 [pool-1-thread-1] DEBUG com.broll.gainea.server.core.actions.required.PlaceUnitAction  - Place unit action
+2021-02-26 11:45:34 [pool-1-thread-1] INFO  com.broll.gainea.server.sites.GameStartSite  - player placedUnit
+2021-02-26 11:45:34 [pool-1-thread-1] INFO  com.broll.gainea.server.core.ReactionResultHandler  - Start next turn: Player{name='er', id=0} [Round 1 Turn 1 / 1]
+2021-02-26 11:45:35 [pool-1-thread-1] DEBUG com.broll.gainea.server.core.actions.required.PlaceUnitAction  - Place unit action
+2021-02-26 11:48:47 [Server] INFO  com.broll.networklib.server.GameServer  - Connection 1 player [er] disconnected from server
+2021-02-26 11:48:47 [Server] INFO  com.broll.networklib.server.impl.ServerLobby  - Player Player{name='er', id=0} disconnected from lobby com.broll.networklib.server.impl.ServerLobby@79b452d6
+2021-02-26 11:48:47 [Server] WARN  com.broll.gainea.server.core.battle.BattleHandler  - Battle reaction ignored because player is not attacker
+2021-02-26 11:48:47 [Server] INFO  com.esotericsoftware.minlog  - kryonet: Connection 1 player [er] disconnected.
+2021-02-26 12:44:22 [main] INFO  com.esotericsoftware.minlog  - kryonet: Server opened.
+2021-02-26 12:44:22 [main] INFO  com.broll.networklib.server.GameServer  - Server started
+2021-02-26 12:44:22 [main] INFO  com.broll.networklib.server.impl.LobbyHandler  - Server opened lobby [0]: Testlobby
+2021-02-26 12:44:43 [Server] INFO  com.esotericsoftware.minlog  - kryonet: Connection 1 connected: /127.0.0.1
+2021-02-26 12:44:43 [Server] INFO  com.broll.networklib.server.GameServer  - Connection 1 connected to server
+2021-02-26 12:44:43 [Server] INFO  com.broll.networklib.server.GameServer  - Connection 1 init connection
+2021-02-26 12:44:43 [Server] INFO  com.broll.networklib.site.MultiSitesHandler  - Connection 1 lock
+2021-02-26 12:44:43 [Server] INFO  com.broll.networklib.site.MultiSitesHandler  - Connection 1 clone sites
+2021-02-26 12:44:43 [Server] INFO  com.broll.networklib.site.MultiSitesHandler  - Connection 1 unlock
+2021-02-26 12:44:43 [Server] INFO  com.broll.networklib.server.GameServer  - Connection 1 pass sites
+2021-02-26 12:44:43 [Server] INFO  com.broll.networklib.server.GameServer  - received check reconnect :)
+2021-02-26 12:44:43 [Server] INFO  com.broll.networklib.server.impl.ConnectionSite  - check reconnect
+2021-02-26 12:44:48 [Server] INFO  com.broll.networklib.server.impl.ServerLobby  - Lobby update [0] Testlobby | Player gfdgd joined!
+2021-02-26 12:44:50 [Server] INFO  com.broll.gainea.server.sites.GameStartSite  - Started game in lobby Testlobby
+2021-02-26 12:44:51 [pool-1-thread-1] INFO  com.broll.gainea.server.sites.GameStartSite  - Spawn Monsters: 10
+2021-02-26 12:44:51 [pool-1-thread-1] DEBUG com.broll.gainea.server.core.utils.UnitControl  - spawn monster Waldriese on Uferland
+2021-02-26 12:44:52 [pool-1-thread-1] DEBUG com.broll.gainea.server.core.utils.UnitControl  - spawn monster Panzerschildkröte on Felsenwüste
+2021-02-26 12:44:53 [pool-1-thread-1] DEBUG com.broll.gainea.server.core.utils.UnitControl  - spawn monster Gigasaurus on Grünland
+2021-02-26 12:44:54 [pool-1-thread-1] DEBUG com.broll.gainea.server.core.utils.UnitControl  - spawn monster Picker on Moorwüste
+2021-02-26 12:44:55 [pool-1-thread-1] DEBUG com.broll.gainea.server.core.utils.UnitControl  - spawn monster Smaragddrache on Weidesteppe
+2021-02-26 12:44:56 [pool-1-thread-1] DEBUG com.broll.gainea.server.core.utils.UnitControl  - spawn monster Kriegselefant on Manma Wüste
+2021-02-26 12:44:57 [pool-1-thread-1] DEBUG com.broll.gainea.server.core.utils.UnitControl  - spawn monster Riesenkröte on Große Steppe
+2021-02-26 12:44:58 [pool-1-thread-1] DEBUG com.broll.gainea.server.core.utils.UnitControl  - spawn monster Wüstenkoloss on Hiengland
+2021-02-26 12:44:59 [pool-1-thread-1] DEBUG com.broll.gainea.server.core.utils.UnitControl  - spawn monster Titanschnapper on Dunkles Meer
+2021-02-26 12:45:00 [pool-1-thread-1] DEBUG com.broll.gainea.server.core.utils.UnitControl  - spawn monster Grizzly on Totemgebirge / Insel
+2021-02-26 18:21:46 [main] INFO  com.esotericsoftware.minlog  - kryonet: Server opened.
+2021-02-26 18:21:46 [main] INFO  com.broll.networklib.server.GameServer  - Server started
+2021-02-26 18:21:46 [main] INFO  com.broll.networklib.server.impl.LobbyHandler  - Server opened lobby [0]: Testlobby
+2021-02-26 18:30:18 [Server] INFO  com.esotericsoftware.minlog  - kryonet: Connection 1 connected: /127.0.0.1
+2021-02-26 18:30:18 [Server] INFO  com.broll.networklib.server.GameServer  - Connection 1 connected to server
+2021-02-26 18:30:18 [Server] INFO  com.broll.networklib.server.GameServer  - Connection 1 init connection
+2021-02-26 18:30:18 [Server] INFO  com.broll.networklib.site.MultiSitesHandler  - Connection 1 lock
+2021-02-26 18:30:18 [Server] INFO  com.broll.networklib.site.MultiSitesHandler  - Connection 1 clone sites
+2021-02-26 18:30:18 [Server] INFO  com.broll.networklib.site.MultiSitesHandler  - Connection 1 unlock
+2021-02-26 18:30:18 [Server] INFO  com.broll.networklib.server.GameServer  - Connection 1 pass sites
+2021-02-26 18:30:18 [Server] INFO  com.broll.networklib.server.GameServer  - received check reconnect :)
+2021-02-26 18:30:18 [Server] INFO  com.broll.networklib.server.impl.ConnectionSite  - check reconnect
+2021-02-26 18:30:24 [Server] INFO  com.broll.networklib.server.impl.ServerLobby  - Lobby update [0] Testlobby | Player fd joined!
+2021-02-26 18:30:24 [Server] ERROR com.broll.networklib.site.SiteReceiver  - Exception when invoking receiver method public void com.broll.networklib.server.impl.ConnectionSite.joinLobby(com.broll.networklib.network.nt.NT_LobbyJoin) on site com.broll.networklib.server.impl.ConnectionSite@2f560381
+java.lang.reflect.InvocationTargetException
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at com.broll.networklib.site.SiteReceiver.receive(SiteReceiver.java:19)
+	at com.broll.networklib.site.AbstractSitesHandler$ObjectTargetContainer.lambda$null$1(AbstractSitesHandler.java:148)
+	at java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1374)
+	at java.util.stream.ReferencePipeline$Head.forEach(ReferencePipeline.java:580)
+	at com.broll.networklib.site.AbstractSitesHandler$ObjectTargetContainer.lambda$pass$2(AbstractSitesHandler.java:148)
+	at java.util.ArrayList.forEach(ArrayList.java:1249)
+	at com.broll.networklib.site.AbstractSitesHandler$ObjectTargetContainer.pass(AbstractSitesHandler.java:145)
+	at com.broll.networklib.site.AbstractSitesHandler.pass(AbstractSitesHandler.java:118)
+	at com.broll.networklib.GameEndpoint.passReceived(GameEndpoint.java:77)
+	at com.broll.networklib.server.GameServer.received(GameServer.java:109)
+	at com.broll.networklib.server.GameServer$ConnectionListener.received(GameServer.java:104)
+	at com.esotericsoftware.kryonet.Server$1.received(Server.java:61)
+	at com.esotericsoftware.kryonet.Connection.notifyReceived(Connection.java:246)
+	at com.esotericsoftware.kryonet.Server.update(Server.java:215)
+	at com.esotericsoftware.kryonet.Server.run(Server.java:372)
+	at java.lang.Thread.run(Thread.java:748)
+Caused by: java.lang.NoClassDefFoundError: com/broll/gainea/server/init/PlayerData
+	at com.broll.gainea.server.sites.LobbyListener.playerJoined(LobbyListener.java:25)
+	at com.broll.networklib.server.impl.ServerLobby.addPlayer(ServerLobby.java:121)
+	at com.broll.networklib.server.impl.ConnectionSite.joinLobby(ConnectionSite.java:147)
+	at com.broll.networklib.server.impl.ConnectionSite.initPlayerAndJoinLobby(ConnectionSite.java:140)
+	at com.broll.networklib.server.impl.ConnectionSite.joinLobby(ConnectionSite.java:46)
+	... 20 more
+Caused by: java.lang.ClassNotFoundException: com.broll.gainea.server.init.PlayerData
+	at java.net.URLClassLoader.findClass(URLClassLoader.java:381)
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:424)
+	at sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:335)
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:357)
+	... 25 more
+2021-02-26 18:30:31 [main] INFO  com.esotericsoftware.minlog  - kryonet: Server opened.
+2021-02-26 18:30:31 [main] INFO  com.broll.networklib.server.GameServer  - Server started
+2021-02-26 18:30:31 [main] INFO  com.broll.networklib.server.impl.LobbyHandler  - Server opened lobby [0]: Testlobby
+2021-02-26 18:30:36 [Server] INFO  com.esotericsoftware.minlog  - kryonet: Connection 1 connected: /127.0.0.1
+2021-02-26 18:30:36 [Server] INFO  com.broll.networklib.server.GameServer  - Connection 1 connected to server
+2021-02-26 18:30:36 [Server] INFO  com.broll.networklib.server.GameServer  - Connection 1 init connection
+2021-02-26 18:30:36 [Server] INFO  com.broll.networklib.site.MultiSitesHandler  - Connection 1 lock
+2021-02-26 18:30:36 [Server] INFO  com.broll.networklib.site.MultiSitesHandler  - Connection 1 clone sites
+2021-02-26 18:30:36 [Server] INFO  com.broll.networklib.site.MultiSitesHandler  - Connection 1 unlock
+2021-02-26 18:30:36 [Server] INFO  com.broll.networklib.server.GameServer  - Connection 1 pass sites
+2021-02-26 18:30:36 [Server] INFO  com.broll.networklib.server.impl.ServerLobby  - Lobby update [0] Testlobby | Player fd joined!
+2021-02-26 18:30:39 [Server] INFO  com.broll.gainea.server.sites.GameStartSite  - Started game in lobby Testlobby
+2021-02-26 18:30:40 [pool-1-thread-1] INFO  com.broll.gainea.server.sites.GameStartSite  - Spawn Monsters: 10
+2021-02-26 18:30:40 [pool-1-thread-1] DEBUG com.broll.gainea.server.core.utils.UnitControl  - spawn monster Geisterpirat on Mitsuma See
+2021-02-26 18:30:41 [pool-1-thread-1] DEBUG com.broll.gainea.server.core.utils.UnitControl  - spawn monster Waldwolf on Vulkanberg
+2021-02-26 18:30:42 [pool-1-thread-1] DEBUG com.broll.gainea.server.core.utils.UnitControl  - spawn monster Eberkrieger on Große Steppe
+2021-02-26 18:30:43 [pool-1-thread-1] DEBUG com.broll.gainea.server.core.utils.UnitControl  - spawn monster Dornviper on Großes Feslgebirge
+2021-02-26 18:30:44 [pool-1-thread-1] DEBUG com.broll.gainea.server.core.utils.UnitControl  - spawn monster Sumpfkrokodil on Moorteich
+2021-02-26 18:30:45 [pool-1-thread-1] DEBUG com.broll.gainea.server.core.utils.UnitControl  - spawn monster Waldriese on Xom-Delta
+2021-02-26 18:30:46 [pool-1-thread-1] DEBUG com.broll.gainea.server.core.utils.UnitControl  - spawn monster Adlerdrache on Manma Wüste
+2021-02-26 18:30:47 [pool-1-thread-1] DEBUG com.broll.gainea.server.core.utils.UnitControl  - spawn monster Mantikor on Hiengland
+2021-02-26 18:30:48 [pool-1-thread-1] DEBUG com.broll.gainea.server.core.utils.UnitControl  - spawn monster Donnerdrache on Totemgebirge / Insel
+2021-02-26 18:30:49 [pool-1-thread-1] DEBUG com.broll.gainea.server.core.utils.UnitControl  - spawn monster Gigasaurus on Weidesteppe
+2021-02-26 18:30:51 [pool-1-thread-1] INFO  com.broll.gainea.server.sites.GameStartSite  - Draw start locations
+2021-02-26 18:30:51 [pool-1-thread-1] INFO  com.broll.gainea.server.sites.GameStartSite  - Assign Goals
+2021-02-26 18:30:51 [pool-1-thread-1] DEBUG com.broll.gainea.server.sites.GameStartSite  - Add goal to Player{name='fd', id=0}
+2021-02-26 18:30:51 [pool-1-thread-1] DEBUG com.broll.gainea.server.core.goals.GoalStorage  - Try to find new goal for Player{name='fd', id=0}
+2021-02-26 18:30:51 [pool-1-thread-1] DEBUG com.broll.gainea.server.core.goals.GoalStorage  - Found goal com.broll.gainea.server.core.goals.impl.all.G_StackUnits@49b16733
+2021-02-26 18:30:52 [pool-1-thread-1] DEBUG com.broll.gainea.server.sites.GameStartSite  - Add goal to Player{name='fd', id=0}
+2021-02-26 18:30:52 [pool-1-thread-1] DEBUG com.broll.gainea.server.core.goals.GoalStorage  - Try to find new goal for Player{name='fd', id=0}
+2021-02-26 18:30:52 [pool-1-thread-1] INFO  com.broll.gainea.server.core.goals.AbstractGoal  - init goal Töte den Götterdrachen with player Player{name='fd', id=0}
+2021-02-26 18:30:52 [pool-1-thread-1] DEBUG com.broll.gainea.server.core.goals.GoalStorage  - Found goal com.broll.gainea.server.core.goals.impl.all.G_Goddrake@5ac09aea
+2021-02-26 18:30:53 [pool-1-thread-1] DEBUG com.broll.gainea.server.sites.GameStartSite  - Add goal to Player{name='fd', id=0}
+2021-02-26 18:30:53 [pool-1-thread-1] DEBUG com.broll.gainea.server.core.goals.GoalStorage  - Try to find new goal for Player{name='fd', id=0}
+2021-02-26 18:30:53 [pool-1-thread-1] INFO  com.broll.gainea.server.core.goals.AbstractGoal  - init goal Erobere zwei beliebige Steppen, Wüsten, Meere und Berge with player Player{name='fd', id=0}
+2021-02-26 18:30:53 [pool-1-thread-1] DEBUG com.broll.gainea.server.core.goals.GoalStorage  - Found goal com.broll.gainea.server.core.goals.impl.e1.G_AreaTypes@7c92c635
+2021-02-26 18:30:54 [pool-1-thread-1] INFO  com.broll.gainea.server.sites.GameStartSite  - placeUnit
+2021-02-26 18:30:54 [pool-1-thread-1] DEBUG com.broll.gainea.server.core.actions.required.PlaceUnitAction  - Place unit action
+2021-02-26 18:31:07 [pool-1-thread-1] INFO  com.broll.gainea.server.sites.GameStartSite  - player placedUnit
+2021-02-26 18:31:07 [pool-1-thread-1] INFO  com.broll.gainea.server.sites.GameStartSite  - placeUnit
+2021-02-26 18:31:07 [pool-1-thread-1] DEBUG com.broll.gainea.server.core.actions.required.PlaceUnitAction  - Place unit action
+2021-02-26 18:31:11 [pool-1-thread-1] INFO  com.broll.gainea.server.sites.GameStartSite  - player placedUnit
+2021-02-26 18:31:11 [pool-1-thread-1] INFO  com.broll.gainea.server.sites.GameStartSite  - placeUnit
+2021-02-26 18:31:11 [pool-1-thread-1] DEBUG com.broll.gainea.server.core.actions.required.PlaceUnitAction  - Place unit action
+2021-02-26 18:31:30 [pool-1-thread-1] INFO  com.broll.gainea.server.sites.GameStartSite  - player placedUnit
+2021-02-26 18:31:30 [pool-1-thread-1] ERROR com.broll.gainea.server.core.processing.ProcessingCore  - Processing exception:
+java.lang.NullPointerException
+	at com.broll.gainea.server.core.goals.AbstractOccupyGoal.check(AbstractOccupyGoal.java:153)
+	at com.broll.gainea.server.core.processing.ProcessingCore$RunnableWrapper.run(ProcessingCore.java:71)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.access$201(ScheduledThreadPoolExecutor.java:180)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:293)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:748)
+2021-02-26 18:31:30 [pool-1-thread-1] INFO  com.broll.gainea.server.core.ReactionResultHandler  - Start next turn: Player{name='fd', id=0} [Round 1 Turn 1 / 1]
+2021-02-26 18:31:31 [pool-1-thread-1] DEBUG com.broll.gainea.server.core.actions.required.PlaceUnitAction  - Place unit action
+2021-02-26 18:31:43 [pool-1-thread-1] INFO  com.broll.gainea.server.core.ReactionResultHandler  - Start next turn: Player{name='fd', id=0} [Round 1 Turn 1 / 1]
+2021-02-26 18:31:44 [pool-1-thread-1] DEBUG com.broll.gainea.server.core.actions.required.PlaceUnitAction  - Place unit action
+2021-02-26 18:35:57 [Server] INFO  com.broll.networklib.server.GameServer  - Connection 1 player [fd] disconnected from server
+2021-02-26 18:35:57 [Server] INFO  com.broll.networklib.server.impl.ServerLobby  - Player Player{name='fd', id=0} disconnected from lobby com.broll.networklib.server.impl.ServerLobby@3aae8a1e
+2021-02-26 18:35:57 [Server] WARN  com.broll.gainea.server.core.battle.BattleHandler  - Battle reaction ignored because player is not attacker
+2021-02-26 18:35:57 [Server] INFO  com.esotericsoftware.minlog  - kryonet: Connection 1 player [fd] disconnected.
+2021-02-26 18:36:06 [Server] INFO  com.esotericsoftware.minlog  - kryonet: Connection 2 connected: /127.0.0.1
+2021-02-26 18:36:06 [Server] INFO  com.broll.networklib.server.GameServer  - Connection 2 connected to server
+2021-02-26 18:36:06 [Server] INFO  com.broll.networklib.server.GameServer  - Connection 2 init connection
+2021-02-26 18:36:06 [Server] INFO  com.broll.networklib.site.MultiSitesHandler  - Connection 2 lock
+2021-02-26 18:36:06 [Server] INFO  com.broll.networklib.site.MultiSitesHandler  - Connection 2 clone sites
+2021-02-26 18:36:06 [Server] INFO  com.broll.networklib.site.MultiSitesHandler  - Connection 2 unlock
+2021-02-26 18:36:06 [Server] INFO  com.broll.networklib.server.GameServer  - Connection 2 pass sites
+2021-02-26 18:36:06 [Server] INFO  com.broll.networklib.server.GameServer  - received check reconnect :)
+2021-02-26 18:36:06 [Server] INFO  com.broll.networklib.server.impl.ConnectionSite  - check reconnect
+2021-02-26 18:36:06 [Server] INFO  com.broll.networklib.server.impl.ServerLobby  - Player Player{name='fd', id=0} reconnected to lobby com.broll.networklib.server.impl.ServerLobby@3aae8a1e
+2021-02-26 18:36:07 [pool-2-thread-1] INFO  com.broll.gainea.server.core.actions.ReactionHandler  - Player{name='fd', id=0} reconnected to game
+2021-02-26 18:37:15 [Server] INFO  com.broll.networklib.server.GameServer  - Connection 2 player [fd] disconnected from server
+2021-02-26 18:37:15 [Server] INFO  com.broll.networklib.server.impl.ServerLobby  - Player Player{name='fd', id=0} disconnected from lobby com.broll.networklib.server.impl.ServerLobby@3aae8a1e
+2021-02-26 18:37:15 [Server] WARN  com.broll.gainea.server.core.battle.BattleHandler  - Battle reaction ignored because player is not attacker
+2021-02-26 18:37:15 [Server] INFO  com.esotericsoftware.minlog  - kryonet: Connection 2 player [fd] disconnected.
+2021-02-26 18:37:21 [Server] INFO  com.esotericsoftware.minlog  - kryonet: Connection 3 connected: /127.0.0.1
+2021-02-26 18:37:21 [Server] INFO  com.broll.networklib.server.GameServer  - Connection 3 connected to server
+2021-02-26 18:37:21 [Server] INFO  com.broll.networklib.server.GameServer  - Connection 3 init connection
+2021-02-26 18:37:21 [Server] INFO  com.broll.networklib.site.MultiSitesHandler  - Connection 3 lock
+2021-02-26 18:37:21 [Server] INFO  com.broll.networklib.site.MultiSitesHandler  - Connection 3 clone sites
+2021-02-26 18:37:21 [Server] INFO  com.broll.networklib.site.MultiSitesHandler  - Connection 3 unlock
+2021-02-26 18:37:21 [Server] INFO  com.broll.networklib.server.GameServer  - Connection 3 pass sites
+2021-02-26 18:37:21 [Server] INFO  com.broll.networklib.server.GameServer  - received check reconnect :)
+2021-02-26 18:37:21 [Server] INFO  com.broll.networklib.server.impl.ConnectionSite  - check reconnect
+2021-02-26 18:37:21 [Server] INFO  com.broll.networklib.server.impl.ServerLobby  - Player Player{name='fd', id=0} reconnected to lobby com.broll.networklib.server.impl.ServerLobby@3aae8a1e
+2021-02-26 18:37:22 [pool-2-thread-1] INFO  com.broll.gainea.server.core.actions.ReactionHandler  - Player{name='fd', id=0} reconnected to game
+2021-02-26 18:39:31 [Server] INFO  com.broll.networklib.server.GameServer  - Connection 3 player [fd] disconnected from server
+2021-02-26 18:39:31 [Server] INFO  com.broll.networklib.server.impl.ServerLobby  - Player Player{name='fd', id=0} disconnected from lobby com.broll.networklib.server.impl.ServerLobby@3aae8a1e
+2021-02-26 18:39:31 [Server] WARN  com.broll.gainea.server.core.battle.BattleHandler  - Battle reaction ignored because player is not attacker
+2021-02-26 18:39:31 [Server] INFO  com.esotericsoftware.minlog  - kryonet: Connection 3 player [fd] disconnected.
+2021-02-26 18:39:37 [Server] INFO  com.esotericsoftware.minlog  - kryonet: Connection 4 connected: /127.0.0.1
+2021-02-26 18:39:37 [Server] INFO  com.broll.networklib.server.GameServer  - Connection 4 connected to server
+2021-02-26 18:39:37 [Server] INFO  com.broll.networklib.server.GameServer  - Connection 4 init connection
+2021-02-26 18:39:37 [Server] INFO  com.broll.networklib.site.MultiSitesHandler  - Connection 4 lock
+2021-02-26 18:39:37 [Server] INFO  com.broll.networklib.site.MultiSitesHandler  - Connection 4 clone sites
+2021-02-26 18:39:37 [Server] INFO  com.broll.networklib.site.MultiSitesHandler  - Connection 4 unlock
+2021-02-26 18:39:37 [Server] INFO  com.broll.networklib.server.GameServer  - Connection 4 pass sites
+2021-02-26 18:39:37 [Server] INFO  com.broll.networklib.server.GameServer  - received check reconnect :)
+2021-02-26 18:39:37 [Server] INFO  com.broll.networklib.server.impl.ConnectionSite  - check reconnect
+2021-02-26 18:39:37 [Server] INFO  com.broll.networklib.server.impl.ServerLobby  - Player Player{name='fd', id=0} reconnected to lobby com.broll.networklib.server.impl.ServerLobby@3aae8a1e
+2021-02-26 18:39:38 [pool-2-thread-2] INFO  com.broll.gainea.server.core.actions.ReactionHandler  - Player{name='fd', id=0} reconnected to game
+2021-02-26 18:41:12 [Server] INFO  com.broll.networklib.server.GameServer  - Connection 4 player [fd] disconnected from server
+2021-02-26 18:41:12 [Server] INFO  com.broll.networklib.server.impl.ServerLobby  - Player Player{name='fd', id=0} disconnected from lobby com.broll.networklib.server.impl.ServerLobby@3aae8a1e
+2021-02-26 18:41:12 [Server] WARN  com.broll.gainea.server.core.battle.BattleHandler  - Battle reaction ignored because player is not attacker
+2021-02-26 18:41:12 [Server] INFO  com.esotericsoftware.minlog  - kryonet: Connection 4 player [fd] disconnected.
+2021-02-26 18:41:25 [Server] INFO  com.esotericsoftware.minlog  - kryonet: Connection 5 connected: /127.0.0.1
+2021-02-26 18:41:25 [Server] INFO  com.broll.networklib.server.GameServer  - Connection 5 connected to server
+2021-02-26 18:41:25 [Server] INFO  com.broll.networklib.server.GameServer  - Connection 5 init connection
+2021-02-26 18:41:25 [Server] INFO  com.broll.networklib.site.MultiSitesHandler  - Connection 5 lock
+2021-02-26 18:41:25 [Server] INFO  com.broll.networklib.site.MultiSitesHandler  - Connection 5 clone sites
+2021-02-26 18:41:25 [Server] INFO  com.broll.networklib.site.MultiSitesHandler  - Connection 5 unlock
+2021-02-26 18:41:25 [Server] INFO  com.broll.networklib.server.GameServer  - Connection 5 pass sites
+2021-02-26 18:41:25 [Server] INFO  com.broll.networklib.server.GameServer  - received check reconnect :)
+2021-02-26 18:41:25 [Server] INFO  com.broll.networklib.server.impl.ConnectionSite  - check reconnect
+2021-02-26 18:41:25 [Server] INFO  com.broll.networklib.server.impl.ServerLobby  - Player Player{name='fd', id=0} reconnected to lobby com.broll.networklib.server.impl.ServerLobby@3aae8a1e
+2021-02-26 18:41:26 [pool-2-thread-1] INFO  com.broll.gainea.server.core.actions.ReactionHandler  - Player{name='fd', id=0} reconnected to game
+2021-02-26 18:43:40 [Server] INFO  com.broll.networklib.server.GameServer  - Connection 5 player [fd] disconnected from server
+2021-02-26 18:43:40 [Server] INFO  com.broll.networklib.server.impl.ServerLobby  - Player Player{name='fd', id=0} disconnected from lobby com.broll.networklib.server.impl.ServerLobby@3aae8a1e
+2021-02-26 18:43:40 [Server] WARN  com.broll.gainea.server.core.battle.BattleHandler  - Battle reaction ignored because player is not attacker
+2021-02-26 18:43:40 [Server] INFO  com.esotericsoftware.minlog  - kryonet: Connection 5 player [fd] disconnected.
+2021-02-26 18:43:52 [Server] INFO  com.esotericsoftware.minlog  - kryonet: Connection 6 connected: /127.0.0.1
+2021-02-26 18:43:52 [Server] INFO  com.broll.networklib.server.GameServer  - Connection 6 connected to server
+2021-02-26 18:43:52 [Server] INFO  com.broll.networklib.server.GameServer  - Connection 6 init connection
+2021-02-26 18:43:52 [Server] INFO  com.broll.networklib.site.MultiSitesHandler  - Connection 6 lock
+2021-02-26 18:43:52 [Server] INFO  com.broll.networklib.site.MultiSitesHandler  - Connection 6 clone sites
+2021-02-26 18:43:52 [Server] INFO  com.broll.networklib.site.MultiSitesHandler  - Connection 6 unlock
+2021-02-26 18:43:52 [Server] INFO  com.broll.networklib.server.GameServer  - Connection 6 pass sites
+2021-02-26 18:43:52 [Server] INFO  com.broll.networklib.server.GameServer  - received check reconnect :)
+2021-02-26 18:43:52 [Server] INFO  com.broll.networklib.server.impl.ConnectionSite  - check reconnect
+2021-02-26 18:43:52 [Server] INFO  com.broll.networklib.server.impl.ServerLobby  - Player Player{name='fd', id=0} reconnected to lobby com.broll.networklib.server.impl.ServerLobby@3aae8a1e
+2021-02-26 18:43:53 [pool-2-thread-3] INFO  com.broll.gainea.server.core.actions.ReactionHandler  - Player{name='fd', id=0} reconnected to game
+2021-02-26 18:44:05 [pool-1-thread-1] INFO  com.broll.gainea.server.core.ReactionResultHandler  - Start next turn: Player{name='fd', id=0} [Round 2 Turn 1 / 1]
+2021-02-26 18:44:06 [pool-1-thread-1] DEBUG com.broll.gainea.server.core.actions.required.PlaceUnitAction  - Place unit action
+2021-02-26 18:44:53 [Server] INFO  com.broll.networklib.server.GameServer  - Connection 6 player [fd] disconnected from server
+2021-02-26 18:44:53 [Server] INFO  com.broll.networklib.server.impl.ServerLobby  - Player Player{name='fd', id=0} disconnected from lobby com.broll.networklib.server.impl.ServerLobby@3aae8a1e
+2021-02-26 18:44:53 [Server] WARN  com.broll.gainea.server.core.battle.BattleHandler  - Battle reaction ignored because player is not attacker
+2021-02-26 18:44:53 [Server] INFO  com.esotericsoftware.minlog  - kryonet: Connection 6 player [fd] disconnected.
+2021-02-26 18:44:59 [Server] INFO  com.esotericsoftware.minlog  - kryonet: Connection 7 connected: /127.0.0.1
+2021-02-26 18:44:59 [Server] INFO  com.broll.networklib.server.GameServer  - Connection 7 connected to server
+2021-02-26 18:44:59 [Server] INFO  com.broll.networklib.server.GameServer  - Connection 7 init connection
+2021-02-26 18:44:59 [Server] INFO  com.broll.networklib.site.MultiSitesHandler  - Connection 7 lock
+2021-02-26 18:44:59 [Server] INFO  com.broll.networklib.site.MultiSitesHandler  - Connection 7 clone sites
+2021-02-26 18:44:59 [Server] INFO  com.broll.networklib.site.MultiSitesHandler  - Connection 7 unlock
+2021-02-26 18:44:59 [Server] INFO  com.broll.networklib.server.GameServer  - Connection 7 pass sites
+2021-02-26 18:44:59 [Server] INFO  com.broll.networklib.server.GameServer  - received check reconnect :)
+2021-02-26 18:44:59 [Server] INFO  com.broll.networklib.server.impl.ConnectionSite  - check reconnect
+2021-02-26 18:44:59 [Server] INFO  com.broll.networklib.server.impl.ServerLobby  - Player Player{name='fd', id=0} reconnected to lobby com.broll.networklib.server.impl.ServerLobby@3aae8a1e
+2021-02-26 18:45:00 [pool-2-thread-2] INFO  com.broll.gainea.server.core.actions.ReactionHandler  - Player{name='fd', id=0} reconnected to game
+2021-02-26 18:45:02 [pool-1-thread-1] INFO  com.broll.gainea.server.core.ReactionResultHandler  - Start next turn: Player{name='fd', id=0} [Round 3 Turn 1 / 1]
+2021-02-26 18:45:03 [pool-1-thread-1] DEBUG com.broll.gainea.server.core.actions.required.PlaceUnitAction  - Place unit action
+2021-02-26 18:45:15 [pool-1-thread-1] INFO  com.broll.gainea.server.core.battle.BattleHandler  - Fight!  Attackers: (11| Kreuzritterchampion 3 3, 14| Kreuzritter 1 1, 15| Kreuzritter 1 1, 17| Kreuzritter 1 1)   Defenders: (8| Mantikor 3 3)
+2021-02-26 18:48:44 [main] INFO  com.esotericsoftware.minlog  - kryonet: Server opened.
+2021-02-26 18:48:44 [main] INFO  com.broll.networklib.server.GameServer  - Server started
+2021-02-26 18:48:44 [main] INFO  com.broll.networklib.server.impl.LobbyHandler  - Server opened lobby [0]: Testlobby
+2021-02-26 18:49:01 [Server] INFO  com.esotericsoftware.minlog  - kryonet: Connection 1 connected: /127.0.0.1
+2021-02-26 18:49:01 [Server] INFO  com.broll.networklib.server.GameServer  - Connection 1 connected to server
+2021-02-26 18:49:01 [Server] INFO  com.broll.networklib.server.GameServer  - Connection 1 init connection
+2021-02-26 18:49:01 [Server] INFO  com.broll.networklib.site.MultiSitesHandler  - Connection 1 lock
+2021-02-26 18:49:01 [Server] INFO  com.broll.networklib.site.MultiSitesHandler  - Connection 1 clone sites
+2021-02-26 18:49:01 [Server] INFO  com.broll.networklib.site.MultiSitesHandler  - Connection 1 unlock
+2021-02-26 18:49:01 [Server] INFO  com.broll.networklib.server.GameServer  - Connection 1 pass sites
+2021-02-26 18:49:01 [Server] INFO  com.broll.networklib.server.GameServer  - received check reconnect :)
+2021-02-26 18:49:01 [Server] INFO  com.broll.networklib.server.impl.ConnectionSite  - check reconnect
+2021-02-26 18:49:07 [Server] INFO  com.broll.networklib.server.impl.ServerLobby  - Lobby update [0] Testlobby | Player ert joined!
+2021-02-26 18:49:10 [Server] INFO  com.broll.gainea.server.sites.GameStartSite  - Started game in lobby Testlobby
+2021-02-26 18:49:11 [pool-1-thread-1] INFO  com.broll.gainea.server.sites.GameStartSite  - Spawn Monsters: 10
+2021-02-26 18:49:11 [pool-1-thread-1] DEBUG com.broll.gainea.server.core.utils.UnitControl  - spawn monster Donnerdrache on Mistra Insel / Wüste
+2021-02-26 18:49:12 [pool-1-thread-1] DEBUG com.broll.gainea.server.core.utils.UnitControl  - spawn monster Dämonenhyäne on Manma Wüste
+2021-02-26 18:49:13 [pool-1-thread-1] DEBUG com.broll.gainea.server.core.utils.UnitControl  - spawn monster Blutwurm on Hiengland
+2021-02-26 18:49:14 [pool-1-thread-1] DEBUG com.broll.gainea.server.core.utils.UnitControl  - spawn monster Bergriese on Korberg
+2021-02-26 18:49:15 [pool-1-thread-1] DEBUG com.broll.gainea.server.core.utils.UnitControl  - spawn monster Ork on Grünland
+2021-02-26 18:49:16 [pool-1-thread-1] DEBUG com.broll.gainea.server.core.utils.UnitControl  - spawn monster Eberkrieger on Küstengebiet
+2021-02-26 18:49:17 [pool-1-thread-1] DEBUG com.broll.gainea.server.core.utils.UnitControl  - spawn monster Dornviper on Großes Feslgebirge
+2021-02-26 18:49:18 [pool-1-thread-1] DEBUG com.broll.gainea.server.core.utils.UnitControl  - spawn monster Grizzly on Xom-Delta
+2021-02-26 18:49:19 [pool-1-thread-1] DEBUG com.broll.gainea.server.core.utils.UnitControl  - spawn monster Geisterpirat on Dunkles Meer
+2021-02-26 18:49:20 [pool-1-thread-1] DEBUG com.broll.gainea.server.core.utils.UnitControl  - spawn monster Panzerschildkröte on Große Steppe
+2021-02-26 18:49:22 [pool-1-thread-1] INFO  com.broll.gainea.server.sites.GameStartSite  - Draw start locations
+2021-02-26 18:49:22 [pool-1-thread-1] INFO  com.broll.gainea.server.sites.GameStartSite  - Assign Goals
+2021-02-26 18:49:22 [pool-1-thread-1] DEBUG com.broll.gainea.server.sites.GameStartSite  - Add goal to Player{name='ert', id=0}
+2021-02-26 18:49:22 [pool-1-thread-1] DEBUG com.broll.gainea.server.core.goals.GoalStorage  - Try to find new goal for Player{name='ert', id=0}
+2021-02-26 18:49:22 [pool-1-thread-1] INFO  com.broll.gainea.server.core.goals.AbstractGoal  - init goal Gewinne 5 Schlachten with player Player{name='ert', id=0}
+2021-02-26 18:49:22 [pool-1-thread-1] DEBUG com.broll.gainea.server.core.goals.GoalStorage  - Found goal com.broll.gainea.server.core.goals.impl.all.G_WinBattles@5ea2e0c2
+2021-02-26 18:49:23 [pool-1-thread-1] DEBUG com.broll.gainea.server.sites.GameStartSite  - Add goal to Player{name='ert', id=0}
+2021-02-26 18:49:23 [pool-1-thread-1] DEBUG com.broll.gainea.server.core.goals.GoalStorage  - Try to find new goal for Player{name='ert', id=0}
+2021-02-26 18:49:23 [pool-1-thread-1] INFO  com.broll.gainea.server.core.goals.AbstractGoal  - init goal Erobere alle Inseln with player Player{name='ert', id=0}
+2021-02-26 18:49:23 [pool-1-thread-1] DEBUG com.broll.gainea.server.core.goals.GoalStorage  - Found goal com.broll.gainea.server.core.goals.impl.e1.G_AllIslands@285e6738
+2021-02-26 18:49:24 [pool-1-thread-1] DEBUG com.broll.gainea.server.sites.GameStartSite  - Add goal to Player{name='ert', id=0}
+2021-02-26 18:49:24 [pool-1-thread-1] DEBUG com.broll.gainea.server.core.goals.GoalStorage  - Try to find new goal for Player{name='ert', id=0}
+2021-02-26 18:49:24 [pool-1-thread-1] INFO  com.broll.gainea.server.core.goals.AbstractGoal  - init goal Erledige Monster mit insgesamt 7 Sternen with player Player{name='ert', id=0}
+2021-02-26 18:49:24 [pool-1-thread-1] DEBUG com.broll.gainea.server.core.goals.GoalStorage  - Found goal com.broll.gainea.server.core.goals.impl.all.G_KillMonsters@1f86b961
+2021-02-26 18:49:25 [pool-1-thread-1] INFO  com.broll.gainea.server.sites.GameStartSite  - placeUnit
+2021-02-26 18:49:25 [pool-1-thread-1] DEBUG com.broll.gainea.server.core.actions.required.PlaceUnitAction  - Place unit action
+2021-02-26 18:49:32 [pool-1-thread-1] INFO  com.broll.gainea.server.sites.GameStartSite  - player placedUnit
+2021-02-26 18:49:32 [pool-1-thread-1] INFO  com.broll.gainea.server.sites.GameStartSite  - placeUnit
+2021-02-26 18:49:32 [pool-1-thread-1] DEBUG com.broll.gainea.server.core.actions.required.PlaceUnitAction  - Place unit action
+2021-02-26 18:49:34 [pool-1-thread-1] INFO  com.broll.gainea.server.sites.GameStartSite  - player placedUnit
+2021-02-26 18:49:34 [pool-1-thread-1] INFO  com.broll.gainea.server.sites.GameStartSite  - placeUnit
+2021-02-26 18:49:34 [pool-1-thread-1] DEBUG com.broll.gainea.server.core.actions.required.PlaceUnitAction  - Place unit action
+2021-02-26 18:49:36 [pool-1-thread-1] INFO  com.broll.gainea.server.sites.GameStartSite  - player placedUnit
+2021-02-26 18:49:36 [pool-1-thread-1] INFO  com.broll.gainea.server.core.ReactionResultHandler  - Start next turn: Player{name='ert', id=0} [Round 1 Turn 1 / 1]
+2021-02-26 18:49:37 [pool-1-thread-1] DEBUG com.broll.gainea.server.core.actions.required.PlaceUnitAction  - Place unit action
+2021-02-26 18:49:45 [pool-1-thread-1] INFO  com.broll.gainea.server.core.battle.BattleHandler  - Fight!  Attackers: (11| Monsterzähmer 1 5, 14| Wilderer 1 1)   Defenders: (2| Dämonenhyäne 2 1)
+2021-02-26 18:49:45 [pool-1-thread-1] INFO  com.broll.gainea.server.core.battle.BattleHandler  - Fight result:  Attackers: (11| Monsterzähmer 1 4, 14| Wilderer 1 1)   Defenders: (2| Dämonenhyäne 2 0)
+2021-02-26 18:49:51 [pool-1-thread-1] INFO  com.broll.gainea.server.core.battle.BattleHandler  - Battle over! Surviving Attackers: (11| Monsterzähmer 1 4, 14| Wilderer 1 1)  Surviving Defenders: ()
+2021-02-26 18:50:36 [Server] INFO  com.broll.networklib.server.GameServer  - Connection 1 player [ert] disconnected from server
+2021-02-26 18:50:36 [Server] INFO  com.broll.networklib.server.impl.ServerLobby  - Player Player{name='ert', id=0} disconnected from lobby com.broll.networklib.server.impl.ServerLobby@54b6d117
+2021-02-26 18:50:36 [Server] WARN  com.broll.gainea.server.core.battle.BattleHandler  - Battle reaction ignored because player is not attacker
+2021-02-26 18:50:36 [Server] INFO  com.esotericsoftware.minlog  - kryonet: Connection 1 player [ert] disconnected.
+2021-02-26 18:51:14 [Server] INFO  com.esotericsoftware.minlog  - kryonet: Connection 2 connected: /127.0.0.1
+2021-02-26 18:51:14 [Server] INFO  com.broll.networklib.server.GameServer  - Connection 2 connected to server
+2021-02-26 18:51:14 [Server] INFO  com.broll.networklib.server.GameServer  - Connection 2 init connection
+2021-02-26 18:51:14 [Server] INFO  com.broll.networklib.site.MultiSitesHandler  - Connection 2 lock
+2021-02-26 18:51:14 [Server] INFO  com.broll.networklib.site.MultiSitesHandler  - Connection 2 clone sites
+2021-02-26 18:51:14 [Server] INFO  com.broll.networklib.site.MultiSitesHandler  - Connection 2 unlock
+2021-02-26 18:51:14 [Server] INFO  com.broll.networklib.server.GameServer  - Connection 2 pass sites
+2021-02-26 18:51:14 [Server] INFO  com.broll.networklib.server.GameServer  - received check reconnect :)
+2021-02-26 18:51:14 [Server] INFO  com.broll.networklib.server.impl.ConnectionSite  - check reconnect
+2021-02-26 18:51:14 [Server] INFO  com.broll.networklib.server.impl.ServerLobby  - Player Player{name='ert', id=0} reconnected to lobby com.broll.networklib.server.impl.ServerLobby@54b6d117
+2021-02-26 18:51:15 [pool-2-thread-1] INFO  com.broll.gainea.server.core.actions.ReactionHandler  - Player{name='ert', id=0} reconnected to game
+2021-02-26 18:51:41 [Server] INFO  com.broll.networklib.server.GameServer  - Connection 2 player [ert] disconnected from server
+2021-02-26 18:51:41 [Server] INFO  com.broll.networklib.server.impl.ServerLobby  - Player Player{name='ert', id=0} disconnected from lobby com.broll.networklib.server.impl.ServerLobby@54b6d117
+2021-02-26 18:51:41 [Server] WARN  com.broll.gainea.server.core.battle.BattleHandler  - Battle reaction ignored because player is not attacker
+2021-02-26 18:51:41 [Server] INFO  com.esotericsoftware.minlog  - kryonet: Connection 2 player [ert] disconnected.
+2021-02-26 18:52:03 [Server] INFO  com.esotericsoftware.minlog  - kryonet: Connection 3 connected: /127.0.0.1
+2021-02-26 18:52:03 [Server] INFO  com.broll.networklib.server.GameServer  - Connection 3 connected to server
+2021-02-26 18:52:03 [Server] INFO  com.broll.networklib.server.GameServer  - Connection 3 init connection
+2021-02-26 18:52:03 [Server] INFO  com.broll.networklib.site.MultiSitesHandler  - Connection 3 lock
+2021-02-26 18:52:03 [Server] INFO  com.broll.networklib.site.MultiSitesHandler  - Connection 3 clone sites
+2021-02-26 18:52:03 [Server] INFO  com.broll.networklib.site.MultiSitesHandler  - Connection 3 unlock
+2021-02-26 18:52:03 [Server] INFO  com.broll.networklib.server.GameServer  - Connection 3 pass sites
+2021-02-26 18:52:03 [Server] INFO  com.broll.networklib.server.GameServer  - received check reconnect :)
+2021-02-26 18:52:03 [Server] INFO  com.broll.networklib.server.impl.ConnectionSite  - check reconnect
+2021-02-26 18:52:03 [Server] INFO  com.broll.networklib.server.impl.ServerLobby  - Player Player{name='ert', id=0} reconnected to lobby com.broll.networklib.server.impl.ServerLobby@54b6d117
+2021-02-26 18:52:04 [pool-2-thread-1] INFO  com.broll.gainea.server.core.actions.ReactionHandler  - Player{name='ert', id=0} reconnected to game
+2021-02-26 18:52:14 [Server] INFO  com.broll.networklib.server.GameServer  - Connection 3 player [ert] disconnected from server
+2021-02-26 18:52:14 [Server] INFO  com.broll.networklib.server.impl.ServerLobby  - Player Player{name='ert', id=0} disconnected from lobby com.broll.networklib.server.impl.ServerLobby@54b6d117
+2021-02-26 18:52:14 [Server] WARN  com.broll.gainea.server.core.battle.BattleHandler  - Battle reaction ignored because player is not attacker
+2021-02-26 18:52:14 [Server] INFO  com.esotericsoftware.minlog  - kryonet: Connection 3 player [ert] disconnected.
+2021-02-26 18:52:25 [Server] INFO  com.esotericsoftware.minlog  - kryonet: Connection 4 connected: /127.0.0.1
+2021-02-26 18:52:25 [Server] INFO  com.broll.networklib.server.GameServer  - Connection 4 connected to server
+2021-02-26 18:52:25 [Server] INFO  com.broll.networklib.server.GameServer  - Connection 4 init connection
+2021-02-26 18:52:25 [Server] INFO  com.broll.networklib.site.MultiSitesHandler  - Connection 4 lock
+2021-02-26 18:52:25 [Server] INFO  com.broll.networklib.site.MultiSitesHandler  - Connection 4 clone sites
+2021-02-26 18:52:25 [Server] INFO  com.broll.networklib.site.MultiSitesHandler  - Connection 4 unlock
+2021-02-26 18:52:25 [Server] INFO  com.broll.networklib.server.GameServer  - Connection 4 pass sites
+2021-02-26 18:52:25 [Server] INFO  com.broll.networklib.server.GameServer  - received check reconnect :)
+2021-02-26 18:52:25 [Server] INFO  com.broll.networklib.server.impl.ConnectionSite  - check reconnect
+2021-02-26 18:52:25 [Server] INFO  com.broll.networklib.server.impl.ServerLobby  - Player Player{name='ert', id=0} reconnected to lobby com.broll.networklib.server.impl.ServerLobby@54b6d117
+2021-02-26 18:52:26 [pool-2-thread-2] INFO  com.broll.gainea.server.core.actions.ReactionHandler  - Player{name='ert', id=0} reconnected to game
+2021-02-26 18:52:59 [pool-1-thread-1] DEBUG com.broll.gainea.server.core.actions.required.SelectChoiceAction  - Select location action

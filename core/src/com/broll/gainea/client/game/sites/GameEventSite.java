@@ -31,10 +31,14 @@ import com.broll.gainea.net.NT_Event_TextInfo;
 import com.broll.gainea.net.NT_Player;
 import com.broll.gainea.server.core.map.Location;
 import com.broll.networklib.PackageReceiver;
-import com.esotericsoftware.minlog.Log;
+import com.broll.networklib.server.impl.ConnectionSite;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class GameEventSite extends AbstractGameSite {
 
+    private final static Logger Log = LoggerFactory.getLogger(GameEventSite.class);
 
     @Override
     public void receive(Object object) {

@@ -1,7 +1,10 @@
 package com.broll.gainea.server.core.processing;
 
 import com.broll.gainea.server.core.GameContainer;
-import com.esotericsoftware.minlog.Log;
+import com.broll.networklib.server.impl.ConnectionSite;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -12,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 
 public class ProcessingCore {
 
+    private final static Logger Log = LoggerFactory.getLogger(ProcessingCore.class);
     private GameContainer game;
     private ScheduledExecutorService executor;
     private ScheduledExecutorService parallalExecutor;
@@ -43,7 +47,7 @@ public class ProcessingCore {
             RunnableWrapper wrapper = new RunnableWrapper();
             wrapper.runnable = runnable;
             this.lastWrapper = wrapper;
-            lastFuture = executor.schedule(wrapper, afterDelay, TimeUnit.MILLISECONDS);
+            this.lastFuture = executor.schedule(wrapper, afterDelay, TimeUnit.MILLISECONDS);
         }
     }
 

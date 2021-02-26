@@ -1,7 +1,10 @@
 package com.broll.gainea.server.core.objects;
 
 import com.broll.gainea.server.core.map.AreaType;
-import com.esotericsoftware.minlog.Log;
+import com.broll.networklib.server.impl.ConnectionSite;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -30,7 +33,6 @@ public class MonsterFactory {
         add("Wyvern", 55, 2, 2, new AreaType[]{AreaType.PLAINS, AreaType.MOUNTAIN});
         add("Sumpfkrokodil", 56, 2, 2, new AreaType[]{AreaType.BOG, AreaType.LAKE, AreaType.PLAINS});
         add("Adlerdrache", 57, 2, 2, new AreaType[]{AreaType.MOUNTAIN, AreaType.DESERT});
-        //58-götterdrache
         add("Eberkrieger", 59, 2, 2, new AreaType[]{AreaType.MOUNTAIN, AreaType.DESERT, AreaType.PLAINS});
         add("Dämonenlord", 60, 4, 3, new AreaType[]{AreaType.BOG});
         add("Keiler", 61, 1, 2, new AreaType[]{AreaType.PLAINS, AreaType.SNOW});
@@ -70,7 +72,6 @@ public class MonsterFactory {
     }
 
     public static void main(String[] args) {
-        Log.INFO();
         new MonsterFactory().statistic();
     }
 
@@ -90,7 +91,7 @@ public class MonsterFactory {
         }
         for (int i = 0; i < AreaType.values().length; i++) {
             AreaType area = AreaType.values()[i];
-            Log.info("AREA " + area+"  count: " + (int) areas[i].count+"  power: " + areas[i].power / areas[i].count+"  health: " + areas[i].health / areas[i].count+"  stars: " + areas[i].stars / areas[i].count);
+            System.out.println("AREA " + area+"  count: " + (int) areas[i].count+"  power: " + areas[i].power / areas[i].count+"  health: " + areas[i].health / areas[i].count+"  stars: " + areas[i].stars / areas[i].count);
         }
     }
 

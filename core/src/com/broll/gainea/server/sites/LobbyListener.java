@@ -10,7 +10,8 @@ import com.broll.gainea.server.core.fractions.FractionType;
 import com.broll.networklib.server.impl.Player;
 import com.broll.networklib.server.impl.ServerLobby;
 import com.broll.networklib.server.impl.ServerLobbyListener;
-import com.esotericsoftware.minlog.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.stream.Collectors;

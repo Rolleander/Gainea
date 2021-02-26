@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 public class C_Thunder extends DirectlyPlayedCard {
 
-    private final static int COUNT = 5;
+    private final static int COUNT = 7;
 
     public C_Thunder() {
         super(50, "Donnerschauer", "Verursacht 1 Schaden an " + COUNT + " zufälligen Einheiten im Spiel");

@@ -11,10 +11,14 @@ import com.broll.gainea.server.core.map.ExpansionType;
 import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.server.core.processing.GameUpdateReceiverAdapter;
 import com.broll.gainea.server.core.utils.GameUtils;
-import com.esotericsoftware.minlog.Log;
+import com.broll.networklib.server.impl.ConnectionSite;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class AbstractGoal extends GameUpdateReceiverAdapter {
 
+    private final static Logger Log = LoggerFactory.getLogger(AbstractGoal.class);
     protected String text;
     private GoalDifficulty difficulty;
     private String restrictionInfo;
@@ -84,4 +88,11 @@ public abstract class AbstractGoal extends GameUpdateReceiverAdapter {
         return goal;
     }
 
+    public String getText() {
+        return text;
+    }
+
+    public String getRestrictionInfo() {
+        return restrictionInfo;
+    }
 }

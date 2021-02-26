@@ -45,7 +45,7 @@ public class RequiredActionHandler {
         }
         mapActions.forEach(it -> game.gameStage.addActor(it));
         if (window != null) {
-            game.ui.inGameUI.showCenter(new Popup(skin, window));
+            game.ui.inGameUI.showCenter(new Popup(skin, window)).padTop(150);
         }
     }
 
@@ -73,6 +73,7 @@ public class RequiredActionHandler {
     }
 
     private void close() {
+        game.ui.inGameUI.clearCenter();
         mapActions.forEach(Actor::remove);
         mapActions.clear();
         if (window != null) {

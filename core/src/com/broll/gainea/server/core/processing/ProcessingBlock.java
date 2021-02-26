@@ -1,11 +1,15 @@
 package com.broll.gainea.server.core.processing;
 
-import com.esotericsoftware.minlog.Log;
+import com.broll.networklib.server.impl.ConnectionSite;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 public class ProcessingBlock {
+    private final static Logger Log = LoggerFactory.getLogger(ProcessingBlock.class);
 
     private CompletableFuture future;
 

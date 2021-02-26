@@ -4,7 +4,10 @@ import com.broll.gainea.net.NT_Battle_Start;
 import com.broll.gainea.net.NT_Battle_Update;
 import com.broll.gainea.net.NT_Unit;
 import com.broll.networklib.PackageReceiver;
-import com.esotericsoftware.minlog.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.broll.networklib.server.impl.ConnectionSite;
 import com.google.common.collect.Lists;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -17,6 +20,7 @@ import java.util.stream.Collectors;
 
 public class GameBattleSite extends AbstractGameSite {
 
+    private final static Logger Log = LoggerFactory.getLogger(GameBattleSite.class);
     private List<NT_Unit> attackers;
     private List<NT_Unit> defenders;
 

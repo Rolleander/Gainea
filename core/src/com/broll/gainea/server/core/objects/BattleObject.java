@@ -189,4 +189,15 @@ public abstract class BattleObject extends MapObject {
     public boolean isHurt() {
         return health.getValue() < maxHealth.getValue();
     }
+
+
+    @Override
+    public String toString() {
+        return "BattleObject{" +
+                "id=" + getId() +
+                ", name='" + getName() +
+                ", " + getPower() + "/" + getHealth() +
+                ", location=" + getLocation() + '\'' +
+                '}';
+    }
 }

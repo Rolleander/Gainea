@@ -4,19 +4,20 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.broll.gainea.Gainea;
-import com.esotericsoftware.minlog.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import static com.esotericsoftware.minlog.Log.LEVEL_TRACE;
+import java.io.File;
+import java.net.MalformedURLException;
 
 public class DesktopLauncher {
-	public static void main (String[] arg) {
-//		Log.INFO();
-		Log.DEBUG();
-		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		//config.width=1920;
+    public static void main(String[] arg) {
+        System.setProperty("log4j.configuration", "log4j_client.properties");
+        LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+        //config.width=1920;
 //		config.height=1080;
-		config.width=1280;
-		config.height=900;
-		new LwjglApplication(new Gainea(), config);
-	}
+        config.width = 1280;
+        config.height = 900;
+        new LwjglApplication(new Gainea(), config);
+    }
 }

@@ -7,4 +7,5 @@ public class Soldier extends BattleObject {
         super(owner);
         setIcon(4);
     }
+
 }

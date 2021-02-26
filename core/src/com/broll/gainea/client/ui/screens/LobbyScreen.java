@@ -31,7 +31,10 @@ import com.broll.networklib.client.impl.ChatMessageListener;
 import com.broll.networklib.client.impl.GameLobby;
 import com.broll.networklib.client.impl.LobbyPlayer;
 import com.broll.networklib.client.impl.LobbyUpdateListener;
-import com.esotericsoftware.minlog.Log;
+import com.broll.networklib.server.impl.ConnectionSite;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -39,6 +42,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.Arrays;
 
 public class LobbyScreen extends AbstractScreen {
+    private final static Logger Log = LoggerFactory.getLogger(LobbyScreen.class);
 
     private GameLobby lobby;
     private Table lobbyTable;

@@ -112,4 +112,13 @@ public abstract class MapObject {
     public Player getOwner() {
         return owner;
     }
+
+    @Override
+    public String toString() {
+        return "MapObject{" +
+                "id=" + id +
+                ", name='" + name +
+                ", location=" + location + '\'' +
+                '}';
+    }
 }

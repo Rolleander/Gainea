@@ -6,9 +6,13 @@ import com.broll.gainea.net.NT_Action;
 import com.broll.gainea.net.NT_PlayerAction;
 import com.broll.gainea.net.NT_Reaction;
 import com.broll.networklib.PackageReceiver;
-import com.esotericsoftware.minlog.Log;
+import com.broll.networklib.server.impl.ConnectionSite;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class GameActionSite extends AbstractGameSite {
+    private final static Logger Log = LoggerFactory.getLogger(GameActionSite.class);
 
     private PlayerPerformAction playerPerformAction = this::performAction;
 

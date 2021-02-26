@@ -12,12 +12,18 @@ import com.broll.gainea.server.core.actions.AbstractActionHandler;
 import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.server.core.utils.UnitControl;
+import com.broll.networklib.server.impl.ConnectionSite;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
 
 public class PlaceUnitAction extends AbstractActionHandler<NT_Action_PlaceUnit, PlaceUnitAction.Context> {
+
+    private final static Logger Log = LoggerFactory.getLogger(PlaceUnitAction.class);
 
     class Context extends ActionContext<NT_Action_PlaceUnit> {
         BattleObject unitToPlace;
@@ -58,6 +64,10 @@ public class PlaceUnitAction extends AbstractActionHandler<NT_Action_PlaceUnit, 
     }
 
     public Pair<BattleObject, Location> placeUnit(Player player, BattleObject object, List<Location> locations, String message) {
+        if(locations.isEmpty()){
+            throw new RuntimeException("Invalid place unit context: list of locations is empty");
+        }
+        Log.debug("Place unit action");
         NT_Action_PlaceUnit placeUnit = new NT_Action_PlaceUnit();
         placeUnit.unitToPlace = object.nt();
         placeUnit.possibleLocations = locations.stream().mapToInt(Location::getNumber).toArray();
@@ -65,12 +75,14 @@ public class PlaceUnitAction extends AbstractActionHandler<NT_Action_PlaceUnit, 
         context.locations = locations;
         context.unitToPlace = object;
         actionHandlers.getReactionActions().requireAction(player, new RequiredActionContext<>(context, message));
+        Log.trace("Wait for place unit reaction");
         processingBlock.waitFor();
         return Pair.of(object, context.selectedLocation);
     }
 
     @Override
     public void handleReaction(Context context, NT_Action_PlaceUnit action, NT_Reaction reaction) {
+        Log.trace("Handle place unit reaction");
         int nr = reaction.option;
         BattleObject unit = context.unitToPlace;
         Location location = context.locations.get(nr);

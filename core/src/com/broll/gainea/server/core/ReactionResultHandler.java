@@ -1,6 +1,5 @@
 package com.broll.gainea.server.core;
 
-import com.broll.gainea.net.NT_PlayerTurnActions;
 import com.broll.gainea.net.NT_PlayerTurnStart;
 import com.broll.gainea.net.NT_PlayerWait;
 import com.broll.gainea.net.NT_Event_TextInfo;
@@ -15,9 +14,13 @@ import com.broll.gainea.server.core.utils.GameUtils;
 import com.broll.gainea.server.core.utils.ProcessingUtils;
 import com.broll.gainea.server.init.LobbyData;
 import com.broll.gainea.server.init.PlayerData;
+import com.broll.networklib.server.impl.ConnectionSite;
 import com.broll.networklib.server.impl.ServerLobby;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ReactionResultHandler implements ReactionActions {
+    private final static Logger Log = LoggerFactory.getLogger(ReactionResultHandler.class);
 
     private GameContainer game;
     private ServerLobby<LobbyData, PlayerData> lobby;
@@ -34,13 +37,14 @@ public class ReactionResultHandler implements ReactionActions {
 
     @Override
     public void endTurn() {
-        int turn = game.getTurns();
-        Player player = game.nextTurn();
-        boolean newRound = game.getTurns() > turn;
         game.getProcessingCore().execute(() -> {
+            int turn = game.getRounds();
+            Player player = game.nextTurn();
+            boolean newRound = game.getRounds() > turn;
             if (newRound) {
                 game.getUpdateReceiver().roundStarted();
             }
+            Log.info("Start next turn: " + player + " [Round " + turn + " Turn " + (game.getCurrentPlayer() + 1) + " / " + game.getPlayers().size() + "]");
             game.getUpdateReceiver().turnStarted(player);
             if (!checkPlayerSkipped(player)) {
                 doPlayerTurn(player);
@@ -51,6 +55,7 @@ public class ReactionResultHandler implements ReactionActions {
     private boolean checkPlayerSkipped(Player player) {
         boolean skip = player.getSkipRounds() > 0;
         if (skip) {
+            Log.debug("Player turn skipped!");
             player.consumeSkippedRound();
             //send aussetzen info to all players
             NT_Event_TextInfo info = new NT_Event_TextInfo();
@@ -87,6 +92,7 @@ public class ReactionResultHandler implements ReactionActions {
 
     @Override
     public ActionContext requireAction(Player player, RequiredActionContext action) {
+        Log.trace("Require action for " + player + " : " + action.getAction());
         game.getReactionHandler().requireAction(player, action);
         player.getServerPlayer().sendTCP(action.nt());
         if (action.getMessageForOtherPlayer() != null) {

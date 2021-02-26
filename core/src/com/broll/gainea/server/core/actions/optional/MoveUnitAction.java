@@ -9,12 +9,17 @@ import com.broll.gainea.server.core.actions.AbstractActionHandler;
 import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.objects.MapObject;
 import com.broll.gainea.server.core.utils.UnitControl;
+import com.broll.networklib.server.impl.ConnectionSite;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 public class MoveUnitAction extends AbstractActionHandler<NT_Action_Move, MoveUnitAction.Context> {
+    private final static Logger Log = LoggerFactory.getLogger(MoveUnitAction.class);
 
     class Context extends ActionContext<NT_Action_Move> {
         List<BattleObject> unitsToMove;
@@ -38,6 +43,7 @@ public class MoveUnitAction extends AbstractActionHandler<NT_Action_Move, MoveUn
     @Override
     public void handleReaction(Context context, NT_Action_Move action, NT_Reaction reaction) {
         game.getProcessingCore().execute(() -> {
+            Log.trace("Handle move reaction");
             Location pickedLocation = context.locations.get(reaction.option);
             List<MapObject> selectedUnits = new ArrayList<>();
             for (int selection : reaction.options) {

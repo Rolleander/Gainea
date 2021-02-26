@@ -29,7 +29,7 @@ public class UnitSelectionWindow {
     public static Table create(Gainea game, Skin skin, Location location, Collection<MapObjectRender> stack) {
         List<NT_Unit> units = stack.stream().map(MapObjectRender::getObject).filter(it -> it instanceof NT_Unit).map(it -> (NT_Unit) it).collect(Collectors.toList());
         Table window = new Table(skin);
-        window.padTop(5);
+        window.pad(10);
         window.setBackground("menu-bg");
         window.top();
         window.add(LabelUtils.label(skin, location.toString())).padBottom(5).row();

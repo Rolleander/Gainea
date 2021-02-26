@@ -3,6 +3,7 @@ package com.broll.gainea.server.core.objects.buffs;
 import com.broll.gainea.net.NT_Abstract_Event;
 import com.broll.gainea.net.NT_Event_FocusObject;
 import com.broll.gainea.server.core.GameContainer;
+import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.MapObject;
 import com.broll.gainea.server.core.player.Player;

@@ -1,6 +1,8 @@
 package com.broll.gainea;
 
 import com.broll.gainea.server.core.GameContainer;
+import com.broll.gainea.server.core.map.Location;
+import com.broll.gainea.server.core.objects.MapObject;
 import com.broll.gainea.server.init.ExpansionSetting;
 import com.broll.gainea.server.init.LobbyData;
 import com.broll.gainea.server.init.LobbyFactory;
@@ -9,23 +11,21 @@ import com.broll.gainea.server.init.PlayerData;
 import com.broll.networklib.server.LobbyGameServer;
 import com.broll.networklib.server.LobbyServerCLI;
 import com.broll.networklib.server.impl.ServerLobby;
-import com.esotericsoftware.minlog.Log;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class GaineaServer {
 
+    private final static Logger Log = LoggerFactory.getLogger(GaineaServer.class);
+
     private LobbyGameServer<LobbyData, PlayerData> server;
 
-    public static void main(String[] args) {
-        GaineaServer server = new GaineaServer();
-        server.openTestLobby();
-        server.appendCLI();
-    }
-
     public GaineaServer() {
-        Log.INFO();
-        //  Log.DEBUG();
+        com.esotericsoftware.minlog.Log.INFO();
         server = new LobbyGameServer<>("GaineaServer", NetworkSetup::registerNetwork);
         NetworkSetup.setup(server);
         server.open();
@@ -74,7 +74,17 @@ public class GaineaServer {
                 LobbyData settings = game.getGameSettings();
                 print("> Game Settings: Map:" + settings.getExpansionSetting().getName() + " Goals:" + settings.getGoalTypes().getName() + " PointLimit:" + settings.getPointLimit() + " MonsterCount:" + settings.getMonsterCount()
                         + " StartGoals:" + settings.getStartGoals() + " StartLocations:" + settings.getStartLocations());
-
+                print("> Round:" + game.getRounds() + " Turn:" + (game.getCurrentPlayer() + 1) + "/" + game.getPlayers().size() + " Player:" + game.getPlayers().get(game.getCurrentPlayer()));
+                print("> State: ProcessingCore.Busy=" + game.getProcessingCore().isBusy() + " BattleHandler.Active=" + game.getBattleHandler().isBattleActive());
+                print("> Game Objects [" + game.getObjects().size() + "]:");
+                game.getObjects().forEach(object -> print(">> " + object.toString()));
+                game.getPlayers().forEach(player -> {
+                    print("> Player [" + player.toString() + " Goals:" + player.getGoalHandler().getGoals().size() + " Cards:" + player.getCardHandler().getCards().size() + " Points:" + player.getGoalHandler().getScore()
+                            + " Stars:" + player.getGoalHandler().getStars() + " Online=" + player.getServerPlayer().isOnline() + "]:");
+                    print(">> Controlled Locations: [" + player.getControlledLocations().stream().map(Location::toString).collect(Collectors.joining(",")) + "]");
+                    print(">> Objects [" + player.getUnits().size() + "]:");
+                    player.getUnits().forEach(object -> print(">>> " + object.toString()));
+                });
             });
         });
     }

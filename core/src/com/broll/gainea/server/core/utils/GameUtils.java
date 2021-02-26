@@ -29,4 +29,14 @@ public final class GameUtils {
     public static List<BattleObject> getUnits(List<MapObject> objects){
         return objects.stream().filter(it -> it instanceof BattleObject).map(it -> (BattleObject) it).collect(Collectors.toList());
     }
+
+    public static boolean remove(GameContainer game, MapObject object){
+        Player owner = object.getOwner();
+        object.getLocation().getInhabitants().remove(object);
+        if (owner == null) {
+           return  game.getObjects().remove(object);
+        } else {
+           return owner.getUnits().remove(object);
+        }
+    }
 }

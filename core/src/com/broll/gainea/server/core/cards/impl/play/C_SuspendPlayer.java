@@ -5,6 +5,7 @@ import com.broll.gainea.server.core.cards.AbstractCard;
 public class C_SuspendPlayer extends AbstractCard {
     public C_SuspendPlayer() {
         super(12,"In den Kerker", "Ein Spieler deiner Wahl muss eine Runde aussetzen");
+        setDrawChance(0.4f);
     }
 
     @Override

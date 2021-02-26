@@ -5,10 +5,12 @@ import com.broll.gainea.server.init.LobbyData;
 import com.broll.gainea.server.init.PlayerData;
 import com.broll.gainea.server.core.GameContainer;
 import com.broll.networklib.server.LobbyServerSite;
-import com.esotericsoftware.minlog.Log;
+import com.broll.networklib.server.impl.ConnectionSite;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class AbstractGameSite extends LobbyServerSite<LobbyData, PlayerData> {
-
 
     protected GameContainer getGame() {
         return getLobby().getData().getGame();
@@ -32,7 +34,6 @@ public abstract class AbstractGameSite extends LobbyServerSite<LobbyData, Player
     }
 
     protected void nextTurn() {
-        Log.info("next Turn");
         getGame().getReactionHandler().getActionHandlers().getReactionActions().endTurn();
     }
 }

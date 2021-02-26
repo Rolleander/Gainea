@@ -51,4 +51,9 @@ public abstract class AbstractBuffableValue<T, B extends AbstractBuff, V> {
     public V getRootValue() {
         return value;
     }
+
+    @Override
+    public String toString() {
+        return ""+buffedValue;
+    }
 }

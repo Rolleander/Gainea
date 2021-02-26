@@ -16,7 +16,10 @@ import com.broll.gainea.server.core.processing.GameUpdateReceiverProxy;
 import com.broll.gainea.server.core.utils.GameUtils;
 import com.broll.gainea.server.core.utils.ProcessingUtils;
 import com.broll.gainea.server.core.utils.UnitControl;
-import com.esotericsoftware.minlog.Log;
+import com.broll.networklib.server.impl.ConnectionSite;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,6 +31,7 @@ import java.util.stream.Collectors;
 
 public class BattleHandler {
 
+    private final static Logger Log = LoggerFactory.getLogger(BattleHandler.class);
     private GameContainer game;
     private boolean battleActive = false;
     private final static int BATTLE_ANIMATION_DELAY = 3000;
@@ -65,10 +69,13 @@ public class BattleHandler {
             sendFightStart();
             ProcessingUtils.pause(BATTLE_ANIMATION_DELAY);
             fight();
+        } else {
+            Log.warn("Could not start battle because a battle is still going on");
         }
     }
 
     private void sendFightStart() {
+        Log.trace("Start fight");
         NT_Battle_Start start = new NT_Battle_Start();
         start.attackers = aliveAttackers.stream().sorted(sortById()).map(BattleObject::nt).toArray(NT_Unit[]::new);
         start.defenders = defendingArmy.stream().sorted(sortById()).map(BattleObject::nt).toArray(NT_Unit[]::new);
@@ -81,11 +88,15 @@ public class BattleHandler {
 
     public void playerReaction(Player player, NT_Battle_Reaction battle_reaction) {
         if (attackerOwner == player && keepAttacking != null) {
+            Log.trace("Handle battle reaction");
             keepAttacking.complete(battle_reaction.keepAttacking);
+        } else {
+            Log.warn("Battle reaction ignored because player is not attacker");
         }
     }
 
     private void prepareFight() {
+        Log.trace("Prepare fight");
         this.aliveAttackers = attackers.stream().filter(BattleObject::isAlive).collect(Collectors.toList());
         this.aliveDefenders = defenders.stream().filter(BattleObject::isAlive).collect(Collectors.toList());
         //attackers are always of one owner
@@ -103,7 +114,7 @@ public class BattleHandler {
 
     private void fight() {
         Battle battle;
-        Log.info("Fight!  Attackers: (" + aliveAttackers.stream().map(it -> it.getId() + "| " + it.getName() + " " + it.getPower() + " " + it.getHealth()).collect(Collectors.joining(", ")) + ")   Defenders: (" + defendingArmy.stream().map(it -> it.getId() + "| " + it.getName() + " " + it.getPower() + " " + it.getHealth()).collect(Collectors.joining(", ")) + ")");
+        Log.info("Fight!  Attackers: (" + aliveAttackers.stream().map(it -> it.getId() + "| " + it.getName() + " " + it.getPower().getValue() + " " + it.getHealth().getValue()).collect(Collectors.joining(", ")) + ")   Defenders: (" + defendingArmy.stream().map(it -> it.getId() + "| " + it.getName() + " " + it.getPower().getValue() + " " + it.getHealth().getValue()).collect(Collectors.joining(", ")) + ")");
         battle = new Battle(battleLocation, attackerOwner, aliveAttackers, defenderOwner, defendingArmy);
         FightResult result = battle.fight();
         NT_Battle_Update update = new NT_Battle_Update();
@@ -111,16 +122,14 @@ public class BattleHandler {
         update.defenderRolls = result.getDefenderRolls().stream().mapToInt(i -> i).toArray();
         update.attackers = aliveAttackers.stream().sorted(sortById()).map(BattleObject::nt).toArray(NT_Unit[]::new);
         update.defenders = defendingArmy.stream().sorted(sortById()).map(BattleObject::nt).toArray(NT_Unit[]::new);
-        Log.info("Fight result:  Attackers: (" + aliveAttackers.stream().map(it -> it.getId() + "| " + it.getName() + " " + it.getPower() + " " + it.getHealth()).collect(Collectors.joining(", ")) + ")   Defenders: (" + defendingArmy.stream().map(it -> it.getId() + "| " + it.getName() + " " + it.getPower() + " " + it.getHealth()).collect(Collectors.joining(", ")) + ")");
+        Log.info("Fight result:  Attackers: (" + aliveAttackers.stream().map(it -> it.getId() + "| " + it.getName() + " " + it.getPower().getValue() + " " + it.getHealth().getValue()).collect(Collectors.joining(", ")) + ")   Defenders: (" + defendingArmy.stream().map(it -> it.getId() + "| " + it.getName() + " " + it.getPower().getValue() + " " + it.getHealth().getValue()).collect(Collectors.joining(", ")) + ")");
         result.getDeadAttackers().forEach(unit -> {
             aliveAttackers.remove(unit);
-            unitDied(unit);
             killedAttackers.add(unit);
         });
         result.getDeadDefenders().forEach(unit -> {
             aliveDefenders.remove(unit);
             defendingArmy.remove(unit);
-            unitDied(unit);
             killedDefenders.add(unit);
         });
         int state = NT_Battle_Update.STATE_FIGHTING;
@@ -169,10 +178,12 @@ public class BattleHandler {
             if (attackerOwner != null) {
                 if (!attackerOwner.getServerPlayer().isOnline()) {
                     //retreat cause offline
+                    Log.info("Retreat from battle because attacking player is offline");
                     battleFinished();
                 }
             }
             try {
+                Log.trace("Wati for battle reaction");
                 startNextRound = keepAttacking.get().booleanValue();
             } catch (InterruptedException | ExecutionException e) {
                 Log.error("Failed getting future", e);
@@ -180,6 +191,7 @@ public class BattleHandler {
         }
         if (startNextRound) {
             //schedule next fight round
+            Log.trace("Start next battle round");
             fightRound();
         } else {
             //end battle, attackers retreat
@@ -196,24 +208,17 @@ public class BattleHandler {
         }
         battleActive = false;
         GameUpdateReceiverProxy updateReceiver = game.getUpdateReceiver();
-        attackers.stream().filter(BattleObject::isDead).forEach(unit -> updateReceiver.killed(unit, result));
-        defenders.stream().filter(BattleObject::isDead).forEach(unit -> updateReceiver.killed(unit, result));
+        List<BattleObject> fallenUnits = new ArrayList<>();
+        fallenUnits.addAll(attackers.stream().filter(BattleObject::isDead).collect(Collectors.toList()));
+        fallenUnits.addAll(defenders.stream().filter(BattleObject::isDead).collect(Collectors.toList()));
+        fallenUnits.forEach(unit -> GameUtils.remove(game, unit));
+        fallenUnits.forEach(unit -> updateReceiver.killed(unit, result));
         updateReceiver.battleResult(result);
         GameUtils.sendUpdate(game, game.nt());
         //find dead monsters to give killing player rewards
         if (attackerOwner != null) {
             Fraction fraction = attackerOwner.getFraction();
             killedDefenders.stream().filter(it -> it instanceof Monster && it.getOwner() == null).map(it -> (Monster) it).forEach(fraction::killedMonster);
-        }
-    }
-
-    private void unitDied(BattleObject unit) {
-        Player owner = unit.getOwner();
-        unit.getLocation().getInhabitants().remove(unit);
-        if (owner == null) {
-            game.getObjects().remove(unit);
-        } else {
-            owner.getUnits().remove(unit);
         }
     }
 

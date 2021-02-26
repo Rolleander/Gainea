@@ -7,11 +7,16 @@ import com.broll.gainea.net.NT_ReconnectGame;
 import com.broll.gainea.net.NT_StartGame;
 import com.broll.gainea.server.init.ExpansionSetting;
 import com.broll.networklib.PackageReceiver;
-import com.esotericsoftware.minlog.Log;
+import com.broll.networklib.server.impl.ConnectionSite;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 
 public class GameStateSite extends AbstractGameSite {
+
+    private final static Logger Log = LoggerFactory.getLogger(GameStateSite.class);
 
     @PackageReceiver
     public void received(NT_StartGame start) {
@@ -48,6 +53,7 @@ public class GameStateSite extends AbstractGameSite {
         //switch to game screen
         game.ui.showScreen(new GameScreen());
         game.state.update(start);
+        game.ui.inGameUI.updateWindows();
         //player has loaded
         finishedLoading();
     }

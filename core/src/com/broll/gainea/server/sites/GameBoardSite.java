@@ -11,8 +11,13 @@ import com.broll.gainea.server.core.actions.ReactionHandler;
 import com.broll.networklib.PackageReceiver;
 import com.broll.networklib.server.ConnectionRestriction;
 import com.broll.networklib.server.RestrictionType;
+import com.broll.networklib.server.impl.ConnectionSite;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class GameBoardSite extends AbstractGameSite {
+    private final static Logger Log = LoggerFactory.getLogger(GameBoardSite.class);
 
     @PackageReceiver
     @ConnectionRestriction(RestrictionType.LOBBY_LOCKED)
@@ -21,6 +26,7 @@ public class GameBoardSite extends AbstractGameSite {
         if (!game.isGameOver()) {
             ActionContext action = game.getAction(reaction.actionId);
             if (action == null) {
+                Log.warn("Ignore reaction, no action found for id " + reaction.actionId);
                 //invalid action, ignore client request
                 return;
             }
@@ -32,6 +38,8 @@ public class GameBoardSite extends AbstractGameSite {
                 //only handle optional actions when its the players turn
                 if (playersTurn()) {
                     handler.handle(player, action, reaction);
+                } else {
+                    Log.warn("Ignore optional action because its not players turn");
                 }
             }
         }
@@ -43,6 +51,9 @@ public class GameBoardSite extends AbstractGameSite {
         BattleHandler battle = getGame().getBattleHandler();
         if (battle.isBattleActive()) {
             battle.playerReaction(getGamePlayer(), battle_reaction);
+        }
+        else{
+            Log.warn("Battle reaction ignored because battle is not active");
         }
     }
 

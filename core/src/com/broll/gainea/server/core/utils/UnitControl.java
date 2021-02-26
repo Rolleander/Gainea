@@ -12,7 +12,10 @@ import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.MapObject;
 import com.broll.gainea.server.core.objects.Monster;
 import com.broll.gainea.server.core.player.Player;
-import com.esotericsoftware.minlog.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.broll.networklib.server.impl.ConnectionSite;
 import com.google.common.collect.Lists;
 
 import java.util.Collections;
@@ -22,6 +25,7 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class UnitControl {
+    private final static Logger Log = LoggerFactory.getLogger(UnitControl.class);
     private final static int MOVE_PAUSE = 1000;
     private final static int SPAWN_PAUSE = 1000;
     private final static int DAMAGE_PAUSE = 500;
@@ -31,6 +35,7 @@ public class UnitControl {
     }
 
     public static void move(GameContainer game, List<? extends MapObject> units, Location location) {
+        Log.trace("UnitControl: move units ["+units.size()+"] to "+location);
         units.forEach(unit -> unit.setLocation(location));
         NT_Event_MovedObject movedObject = new NT_Event_MovedObject();
         movedObject.objects = units.stream().map(MapObject::nt).toArray(NT_BoardObject[]::new);
@@ -60,6 +65,7 @@ public class UnitControl {
     }
 
     public static void heal(GameContainer game, BattleObject unit, int heal, Consumer<NT_Event_FocusObject> consumer) {
+        Log.trace("UnitControl: heal unit "+unit+" for "+heal);
         heal = Math.max(unit.getMaxHealth().getValue() - unit.getHealth().getValue(), heal);
         unit.heal(heal);
         NT_Event_FocusObject nt = new NT_Event_FocusObject();
@@ -73,22 +79,19 @@ public class UnitControl {
     }
 
     public static void damage(GameContainer game, BattleObject unit, int damage, Consumer<NT_Event_FocusObject> consumer) {
+        Log.trace("UnitControl: damage unit "+unit+" for "+damage);
         //dont overkill
         damage = Math.max(unit.getHealth().getValue(), damage);
         unit.takeDamage(damage);
-        if (unit.isDead()) {
+        boolean lethal = unit.isDead();
+        if (lethal) {
             //remove unit
-            Player owner = unit.getOwner();
-            boolean removed = false;
-            if (owner == null) {
-                removed = game.getObjects().remove(unit);
-            } else {
-                removed = owner.getUnits().remove(unit);
-            }
+            boolean removed = GameUtils.remove(game, unit);
             if (!removed) {
                 //was already killed/removed, do nothing
                 return;
             }
+            Log.trace("Damaged unit died and is removed");
         }
         //send update to focus clients on object
         NT_Event_FocusObject nt = new NT_Event_FocusObject();
@@ -99,7 +102,7 @@ public class UnitControl {
         }
         GameUtils.sendUpdate(game, nt);
         game.getUpdateReceiver().damaged(unit, damage);
-        if (unit.isDead()) {
+        if (lethal) {
             game.getUpdateReceiver().killed(unit, null);
         }
         ProcessingUtils.pause(DAMAGE_PAUSE);
@@ -111,6 +114,7 @@ public class UnitControl {
     }
 
     public static void spawn(GameContainer game, MapObject object, Location location, Consumer<NT_Event_PlacedObject> consumer) {
+        Log.trace("UnitControl: spawn object "+object+" at "+location);
         if (location == null) {
             Log.error("Cannot spawn object " + object + " on null location");
             return;
@@ -152,7 +156,7 @@ public class UnitControl {
         List<Monster> activeMonsters = game.getObjects().stream().filter(it -> it instanceof Monster).map(it -> (Monster) it).collect(Collectors.toList());
         Monster monster = game.getMonsterFactory().spawn(area.getType(), activeMonsters);
         if (monster != null) {
-            Log.info("spawn monster " + monster.getName() + " on " + area);
+            Log.debug("spawn monster " + monster.getName() + " on " + area);
             spawn(game, monster, area);
         }
     }

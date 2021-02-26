@@ -7,7 +7,10 @@ import com.broll.gainea.net.NT_PlayerTurnActions;
 import com.broll.gainea.net.NT_Reaction;
 import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.player.Player;
-import com.esotericsoftware.minlog.Log;
+import com.broll.networklib.server.impl.ConnectionSite;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,6 +20,7 @@ import java.util.List;
 
 public class ReactionHandler {
 
+    private final static Logger Log = LoggerFactory.getLogger(ReactionHandler.class);
     private GameContainer game;
     private ReactionActions reactionActions;
     private Map<RequiredActionContext, RequiredAction> requiredActions = Collections.synchronizedMap(new HashMap<>());
@@ -41,19 +45,20 @@ public class ReactionHandler {
     }
 
     public synchronized void finishedProcessing() {
+        Log.trace("Processing core finished");
         if (requiredActions.isEmpty()) {
             continueTurn();
         }
     }
 
-    private void continueTurn(){
+    private void continueTurn() {
         Player activePlayer = game.getPlayers().get(game.getCurrentPlayer());
         NT_PlayerTurnActions turn = game.getTurnBuilder().build(activePlayer);
-        if(turn.actions.length == 0){
+        Log.trace("Continue " + activePlayer + " turn [" + turn.actions.length + " optional actions]");
+        if (turn.actions.length == 0) {
             //no more actions available, player can only end turn
             activePlayer.getServerPlayer().sendTCP(new NT_EndTurn());
-        }
-        else{
+        } else {
             activePlayer.getServerPlayer().sendTCP(turn);
         }
     }
@@ -61,7 +66,7 @@ public class ReactionHandler {
     public void playerReconnected(Player player) {
         Log.info(player + " reconnected to game");
         //re send required actions for this player
-        requiredActions.values().stream().filter(ra -> ra.player == player).forEach(requiredAction -> {
+        requiredActions.values().stream().filter(ra -> ra.player == player).findFirst().ifPresent(requiredAction -> {
             player.getServerPlayer().sendTCP(requiredAction.context.nt());
         });
         if (game.isPlayersTurn(player)) {
@@ -77,11 +82,13 @@ public class ReactionHandler {
     public void handle(Player gamePlayer, ActionContext actionContext, NT_Reaction reaction) {
         if (game.getBattleHandler().isBattleActive()) {
             //ignore reactions while fight is going on
+            Log.warn("Ignore player reaction because of fight!");
             return;
         }
         if (requiredActions.isEmpty()) {
             if (game.getProcessingCore().isBusy()) {
                 //player action is not handled, game still processing actions
+                Log.warn("Ignore player optional action because processing core is busy!");
                 return;
             }
             //handle optional action
@@ -95,7 +102,11 @@ public class ReactionHandler {
                     //consume required action
                     requiredActions.remove(actionContext);
                     game.consumeAction(ra.context.getAction().actionId);
+                } else {
+                    Log.warn("Ingore required reaction because its sent by the wrong player");
                 }
+            } else {
+                Log.warn("Ingore optional action because of required action");
             }
         }
     }
@@ -111,6 +122,9 @@ public class ReactionHandler {
             if (actionHandler != null) {
                 actionHandler.update(gamePlayer);
                 actionHandler.handleReaction(actionContext, action, reaction);
+            }
+            else{
+                Log.error("No actionHandler found for action "+action);
             }
         }
         if (completionListener != null) {

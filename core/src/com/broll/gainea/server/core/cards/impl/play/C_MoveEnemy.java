@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 public class C_MoveEnemy extends AbstractCard {
     public C_MoveEnemy() {
-        super(40, "Schmiergeld", "Versetzt eine feindliche Truppe auf ein beliebiges freies Feld der gleichen Landmasse.");
+        super(19, "Überläufer", "Versetzt eine feindliche Truppe auf ein beliebiges freies Feld der gleichen Landmasse.");
         setDrawChance(0.5f);
     }
 

@@ -29,7 +29,7 @@ task startServer(type: JavaExec) {
     standardInput = System.in
     description = "Runs the server"
     classpath =  sourceSets.main.runtimeClasspath
-    main = "com.broll.gainea.GaineaServer"
+    main = "com.broll.gainea.desktop.ServerLauncher"
 }
 
 task dist(type: Jar) {

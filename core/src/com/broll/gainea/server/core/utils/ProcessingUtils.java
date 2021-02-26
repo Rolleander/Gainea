@@ -1,8 +1,12 @@
 package com.broll.gainea.server.core.utils;
 
-import com.esotericsoftware.minlog.Log;
+import com.broll.networklib.server.impl.ConnectionSite;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public final class ProcessingUtils {
+    private final static Logger Log = LoggerFactory.getLogger(ProcessingUtils.class);
 
     private final static int DEFAULT_PAUSE = 1000;
 

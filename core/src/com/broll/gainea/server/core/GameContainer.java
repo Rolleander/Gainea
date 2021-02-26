@@ -25,7 +25,10 @@ import com.broll.gainea.server.init.PlayerData;
 import com.broll.gainea.server.core.actions.ActionHandlers;
 import com.broll.gainea.server.core.actions.ReactionHandler;
 import com.broll.gainea.server.core.actions.TurnBuilder;
+import com.broll.networklib.server.impl.ConnectionSite;
 import com.broll.networklib.server.impl.ServerLobby;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,11 +37,12 @@ import java.util.Map;
 
 public class GameContainer {
 
+    private final static Logger Log = LoggerFactory.getLogger(GameContainer.class);
     private MapContainer map;
     private List<Player> players;
     private List<MapObject> objects = new ArrayList<>();
     private Map<Integer, ActionContext> actions = new HashMap<>();
-    private int turns = 0;
+    private int rounds = 1;
     private int currentPlayer = -1;
     private int actionCounter = 0;
     private int boardObjectCounter = 0;
@@ -108,7 +112,9 @@ public class GameContainer {
     }
 
     public void end() {
+        Log.debug("Gamend called");
         processingCore.execute(() -> {
+            Log.debug("Process gameend");
             NT_GameOver gameOver = new NT_GameOver();
             fillUpdate(gameOver);
             reactionHandler.getActionHandlers().getReactionActions().sendGameUpdate(gameOver);
@@ -129,7 +135,7 @@ public class GameContainer {
     }
 
     private void fillUpdate(NT_BoardUpdate update) {
-        update.turns = turns;
+        update.turns = rounds;
         update.players = players.stream().map(Player::nt).toArray(NT_Player[]::new);
         update.objects = objects.stream().map(MapObject::nt).toArray(NT_BoardObject[]::new);
     }
@@ -146,7 +152,7 @@ public class GameContainer {
         if (currentPlayer >= players.size()) {
             currentPlayer = 0;
             statistic.nextTurn();
-            turns++;
+            rounds++;
         }
         return players.get(currentPlayer);
     }
@@ -159,8 +165,8 @@ public class GameContainer {
         return currentPlayer;
     }
 
-    public int getTurns() {
-        return turns;
+    public int getRounds() {
+        return rounds;
     }
 
     public List<Player> getPlayers() {

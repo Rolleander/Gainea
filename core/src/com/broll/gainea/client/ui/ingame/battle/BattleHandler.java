@@ -18,7 +18,10 @@ import com.broll.gainea.net.NT_Battle_Update;
 import com.broll.gainea.net.NT_Unit;
 import com.broll.gainea.server.core.map.Area;
 import com.broll.gainea.server.core.map.Location;
-import com.esotericsoftware.minlog.Log;
+import com.broll.networklib.server.impl.ConnectionSite;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Stack;
@@ -26,6 +29,7 @@ import java.util.stream.Collectors;
 
 public class BattleHandler {
 
+    private final static Logger Log = LoggerFactory.getLogger(BattleHandler.class);
     private Gainea game;
     private Skin skin;
     private BattleBoard battleBoard;
@@ -117,13 +121,12 @@ public class BattleHandler {
     }
 
     private void battleEnd(String text) {
-        Label label = LabelUtils.title(game.ui.skin, text);
-        label.addAction(Actions.delay(2, Actions.run(() -> {
+        Popup popup = new Popup(skin, LabelUtils.title(game.ui.skin, text));
+        popup.addAction(Actions.delay(2, Actions.run(() -> {
             battleBoard.remove();
             game.state.turnIdle();
         })));
-        battleBoard.add(label).padTop(100).top();
-//        game.ui.inGameUI.showCenterOverlay(label).padTop(100).top();
+        battleBoard.add(popup).padTop(100).top();
     }
 
     private void sendBattleResponse(Table dialog, boolean continueFight) {
@@ -173,7 +176,6 @@ public class BattleHandler {
 
         @Override
         protected void drawChildren(Batch batch, float parentAlpha) {
-            super.drawChildren(batch, parentAlpha);
             float lx = 150 + getX();
             float startY = getY() + getHeight() - 100;
             renderUnits(batch, attackerRenders, lx, startY, 175);
@@ -181,6 +183,7 @@ public class BattleHandler {
             renderUnits(batch, defenderRenders, rx, startY, -175);
             float rollY = startY + 70;
             rollRender.render(batch, getX() + getWidth() / 2, rollY);
+            super.drawChildren(batch, parentAlpha);
         }
 
         private void renderUnits(Batch batch, List<UnitRender> units, float x, float y, float dx) {

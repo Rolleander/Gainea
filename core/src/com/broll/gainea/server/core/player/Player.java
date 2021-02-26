@@ -91,4 +91,8 @@ public class Player {
         return cardHandler;
     }
 
+    @Override
+    public String toString() {
+        return serverPlayer.toString();
+    }
 }
