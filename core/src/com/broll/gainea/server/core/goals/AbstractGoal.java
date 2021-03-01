@@ -65,10 +65,11 @@ public abstract class AbstractGoal extends GameUpdateReceiverAdapter {
     protected synchronized void success() {
         if (!finished) {
             player.getGoalHandler().removeGoal(this);
-            NT_Event_FinishedGoal finishedGoal = new NT_Event_FinishedGoal();
-            finishedGoal.player = player.getServerPlayer().getId();
-            finishedGoal.goal = this.nt();
-            GameUtils.sendUpdate(game, finishedGoal);
+            NT_Event_FinishedGoal nt = new NT_Event_FinishedGoal();
+            nt.sound = "fanfare.ogg";
+            nt.player = player.getServerPlayer().getId();
+            nt.goal = this.nt();
+            GameUtils.sendUpdate(game, nt);
             player.getGoalHandler().addPoints(difficulty.getPoints());
             finished = true;
         }
@@ -94,5 +95,15 @@ public abstract class AbstractGoal extends GameUpdateReceiverAdapter {
 
     public String getRestrictionInfo() {
         return restrictionInfo;
+    }
+
+    @Override
+    public String toString() {
+        return super.toString()+"{" +
+                "text='" + text + '\'' +
+                ", difficulty=" + difficulty +
+                ", restrictionInfo='" + restrictionInfo + '\'' +
+                ", player=" + player +
+                '}';
     }
 }

@@ -7,6 +7,7 @@ import java.util.List;
 import com.broll.gainea.misc.PackageLoader;
 import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.actions.ActionHandlers;
+import com.broll.gainea.server.core.goals.impl.e1.G_GaineaShips;
 import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.server.init.GoalTypes;
 import com.broll.networklib.server.impl.ConnectionSite;
@@ -73,14 +74,14 @@ public class GoalStorage {
     }
 
     public AbstractGoal newGoal(Player forPlayer, Function<AbstractGoal, Boolean> condition) {
-        Log.debug("Try to find new goal for "+forPlayer);
+        Log.debug("Try to find new goal for " + forPlayer);
         for (Class clazz : goalClasses) {
             AbstractGoal goal = loader.instantiate(clazz);
             if (goalTypes.contains(goal.getDifficulty())) {
                 if (goal.init(game, forPlayer)) {
                     if (condition.apply(goal)) {
                         goalClasses.remove(clazz);
-                        Log.debug("Found goal "+goal);
+                        Log.debug("Found goal " + goal);
                         return goal;
                     }
                 }

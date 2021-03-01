@@ -31,10 +31,9 @@ public class C_PlaceDragon extends AbstractCard {
         monster.setIcon(119);
         monster.setPower(4);
         monster.setHealth(5);
-        List<Area> locations = game.getMap().getAllAreas().stream().filter(it -> it.getType() == AreaType.MOUNTAIN && LocationUtils.emptyOrWildMonster(it)).collect(Collectors.toList());
+        List<Location> locations = game.getMap().getAllAreas().stream().filter(it -> it.getType() == AreaType.MOUNTAIN && LocationUtils.emptyOrWildMonster(it)).collect(Collectors.toList());
         if (!locations.isEmpty()) {
-            Location target = selectHandler.selectLocation("Wählt einen Ort", locations);
-            UnitControl.spawn(game, monster, target);
+            placeUnitHandler.placeUnit(owner, monster, locations, "Platziert den Feuerdrachen");
         }
     }
 

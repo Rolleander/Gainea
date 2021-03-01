@@ -26,7 +26,6 @@ public abstract class AbstractScreen {
         game.ui.showScreen(new StartScreen());
     }
 
-
     protected Label info(String text) {
         return LabelUtils.info(skin, text);
     }

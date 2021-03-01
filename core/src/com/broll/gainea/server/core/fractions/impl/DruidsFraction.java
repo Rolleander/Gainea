@@ -1,6 +1,7 @@
 package com.broll.gainea.server.core.fractions.impl;
 
 import com.badlogic.gdx.math.MathUtils;
+import com.broll.gainea.net.NT_Unit;
 import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.battle.BattleResult;
 import com.broll.gainea.server.core.battle.FightingPower;
@@ -57,6 +58,7 @@ public class DruidsFraction extends Fraction {
     @Override
     protected void initSoldier(Soldier soldier) {
         soldier.setName("Druidin");
+        soldier.setType(NT_Unit.TYPE_FEMALE);
         soldier.setIcon(110);
     }
 

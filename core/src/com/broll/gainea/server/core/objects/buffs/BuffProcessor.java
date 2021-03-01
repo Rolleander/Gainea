@@ -48,7 +48,6 @@ public class BuffProcessor extends GameUpdateReceiverAdapter {
         List<Object> affectedObjects = new ArrayList<>(buff.getAffectedObjects());
         buff.remove();
         gloabalBuffs.remove(buff);
-        //TODO update client
         //check if any unit died because of removal of buffs
         for (Object object : affectedObjects) {
             if (object instanceof BattleObject) {
@@ -75,15 +74,8 @@ public class BuffProcessor extends GameUpdateReceiverAdapter {
             } else {
                 units = target.getUnits();
             }
-            units.forEach(unit -> {
-                globalBuff.apply(unit);
-                //update client  + short animation
-                NT_Event_FocusObject nt = new NT_Event_FocusObject();
-                nt.screenEffect = effect;
-                nt.object = unit.nt();
-                GameUtils.sendUpdate(game, nt);
-                ProcessingUtils.pause(100);
-            });
+            units.forEach(globalBuff::apply);
+            UnitControl.focus(game, units, effect);
         });
     }
 

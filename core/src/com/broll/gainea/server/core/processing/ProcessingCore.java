@@ -39,7 +39,7 @@ public class ProcessingCore {
     }
 
     public void execute(Runnable runnable) {
-        execute(runnable, 0);
+        execute(runnable, 50);
     }
 
     public synchronized void execute(Runnable runnable, int afterDelay) {
@@ -47,6 +47,7 @@ public class ProcessingCore {
             RunnableWrapper wrapper = new RunnableWrapper();
             wrapper.runnable = runnable;
             this.lastWrapper = wrapper;
+            Log.trace("set last wrapper to "+wrapper);
             this.lastFuture = executor.schedule(wrapper, afterDelay, TimeUnit.MILLISECONDS);
         }
     }
@@ -68,12 +69,14 @@ public class ProcessingCore {
         @Override
         public void run() {
             try {
+                Log.trace("execute wrapper "+this);
                 runnable.run();
             } catch (Exception e) {
                 Log.error("Processing exception:", e);
             }
             //check if it was the last runnable
             if (lastWrapper == this) {
+                Log.trace(this+" is last wrapper, finished processing! ");
                 finishedProcessingListener.run();
             }
         }

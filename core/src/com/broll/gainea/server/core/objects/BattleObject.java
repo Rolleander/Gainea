@@ -15,6 +15,7 @@ public abstract class BattleObject extends MapObject {
     private boolean moveOrAttackRestriction = true; //usually units can only attack or move in one turn
     private boolean attacked = false;
     private boolean moved = false;
+    private int type = NT_Unit.TYPE_MALE;
 
     public BattleObject(Player owner) {
         super(owner);
@@ -181,6 +182,7 @@ public abstract class BattleObject extends MapObject {
         unit.health = health.getValue();
         unit.maxHealth = maxHealth.getValue();
         unit.power = power.getValue();
+        unit.type = type;
         if (owner != null) {
             unit.owner = owner.getServerPlayer().getId();
         }
@@ -190,6 +192,9 @@ public abstract class BattleObject extends MapObject {
         return health.getValue() < maxHealth.getValue();
     }
 
+    public void setType(int type) {
+        this.type = type;
+    }
 
     @Override
     public String toString() {

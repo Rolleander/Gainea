@@ -8,13 +8,13 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.broll.gainea.client.Assets;
-import com.broll.gainea.client.game.ClientHandler;
-import com.broll.gainea.client.MapScrollHandler;
+import com.broll.gainea.client.network.ClientHandler;
 import com.broll.gainea.client.game.GameState;
 import com.broll.gainea.client.ui.AbstractScreen;
 import com.broll.gainea.client.ui.GameUI;
 import com.broll.gainea.client.ui.screens.LoadingScreen;
 import com.broll.gainea.client.ui.screens.StartScreen;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,15 +32,15 @@ public class Gainea extends ApplicationAdapter {
     public GameState state;
     public boolean shutdown = false;
     private AbstractScreen startScreen;
+    private boolean reconnectCheck;
 
-
-
-    public Gainea(){
-        this(new StartScreen());
+    public Gainea() {
+        this(new StartScreen(), true);
     }
 
-    public Gainea(AbstractScreen startScreen){
+    public Gainea(AbstractScreen startScreen, boolean reconnectCheck) {
         this.startScreen = startScreen;
+        this.reconnectCheck = reconnectCheck;
     }
 
     @Override
@@ -49,7 +49,8 @@ public class Gainea extends ApplicationAdapter {
         client = new ClientHandler(this);
         gameStage = new Stage(new ScreenViewport());
         uiStage = new Stage(new ScreenViewport());
-        ui = new GameUI(this, new LoadingScreen(startScreen));
+        state = new GameState(this);
+        ui = new GameUI(this, new LoadingScreen(startScreen), reconnectCheck);
         client.setClientListener(ui);
         Gdx.input.setInputProcessor(new InputMultiplexer(uiStage, gameStage));
         shapeRenderer = new ShapeRenderer();
@@ -70,6 +71,7 @@ public class Gainea extends ApplicationAdapter {
         shapeRenderer.setTransformMatrix(gameStage.getBatch().getTransformMatrix());
         gameStage.act(delta);
         uiStage.act(delta);
+        ui.mapScrollHandler.update(delta);
         gameStage.draw();
         uiStage.draw();
     }

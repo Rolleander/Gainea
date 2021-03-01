@@ -1,5 +1,6 @@
 package com.broll.gainea.server.core.fractions.impl;
 
+import com.broll.gainea.net.NT_Unit;
 import com.broll.gainea.server.core.battle.FightingPower;
 import com.broll.gainea.server.core.fractions.Fraction;
 import com.broll.gainea.server.core.fractions.FractionDescription;
@@ -50,12 +51,14 @@ public class RangerFraction extends Fraction {
     @Override
     protected void initSoldier(Soldier soldier) {
         soldier.setName("Waldläuferin");
+        soldier.setType(NT_Unit.TYPE_FEMALE);
         soldier.setIcon(114);
     }
 
     @Override
     protected void initCommander(Commander commander) {
         commander.setName("Elfenschützin");
+        commander.setType(NT_Unit.TYPE_FEMALE);
         commander.setIcon(115);
     }
 

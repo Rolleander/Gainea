@@ -8,12 +8,16 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.broll.gainea.Gainea;
+import com.broll.gainea.client.AudioPlayer;
 import com.broll.gainea.client.ui.ingame.map.MapObjectRender;
+import com.broll.gainea.client.ui.utils.ActionListener;
 import com.broll.gainea.client.ui.utils.LabelUtils;
 import com.broll.gainea.client.ui.utils.TextureUtils;
+import com.broll.gainea.net.NT_Monster;
 import com.broll.gainea.net.NT_Unit;
 
 public class UnitRender extends MapObjectRender {
@@ -63,13 +67,31 @@ public class UnitRender extends MapObjectRender {
 
     public void takeDamage(int amount) {
         NT_Unit unit = getUnit();
+        boolean wasAlive = unit.health > 0;
         unit.health -= amount;
-        game.assets.get("sounds/damage.ogg", Sound.class).play();
-        if (unit.health < 0) {
-            unit.health = 0;
+        if (wasAlive) {
+            AudioPlayer.playSound("hit.ogg");
+            if (unit.health <= 0) {
+                deathSound(unit);
+                unit.health = 0;
+            }
         }
         bloodAnimation = 0;
         showBlood = true;
+    }
+
+    private void deathSound(NT_Unit unit) {
+        if (unit instanceof NT_Monster) {
+            AudioPlayer.playSound("monster_death.ogg");
+        } else {
+            AudioPlayer.playSound("damage.ogg");
+            int type = unit.type;
+            if (type == NT_Unit.TYPE_MALE) {
+                AudioPlayer.playSound("death_male.ogg");
+            } else if (type == NT_Unit.TYPE_FEMALE) {
+                AudioPlayer.playSound("death_female.ogg");
+            }
+        }
     }
 
     protected boolean shouldDrawPlate() {
@@ -86,12 +108,15 @@ public class UnitRender extends MapObjectRender {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
+        calcRenderColor(parentAlpha);
+        batch.setColor(renderColor);
         if (!isVisible()) {
             return;
         }
         if (shouldDrawPlate()) {
             NT_Unit unit = (NT_Unit) getObject();
             batch.draw(plate, getX() - 37 - R, getY() + 20 - R);
+            numberLabel.setColor(renderColor);
             numberLabel.setStyle(blackStyle);
             numberLabel.setPosition(getX() - 74, getY() - 16);
             numberLabel.setText("" + unit.power);
@@ -113,10 +138,13 @@ public class UnitRender extends MapObjectRender {
         }
     }
 
-    public void removeIfDead() {
-        if (getUnit().health <= 0) {
-            setVisible(false);
+    public boolean removeIfDead() {
+        boolean dead = getUnit().health <= 0;
+        if (dead) {
+            addAction(Actions.sequence(Actions.fadeOut(0.2f), Actions.visible(false)));
         }
+        return dead;
     }
+
 
 }

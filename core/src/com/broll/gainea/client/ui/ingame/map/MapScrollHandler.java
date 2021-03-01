@@ -1,10 +1,13 @@
-package com.broll.gainea.client;
+package com.broll.gainea.client.ui.ingame.map;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.broll.gainea.Gainea;
 import com.broll.gainea.client.ui.ingame.InGameUI;
 
@@ -16,7 +19,11 @@ public class MapScrollHandler extends InputListener {
     private static float SCROLL_SPEED = 30;
 
     private float lastX, lastY;
-    private boolean dragging=false;
+    private boolean dragging = false;
+    private boolean active = true;
+    private Vector3 start, end;
+    private float animationTime;
+    private float elpasedTime;
 
     public MapScrollHandler(Gainea game, Stage stage) {
         this.game = game;
@@ -24,8 +31,35 @@ public class MapScrollHandler extends InputListener {
         this.camera = (OrthographicCamera) stage.getCamera();
     }
 
+    public void scrollTo(float x, float y, float zoom) {
+        start = new Vector3(camera.position.x, camera.position.y, camera.zoom);
+        end = new Vector3(x, y, zoom);
+        elpasedTime = 0;
+        animationTime = Math.min(1f, Vector2.dst(start.x, start.y, end.x, end.y) / 500f);
+        if (animationTime > 0) {
+            active = false;
+        }
+    }
+
+    public void update(float delta) {
+        if (animationTime > 0) {
+            //animate
+            Interpolation interpolation = Interpolation.circle;
+            float progress = Math.min(1f, elpasedTime / animationTime);
+            camera.position.x = interpolation.apply(start.x, end.x, progress);
+            camera.position.y = interpolation.apply(start.y, end.y, progress);
+            camera.zoom = interpolation.apply(start.z, end.z, progress);
+            elpasedTime += delta;
+            if (progress == 1) {
+                animationTime = 0;
+                active = true;
+            }
+        }
+    }
+
     @Override
     public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+        game.uiStage.setScrollFocus(null);
         Vector2 screenVec = stage.stageToScreenCoordinates(new Vector2(x, y));
         x = screenVec.x;
         y = screenVec.y;
@@ -37,6 +71,7 @@ public class MapScrollHandler extends InputListener {
 
     @Override
     public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+        game.uiStage.setScrollFocus(null);
         InGameUI ui = game.ui.inGameUI;
         if (!dragging && ui != null) {
             ui.clearSelection();
@@ -45,12 +80,15 @@ public class MapScrollHandler extends InputListener {
 
     @Override
     public void touchDragged(InputEvent event, float x, float y, int pointer) {
+        game.uiStage.setScrollFocus(null);
         Vector2 screenVec = stage.stageToScreenCoordinates(new Vector2(x, y));
         x = screenVec.x;
         y = screenVec.y;
         float dx = (x - lastX) * DRAG_SPEED * camera.zoom;
         float dy = (y - lastY) * DRAG_SPEED * camera.zoom;
-        camera.translate(-dx, dy);
+        if (active) {
+            camera.translate(-dx, dy);
+        }
         this.lastX = x;
         this.lastY = y;
         dragging = true;
@@ -58,6 +96,9 @@ public class MapScrollHandler extends InputListener {
 
     @Override
     public boolean scrolled(InputEvent event, float x, float y, int amount) {
+        if (!active) {
+            return false;
+        }
         camera.zoom *= 1 + ((amount * SCROLL_SPEED) / 100f);
         if (camera.zoom < 1) {
             camera.zoom = 1;

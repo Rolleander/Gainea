@@ -15,6 +15,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class CardAction extends AbstractActionHandler<NT_Action_Card, CardAction.Context> {
+
+    public final static int PLAY_CARD_DELAY = 5000;
     private final static Logger Log = LoggerFactory.getLogger(CardAction.class);
 
     class Context extends ActionContext<NT_Action_Card> {
@@ -49,7 +51,7 @@ public class CardAction extends AbstractActionHandler<NT_Action_Card, CardAction
             reactionResult.sendGameUpdate(playedCard);
             MessageUtils.gameLog(game, "Karte " + card.getTitle() + " ausgespielt");
             player.getCardHandler().discardCard(card);
-            ProcessingUtils.pause(3000);
+            ProcessingUtils.pause(PLAY_CARD_DELAY);
             card.play(actionHandlers);
             game.getUpdateReceiver().playedCard(card);
         });

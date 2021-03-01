@@ -1,6 +1,7 @@
 package com.broll.gainea.client.game;
 
 import com.broll.gainea.Gainea;
+import com.broll.gainea.client.ui.ingame.map.ExpansionDebugRender;
 import com.broll.gainea.client.ui.ingame.map.ExpansionRender;
 import com.broll.gainea.server.core.map.Expansion;
 import com.broll.gainea.server.core.map.ExpansionFactory;
@@ -17,6 +18,7 @@ public class ClientMapContainer extends MapContainer {
     private List<ExpansionRender> renders;
     private Gainea game;
     private List<Pair<ExpansionFactory, Expansion>> initSet;
+    public static boolean RENDER_DEBUG = false;
 
     public ClientMapContainer(Gainea game, ExpansionSetting setting) {
         super(setting);
@@ -38,7 +40,11 @@ public class ClientMapContainer extends MapContainer {
         this.expansions = initSet.stream().map(it -> it.getRight()).collect(Collectors.toList());
     }
 
-    public List<ExpansionRender> getRenders() {
-        return renders;
+    public void displayRenders() {
+        this.renders.forEach(render -> game.gameStage.addActor(render));
+        if (RENDER_DEBUG) {
+            this.expansions.forEach(expansion -> game.gameStage.addActor(new ExpansionDebugRender(game, expansion)));
+        }
     }
+
 }

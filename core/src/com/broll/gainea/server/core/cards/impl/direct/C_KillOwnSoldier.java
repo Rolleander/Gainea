@@ -21,6 +21,7 @@ public class C_KillOwnSoldier extends DirectlyPlayedCard {
     @Override
     protected void play() {
         PlayerUtils.iteratePlayers(game, 500, player -> {
+            //TODO cardplayer selects all
             BattleObject unit = SelectionUtils.selectPlayerUnit(game, player, "Welche Einheit soll geopfert werden?");
             if (unit != null) {
                 UnitControl.kill(game, unit);

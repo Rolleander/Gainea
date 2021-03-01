@@ -1,4 +1,4 @@
-package com.broll.gainea.client.game.sites;
+package com.broll.gainea.client.network.sites;
 
 import com.broll.gainea.client.game.PlayerPerformAction;
 import com.broll.gainea.client.ui.utils.MessageUtils;
@@ -6,7 +6,6 @@ import com.broll.gainea.net.NT_Action;
 import com.broll.gainea.net.NT_PlayerAction;
 import com.broll.gainea.net.NT_Reaction;
 import com.broll.networklib.PackageReceiver;
-import com.broll.networklib.server.impl.ConnectionSite;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

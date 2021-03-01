@@ -1,11 +1,12 @@
-package com.broll.gainea.client.game.sites;
+package com.broll.gainea.client.network.sites;
 
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.broll.gainea.client.AudioPlayer;
 import com.broll.gainea.client.game.GameUtils;
-import com.broll.gainea.client.game.MapScrollUtils;
+import com.broll.gainea.client.ui.ingame.map.MapScrollUtils;
+import com.broll.gainea.client.ui.components.Popup;
 import com.broll.gainea.client.ui.utils.LabelUtils;
 import com.broll.gainea.client.ui.utils.MessageUtils;
 import com.broll.gainea.client.ui.utils.TableUtils;
@@ -16,6 +17,7 @@ import com.broll.gainea.net.NT_Abstract_Event;
 import com.broll.gainea.net.NT_BoardObject;
 import com.broll.gainea.net.NT_Event_Bundle;
 import com.broll.gainea.net.NT_Event_FinishedGoal;
+import com.broll.gainea.net.NT_Event_FocusObjects;
 import com.broll.gainea.net.NT_Event_OtherPlayerReceivedCard;
 import com.broll.gainea.net.NT_Event_OtherPlayerReceivedGoal;
 import com.broll.gainea.net.NT_Event_ReceivedCard;
@@ -27,11 +29,13 @@ import com.broll.gainea.net.NT_Event_PlayedCard;
 import com.broll.gainea.net.NT_Event_ReceivedGoal;
 import com.broll.gainea.net.NT_Event_ReceivedPoints;
 import com.broll.gainea.net.NT_Event_ReceivedStars;
+import com.broll.gainea.net.NT_Event_RemoveCard;
+import com.broll.gainea.net.NT_Event_RemoveGoal;
 import com.broll.gainea.net.NT_Event_TextInfo;
 import com.broll.gainea.net.NT_Player;
+import com.broll.gainea.server.core.actions.optional.CardAction;
 import com.broll.gainea.server.core.map.Location;
 import com.broll.networklib.PackageReceiver;
-import com.broll.networklib.server.impl.ConnectionSite;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,7 +52,7 @@ public class GameEventSite extends AbstractGameSite {
 
         }
         if (event.sound != null) {
-            game.assets.get(event.sound, Sound.class).play();
+            AudioPlayer.playSound(event.sound);
         }
     }
 
@@ -70,16 +74,28 @@ public class GameEventSite extends AbstractGameSite {
     public void received(NT_Event_ReceivedCard card) {
         game.state.getPlayer(getPlayer().getId()).cards++;
         game.ui.inGameUI.hideWindows();
-        game.ui.inGameUI.showCenterOverlay(TableUtils.removeAfter(CardWindow.renderCard(game, card.card), 3));
+        Table table = new Table(game.ui.skin);
+        table.add(LabelUtils.label(game.ui.skin, "Du hast eine Aktionskarte erhalten:")).padBottom(20).row();
+        table.add(CardWindow.renderCard(game, card.card));
+        game.ui.inGameUI.showCenterOverlay(new Popup(game.ui.skin, table, 3f));
         game.state.getCards().add(card.card);
         game.ui.inGameUI.updateWindows();
     }
 
     @PackageReceiver
     public void received(NT_Event_FocusObject focus) {
+        focus(focus.object);
+    }
+
+    @PackageReceiver
+    public void received(NT_Event_FocusObjects focus) {
+        focus(focus.objects);
+    }
+
+    private void focus(NT_BoardObject... objects) {
         game.ui.inGameUI.hideWindows();
-        GameUtils.updateMapObjects(game, focus.object);
-        MapScrollUtils.showObject(game, focus.object);
+        GameUtils.updateMapObjects(game, objects);
+        MapScrollUtils.showObject(game, objects[0]);
         game.state.updateMapObjects();
         game.ui.inGameUI.updateWindows();
     }
@@ -87,7 +103,7 @@ public class GameEventSite extends AbstractGameSite {
     @PackageReceiver
     public void received(NT_Event_MovedObject moved) {
         game.ui.inGameUI.hideWindows();
-        game.assets.get("sounds/move.ogg", Sound.class).play();
+        AudioPlayer.playSound("move.ogg");
         NT_BoardObject moveObject = moved.objects[0];
         int from = GameUtils.findObject(game, moveObject.id).location;
         int to = moveObject.location;
@@ -99,7 +115,7 @@ public class GameEventSite extends AbstractGameSite {
             Location location = game.state.getMap().getLocation(object.location);
             MoveToAction action = new MoveToAction();
             action.setDuration(1);
-            action.setPosition(location.getCoordinates().getDisplayX(), location.getCoordinates().getDisplayY());
+            action.setPosition(location.getCoordinates().getDisplayX(), location.getCoordinates().getDisplayY() + render.getStackHeight());
             if (first) {
                 render.addAction(Actions.sequence(action, Actions.run(() -> {
                     //walking done
@@ -125,7 +141,7 @@ public class GameEventSite extends AbstractGameSite {
     @PackageReceiver
     public void received(NT_Event_PlayedCard card) {
         game.ui.inGameUI.hideWindows();
-        game.ui.inGameUI.showCenterOverlay(TableUtils.removeAfter(CardWindow.renderCard(game, card.card), 3));
+        game.ui.inGameUI.showCenterOverlay(TableUtils.removeAfter(CardWindow.renderCard(game, card.card), (float)CardAction.PLAY_CARD_DELAY / 1000f));
         NT_Player owner = game.state.getPlayer(card.player);
         owner.cards--;
         if (card.player == getPlayer().getId()) {
@@ -146,6 +162,22 @@ public class GameEventSite extends AbstractGameSite {
         Log.info("received goal");
         game.ui.inGameUI.showCenterOverlay(TableUtils.removeAfter(GoalWindow.renderGoal(game.ui.skin, goal.goal), 3));
         game.state.getGoals().add(goal.goal);
+        game.ui.inGameUI.updateWindows();
+    }
+
+    @PackageReceiver
+    public void received(NT_Event_RemoveGoal goal) {
+        Log.info("removed goal");
+        game.state.getGoals().remove(goal.goal);
+        game.ui.inGameUI.updateWindows();
+    }
+
+    @PackageReceiver
+    public void received(NT_Event_RemoveCard card) {
+        Log.info("removed card");
+        game.state.getCards().remove(card.card);
+        NT_Player owner = game.state.getPlayer(card.player);
+        owner.cards--;
         game.ui.inGameUI.updateWindows();
     }
 

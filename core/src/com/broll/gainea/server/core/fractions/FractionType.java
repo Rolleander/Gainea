@@ -2,10 +2,10 @@ package com.broll.gainea.server.core.fractions;
 
 public enum FractionType {
 
-    FIRE("Feuermagier"),   SHADOW("Schatten"),BARBARIANS("Barbaren"), VIKINGS("Wikinger"),
+    SHADOW("Schatten"),BARBARIANS("Barbaren"), VIKINGS("Wikinger"),
     DRUIDS("Druiden"), KNIGHTS("Kreuzritter"), SAMURAI("Samurai"), MONKS("Mönche"),
     POACHER("Wilderer"),RANGER("Waldläufer"),MERCENARY("Söldner"),GUARDS("Königsgarde"),
-    WATER("Wassermagier"), LIZARDS("Echsenvolk");
+    FIRE("Feuermagier"),  WATER("Wassermagier"), LIZARDS("Echsenvolk");
 
     private String name;
 

@@ -1,6 +1,7 @@
 package com.broll.gainea.client.game;
 
 import com.broll.gainea.client.ui.ingame.map.MapObjectRender;
+import com.broll.gainea.client.ui.ingame.unit.UnitRender;
 import com.broll.gainea.net.NT_BoardObject;
 import com.broll.gainea.net.NT_Unit;
 import com.broll.gainea.server.core.map.Location;
@@ -9,8 +10,10 @@ import org.apache.commons.collections4.map.MultiValueMap;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MapObjectContainer {
 
@@ -34,9 +37,13 @@ public class MapObjectContainer {
         return null;
     }
 
+    private void remove(MapObjectRender render) {
+        render.remove();
+        objectRenders.getCollection(render.getLocation()).remove(render);
+    }
+
     public void update(List<NT_BoardObject> update) {
         List<MapObjectRender> renders = new ArrayList<>();
-        //remove old renders
         this.objectRenders.keySet().forEach(location -> objectRenders.getCollection(location).forEach(render -> render.remove()));
         this.objectRenders.clear();
         update.stream().forEach(o -> {
@@ -91,15 +98,18 @@ public class MapObjectContainer {
     }
 
     private void arrangeStack(Location location, float x, float y, Collection<MapObjectRender> renders) {
+        float stackHeight = 0;
         MapObjectRender topOfStack = null;
-        for (MapObjectRender render : renders) {
+        for (MapObjectRender render : renders.stream().sorted((a, b) -> Integer.compare(a.getRank(), b.getRank())).collect(Collectors.toList())) {
             render.setPosition(x, y);
             render.setLocation(location);
+            render.setStack(renders, stackHeight);
+            render.setStackTop(false);
             y += STACK_DISTANCE;
-            render.setStack(renders, false);
+            stackHeight += STACK_DISTANCE;
             topOfStack = render;
         }
-        topOfStack.setStack(renders, true);
+        topOfStack.setStackTop(true);
     }
 
 }

@@ -4,6 +4,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -11,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.broll.gainea.client.ui.utils.LabelUtils;
+import com.broll.gainea.client.ui.utils.TableUtils;
 import com.broll.networklib.client.impl.ChatMessageListener;
 import com.broll.networklib.client.impl.GameLobby;
 import com.broll.networklib.client.impl.LobbyPlayer;
@@ -68,16 +70,10 @@ public class GameChat extends Table {
             }
 
         });
-        TextButton sendChat = new TextButton("Send",skin);
-        sendChat.addListener(new ClickListener() {
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                if (!StringUtils.isEmpty(chatText.getText())) {
-                    sendChatMessage(chatText.getText());
-                    chatText.setText("");
-                    return true;
-                }
-                return false;
+        Button sendChat = TableUtils.textButton(skin,"Send",()->{
+            if (!StringUtils.isEmpty(chatText.getText())) {
+                sendChatMessage(chatText.getText());
+                chatText.setText("");
             }
         });
         add(chatText).expandX().fillX();

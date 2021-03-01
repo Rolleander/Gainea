@@ -3,8 +3,8 @@ package com.broll.gainea.client.ui;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.broll.gainea.Gainea;
 import com.broll.gainea.client.Assets;
-import com.broll.gainea.client.IClientListener;
-import com.broll.gainea.client.MapScrollHandler;
+import com.broll.gainea.client.network.IClientListener;
+import com.broll.gainea.client.ui.ingame.map.MapScrollHandler;
 import com.broll.gainea.client.ui.components.ConnectionCircle;
 import com.broll.gainea.client.ui.components.NetworkProblemDialog;
 import com.broll.gainea.client.ui.ingame.InGameUI;
@@ -12,7 +12,6 @@ import com.broll.gainea.client.ui.screens.LobbyScreen;
 import com.broll.gainea.client.ui.screens.StartScreen;
 import com.broll.networklib.client.impl.GameLobby;
 import com.broll.networklib.client.tasks.DiscoveredLobbies;
-import com.broll.networklib.server.impl.ConnectionSite;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,13 +22,17 @@ public class GameUI implements IClientListener {
     private final static Logger Log = LoggerFactory.getLogger(GameUI.class);
     public Skin skin;
     public InGameUI inGameUI;
+    public MapScrollHandler mapScrollHandler;
     private Gainea game;
     private ConnectionCircle connectionCircle;
     private AbstractScreen currentScreen;
+    private boolean reconnectCheck = false;
 
-    public GameUI(Gainea game, AbstractScreen startScreen) {
+    public GameUI(Gainea game, AbstractScreen startScreen, boolean reconnectCheck) {
         this.game = game;
-        game.assets = new Assets(true);
+        this.reconnectCheck = reconnectCheck;
+        this.mapScrollHandler = new  MapScrollHandler(game, game.gameStage);
+        game.assets = new Assets();
         showScreen(startScreen);
     }
 
@@ -37,13 +40,15 @@ public class GameUI implements IClientListener {
         this.skin = game.assets.get("ui/cloud-form-ui.json", Skin.class);
         connectionCircle = new ConnectionCircle(game.assets);
         connectionCircle.toFront();
-        game.client.reconnectCheck();
+        if (reconnectCheck) {
+            game.client.reconnectCheck();
+        }
     }
 
-    public void initInGameUi(){
+    public void initInGameUi() {
         game.gameStage.clear();
         inGameUI = new InGameUI(game, skin);
-        game.gameStage.addListener(new MapScrollHandler(game, game.gameStage));
+        game.gameStage.addListener(mapScrollHandler);
     }
 
     public void showScreen(AbstractScreen screen) {
@@ -84,5 +89,9 @@ public class GameUI implements IClientListener {
         } else {
             connectionCircle.remove();
         }
+    }
+
+    public AbstractScreen getCurrentScreen() {
+        return currentScreen;
     }
 }

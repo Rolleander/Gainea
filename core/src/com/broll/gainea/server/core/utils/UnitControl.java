@@ -3,6 +3,7 @@ package com.broll.gainea.server.core.utils;
 import com.broll.gainea.net.NT_Abstract_Event;
 import com.broll.gainea.net.NT_BoardObject;
 import com.broll.gainea.net.NT_Event_FocusObject;
+import com.broll.gainea.net.NT_Event_FocusObjects;
 import com.broll.gainea.net.NT_Event_MovedObject;
 import com.broll.gainea.net.NT_Event_PlacedObject;
 import com.broll.gainea.server.core.GameContainer;
@@ -11,7 +12,9 @@ import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.MapObject;
 import com.broll.gainea.server.core.objects.Monster;
+import com.broll.gainea.server.core.objects.Soldier;
 import com.broll.gainea.server.core.player.Player;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,17 +29,17 @@ import java.util.stream.Collectors;
 
 public class UnitControl {
     private final static Logger Log = LoggerFactory.getLogger(UnitControl.class);
-    private final static int MOVE_PAUSE = 1000;
-    private final static int SPAWN_PAUSE = 1000;
-    private final static int DAMAGE_PAUSE = 500;
+    private final static int MOVE_PAUSE = 1500;
+    private final static int SPAWN_PAUSE = 1500;
+    private final static int DAMAGE_PAUSE = 1000;
 
     public static void move(GameContainer game, MapObject unit, Location location) {
         move(game, Lists.newArrayList(unit), location);
     }
 
     public static void move(GameContainer game, List<? extends MapObject> units, Location location) {
-        Log.trace("UnitControl: move units ["+units.size()+"] to "+location);
-        units.forEach(unit -> unit.setLocation(location));
+        Log.trace("UnitControl: move units [" + units.size() + "] to " + location);
+        units.forEach(unit -> GameUtils.place(unit, location));
         NT_Event_MovedObject movedObject = new NT_Event_MovedObject();
         movedObject.objects = units.stream().map(MapObject::nt).toArray(NT_BoardObject[]::new);
         GameUtils.sendUpdate(game, movedObject);
@@ -64,8 +67,18 @@ public class UnitControl {
         ProcessingUtils.pause(DAMAGE_PAUSE);
     }
 
+    public static void focus(GameContainer game, List<? extends MapObject> objects, int effect) {
+        objects.stream().map(MapObject::getLocation).distinct().forEach(location -> {
+            NT_Event_FocusObjects nt = new NT_Event_FocusObjects();
+            nt.screenEffect = effect;
+            nt.objects = objects.stream().filter(it -> it.getLocation() == location).map(MapObject::nt).toArray(NT_BoardObject[]::new);
+            GameUtils.sendUpdate(game, nt);
+            ProcessingUtils.pause(DAMAGE_PAUSE);
+        });
+    }
+
     public static void heal(GameContainer game, BattleObject unit, int heal, Consumer<NT_Event_FocusObject> consumer) {
-        Log.trace("UnitControl: heal unit "+unit+" for "+heal);
+        Log.trace("UnitControl: heal unit " + unit + " for " + heal);
         heal = Math.max(unit.getMaxHealth().getValue() - unit.getHealth().getValue(), heal);
         unit.heal(heal);
         NT_Event_FocusObject nt = new NT_Event_FocusObject();
@@ -79,7 +92,7 @@ public class UnitControl {
     }
 
     public static void damage(GameContainer game, BattleObject unit, int damage, Consumer<NT_Event_FocusObject> consumer) {
-        Log.trace("UnitControl: damage unit "+unit+" for "+damage);
+        Log.trace("UnitControl: damage unit " + unit + " for " + damage);
         //dont overkill
         damage = Math.max(unit.getHealth().getValue(), damage);
         unit.takeDamage(damage);
@@ -114,7 +127,7 @@ public class UnitControl {
     }
 
     public static void spawn(GameContainer game, MapObject object, Location location, Consumer<NT_Event_PlacedObject> consumer) {
-        Log.trace("UnitControl: spawn object "+object+" at "+location);
+        Log.trace("UnitControl: spawn object " + object + " at " + location);
         if (location == null) {
             Log.error("Cannot spawn object " + object + " on null location");
             return;
@@ -129,16 +142,27 @@ public class UnitControl {
         if (object instanceof BattleObject) {
             game.getBuffProcessor().applyGlobalBuffs((BattleObject) object);
         }
-        object.setLocation(location);
-        location.getInhabitants().add(object);
-        NT_Event_PlacedObject placedObject = new NT_Event_PlacedObject();
-        placedObject.object = object.nt();
+        GameUtils.place(object, location);
+        NT_Event_PlacedObject nt = new NT_Event_PlacedObject();
+        nt.object = object.nt();
+        nt.sound = defaultSpawnSound(object, location);
         if (consumer != null) {
-            consumer.accept(placedObject);
+            consumer.accept(nt);
         }
-        GameUtils.sendUpdate(game, placedObject);
+        GameUtils.sendUpdate(game, nt);
         game.getUpdateReceiver().spawned(object, location);
         ProcessingUtils.pause(SPAWN_PAUSE);
+    }
+
+    private static String defaultSpawnSound(MapObject object, Location location){
+        String sound = null;
+        if(object instanceof Monster){
+            sound="monster.ogg";
+        }
+        else {
+            sound="recruit.ogg";
+        }
+        return sound;
     }
 
     public static void spawnMonsters(GameContainer game, int count) {

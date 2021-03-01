@@ -92,6 +92,7 @@ public class LobbyData implements LobbySettings {
         settings.startLocations = startLocations;
         settings.pointLimit = pointLimit;
         settings.goalTypes = goalTypes.ordinal();
+        settings.monsters = monsterCount;
         return settings;
     }
 }

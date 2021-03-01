@@ -62,12 +62,12 @@ public class CardWindow extends MenuWindow {
         content.defaults().space(10);
         game.state.getCards().forEach(card -> {
             Table table = renderCard(game, card);
-            if(playableCards!=null){
+            if (playableCards != null) {
                 Optional<NT_Action_Card> playableCard = playableCards.stream().filter(it -> it.cardId == card.id).findFirst();
                 if (cardsPlayable && playableCard.isPresent()) {
                     table.add(TableUtils.textButton(game.ui.skin, "Aktivieren!", () -> {
                         playerPerformAction.perform(playableCard.get(), 0, null);
-                    })).right().bottom();
+                    })).right().bottom().colspan(2).padTop(-80);
                 }
             }
             content.add(table).expandX().fillX().row();
@@ -79,7 +79,7 @@ public class CardWindow extends MenuWindow {
         Table table = new Table(skin);
         table.defaults().space(15);
         table.left();
-        table.setBackground("menu-bg");
+        table.setBackground("card-bg");
         Table box = new Table(skin);
         box.top();
         box.add(LabelUtils.label(skin, card.title)).left().row();

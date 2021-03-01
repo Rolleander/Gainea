@@ -1,32 +1,53 @@
 package com.broll.gainea.client;
 
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
+import java.util.Arrays;
+
 
 public class Assets {
 
     private AssetManager manager = new AssetManager();
+    private final static String SOUNDS = "sounds/";
+    private final static String MUSIC = "music/";
 
-    public Assets(boolean full) {
-        if(full){
-            loadTextures();
-            loadSounds();
-        }
+    public Assets() {
+        loadTextures();
+        loadSounds();
+        loadMusic();
         loadUi();
     }
 
+    private void loadMusic() {
+        Arrays.stream(new String[]{
+                "celtic.mp3",
+        }).forEach(it -> manager.load(MUSIC + it, Music.class));
+    }
+
     private void loadSounds() {
-        manager.load("sounds/chime.ogg", Sound.class);
-        manager.load("sounds/damage.ogg", Sound.class);
-        manager.load("sounds/fanfare.ogg", Sound.class);
-        manager.load("sounds/hit.ogg", Sound.class);
-        manager.load("sounds/move.ogg", Sound.class);
-        manager.load("sounds/recruit.ogg", Sound.class);
-        manager.load("sounds/roll.ogg", Sound.class);
+        Arrays.stream(new String[]{
+                "chime.ogg",
+                "damage.ogg",
+                "fanfare.ogg",
+                "hit.ogg",
+                "move.ogg",
+                "recruit.ogg",
+                "roll.ogg",
+                "monster.ogg",
+                "goddrake.ogg",
+                "spawn.ogg",
+                "select.ogg",
+                "monster_death.ogg",
+                "button.ogg",
+                "death_female.ogg",
+                "death_male.ogg",
+                "battle.ogg"
+        }).forEach(it -> manager.load(SOUNDS + it, Sound.class));
     }
 
     private void loadTextures() {
@@ -60,6 +81,11 @@ public class Assets {
     }
 
     public <T> T get(String name, Class<T> type) {
+        if (type == Music.class) {
+            return manager.get(MUSIC + name, type);
+        } else if (type == Sound.class) {
+            return manager.get(SOUNDS + name, type);
+        }
         return manager.get(name, type);
     }
 }

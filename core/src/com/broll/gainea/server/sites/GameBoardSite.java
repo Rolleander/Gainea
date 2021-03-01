@@ -51,8 +51,7 @@ public class GameBoardSite extends AbstractGameSite {
         BattleHandler battle = getGame().getBattleHandler();
         if (battle.isBattleActive()) {
             battle.playerReaction(getGamePlayer(), battle_reaction);
-        }
-        else{
+        } else {
             Log.warn("Battle reaction ignored because battle is not active");
         }
     }
@@ -65,7 +64,11 @@ public class GameBoardSite extends AbstractGameSite {
             //dont allow next turn if there are required actions for the player remaining
             if (!getGame().getReactionHandler().hasRequiredActionFor(getGamePlayer())) {
                 nextTurn();
+            } else {
+                Log.warn("End turn ignored because there are required actions remaining");
             }
+        } else {
+            Log.warn("End turn ignored because game is over, its not the players turn or processing core is busy");
         }
     }
 

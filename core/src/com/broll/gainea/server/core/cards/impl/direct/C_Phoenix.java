@@ -23,7 +23,7 @@ public class C_Phoenix extends DirectlyPlayedCard {
         Monster monster = new Monster();
         monster.setName("Phönix");
         monster.getAttacksPerTurn().setValue(0);
-        monster.getMovesPerTurn().setValue(0);
+        monster.getMovesPerTurn().setValue(2);
         monster.setHealth(2);
         monster.setPower(2);
         monster.setIcon(124);

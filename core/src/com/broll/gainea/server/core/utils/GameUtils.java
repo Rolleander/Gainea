@@ -1,6 +1,7 @@
 package com.broll.gainea.server.core.utils;
 
 import com.broll.gainea.server.core.GameContainer;
+import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.MapObject;
 import com.broll.gainea.server.core.player.Player;
@@ -26,17 +27,26 @@ public final class GameUtils {
         game.getReactionHandler().getActionHandlers().getReactionActions().sendGameUpdate(update);
     }
 
-    public static List<BattleObject> getUnits(List<MapObject> objects){
+    public static List<BattleObject> getUnits(List<MapObject> objects) {
         return objects.stream().filter(it -> it instanceof BattleObject).map(it -> (BattleObject) it).collect(Collectors.toList());
     }
 
-    public static boolean remove(GameContainer game, MapObject object){
+    public static boolean remove(GameContainer game, MapObject object) {
         Player owner = object.getOwner();
         object.getLocation().getInhabitants().remove(object);
         if (owner == null) {
-           return  game.getObjects().remove(object);
+            return game.getObjects().remove(object);
         } else {
-           return owner.getUnits().remove(object);
+            return owner.getUnits().remove(object);
         }
+    }
+
+    public static void place(MapObject object, Location location) {
+        Location previous = object.getLocation();
+        if (previous != null) {
+            previous.getInhabitants().remove(object);
+        }
+        object.setLocation(location);
+        location.getInhabitants().add(object);
     }
 }

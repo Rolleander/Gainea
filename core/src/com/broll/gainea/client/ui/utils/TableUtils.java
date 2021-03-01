@@ -7,7 +7,9 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.broll.gainea.client.AudioPlayer;
 
 public class TableUtils {
 
@@ -22,11 +24,11 @@ public class TableUtils {
     }
 
     public static Button textButton(Skin skin, String text, ActionListener listener) {
-        Button button = new Button(skin);
-        button.add(LabelUtils.label(skin, text));
+        TextButton button = new TextButton(text, skin);
         button.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                AudioPlayer.playSound("button.ogg");
                 listener.action();
                 event.stop();
             }
@@ -35,7 +37,7 @@ public class TableUtils {
     }
 
     public static Actor removeAfter(Actor widget, float delay) {
-        widget.addAction(Actions.delay(delay, Actions.removeActor()));
+        widget.addAction(Actions.delay(delay, Actions.sequence(Actions.fadeIn(0.3f), Actions.removeActor())));
         return widget;
     }
 

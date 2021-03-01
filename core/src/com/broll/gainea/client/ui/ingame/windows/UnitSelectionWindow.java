@@ -15,6 +15,10 @@ import com.broll.gainea.client.ui.utils.LabelUtils;
 import com.broll.gainea.client.ui.ingame.unit.MenuUnit;
 import com.broll.gainea.client.ui.utils.TableUtils;
 import com.broll.gainea.net.NT_Unit;
+import com.broll.gainea.server.core.map.Area;
+import com.broll.gainea.server.core.map.AreaCollection;
+import com.broll.gainea.server.core.map.Continent;
+import com.broll.gainea.server.core.map.Island;
 import com.broll.gainea.server.core.map.Location;
 
 import java.util.ArrayList;
@@ -27,12 +31,23 @@ import java.util.stream.Collectors;
 public class UnitSelectionWindow {
 
     public static Table create(Gainea game, Skin skin, Location location, Collection<MapObjectRender> stack) {
-        List<NT_Unit> units = stack.stream().map(MapObjectRender::getObject).filter(it -> it instanceof NT_Unit).map(it -> (NT_Unit) it).collect(Collectors.toList());
+        List<NT_Unit> units = stack.stream().sorted((a, b) -> Integer.compare(a.getRank(), b.getRank())).
+                map(MapObjectRender::getObject).filter(it -> it instanceof NT_Unit).map(it -> (NT_Unit) it).collect(Collectors.toList());
         Table window = new Table(skin);
         window.pad(10);
         window.setBackground("menu-bg");
         window.top();
-        window.add(LabelUtils.label(skin, location.toString())).padBottom(5).row();
+        window.add(LabelUtils.label(skin, location.toString())).row();
+        if (location instanceof Area) {
+            AreaCollection container = location.getContainer();
+            String name = container.getName();
+            if (container instanceof Island) {
+                name = "Insel: "+name;
+            } else if (container instanceof Continent) {
+                name = "Kontinent: "+name;
+            }
+            window.add(LabelUtils.info(skin, name)).padTop(0).padBottom(10).row();
+        }
         window.row();
         int count = units.size();
         if (count > 1) {

@@ -151,7 +151,7 @@ public abstract class AbstractOccupyGoal extends AbstractGoal {
 
     @Override
     public void check() {
-        Log.trace("chekc occupy goal ("+this+") for player "+player);
+        Log.trace("check occupy goal ("+this+") for player "+player);
         List<Location> occupiedLocations = player.getControlledLocations();
         for (Location location : locations) {
             Function<Location, Boolean> condition = conditions.get(location);

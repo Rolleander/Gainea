@@ -1,4 +1,4 @@
-package com.broll.gainea.client.game.sites;
+package com.broll.gainea.client.network.sites;
 
 import com.broll.gainea.net.NT_Battle_Start;
 import com.broll.gainea.net.NT_Battle_Update;
@@ -7,13 +7,8 @@ import com.broll.networklib.PackageReceiver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.broll.networklib.server.impl.ConnectionSite;
 import com.google.common.collect.Lists;
 
-import org.apache.commons.lang3.tuple.Pair;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
 import java.util.stream.Collectors;

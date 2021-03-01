@@ -29,6 +29,7 @@ public class MapFactory {
             case BASIC_GAME:
                 expansions.add(new GaineaMap());
         }
+        List<Pair<ExpansionFactory, Expansion>> set = expansions.stream().map(it -> Pair.of(it, it.create())).collect(Collectors.toList());
         expansions.forEach(map1 -> {
             expansions.forEach(map2 -> {
                 if (map1 != map2) {
@@ -36,7 +37,6 @@ public class MapFactory {
                 }
             });
         });
-        List<Pair<ExpansionFactory, Expansion>> set = expansions.stream().map(it -> Pair.of(it, it.create())).collect(Collectors.toList());
         List<Expansion> maps = set.stream().map(it -> it.getRight()).collect(Collectors.toList());
         AtomicInteger locationNumer = new AtomicInteger(0);
         maps.stream().flatMap(it -> it.getAllLocations().stream()).sorted((l1, l2) -> l1.getCoordinates().compareTo(l2.getCoordinates())).forEach(it -> it.setNumber(locationNumer.getAndIncrement()));

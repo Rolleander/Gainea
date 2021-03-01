@@ -34,7 +34,7 @@ public class BattleHandler {
     private final static Logger Log = LoggerFactory.getLogger(BattleHandler.class);
     private GameContainer game;
     private boolean battleActive = false;
-    private final static int BATTLE_ANIMATION_DELAY = 3000;
+    public final static int BATTLE_ANIMATION_DELAY = 3000;
     private ReactionActions reactionResult;
     private List<BattleObject> attackers;
     private List<BattleObject> defenders;
@@ -138,7 +138,7 @@ public class BattleHandler {
         } else if (aliveDefenders.isEmpty()) {
             state = NT_Battle_Update.STATE_ATTACKER_WON;
             //attackers won, move them to the fight location
-            attackers.forEach(attacker -> attacker.setLocation(battleLocation));
+            attackers.forEach(attacker -> GameUtils.place(attacker, battleLocation));
         }
         update.state = state;
         //send update

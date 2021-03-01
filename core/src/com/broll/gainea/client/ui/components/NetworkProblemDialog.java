@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -21,7 +22,7 @@ public class NetworkProblemDialog extends Table {
     private Gainea game;
 
     public NetworkProblemDialog(Gainea game, Skin skin, String message) {
-        this.game =game;
+        this.game = game;
         setFillParent(true);
         Table dialog = new Table(skin);
         dialog.pad(30, 20, 10, 20);
@@ -37,7 +38,7 @@ public class NetworkProblemDialog extends Table {
         addListener(new ClickListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                remove();
+                addAction(Actions.sequence(Actions.fadeOut(0.3f), Actions.removeActor()));
                 return true;
             }
         });
@@ -50,8 +51,8 @@ public class NetworkProblemDialog extends Table {
         Gdx.gl.glEnable(GL20.GL_BLEND);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
         game.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        game.shapeRenderer.setColor(0,0,0,0.5f);
-        game.shapeRenderer.rect(0,0,getWidth(),getHeight());
+        game.shapeRenderer.setColor(0, 0, 0, 0.5f);
+        game.shapeRenderer.rect(0, 0, getWidth(), getHeight());
         game.shapeRenderer.end();
         Gdx.gl.glDisable(GL20.GL_BLEND);
         batch.begin();

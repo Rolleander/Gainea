@@ -4,7 +4,9 @@ import com.broll.gainea.misc.EnumUtils;
 import com.broll.gainea.net.NT_LobbySettings;
 import com.broll.gainea.net.NT_PlayerChangeFraction;
 import com.broll.gainea.net.NT_PlayerReady;
+import com.broll.gainea.net.NT_UpdateLobbySettings;
 import com.broll.gainea.server.init.ExpansionSetting;
+import com.broll.gainea.server.init.GoalTypes;
 import com.broll.gainea.server.init.LobbyData;
 import com.broll.gainea.server.init.LobbyFactory;
 import com.broll.gainea.server.init.PlayerData;
@@ -24,7 +26,7 @@ public class GameLobbySite extends LobbyServerSite<LobbyData, PlayerData> {
 
     @Override
     public void init(LobbyGameServer<LobbyData, PlayerData> server, LobbyHandler<LobbyData, PlayerData> lobbyHandler) {
-        super.init(server,lobbyHandler);
+        super.init(server, lobbyHandler);
         this.lobbyHandler.setLobbyCreationRequestHandler(new ILobbyCreationRequest<LobbyData, PlayerData>() {
             @Override
             public ServerLobby<LobbyData, PlayerData> createNewLobby(Player<PlayerData> requester, String lobbyName, Object settings) {
@@ -54,6 +56,46 @@ public class GameLobbySite extends LobbyServerSite<LobbyData, PlayerData> {
                 getLobby().sendLobbyUpdate();
             }
         }
+    }
+
+    @PackageReceiver
+    @ConnectionRestriction(RestrictionType.LOBBY_UNLOCKED)
+    public void changeSettings(NT_UpdateLobbySettings nt) {
+        LobbyData data = getLobby().getData();
+        int value = nt.value;
+        switch (nt.setting) {
+            case NT_UpdateLobbySettings.SETTING_EXPANSIONS:
+                if (EnumUtils.inBounds(value, ExpansionType.class)) {
+                    data.setExpansionSetting(ExpansionSetting.values()[value]);
+                }
+                break;
+            case NT_UpdateLobbySettings.SETTING_GOAL_TYPES:
+                if (EnumUtils.inBounds(value, GoalTypes.class)) {
+                    data.setGoalTypes(GoalTypes.values()[value]);
+                }
+                break;
+            case NT_UpdateLobbySettings.SETTING_POINT_LIMIT:
+                if (value > 0) {
+                    data.setPointLimit(value);
+                }
+                break;
+            case NT_UpdateLobbySettings.SETTING_START_GOALS:
+                if (value > 0) {
+                    data.setStartGoals(value);
+                }
+                break;
+            case NT_UpdateLobbySettings.SETTING_START_LOCATIONS:
+                if (value > 0) {
+                    data.setStartLocations(value);
+                }
+                break;
+            case NT_UpdateLobbySettings.SETTING_MONSTERS:
+                if (value >= 0) {
+                    data.setMonsterCount(value);
+                }
+                break;
+        }
+        getLobby().sendLobbyUpdate();
     }
 
     @PackageReceiver

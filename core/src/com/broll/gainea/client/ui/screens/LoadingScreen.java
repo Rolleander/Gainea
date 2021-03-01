@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.broll.gainea.client.AudioPlayer;
 import com.broll.gainea.client.ui.AbstractScreen;
 
 public class LoadingScreen extends AbstractScreen {
@@ -48,6 +49,7 @@ public class LoadingScreen extends AbstractScreen {
     }
 
     private void loadingDone() {
+        AudioPlayer.init(game.assets);
         game.ui.assetsLoaded();
         game.ui.showScreen(startScreen);
     }

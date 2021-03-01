@@ -1,12 +1,16 @@
 package com.broll.gainea.client.ui.ingame.battle;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.scenes.scene2d.Event;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.broll.gainea.Gainea;
+import com.broll.gainea.client.AudioPlayer;
 import com.broll.gainea.client.ui.utils.LabelUtils;
 import com.broll.gainea.client.ui.components.Popup;
 import com.broll.gainea.client.ui.ingame.map.MapObjectRender;
@@ -45,9 +49,11 @@ public class BattleHandler {
         if (battleBoard != null) {
             battleBoard.remove();
         }
+        AudioPlayer.playSound("battle.ogg");
         this.attackers = attackers;
         this.defenders = defenders;
         battleBoard = new BattleBoard(location);
+        battleBoard.addAction(Actions.sequence(Actions.alpha(0), Actions.fadeIn(0.3f)));
         battleBoard.setSize(1000, 800);
         return battleBoard;
     }
@@ -122,11 +128,17 @@ public class BattleHandler {
 
     private void battleEnd(String text) {
         Popup popup = new Popup(skin, LabelUtils.title(game.ui.skin, text));
-        popup.addAction(Actions.delay(2, Actions.run(() -> {
-            battleBoard.remove();
+        popup.addAction(Actions.delay(com.broll.gainea.server.core.battle.BattleHandler.BATTLE_ANIMATION_DELAY, Actions.run(() -> {
+            clearBattleScreen();
             game.state.turnIdle();
         })));
         battleBoard.add(popup).padTop(100).top();
+    }
+
+    public void clearBattleScreen() {
+        if (battleBoard != null) {
+            battleBoard.addAction(Actions.sequence(Actions.fadeOut(0.5f), Actions.removeActor()));
+        }
     }
 
     private void sendBattleResponse(Table dialog, boolean continueFight) {
@@ -152,8 +164,8 @@ public class BattleHandler {
                 backgroundNr = ((Area) location).getType().ordinal() + 1;
             }
             setBackground(new TextureRegionDrawable(TextureUtils.battleBackground(game, backgroundNr)));
-            attackerRenders = attackers.stream().map(it -> (UnitRender) MapObjectRender.createRender(game, skin, it)).collect(Collectors.toList());
-            defenderRenders = defenders.stream().map(it -> (UnitRender) MapObjectRender.createRender(game, skin, it)).collect(Collectors.toList());
+            attackerRenders = attackers.stream().map(it -> (UnitRender) MapObjectRender.createRender(game, skin, it)).sorted((a, b) -> Integer.compare(a.getRank(), b.getRank())).collect(Collectors.toList());
+            defenderRenders = defenders.stream().map(it -> (UnitRender) MapObjectRender.createRender(game, skin, it)).sorted((a, b) -> Integer.compare(a.getRank(), b.getRank())).collect(Collectors.toList());
             attackerRenders.forEach(it -> {
                 it.setAlwaysDrawPlate(true);
             });
@@ -172,6 +184,8 @@ public class BattleHandler {
         public void act(float delta) {
             super.act(delta);
             rollRender.update(delta);
+            attackerRenders.forEach(it -> it.act(delta));
+            defenderRenders.forEach(it -> it.act(delta));
         }
 
         @Override
@@ -182,7 +196,7 @@ public class BattleHandler {
             float rx = getX() + getWidth() - 150;
             renderUnits(batch, defenderRenders, rx, startY, -175);
             float rollY = startY + 70;
-            rollRender.render(batch, getX() + getWidth() / 2, rollY);
+            rollRender.render(batch, getX() + getWidth() / 2, rollY, parentAlpha);
             super.drawChildren(batch, parentAlpha);
         }
 
@@ -204,9 +218,7 @@ public class BattleHandler {
             //draw reverse order
             for (int i = count - 1; i >= 0; i--) {
                 UnitRender render = units.get(i);
-                if (render.isVisible()) {
-                    render.draw(batch, 1);
-                }
+                render.draw(batch, 1);
             }
         }
     }

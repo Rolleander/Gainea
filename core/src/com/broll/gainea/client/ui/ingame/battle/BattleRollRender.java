@@ -39,7 +39,7 @@ public class BattleRollRender {
         rollwin = new TextureRegion(rolls, 1 * rs, 0, rs, rs);
         rolllose = new TextureRegion(rolls, 2 * rs, 0, rs, rs);
         numberLabel = LabelUtils.info(skin, "");
-        rollSound = game.assets.get("sounds/roll.ogg", Sound.class);
+        rollSound = game.assets.get("roll.ogg", Sound.class);
     }
 
     public void start(int[] attackRolls, int[] defenderRolls, IRollAnimationListener listener) {
@@ -82,10 +82,10 @@ public class BattleRollRender {
         }
     }
 
-    public void render(Batch batch, float x, float y) {
+    public void render(Batch batch, float x, float y, float parentAlpha) {
         if (attacker != null && defender != null) {
-            attacker.render(batch, defender, x - 50, y);
-            defender.render(batch, attacker, x + 50, y);
+            attacker.render(batch, defender, x - 50, y, parentAlpha);
+            defender.render(batch, attacker, x + 50, y, parentAlpha);
         }
     }
 
@@ -117,7 +117,7 @@ public class BattleRollRender {
             this.currentRolls = Arrays.stream(currentRolls).map(it -> MathUtils.random(1, 6)).toArray();
         }
 
-        private void render(Batch batch, Rolls opposingRolls, float x, float y) {
+        private void render(Batch batch, Rolls opposingRolls, float x, float y, float parentAlpha) {
             int total = Math.max(this.rolls.length, opposingRolls.rolls.length);
             float deltaY = 760 / (float) total;
             for (int i = 0; i < rolls.length; i++) {
@@ -131,10 +131,11 @@ public class BattleRollRender {
                 } else if (state[i] == 2) {
                     back = rolllose;
                 }
+                batch.setColor(1,1,1,parentAlpha);
                 batch.draw(back, x - 7, y - 10);
                 numberLabel.setText("" + roll);
                 numberLabel.setPosition(x, y);
-                numberLabel.draw(batch, 1);
+                numberLabel.draw(batch, parentAlpha);
                 y -= deltaY;
             }
         }

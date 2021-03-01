@@ -1,5 +1,6 @@
 package com.broll.gainea.client.ui.ingame.map;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -30,6 +31,8 @@ public class MapObjectRender extends Actor {
     protected boolean stackTop = true;
     private Location location;
     private TextureRegion icon;
+    private float stackHeight;
+    protected Color renderColor = new Color();
 
     public MapObjectRender(Gainea game, Skin skin, NT_BoardObject object) {
         this.game = game;
@@ -37,6 +40,14 @@ public class MapObjectRender extends Actor {
         setSize(R * 2, R * 2);
         init();
         icon = TextureUtils.unitIcon(game, object.icon);
+    }
+
+    public int getRank(){
+        if(object instanceof NT_Unit){
+            NT_Unit unit = (NT_Unit) object;
+            return unit.power + unit.maxHealth;
+        }
+        return 0;
     }
 
     public void selectionListener() {
@@ -69,9 +80,13 @@ public class MapObjectRender extends Actor {
         return null;
     }
 
-    public void setStack(Collection<MapObjectRender> stack, boolean top) {
+    public void setStack(Collection<MapObjectRender> stack, float stackHeight) {
         this.stack = stack;
-        this.stackTop = top;
+        this.stackHeight = stackHeight;
+    }
+
+    public void setStackTop(boolean stackTop) {
+        this.stackTop = stackTop;
     }
 
     protected void init() {
@@ -89,8 +104,14 @@ public class MapObjectRender extends Actor {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
+        calcRenderColor(parentAlpha);
+        batch.setColor(renderColor);
         batch.draw(chip, getX() - R, getY() - R);
         batch.draw(icon, getX() - R + 9, getY() - R + 9);
+    }
+
+    protected void calcRenderColor(float parentAlpha){
+        renderColor.set(this.getColor()).mul(1,1,1,parentAlpha);
     }
 
     public NT_BoardObject getObject() {
@@ -109,5 +130,13 @@ public class MapObjectRender extends Actor {
 
     public void setLocation(Location location) {
         this.location = location;
+    }
+
+    public float getStackHeight() {
+        return stackHeight;
+    }
+
+    public Location getLocation() {
+        return location;
     }
 }

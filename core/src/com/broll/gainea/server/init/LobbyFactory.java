@@ -10,6 +10,7 @@ public class LobbyFactory {
         data.setExpansionSetting(expansionSetting);
         lobby.setData(data);
         lobby.setListener(new LobbyListener());
+        lobby.setPlayerLimit(9);
     }
 
 }

@@ -18,9 +18,9 @@ public class Popup extends Table {
         super(skin);
         setBackground("menu-bg");
         pad(10, 20, 10, 20);
-        addAction(Actions.fadeIn(0.3f));
+        addAction(Actions.sequence(Actions.alpha(0), Actions.fadeIn(0.3f)));
         if (removeAfter > 0) {
-            addAction(Actions.delay(removeAfter, Actions.removeActor()));
+            addAction(Actions.delay(removeAfter, Actions.sequence(Actions.fadeOut(0.3f), Actions.removeActor())));
         }
         add(content);
     }

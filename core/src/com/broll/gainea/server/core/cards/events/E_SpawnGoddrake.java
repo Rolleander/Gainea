@@ -16,7 +16,9 @@ public class E_SpawnGoddrake extends EventCard {
     protected void play() {
         GodDragon dragon = new GodDragon();
         Location location = LocationUtils.getRandomFree(game.getMap().getAllAreas());
-        UnitControl.spawn(game, dragon, location);
+        UnitControl.spawn(game, dragon, location, nt->{
+            nt.sound = "goddrake.ogg";
+        });
     }
 
     public static boolean isGoddrakeAlive(GameContainer game) {

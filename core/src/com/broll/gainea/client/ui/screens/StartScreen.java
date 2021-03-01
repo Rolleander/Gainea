@@ -3,6 +3,7 @@ package com.broll.gainea.client.ui.screens;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -12,8 +13,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
+import com.broll.gainea.client.AudioPlayer;
 import com.broll.gainea.client.ui.AbstractScreen;
 import com.broll.gainea.client.ui.utils.LabelUtils;
+import com.broll.gainea.client.ui.utils.TableUtils;
 import com.broll.networklib.client.impl.GameLobby;
 import com.broll.networklib.client.tasks.DiscoveredLobbies;
 
@@ -23,9 +26,13 @@ public class StartScreen extends AbstractScreen {
     private TextField name;
     private Table lobbies;
 
-    private TextButton discover, connect;
+    private Button discover, connect;
     private boolean connecting = false;
     private Label loadingInfo;
+
+    private static String PLAYER_NAME = "tester";
+   private static String SERVER = "localhost";
+           //"gainea.de";
 
     public StartScreen() {
 
@@ -34,6 +41,8 @@ public class StartScreen extends AbstractScreen {
     private void joinLobby(GameLobby lobby) {
         String name = this.name.getText();
         if (name != null && name.trim().length() > 0) {
+            PLAYER_NAME = name;
+            SERVER = serverIp.getText();
             game.client.joinLobby(name, lobby);
         }
     }
@@ -51,6 +60,7 @@ public class StartScreen extends AbstractScreen {
             table.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
+                    AudioPlayer.playSound("button.ogg");
                     joinLobby(lobby);
                 }
             });
@@ -69,12 +79,13 @@ public class StartScreen extends AbstractScreen {
 
     @Override
     public Actor build() {
+        AudioPlayer.playSong("celtic.mp3");
         loadingInfo = info("");
         loadingInfo.setAlignment(Align.center);
         loadingInfo.setVisible(false);
         //"192.168.0.137"
-        serverIp = new TextField("gainea.de", skin);
-        name = new TextField("", skin);
+        serverIp = new TextField(SERVER, skin);
+        name = new TextField(PLAYER_NAME, skin);
         Table vg = new Table();
         vg.setFillParent(true);
         vg.setBackground(new TextureRegionDrawable(game.assets.get("textures/title.png", Texture.class)));
@@ -86,13 +97,9 @@ public class StartScreen extends AbstractScreen {
         table.add(name).padRight(100);
         table.add(label("Server")).padRight(20);
         table.add(serverIp);
-        connect = new TextButton("Connect", skin);
-        connect.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                lobbies.clear();
-                game.client.listLobbies(serverIp.getText());
-            }
+        connect = TableUtils.textButton(skin,"Connect", ()->{
+            lobbies.clear();
+            game.client.listLobbies(serverIp.getText());
         });
         table.add(connect).align(Align.center).colspan(2);
         table.row().padTop(20);

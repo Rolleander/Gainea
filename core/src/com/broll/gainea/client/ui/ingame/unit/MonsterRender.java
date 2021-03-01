@@ -1,5 +1,6 @@
 package com.broll.gainea.client.ui.ingame.unit;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -23,6 +24,8 @@ public class MonsterRender extends UnitRender {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
+        calcRenderColor(parentAlpha);
+        batch.setColor(renderColor);
         //draw star plate
         if (shouldDrawPlate()) {
             batch.draw(starPlate, getX() - MapObjectRender.R - 26, getY() - MapObjectRender.R + 48);

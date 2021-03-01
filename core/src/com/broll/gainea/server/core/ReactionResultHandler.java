@@ -1,5 +1,6 @@
 package com.broll.gainea.server.core;
 
+import com.broll.gainea.net.NT_PlayerTurnActions;
 import com.broll.gainea.net.NT_PlayerTurnStart;
 import com.broll.gainea.net.NT_PlayerWait;
 import com.broll.gainea.net.NT_Event_TextInfo;
@@ -80,7 +81,9 @@ public class ReactionResultHandler implements ReactionActions {
         fraction.prepareTurn(actionsHandler);
         //send turn actions to player
         player.getUnits().forEach(MapObject::turnStart);
-        player.getServerPlayer().sendTCP(game.getTurnBuilder().build(player));
+        NT_PlayerTurnActions turn = game.getTurnBuilder().build(player);
+        Log.trace("Send optional turn actions ("+turn.actions.length+") to player "+player);
+        player.getServerPlayer().sendTCP(turn);
         //do fraction turn started
         fraction.turnStarted(actionsHandler);
     }

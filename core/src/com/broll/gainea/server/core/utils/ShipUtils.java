@@ -13,17 +13,17 @@ import java.util.stream.Collectors;
 public class ShipUtils {
 
     public static Area targetLocation(Ship ship) {
-        Location to;
+        Location to = ship;
         do {
-            to = ship.getTo();
+            to = ((Ship) to).getTo();
         } while (to instanceof Ship);
         return (Area) to;
     }
 
     public static Area sourceLocation(Ship ship) {
-        Location from;
+        Location from = ship;
         do {
-            from = ship.getFrom();
+            from = ((Ship) from).getFrom();
         } while (from instanceof Ship);
         return (Area) from;
     }

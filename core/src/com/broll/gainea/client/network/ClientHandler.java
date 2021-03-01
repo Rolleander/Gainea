@@ -1,22 +1,23 @@
-package com.broll.gainea.client.game;
+package com.broll.gainea.client.network;
 
 import com.badlogic.gdx.Gdx;
 import com.broll.gainea.Gainea;
-import com.broll.gainea.client.IClientListener;
-import com.broll.gainea.client.game.sites.GameActionSite;
-import com.broll.gainea.client.game.sites.GameBattleSite;
-import com.broll.gainea.client.game.sites.GameBoardSite;
-import com.broll.gainea.client.game.sites.GameEventSite;
-import com.broll.gainea.client.game.sites.GameStateSite;
-import com.broll.gainea.client.game.sites.GameTurnSite;
+import com.broll.gainea.client.game.GameState;
+import com.broll.gainea.client.network.sites.GameActionSite;
+import com.broll.gainea.client.network.sites.GameBattleSite;
+import com.broll.gainea.client.network.sites.GameBoardSite;
+import com.broll.gainea.client.network.sites.GameEventSite;
+import com.broll.gainea.client.network.sites.GameStateSite;
+import com.broll.gainea.client.network.sites.GameTurnSite;
 import com.broll.gainea.server.init.NetworkSetup;
 import com.broll.networklib.client.ClientSite;
 import com.broll.networklib.client.LobbyGameClient;
 import com.broll.networklib.client.impl.GameLobby;
-import com.broll.networklib.server.impl.ConnectionSite;
 import com.broll.networklib.site.SiteReceiver;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import com.google.common.collect.Lists;
 
 import java.lang.reflect.Method;
@@ -33,8 +34,10 @@ public class ClientHandler {
     private ExecutorService executor = Executors.newSingleThreadExecutor();
     private boolean clientBusy = false;
     private IClientListener clientListener;
+    private Gainea game;
 
     public ClientHandler(Gainea game) {
+        this.game = game;
         client = new LobbyGameClient(NetworkSetup::registerNetwork);
         client.setSiteReceiver(new SiteReceiver<ClientSite, com.broll.networklib.client.GameClient.ClientConnection>() {
             @Override
@@ -47,8 +50,6 @@ public class ClientHandler {
     }
 
     public void initGameSites(Gainea game) {
-        GameState state = new GameState(game);
-        game.state = state;
         client.clearSites();
         GameActionSite actionSite = new GameActionSite();
         Lists.newArrayList(actionSite, new GameBattleSite(), new GameBoardSite(), new GameEventSite(), new GameStateSite(), new GameTurnSite(actionSite)).forEach(site -> {
@@ -70,12 +71,19 @@ public class ClientHandler {
     }
 
     private void connectedLobby(GameLobby lobby) {
+        listenLobbyUpdates(lobby);
         runOnGdx(() -> clientListener.connectedLobby(lobby));
     }
 
     public void reconnectCheck() {
         clientExecute(() -> client.reconnectCheck(), lobby -> {
+            //joins game directly, so dont call join lobby listener , will receive a game reconnect message in site and open game directly
+            listenLobbyUpdates(lobby);
         }, "Unable to reconnect to lobby");
+    }
+
+    private void listenLobbyUpdates(GameLobby lobby) {
+        lobby.setLobbyUpdateListener(new ClientLobbyListener(game));
     }
 
     private void runOnGdx(Runnable runnable) {

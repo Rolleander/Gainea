@@ -23,7 +23,8 @@ public class GaineaMap extends ExpansionFactory {
     }
 
     public enum Areas implements AreaID {
-        KUESTENGEBIET, FELSWALD, FELSENWUESTE, GRUENLAND, XOMDELTA, WEIDESTEPPE, GROSSEWUESTE, DUNKLESMEER, KIESSTRAND, HIENGLAND, ZWINGSEE, KORBERG, MOORKUESTE, MOOR, MOORWUESTE, MOORTEICH, GROSSES_FELSGEBIRGE, UFERLAND, LANDSTRAND, MANMAWUESTE, GROSSE_STEPPE, MITSUMA_SEE, VULKANINSEL, VULKANBERG, TOTEMGEBIRGE, MISTRAWUESTE
+        KUESTENGEBIET, FELSWALD, FELSENWUESTE, GRUENLAND, XOMDELTA, WEIDESTEPPE, GROSSEWUESTE, DUNKLESMEER, KIESSTRAND, HIENGLAND, ZWINGSEE, KORBERG, MOORKUESTE, MOOR,
+        MOORWUESTE, MOORTEICH, GROSSES_FELSGEBIRGE, UFERLAND, LANDSTRAND, MANMAWUESTE, GROSSE_STEPPE, MITSUMA_SEE, VULKANINSEL, VULKANBERG, TOTEMGEBIRGE, MISTRAWUESTE
     }
 
     public GaineaMap() {
@@ -44,11 +45,6 @@ public class GaineaMap extends ExpansionFactory {
         totemInsel();
         mistraInsel();
         ships();
-    }
-
-    @Override
-    protected void connectWithExpansion(ExpansionFactory expansion) {
-
     }
 
     private void gainea() {
@@ -158,6 +154,15 @@ public class GaineaMap extends ExpansionFactory {
         ship(TOTEMGEBIRGE, KIESSTRAND, 42.7f, 70.7f);
         //from mistrainsel
         ship(MISTRAWUESTE, MOORWUESTE, 79.7f, 63.7f);
+    }
+
+
+    @Override
+    protected void connectWithExpansion(ExpansionFactory expansion) {
+        if(expansion instanceof IcelandMap){
+            ships(UFERLAND, IcelandMap.Areas.GRASSUMPF, new float[]{9.7f, -2f}, new float[]{29.4f, 27.4f});
+            ships(MANMAWUESTE, IcelandMap.Areas.SCHOLL, new float[]{10.9f, 6.3f,-5.5f}, new float[]{45, 46.5f,48.1f});
+        }
     }
 
 }

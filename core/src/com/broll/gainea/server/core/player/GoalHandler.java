@@ -1,4 +1,4 @@
-package com.broll.gainea.server.core.goals;
+package com.broll.gainea.server.core.player;
 
 import com.broll.gainea.net.NT_Card;
 import com.broll.gainea.net.NT_Event_OtherPlayerReceivedGoal;
@@ -8,6 +8,7 @@ import com.broll.gainea.net.NT_Event_ReceivedStars;
 import com.broll.gainea.net.NT_Goal;
 import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.cards.AbstractCard;
+import com.broll.gainea.server.core.goals.AbstractGoal;
 import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.server.core.utils.GameUtils;
 import com.broll.gainea.server.core.utils.ProcessingUtils;
@@ -71,6 +72,7 @@ public class GoalHandler {
         this.goals.add(goal);
         game.getUpdateReceiver().register(goal);
         NT_Event_ReceivedGoal nt = new NT_Event_ReceivedGoal();
+        nt.sound = "chime.ogg";
         nt.goal = goal.nt();
         NT_Event_OtherPlayerReceivedGoal nt2 = new NT_Event_OtherPlayerReceivedGoal();
         nt2.player = player.getServerPlayer().getId();

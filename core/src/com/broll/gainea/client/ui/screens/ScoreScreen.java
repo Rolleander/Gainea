@@ -49,7 +49,7 @@ public class ScoreScreen extends AbstractScreen {
         lobbyTable.defaults().left();
         lobbyTable.defaults().spaceRight(100);
         window.add(lobbyTable).fill().expand().colspan(2).row();
-        window.add(new GameChat(skin, this.game.client.getClient().getConnectedLobby())).expandX().fillX();
+        window.add(new GameChat(skin, this.game.client.getClient().getConnectedLobby())).colspan(2).expandX().fillX();
         vg.add(window).expand().fill();
         return vg;
     }
