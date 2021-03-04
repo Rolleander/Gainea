@@ -6,6 +6,7 @@ import com.broll.gainea.Gainea;
 import com.broll.gainea.client.ui.ingame.map.MapScrollUtils;
 import com.broll.gainea.client.ui.ingame.actions.RequiredActionContainer;
 import com.broll.gainea.client.ui.ingame.map.MapObjectRender;
+import com.broll.gainea.client.ui.utils.ArrayConversionUtils;
 import com.broll.gainea.client.ui.utils.LabelUtils;
 import com.broll.gainea.client.ui.ingame.map.MapAction;
 import com.broll.gainea.client.ui.utils.TableUtils;
@@ -13,6 +14,8 @@ import com.broll.gainea.net.NT_Action;
 import com.broll.gainea.net.NT_Action_PlaceUnit;
 import com.broll.gainea.net.NT_Unit;
 import com.broll.gainea.server.core.map.Location;
+
+import org.apache.commons.lang3.ArrayUtils;
 
 public class PlaceUnitWindow {
 
@@ -24,8 +27,8 @@ public class PlaceUnitWindow {
         MapObjectRender render = MapObjectRender.createRender(game, skin, unit);
         window.add(render).spaceRight(10);
         window.add(LabelUtils.label(skin, unit.name));
-        showLocationMapActions(game, action.possibleLocations, action, container);
-        MapScrollUtils.showLocations(game, action.possibleLocations);
+        showLocationMapActions(game, ArrayConversionUtils.toInt(action.possibleLocations), action, container);
+        MapScrollUtils.showLocations(game, ArrayConversionUtils.toInt(action.possibleLocations));
         TableUtils.consumeClicks(window);
         return window;
     }

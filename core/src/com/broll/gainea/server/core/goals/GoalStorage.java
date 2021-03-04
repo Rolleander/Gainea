@@ -74,14 +74,12 @@ public class GoalStorage {
     }
 
     public AbstractGoal newGoal(Player forPlayer, Function<AbstractGoal, Boolean> condition) {
-        Log.debug("Try to find new goal for " + forPlayer);
         for (Class clazz : goalClasses) {
             AbstractGoal goal = loader.instantiate(clazz);
             if (goalTypes.contains(goal.getDifficulty())) {
                 if (goal.init(game, forPlayer)) {
                     if (condition.apply(goal)) {
                         goalClasses.remove(clazz);
-                        Log.debug("Found goal " + goal);
                         return goal;
                     }
                 }

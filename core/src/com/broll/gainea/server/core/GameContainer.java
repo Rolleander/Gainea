@@ -66,9 +66,10 @@ public class GameContainer {
         this.map = new MapContainer(lobby.getData().getExpansionSetting());
         this.players = PlayerFactory.create(this, lobby.getPlayers());
         this.monsterFactory = new MonsterFactory();
-        this.statistic = new GameStatistic(this);
         this.buffProcessor = new BuffProcessor(this);
+        this.statistic = new GameStatistic(this);
         this.gameUpdateReceiver.register(new TurnEvents(this));
+        this.gameUpdateReceiver.register(statistic);
     }
 
     public void initHandlers(ReactionActions reactionResult) {
@@ -87,7 +88,7 @@ public class GameContainer {
     }
 
     public synchronized void pushAction(ActionContext action) {
-        action.getAction().actionId = actionCounter;
+        action.getAction().actionId = (short) actionCounter;
         actions.put(actionCounter, action);
         actionCounter++;
     }
@@ -108,16 +109,18 @@ public class GameContainer {
         NT_StartGame startGame = new NT_StartGame();
         fillUpdate(startGame);
         startGame.expansionsSetting = map.getExpansionSetting().ordinal();
+        startGame.pointLimit =lobby.getData().getPointLimit();
         return startGame;
     }
 
     public void end() {
-        Log.debug("Gamend called");
+        Log.trace("Gamend called");
         processingCore.execute(() -> {
-            Log.debug("Process gameend");
+            Log.trace("Process gameend");
             NT_GameOver gameOver = new NT_GameOver();
             fillUpdate(gameOver);
             reactionHandler.getActionHandlers().getReactionActions().sendGameUpdate(gameOver);
+            statistic.sendStatistic();
             lobby.unlock();
             lobby.getData().setGame(null);
         }, 2000);
@@ -131,11 +134,12 @@ public class GameContainer {
         reconnectGame.expansionsSetting = map.getExpansionSetting().ordinal();
         reconnectGame.cards = player.getCardHandler().ntCards();
         reconnectGame.goals = player.getGoalHandler().ntGoals();
+        reconnectGame.pointLimit =lobby.getData().getPointLimit();
         return reconnectGame;
     }
 
     private void fillUpdate(NT_BoardUpdate update) {
-        update.turns = rounds;
+        update.turns = (short) rounds;
         update.players = players.stream().map(Player::nt).toArray(NT_Player[]::new);
         update.objects = objects.stream().map(MapObject::nt).toArray(NT_BoardObject[]::new);
     }
@@ -151,7 +155,6 @@ public class GameContainer {
         currentPlayer++;
         if (currentPlayer >= players.size()) {
             currentPlayer = 0;
-            statistic.nextTurn();
             rounds++;
         }
         return players.get(currentPlayer);

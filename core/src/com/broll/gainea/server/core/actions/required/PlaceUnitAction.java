@@ -11,6 +11,7 @@ import com.broll.gainea.net.NT_Reaction;
 import com.broll.gainea.server.core.actions.AbstractActionHandler;
 import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.player.Player;
+import com.broll.gainea.server.core.utils.LocationUtils;
 import com.broll.gainea.server.core.utils.UnitControl;
 import com.broll.networklib.server.impl.ConnectionSite;
 
@@ -70,7 +71,7 @@ public class PlaceUnitAction extends AbstractActionHandler<NT_Action_PlaceUnit, 
         Log.debug("Place unit action");
         NT_Action_PlaceUnit placeUnit = new NT_Action_PlaceUnit();
         placeUnit.unitToPlace = object.nt();
-        placeUnit.possibleLocations = locations.stream().mapToInt(Location::getNumber).toArray();
+        placeUnit.possibleLocations = LocationUtils.getLocationNumbers(locations);
         Context context = new Context(placeUnit);
         context.locations = locations;
         context.unitToPlace = object;

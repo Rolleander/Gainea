@@ -63,13 +63,15 @@ public class GameTurnSite extends AbstractGameSite {
 
     @PackageReceiver
     public void received(NT_PlayerWait wait) {
-        //other players turn
-        game.state.playerTurnEnded();
+        //other players turn or event
+        game.state.updateIdleState(false);
         LobbyPlayer otherPlayer = getLobby().getPlayer(wait.playersTurn);
-        game.ui.inGameUI.getRoundInformation().setPlayer(otherPlayer.getName());
+        if (otherPlayer != null) {
+            game.state.playerTurnEnded();
+            game.ui.inGameUI.getRoundInformation().setPlayer(otherPlayer.getName());
+            turnStartMessage(otherPlayer);
+        }
         actions.clear();
-        turnStartMessage(otherPlayer);
-
     }
 
     private void turnStartMessage(LobbyPlayer turnPlayer) {

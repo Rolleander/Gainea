@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.broll.gainea.Gainea;
+import com.broll.gainea.client.game.ClientMapContainer;
 import com.broll.gainea.client.game.GameState;
 import com.broll.gainea.client.network.sites.GameEventSite;
 import com.broll.gainea.client.ui.AbstractScreen;
@@ -40,7 +41,8 @@ public class TestMapScreen extends AbstractScreen {
 
     @Override
     public Actor build() {
-        game.state.init(ExpansionSetting.FULL, null);
+//        ClientMapContainer.RENDER_DEBUG = true;
+        game.state.init(ExpansionSetting.PLUS_ICELANDS, null);
         game.ui.initInGameUi();
         game.ui.inGameUI.show();
         game.state.getMap().displayRenders();

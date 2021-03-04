@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.broll.gainea.client.ui.AbstractScreen;
 import com.broll.gainea.client.ui.components.GameChat;
 import com.broll.gainea.net.NT_GameOver;
+import com.broll.gainea.net.NT_GameStatistic;
 import com.broll.networklib.client.impl.GameLobby;
 
 import org.apache.commons.lang3.StringUtils;
@@ -28,6 +29,7 @@ public class ScoreScreen extends AbstractScreen {
 
     @Override
     public Actor build() {
+        NT_GameStatistic statistic = game.state.getStatistic();
         Table vg = new Table();
         vg.setFillParent(true);
         vg.center();

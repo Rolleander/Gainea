@@ -10,6 +10,7 @@ import com.broll.gainea.net.NT_Reaction;
 import com.broll.gainea.net.NT_Unit;
 import com.broll.gainea.server.core.actions.AbstractActionHandler;
 import com.broll.gainea.server.core.map.Location;
+import com.broll.gainea.server.core.utils.LocationUtils;
 import com.broll.gainea.server.core.utils.PlayerUtils;
 import com.broll.networklib.server.impl.ConnectionSite;
 
@@ -34,7 +35,7 @@ public class AttackAction extends AbstractActionHandler<NT_Action_Attack, Attack
     public Context attack(List<BattleObject> attackers, Collection<Location> attackLocations) {
         NT_Action_Attack action = new NT_Action_Attack();
         action.units = attackers.stream().map(BattleObject::nt).toArray(NT_Unit[]::new);
-        action.attackLocations = attackLocations.stream().mapToInt(Location::getNumber).toArray();
+        action.attackLocations = LocationUtils.getLocationNumbers(attackLocations);
         Context context = new Context(action);
         context.attackers = attackers;
         context.armyLocation = attackers.get(0).getLocation();

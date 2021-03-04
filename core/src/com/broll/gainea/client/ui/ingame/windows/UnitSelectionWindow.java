@@ -51,9 +51,9 @@ public class UnitSelectionWindow {
         window.row();
         int count = units.size();
         if (count > 1) {
-            int power = units.stream().map(u -> u.power).reduce(0, Integer::sum).intValue();
-            int health = units.stream().map(u -> u.health).reduce(0, Integer::sum).intValue();
-            int maxHealth = units.stream().map(u -> u.maxHealth).reduce(0, Integer::sum).intValue();
+            int power = units.stream().map(u -> (int)u.power).reduce(0, Integer::sum).intValue();
+            int health = units.stream().map(u -> (int)u.health).reduce(0, Integer::sum).intValue();
+            int maxHealth = units.stream().map(u -> (int)u.maxHealth).reduce(0, Integer::sum).intValue();
             window.add(new Label("Einheiten: " + count, skin)).left().padLeft(5).row();
             window.add(IconLabel.attack(game, skin, power)).left().padLeft(5).row();
             window.add(IconLabel.health(game, skin, health, maxHealth)).left().padLeft(5).row();

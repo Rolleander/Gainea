@@ -53,9 +53,9 @@ public abstract class AbstractCard {
 
     public NT_Card nt() {
         NT_Card card = new NT_Card();
-        card.id = id;
+        card.id = (short) id;
         card.text = text;
-        card.picture = picture;
+        card.picture = (short) picture;
         card.title = title;
         return card;
     }

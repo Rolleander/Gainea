@@ -18,6 +18,7 @@ public class G_StackUnits extends AbstractOccupyGoal {
 
     @Override
     public boolean init(GameContainer game, Player player) {
+        super.init(game, player);
         area = LocationPicker.pickRandom(game.getMap(), 1).get(0);
         text = "Besetze " + area.getName() + " mit mindestens " + COUNT + " Einheiten";
         initOccupations();

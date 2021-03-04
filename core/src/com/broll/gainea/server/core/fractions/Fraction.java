@@ -76,7 +76,7 @@ public abstract class Fraction extends GameUpdateReceiverAdapter {
 
     public FightingPower calcPower(Location location, List<BattleObject> fighters, List<BattleObject> enemies, boolean isAttacker) {
         FightingPower power = new FightingPower();
-        int dice = fighters.stream().map(it->it.getPower().getValue()).reduce(0, Integer::sum);
+        int dice = fighters.stream().map(it -> it.getPower().getValue()).reduce(0, Integer::sum);
         power.setDiceCount(dice);
         if (location instanceof Area) {
             powerMutatorArea(power, (Area) location);
@@ -93,7 +93,14 @@ public abstract class Fraction extends GameUpdateReceiverAdapter {
 
     protected boolean canMove(Location from, Location to) {
         if (to instanceof Ship) {
-            return ((Ship) to).passable(from);
+            if (!((Ship) to).passable(from)) {
+                return false;
+            }
+        }
+        if (from instanceof Ship) {
+            if (((Ship) from).getTo() != to) {
+                return false;
+            }
         }
         return true;
     }

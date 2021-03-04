@@ -23,7 +23,7 @@ public class LoadingScreen extends AbstractScreen {
         public void draw(Batch batch, float parentAlpha) {
 
             float progess = game.assets.getManager().getProgress();
-            game.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+            game.uiShapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
             float b = 50;
             float h = 50;
@@ -33,10 +33,10 @@ public class LoadingScreen extends AbstractScreen {
 
             float cw = MathUtils.lerp(0, w, progess);
 
-            game.shapeRenderer.setColor(Color.WHITE);
-            game.shapeRenderer.rect(b, y - h / 2, cw, h);
+            game.uiShapeRenderer.setColor(Color.WHITE);
+            game.uiShapeRenderer.rect(b, y - h / 2, cw, h);
 
-            game.shapeRenderer.end();
+            game.uiShapeRenderer.end();
         }
 
         @Override

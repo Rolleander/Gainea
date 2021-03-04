@@ -179,12 +179,12 @@ public abstract class BattleObject extends MapObject {
 
     protected void fillBattleObject(NT_Unit unit) {
         fillObject(unit);
-        unit.health = health.getValue();
-        unit.maxHealth = maxHealth.getValue();
-        unit.power = power.getValue();
-        unit.type = type;
+        unit.health = health.getValue().shortValue();
+        unit.maxHealth = maxHealth.getValue().shortValue();
+        unit.power = power.getValue().shortValue();
+        unit.type = (byte) type;
         if (owner != null) {
-            unit.owner = owner.getServerPlayer().getId();
+            unit.owner = (short) owner.getServerPlayer().getId();
         }
     }
 

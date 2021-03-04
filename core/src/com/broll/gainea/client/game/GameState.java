@@ -5,6 +5,7 @@ import com.broll.gainea.net.NT_Action;
 import com.broll.gainea.net.NT_BoardObject;
 import com.broll.gainea.net.NT_BoardUpdate;
 import com.broll.gainea.net.NT_Card;
+import com.broll.gainea.net.NT_GameStatistic;
 import com.broll.gainea.net.NT_Goal;
 import com.broll.gainea.net.NT_Player;
 import com.broll.gainea.net.NT_Unit;
@@ -41,6 +42,7 @@ public class GameState {
     private List<GameStateListener> stateListeners = new ArrayList<>();
     private boolean playersTurn;
     private boolean actionsAllowed;
+    private NT_GameStatistic statistic;
 
     public GameState(Gainea game) {
         this.game = game;
@@ -160,4 +162,11 @@ public class GameState {
         return player;
     }
 
+    public void setStatistic(NT_GameStatistic nt) {
+        this.statistic = nt;
+    }
+
+    public NT_GameStatistic getStatistic() {
+        return statistic;
+    }
 }

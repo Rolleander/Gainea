@@ -4,14 +4,12 @@ import java.util.Objects;
 
 public class NT_BoardObject {
 
-    public final static int NO_LOCATION = -1;
+    public final static short NO_LOCATION = -1;
     public String name;
     public float size;
-    public int icon;
-    public int id;
-    public int location = NO_LOCATION;
-    public float x, y;
-
+    public short icon;
+    public short id;
+    public short location = NO_LOCATION;
 
     @Override
     public boolean equals(Object o) {

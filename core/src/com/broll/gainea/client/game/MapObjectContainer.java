@@ -70,7 +70,7 @@ public class MapObjectContainer {
                 stacks.put(owner, render);
                 return;
             }
-            stacks.put(NT_Unit.NO_OWNER, render);
+            stacks.put((int) NT_Unit.NO_OWNER, render);
         });
         arrange(location, objects, stacks);
     }

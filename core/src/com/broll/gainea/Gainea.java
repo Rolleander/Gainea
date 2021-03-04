@@ -28,7 +28,8 @@ public class Gainea extends ApplicationAdapter {
     public Stage uiStage;
     public GameUI ui;
     public Assets assets;
-    public ShapeRenderer shapeRenderer;
+    public ShapeRenderer uiShapeRenderer;
+    public ShapeRenderer gameShapeRenderer;
     public GameState state;
     public boolean shutdown = false;
     private AbstractScreen startScreen;
@@ -53,7 +54,8 @@ public class Gainea extends ApplicationAdapter {
         ui = new GameUI(this, new LoadingScreen(startScreen), reconnectCheck);
         client.setClientListener(ui);
         Gdx.input.setInputProcessor(new InputMultiplexer(uiStage, gameStage));
-        shapeRenderer = new ShapeRenderer();
+        uiShapeRenderer = new ShapeRenderer();
+        gameShapeRenderer = new ShapeRenderer();
     }
 
     @Override
@@ -67,8 +69,8 @@ public class Gainea extends ApplicationAdapter {
         float delta = Gdx.graphics.getDeltaTime();
         Gdx.gl.glClearColor(0.3f, 0.35f, 1f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        shapeRenderer.setProjectionMatrix(gameStage.getBatch().getProjectionMatrix());
-        shapeRenderer.setTransformMatrix(gameStage.getBatch().getTransformMatrix());
+        uiShapeRenderer.setProjectionMatrix(uiStage.getViewport().getCamera().combined);
+        gameShapeRenderer.setProjectionMatrix(gameStage.getViewport().getCamera().combined);
         gameStage.act(delta);
         uiStage.act(delta);
         ui.mapScrollHandler.update(delta);
@@ -83,11 +85,7 @@ public class Gainea extends ApplicationAdapter {
         gameStage.dispose();
         uiStage.dispose();
         client.shutdown();
-        try {
-            Thread.sleep(100);
-        } catch (InterruptedException e) {
-            Log.error("", e);
-        }
-        shapeRenderer.dispose();
+        uiShapeRenderer.dispose();
+        gameShapeRenderer.dispose();
     }
 }

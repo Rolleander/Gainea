@@ -2,6 +2,7 @@ package com.broll.gainea.client.network.sites;
 
 import com.broll.gainea.client.ui.screens.GameScreen;
 import com.broll.gainea.net.NT_GameOver;
+import com.broll.gainea.net.NT_GameStatistic;
 import com.broll.gainea.net.NT_LoadedGame;
 import com.broll.gainea.net.NT_ReconnectGame;
 import com.broll.gainea.net.NT_StartGame;
@@ -44,6 +45,11 @@ public class GameStateSite extends AbstractGameSite {
         game.state.update(end);
         game.ui.inGameUI.gameOver(end);
         game.state.playerTurnEnded();
+    }
+
+    @PackageReceiver
+    public void received(NT_GameStatistic nt) {
+        game.state.setStatistic(nt);
     }
 
     private void start(NT_StartGame start) {

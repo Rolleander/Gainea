@@ -3,6 +3,7 @@ package com.broll.gainea.client.ui.ingame.actions;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -20,6 +21,7 @@ public class SelectOptionWindow {
         window.pad(30, 20, 10, 20);
         window.defaults().space(15).left();
         window.setBackground("menu-bg");
+        Table content = new Table();
         options.forEach(option -> {
             Button button = new Button(skin);
             button.add(option);
@@ -29,8 +31,14 @@ public class SelectOptionWindow {
                     container.reactionResult(action, options.indexOf(option));
                 }
             });
-            window.add(button).row();
+            content.add(button).row();
         });
+        ScrollPane scrollPane = new ScrollPane(content, skin);
+        scrollPane.setScrollBarPositions(false, true);
+        scrollPane.setOverscroll(false, false);
+        scrollPane.setScrollingDisabled(true, false);
+        scrollPane.setFadeScrollBars(false);
+        window.add(scrollPane).maxHeight(400);
         TableUtils.consumeClicks(window);
         return window;
     }

@@ -94,12 +94,12 @@ public abstract class MapObject {
     }
 
     protected void fillObject(NT_BoardObject object) {
-        object.id = id;
+        object.id = (short) id;
         object.name = name;
-        object.icon = icon;
+        object.icon = (short) icon;
         object.size = scale * 30;
         if (location != null) {
-            object.location = location.getNumber();
+            object.location = (short) location.getNumber();
         }
     }
 

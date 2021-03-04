@@ -16,7 +16,7 @@ public class Monster extends BattleObject {
     @Override
     public NT_Monster nt() {
         NT_Monster monster = new NT_Monster();
-        monster.stars = getStars();
+        monster.stars = (byte) getStars();
         fillBattleObject(monster);
         return monster;
     }

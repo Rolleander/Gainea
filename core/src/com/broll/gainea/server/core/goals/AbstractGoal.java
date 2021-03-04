@@ -35,7 +35,6 @@ public abstract class AbstractGoal extends GameUpdateReceiverAdapter {
     public boolean init(GameContainer game, Player player) {
         this.game = game;
         this.player = player;
-        Log.info("init goal "+text+" with player "+player);
         return validForGame();
     }
 

@@ -17,6 +17,7 @@ public class MapScrollHandler extends InputListener {
     private Stage stage;
     private static float DRAG_SPEED = 1;
     private static float SCROLL_SPEED = 30;
+    private static float MAX_ZOOM = 5;
 
     private float lastX, lastY;
     private boolean dragging = false;
@@ -102,8 +103,8 @@ public class MapScrollHandler extends InputListener {
         camera.zoom *= 1 + ((amount * SCROLL_SPEED) / 100f);
         if (camera.zoom < 1) {
             camera.zoom = 1;
-        } else if (camera.zoom > 10) {
-            camera.zoom = 10;
+        } else if (camera.zoom > MAX_ZOOM) {
+            camera.zoom = MAX_ZOOM;
         }
         return true;
     }

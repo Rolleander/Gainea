@@ -57,13 +57,13 @@ public class Player {
 
     public NT_Player nt() {
         NT_Player player = new NT_Player();
-        player.cards = cardHandler.getCardCount();
-        player.fraction = fraction.getType().ordinal();
-        player.id = serverPlayer.getId();
-        player.color = color;
-        player.stars = goalHandler.getStars();
+        player.cards = (byte) cardHandler.getCardCount();
+        player.fraction = (byte) fraction.getType().ordinal();
+        player.id = (short) serverPlayer.getId();
+        player.color = (byte) color;
+        player.stars = (short) goalHandler.getStars();
         player.name = serverPlayer.getName();
-        player.points = goalHandler.getScore();
+        player.points = (byte) goalHandler.getScore();
         player.units = units.stream().map(BattleObject::nt).toArray(NT_Unit[]::new);
         return player;
     }

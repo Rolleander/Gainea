@@ -4,8 +4,8 @@ import java.util.Objects;
 
 public class NT_Card {
 
-    public int id;
-    public int picture;
+    public short id;
+    public short picture;
     public String title,text;
 
     @Override

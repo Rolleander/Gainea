@@ -27,7 +27,7 @@ public class ExpansionDebugRender extends Actor {
     @Override
     public void draw(Batch batch, float parentAlpha) {
         batch.end();
-        render(game.shapeRenderer);
+        render(game.gameShapeRenderer);
         batch.begin();
     }
 

@@ -119,7 +119,7 @@ public class LobbyScreen extends AbstractScreen {
         return selectBox;
     }
 
-    private SelectBox lobbySettingsBox(int setting, int indexDelta, String... values) {
+    private SelectBox lobbySettingsBox(int setting, int indexDelta, String[] values) {
         SelectBox selectBox = new SelectBox(skin);
         selectBox.setItems(values);
         selectBox.addListener(new ChangeListener() {

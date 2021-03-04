@@ -7,6 +7,7 @@ import com.broll.gainea.client.game.PlayerPerformOptionalAction;
 import com.broll.gainea.client.ui.utils.ActionListener;
 import com.broll.gainea.client.ui.ingame.map.ActionTrail;
 import com.broll.gainea.client.ui.ingame.map.MapAction;
+import com.broll.gainea.client.ui.utils.ArrayConversionUtils;
 import com.broll.gainea.net.NT_Action_Attack;
 import com.broll.gainea.net.NT_Action_Move;
 import com.broll.gainea.net.NT_Unit;
@@ -32,12 +33,12 @@ public class AttackAndMoveActionHandler {
     public void update(List<NT_Action_Move> moves, List<NT_Action_Attack> attacks, PlayerPerformOptionalAction playerPerformAction) {
         clear();
         ClientMapContainer map = game.state.getMap();
-        moves.forEach(move -> Arrays.stream(move.possibleLocations).forEach(target -> {
+        moves.forEach(move -> Arrays.stream(ArrayConversionUtils.toInt(move.possibleLocations)).forEach(target -> {
             Location from = map.getLocation(move.units[0].location);
             Location to = map.getLocation(target);
             createMove(from, to, move, playerPerformAction);
         }));
-        attacks.forEach(attack -> Arrays.stream(attack.attackLocations).forEach(target -> {
+        attacks.forEach(attack -> Arrays.stream(ArrayConversionUtils.toInt(attack.attackLocations)).forEach(target -> {
             Location from = map.getLocation(attack.units[0].location);
             Location to = map.getLocation(target);
             createAttack(from, to, attack, playerPerformAction);
@@ -46,7 +47,7 @@ public class AttackAndMoveActionHandler {
 
     private void createMove(Location from, Location to, NT_Action_Move move, PlayerPerformOptionalAction playerPerformAction) {
         createMapAction(from, to, move, 0, from.getNumber(), () -> {
-            int option = getSelectedLocation(to, move.possibleLocations);
+            int option = getSelectedLocation(to, ArrayConversionUtils.toInt(move.possibleLocations));
             int options[] = getSelectedUnits(selectedUnits, move.units);
             playerPerformAction.perform(move, option, options);
         });
@@ -54,7 +55,7 @@ public class AttackAndMoveActionHandler {
 
     private void createAttack(Location from, Location to, NT_Action_Attack attack, PlayerPerformOptionalAction playerPerformAction) {
         createMapAction(from, to, attack, 1, from.getNumber(), () -> {
-            int option = getSelectedLocation(to, attack.attackLocations);
+            int option = getSelectedLocation(to, ArrayConversionUtils.toInt(attack.attackLocations));
             int options[] = getSelectedUnits(selectedUnits, attack.units);
             playerPerformAction.perform(attack, option, options);
         });

@@ -1,9 +1,11 @@
 package com.broll.gainea.server.core;
 
+import com.broll.gainea.net.NT_PlayerWait;
 import com.broll.gainea.server.core.cards.EventCard;
 import com.broll.gainea.server.core.cards.events.E_SpawnGoddrake;
 import com.broll.gainea.server.core.cards.events.E_SpawnMonster;
 import com.broll.gainea.server.core.processing.GameUpdateReceiverAdapter;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,13 +21,21 @@ public class TurnEvents extends GameUpdateReceiverAdapter {
         this.game = game;
     }
 
+
+    private void turnEvent(Class<? extends EventCard> event) {
+        NT_PlayerWait nt = new NT_PlayerWait();
+        nt.playersTurn = -1;
+        game.getReactionHandler().getActionHandlers().getReactionActions().sendGameUpdate(nt);
+        EventCard.run(event, game);
+    }
+
     @Override
     public void roundStarted() {
         int turn = game.getRounds();
         if (turn >= SPAWN_TURNS_START) {
             if (turn % SPAWN_GODDRAKE_TURNS == 0) {
                 if (!E_SpawnGoddrake.isGoddrakeAlive(game)) {
-                    EventCard.run(E_SpawnGoddrake.class, game);
+                    turnEvent(E_SpawnGoddrake.class);
                     return;
                 }
             }
@@ -34,7 +44,7 @@ public class TurnEvents extends GameUpdateReceiverAdapter {
                 int currentMonsters = E_SpawnMonster.getCurrentMonsters(game);
                 int missing = totalAtStart - currentMonsters;
                 if (missing > 0) {
-                    EventCard.run(E_SpawnMonster.class, game);
+                    turnEvent(E_SpawnMonster.class);
                 }
             }
         }

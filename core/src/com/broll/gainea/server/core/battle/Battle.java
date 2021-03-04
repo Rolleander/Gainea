@@ -19,7 +19,7 @@ public class Battle {
         this.attackers = attackingUnits;
         this.defenders = defendingUnits;
         if (attackingPlayer == null) {
-            this.defendingPower = initWildAnimalPower(attackingUnits);
+            this.attackPower = initWildAnimalPower(attackingUnits);
         } else {
             this.attackPower = attackingPlayer.getFraction().calcPower(location, attackingUnits, defendingUnits, true);
         }
