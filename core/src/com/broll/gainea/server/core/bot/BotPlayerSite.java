@@ -21,28 +21,23 @@ public class BotPlayerSite extends BotSite<PlayerData> {
     }
 
     @PackageReceiver
-    void turnStart(NT_PlayerTurnActions turn) {
+    public void turnStart(NT_PlayerTurnActions turn) {
         this.currentTurn = turn;
+    }
+
+    @PackageReceiver
+    public void turnContinues(NT_PlayerTurnActions turn) {
         pickTurnAction();
     }
 
     @PackageReceiver
-    void turnContinues(NT_PlayerTurnActions turn) {
-        pickTurnAction();
-    }
-
-    @PackageReceiver
-    void handleAction(NT_PlayerAction action) {
+    public void handleAction(NT_PlayerAction action) {
         receive(botActionHandler.react(action.action));
     }
 
     private void pickTurnAction() {
         Pair<BotDecision, NT_Action> decision = botActionHandler.bestScore(currentTurn);
         NT_Action pickedAction = decision.getRight();
-        if (pickedAction != null) {
-            //remove picked action
-            currentTurn.actions = ArrayUtils.removeElement(currentTurn.actions, pickedAction);
-        }
         //perform turn action
         receive(decision.getLeft().perform(pickedAction));
     }

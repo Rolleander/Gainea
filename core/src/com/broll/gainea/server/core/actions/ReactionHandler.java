@@ -22,14 +22,12 @@ public class ReactionHandler {
 
     private final static Logger Log = LoggerFactory.getLogger(ReactionHandler.class);
     private GameContainer game;
-    private ReactionActions reactionActions;
     private Map<RequiredActionContext, RequiredAction> requiredActions = Collections.synchronizedMap(new HashMap<>());
     private ActionHandlers actionHandlers;
 
     public ReactionHandler(GameContainer game, ActionHandlers actionHandlers) {
         this.game = game;
         this.actionHandlers = actionHandlers;
-        this.reactionActions = actionHandlers.getReactionActions();
     }
 
     public void requireAction(Player target, RequiredActionContext context) {
@@ -46,7 +44,7 @@ public class ReactionHandler {
 
     public synchronized void finishedProcessing() {
         Log.trace("Processing core finished");
-        if (requiredActions.isEmpty()) {
+        if (requiredActions.isEmpty() && !game.isGameOver()) {
             continueTurn();
         }
     }

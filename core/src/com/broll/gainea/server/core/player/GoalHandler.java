@@ -78,7 +78,7 @@ public class GoalHandler {
         nt2.player = player.getServerPlayer().getId();
         GameUtils.sendUpdate(game, player, nt, nt2);
         //directly check goal for completion
-        game.getProcessingCore().execute(goal::check, 2000);
+        game.getProcessingCore().execute(goal::check, 100);
     }
 
     public NT_Goal[] ntGoals() {

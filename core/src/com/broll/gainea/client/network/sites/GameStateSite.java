@@ -43,8 +43,8 @@ public class GameStateSite extends AbstractGameSite {
     public void received(NT_GameOver end) {
         game.ui.inGameUI.hideWindows();
         game.state.update(end);
-        game.ui.inGameUI.gameOver(end);
         game.state.playerTurnEnded();
+        game.ui.inGameUI.gameOver(end);
     }
 
     @PackageReceiver

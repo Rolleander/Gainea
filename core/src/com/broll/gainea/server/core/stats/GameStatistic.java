@@ -24,6 +24,7 @@ public class GameStatistic extends GameUpdateReceiverAdapter {
     }
 
     public void sendStatistic() {
+        calcTurnStatistic();
         NT_GameStatistic nt = new NT_GameStatistic();
         nt.rounds = turnStatistics.stream().map(TurnStatistic::get).toArray(NT_RoundStatistic[]::new);
         game.getReactionHandler().getActionHandlers().getReactionActions().sendGameUpdate(nt);

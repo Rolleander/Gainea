@@ -78,7 +78,9 @@ public class ClientHandler {
     public void reconnectCheck() {
         clientExecute(() -> client.reconnectCheck(), lobby -> {
             //joins game directly, so dont call join lobby listener , will receive a game reconnect message in site and open game directly
-            listenLobbyUpdates(lobby);
+            if (lobby != null) {
+                listenLobbyUpdates(lobby);
+            }
         }, "Unable to reconnect to lobby");
     }
 

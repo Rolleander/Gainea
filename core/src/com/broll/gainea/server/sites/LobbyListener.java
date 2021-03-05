@@ -10,6 +10,7 @@ import com.broll.gainea.server.core.fractions.FractionType;
 import com.broll.networklib.server.impl.Player;
 import com.broll.networklib.server.impl.ServerLobby;
 import com.broll.networklib.server.impl.ServerLobbyListener;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,8 +49,10 @@ public class LobbyListener implements ServerLobbyListener<LobbyData, PlayerData>
         MessageUtils.gameLog(lobby.getData().getGame(), "Verbindung zu " + player.getName() + " verloren!");
         GameContainer game = lobby.getData().getGame();
         if (game != null) {
-            //try retreat from fight so battle does not get stuck
-            game.getBattleHandler().playerReaction(player.getData().getGamePlayer(), new NT_Battle_Reaction());
+            if (game.getBattleHandler().isBattleActive()) {
+                //try retreat from fight so battle does not get stuck
+                game.getBattleHandler().playerReaction(player.getData().getGamePlayer(), new NT_Battle_Reaction());
+            }
         }
     }
 

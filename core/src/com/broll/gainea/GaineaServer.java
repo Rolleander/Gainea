@@ -1,6 +1,7 @@
 package com.broll.gainea;
 
 import com.broll.gainea.server.core.GameContainer;
+import com.broll.gainea.server.core.bot.RandomBot;
 import com.broll.gainea.server.core.goals.AbstractGoal;
 import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.objects.MapObject;
@@ -30,22 +31,17 @@ public class GaineaServer {
         server = new LobbyGameServer<>("GaineaServer", NetworkSetup::registerNetwork);
         NetworkSetup.setup(server);
         server.open();
-     /*   PlayerData data = new PlayerData();
-        data.setReady(true);
-        lobby.createBot("bot_hans", data).ifPresent(bot -> {
-            bot.register(new BotSite<PlayerData>() {
-                @PackageReceiver
-                void rec(NT_LobbyKicked f) {
-
-                }
-            });
-        });*/
     }
 
     public void openTestLobby() {
         ServerLobby<LobbyData, PlayerData> lobby = server.getLobbyHandler().openLobby("Testlobby");
         LobbyFactory.initLobby(lobby, ExpansionSetting.BASIC_GAME);
         lobby.setAutoClose(false);
+        PlayerData data = new PlayerData();
+        data.setReady(true);
+        lobby.createBot("bot_hans", data).ifPresent(bot -> {
+            bot.register(new RandomBot());
+        });
     }
 
     public void appendCLI() {

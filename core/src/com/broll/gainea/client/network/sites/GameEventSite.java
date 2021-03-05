@@ -102,6 +102,7 @@ public class GameEventSite extends AbstractGameSite {
 
     @PackageReceiver
     public void received(NT_Event_MovedObject moved) {
+        game.state.updateIdleState(false);
         game.ui.inGameUI.hideWindows();
         AudioPlayer.playSound("move.ogg");
         NT_BoardObject moveObject = moved.objects[0];
@@ -140,10 +141,13 @@ public class GameEventSite extends AbstractGameSite {
 
     @PackageReceiver
     public void received(NT_Event_PlayedCard card) {
+        game.state.updateIdleState(false);
         game.ui.inGameUI.hideWindows();
         game.ui.inGameUI.showCenterOverlay(TableUtils.removeAfter(CardWindow.renderCard(game, card.card), (float)CardAction.PLAY_CARD_DELAY / 1000f));
         NT_Player owner = game.state.getPlayer(card.player);
-        owner.cards--;
+        if(owner!=null){
+            owner.cards--;
+        }
         if (card.player == getPlayer().getId()) {
             game.state.getCards().remove(card.card);
         }

@@ -116,6 +116,7 @@ public class GameContainer {
     public void end() {
         Log.trace("Gamend called");
         processingCore.execute(() -> {
+            processingCore.shutdown();
             Log.trace("Process gameend");
             NT_GameOver gameOver = new NT_GameOver();
             fillUpdate(gameOver);
@@ -125,7 +126,6 @@ public class GameContainer {
             lobby.getData().setGame(null);
         }, 2000);
         gameOver = true;
-        processingCore.shutdown();
     }
 
     public NT_ReconnectGame reconnect(Player player) {

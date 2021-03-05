@@ -20,9 +20,6 @@ import org.slf4j.LoggerFactory;
 
 public class Gainea extends ApplicationAdapter {
 
-    private final static Logger Log = LoggerFactory.getLogger(Gainea.class);
-    public final static float EXPANSION_SIZE = 100;
-
     public ClientHandler client;
     public Stage gameStage;
     public Stage uiStage;

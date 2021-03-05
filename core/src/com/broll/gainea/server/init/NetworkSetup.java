@@ -34,6 +34,8 @@ public class NetworkSetup {
         register.registerNetworkType(NT_Goal[].class);
         register.registerNetworkType(NT_Card[].class);
         register.registerNetworkType(int[].class);
+        register.registerNetworkType(short[].class);
+        register.registerNetworkType(byte[].class);
         register.registerNetworkType(String[].class);
         register.registerNetworkType(Object[].class);
         register.registerNetworkType(NT_RoundStatistic[].class);

@@ -43,7 +43,7 @@ public class PlayerWindow extends MenuWindow {
 
     public static void row(Gainea game, Table content, NT_Player player) {
         Skin skin = game.ui.skin;
-        content.add(new ColorCircle(game, player.color));
+        content.add(new ColorCircle(game, player.color)).padLeft(10);
         content.add(LabelUtils.info(skin, player.name)).fillX().expandX();
         content.add(LabelUtils.info(skin, FractionType.values()[player.fraction].getName()));
         content.add(LabelUtils.info(skin, "" + player.points));

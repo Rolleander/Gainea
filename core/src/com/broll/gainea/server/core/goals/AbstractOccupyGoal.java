@@ -144,7 +144,7 @@ public abstract class AbstractOccupyGoal extends AbstractGoal {
 
     protected Function<Location, Boolean> minPlayerUnitCount(int count) {
         return location -> {
-            long playerUnits = location.getInhabitants().stream().filter(it -> it instanceof BattleObject).map(it -> (BattleObject) it).filter(it -> it.getOwner() == player).count();
+            long playerUnits = location.getInhabitants().stream().filter(it -> it.getOwner() == player && it instanceof BattleObject).count();
             return playerUnits >= count;
         };
     }
