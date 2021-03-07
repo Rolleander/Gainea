@@ -79,6 +79,11 @@ public class BattleHandler {
         NT_Battle_Start start = new NT_Battle_Start();
         start.attackers = aliveAttackers.stream().sorted(sortById()).map(BattleObject::nt).toArray(NT_Unit[]::new);
         start.defenders = defendingArmy.stream().sorted(sortById()).map(BattleObject::nt).toArray(NT_Unit[]::new);
+        start.allowRetreat = allowRetreat;
+        start.location = battleLocation.getNumber();
+        if(attackerOwner!=null){
+            start.attacker = attackerOwner.getServerPlayer().getId();
+        }
         reactionResult.sendGameUpdate(start);
     }
 
@@ -143,7 +148,7 @@ public class BattleHandler {
         update.state = state;
         //send update
         reactionResult.sendGameUpdate(update);
-        int delay = BATTLE_ANIMATION_DELAY + 1500 * Math.min(result.getAttackRolls().size(), result.getDefenderRolls().size());
+        int delay = getAnimationDelay(result.getAttackRolls().size(), result.getDefenderRolls().size());
         if (state == NT_Battle_Update.STATE_FIGHTING) {
             //wait for player if he wants to keep attacking
             if (allowRetreat) {
@@ -156,6 +161,10 @@ public class BattleHandler {
             ProcessingUtils.pause(delay);
             battleFinished();
         }
+    }
+
+    public static int getAnimationDelay(int atkRolls, int defRolls) {
+        return BATTLE_ANIMATION_DELAY + 1500 * Math.min(atkRolls, defRolls);
     }
 
     private void fightRound() {

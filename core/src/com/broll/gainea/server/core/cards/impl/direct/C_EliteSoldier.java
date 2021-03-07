@@ -13,7 +13,7 @@ public class C_EliteSoldier extends DirectlyPlayedCard {
     @Override
     protected void play() {
         EliteSoldier soldier = new EliteSoldier(owner);
-        game.getReactionHandler().getActionHandlers().getHandler(PlaceUnitAction.class).placeUnit(owner, soldier, owner.getControlledLocations(), "Platziere Elitekrieger");
+        placeUnitHandler.placeUnit(owner, soldier, owner.getControlledLocations(), "Platziere Elitekrieger");
     }
 
     private class EliteSoldier extends Soldier {

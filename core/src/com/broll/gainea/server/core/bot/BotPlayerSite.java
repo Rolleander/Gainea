@@ -2,13 +2,11 @@ package com.broll.gainea.server.core.bot;
 
 import com.broll.gainea.net.NT_Action;
 import com.broll.gainea.net.NT_PlayerAction;
-import com.broll.gainea.net.NT_PlayerTurnStart;
 import com.broll.gainea.net.NT_PlayerTurnActions;
 import com.broll.gainea.server.init.PlayerData;
 import com.broll.networklib.PackageReceiver;
 import com.broll.networklib.server.impl.BotSite;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
 public class BotPlayerSite extends BotSite<PlayerData> {
@@ -32,14 +30,14 @@ public class BotPlayerSite extends BotSite<PlayerData> {
 
     @PackageReceiver
     public void handleAction(NT_PlayerAction action) {
-        receive(botActionHandler.react(action.action));
+        sendServer(botActionHandler.react(action.action));
     }
 
     private void pickTurnAction() {
         Pair<BotDecision, NT_Action> decision = botActionHandler.bestScore(currentTurn);
         NT_Action pickedAction = decision.getRight();
         //perform turn action
-        receive(decision.getLeft().perform(pickedAction));
+        sendServer(decision.getLeft().perform(pickedAction));
     }
 
 }

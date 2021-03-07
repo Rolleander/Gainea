@@ -9,21 +9,21 @@ import com.broll.gainea.client.ui.utils.TextureUtils;
 
 public class IconLabel extends Table {
 
-    public IconLabel(Gainea game, Skin skin, int nr, String text) {
+    public IconLabel(Gainea game, int nr, String text) {
         add(new Image(TextureUtils.icon(game, nr)));
-        add(new Label(text, skin)).padLeft(10);
+        add(new Label(text, game.ui.skin)).padLeft(10);
     }
 
-    public static IconLabel attack(Gainea game, Skin skin, int attack) {
-        return new IconLabel(game, skin, 0, "" + attack);
+    public static IconLabel attack(Gainea game,  int attack) {
+        return new IconLabel(game, 0, "" + attack);
     }
 
-    public static IconLabel health(Gainea game, Skin skin, int health, int maxHealth) {
+    public static IconLabel health(Gainea game,  int health, int maxHealth) {
         String h = "" + health;
         if (maxHealth > 1) {
             h = health + "/" + maxHealth;
         }
-        return new IconLabel(game, skin, 1, h);
+        return new IconLabel(game, 1, h);
     }
 
 }

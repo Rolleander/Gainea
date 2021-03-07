@@ -25,6 +25,7 @@ public class MapScrollHandler extends InputListener {
     private Vector3 start, end;
     private float animationTime;
     private float elpasedTime;
+    private float transZ;
 
     public MapScrollHandler(Gainea game, Stage stage) {
         this.game = game;
@@ -36,7 +37,13 @@ public class MapScrollHandler extends InputListener {
         start = new Vector3(camera.position.x, camera.position.y, camera.zoom);
         end = new Vector3(x, y, zoom);
         elpasedTime = 0;
-        animationTime = Math.min(1f, Vector2.dst(start.x, start.y, end.x, end.y) / 500f);
+        float dst = Vector2.dst(start.x, start.y, end.x, end.y);
+        animationTime = Math.min(1f, dst / 500f);
+        if (end.z <= start.z) {
+            transZ = Math.max(MAX_ZOOM, start.z + (dst / 1000f));
+        } else {
+            transZ = (end.z + start.z) / 2;
+        }
         if (animationTime > 0) {
             active = false;
         }
@@ -49,6 +56,11 @@ public class MapScrollHandler extends InputListener {
             float progress = Math.min(1f, elpasedTime / animationTime);
             camera.position.x = interpolation.apply(start.x, end.x, progress);
             camera.position.y = interpolation.apply(start.y, end.y, progress);
+          /*  if (progress >= 0.5f) {
+                camera.zoom = interpolation.apply(transZ, end.z, progress);
+            } else {
+                camera.zoom = interpolation.apply(start.z, transZ, progress);
+            }*/
             camera.zoom = interpolation.apply(start.z, end.z, progress);
             elpasedTime += delta;
             if (progress == 1) {

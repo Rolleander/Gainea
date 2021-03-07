@@ -12,7 +12,7 @@ public class ServerLauncher {
         Logger Log = LoggerFactory.getLogger(ServerLauncher.class);
         try {
             GaineaServer server = new GaineaServer();
-            server.openTestLobby();
+         //   server.openTestLobby();
             server.appendCLI();
         }catch (Exception e){
             Log.error("Failed to launch server!",e);

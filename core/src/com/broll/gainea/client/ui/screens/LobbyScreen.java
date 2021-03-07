@@ -2,19 +2,24 @@ package com.broll.gainea.client.ui.screens;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.broll.gainea.client.AudioPlayer;
 import com.broll.gainea.client.ui.AbstractScreen;
 import com.broll.gainea.client.ui.components.GameChat;
+import com.broll.gainea.client.ui.components.IconLabel;
 import com.broll.gainea.client.ui.utils.TableUtils;
 import com.broll.gainea.client.ui.utils.TextureUtils;
 import com.broll.gainea.client.ui.ingame.windows.FractionWindow;
+import com.broll.gainea.net.NT_AddBot;
 import com.broll.gainea.net.NT_LobbySettings;
 import com.broll.gainea.net.NT_PlayerChangeFraction;
 import com.broll.gainea.net.NT_PlayerReady;
@@ -26,6 +31,8 @@ import com.broll.gainea.server.core.fractions.FractionType;
 import com.broll.gainea.server.init.ExpansionSetting;
 import com.broll.gainea.server.init.GoalTypes;
 import com.broll.networklib.client.impl.GameLobby;
+import com.broll.networklib.client.impl.LobbyPlayer;
+import com.broll.networklib.network.nt.NT_LobbyKick;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,10 +73,21 @@ public class LobbyScreen extends AbstractScreen {
         lobby.getPlayers().forEach(player -> {
             NT_PlayerSettings settings = (NT_PlayerSettings) player.getSettings();
             Fraction fraction = FractionFactory.create(FractionType.values()[settings.fraction]);
+            if (player == lobby.getOwner()) {
+                lobbyTable.add(new IconLabel(game, 6, ""));
+            } else {
+                lobbyTable.add(info(" "));
+            }
             lobbyTable.add(label(player.getName()));
             lobbyTable.add(new Image(TextureUtils.unitIcon(game, fraction.createCommander().getIcon()))).size(41).spaceRight(10);
             if (player == lobby.getMyPlayer()) {
                 this.playerFraction = fraction;
+                if (fratcionBox.getSelectedIndex() != settings.fraction) {
+                    fratcionBox.setSelectedIndex(settings.fraction);
+                }
+                if (ready.isChecked() != settings.ready) {
+                    ready.setChecked(settings.ready);
+                }
                 lobbyTable.add(fratcionBox);
                 lobbyTable.add(ready).right().expandX();
             } else {
@@ -78,10 +96,27 @@ public class LobbyScreen extends AbstractScreen {
                 playerReady.setDisabled(true);
                 lobbyTable.add(info(fraction.getType().getName()));
                 lobbyTable.add(playerReady).right().expandX();
+                if (lobby.getOwner() == lobby.getMyPlayer()) {
+                    ImageButton button = new ImageButton(new TextureRegionDrawable(TextureUtils.icon(game, 3)));
+                    button.addListener(new ClickListener() {
+                        @Override
+                        public void clicked(InputEvent event, float x, float y) {
+                            kickPlayer(player);
+                            button.remove();
+                        }
+                    });
+                    lobbyTable.add(button).padLeft(20);
+                }
             }
             lobbyTable.row();
         });
         lobbyTable.pack();
+    }
+
+    private void kickPlayer(LobbyPlayer player) {
+        NT_LobbyKick nt = new NT_LobbyKick();
+        nt.player = player.getId();
+        lobby.sendTCP(nt);
     }
 
     private CheckBox playerReady() {
@@ -122,16 +157,20 @@ public class LobbyScreen extends AbstractScreen {
     private SelectBox lobbySettingsBox(int setting, int indexDelta, String[] values) {
         SelectBox selectBox = new SelectBox(skin);
         selectBox.setItems(values);
-        selectBox.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                AudioPlayer.playSound("button.ogg");
-                NT_UpdateLobbySettings nt = new NT_UpdateLobbySettings();
-                nt.setting = setting;
-                nt.value = selectBox.getSelectedIndex() + indexDelta;
-                lobby.sendTCP(nt);
-            }
-        });
+        if (lobby.getOwner() == lobby.getMyPlayer()) {
+            selectBox.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    AudioPlayer.playSound("button.ogg");
+                    NT_UpdateLobbySettings nt = new NT_UpdateLobbySettings();
+                    nt.setting = setting;
+                    nt.value = selectBox.getSelectedIndex() + indexDelta;
+                    lobby.sendTCP(nt);
+                }
+            });
+        } else {
+            selectBox.setDisabled(true);
+        }
         return selectBox;
     }
 
@@ -197,6 +236,9 @@ public class LobbyScreen extends AbstractScreen {
         settings.add(startLocations);
         settings.add(info("Monster pro Karte:"));
         settings.add(monsters);
+        if (lobby.getMyPlayer() == lobby.getOwner()) {
+            settings.add(TableUtils.textButton(skin, "+Bot", () -> lobby.sendTCP(new NT_AddBot()))).padLeft(100);
+        }
         window.add(settings).left().spaceTop(2).padTop(2).spaceBottom(2).spaceBottom(2).row();
         lobbyTable = new Table(skin);
         lobbyTable.top();

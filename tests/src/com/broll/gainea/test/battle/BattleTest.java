@@ -20,7 +20,8 @@ public class BattleTest {
 
     @Test
     public void test() {
-        fight(Lists.newArrayList(fighter(3, 1)), Lists.newArrayList(fighter(2, 2)));
+        fight(Lists.newArrayList(fighter(1, 1), fighter(1, 1), fighter(1, 1), fighter(1, 1), fighter(1, 1), fighter(1, 1), fighter(1, 1), fighter(1, 1), fighter(1, 1), fighter(1, 1),
+                fighter(1, 1)), Lists.newArrayList(fighter(8, 8)));
     }
 
     private BattleObject fighter(int power, int health) {
@@ -32,8 +33,8 @@ public class BattleTest {
     private void fight(List<BattleObject> attackers, List<BattleObject> defenders) {
         List<Integer> attackerHealth = attackers.stream().map(BattleObject::getHealth).map(BuffableInt::getValue).collect(Collectors.toList());
         List<Integer> defenderHealth = defenders.stream().map(BattleObject::getHealth).map(BuffableInt::getValue).collect(Collectors.toList());
-        System.out.println("Attackers: " + attackers.stream().map(it->it.getPower().getValue()+"/"+it.getHealth().getValue()).collect(Collectors.toList()));
-        System.out.println("Defenders: " + defenders.stream().map(it->it.getPower().getValue()+"/"+it.getHealth().getValue()).collect(Collectors.toList()));
+        System.out.println("Attackers: " + attackers.stream().map(it -> it.getPower().getValue() + "/" + it.getHealth().getValue()).collect(Collectors.toList()));
+        System.out.println("Defenders: " + defenders.stream().map(it -> it.getPower().getValue() + "/" + it.getHealth().getValue()).collect(Collectors.toList()));
         FightResult result = battle(attackers, defenders);
         System.out.println("Attacker Rolls: " + result.getAttackRolls());
         System.out.println("Defender Rolls: " + result.getDefenderRolls());
@@ -41,16 +42,16 @@ public class BattleTest {
         List<Integer> defenderHealth2 = defenders.stream().map(BattleObject::getHealth).map(BuffableInt::getValue).collect(Collectors.toList());
         List<Integer> attackerDamage = new ArrayList<>();
         List<Integer> defenderDamage = new ArrayList<>();
-        for(int i=0; i<attackerHealth.size(); i++){
-            attackerDamage.add(attackerHealth.get(i)-attackerHealth2.get(i));
+        for (int i = 0; i < attackerHealth.size(); i++) {
+            attackerDamage.add(attackerHealth.get(i) - attackerHealth2.get(i));
         }
-        for(int i=0; i<defenderHealth.size(); i++){
-            defenderDamage.add(defenderHealth.get(i)-defenderHealth2.get(i));
+        for (int i = 0; i < defenderHealth.size(); i++) {
+            defenderDamage.add(defenderHealth.get(i) - defenderHealth2.get(i));
         }
         System.out.println("Damage to Attackers: " + attackerDamage);
         System.out.println("Damage to Defenders: " + defenderDamage);
         if (attackers.stream().map(BattleObject::isAlive).reduce(false, Boolean::logicalOr) && defenders.stream().map(BattleObject::isAlive).reduce(false, Boolean::logicalOr)) {
-            fight(attackers, defenders);
+            fight(attackers.stream().filter(BattleObject::isAlive).collect(Collectors.toList()), defenders.stream().filter(BattleObject::isAlive).collect(Collectors.toList()));
         }
     }
 

@@ -42,8 +42,8 @@ public class MenuUnit extends Table {
             }
             table.add(stars).left().row();
         }
-        table.add(IconLabel.attack(game, skin, unit.power)).left().row();
-        table.add(IconLabel.health(game, skin, unit.health, unit.maxHealth)).left().row();
+        table.add(IconLabel.attack(game,  unit.power)).left().row();
+        table.add(IconLabel.health(game,  unit.health, unit.maxHealth)).left().row();
         add(table).fillX().expandX().spaceLeft(10);
         setTouchable(Touchable.enabled);
         addListener(new ClickListener() {

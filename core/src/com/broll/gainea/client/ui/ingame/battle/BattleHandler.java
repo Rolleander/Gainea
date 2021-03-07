@@ -39,17 +39,19 @@ public class BattleHandler {
     private BattleBoard battleBoard;
     private List<NT_Unit> attackers;
     private List<NT_Unit> defenders;
+    private boolean allowRetreat = false;
 
     public BattleHandler(Gainea game, Skin skin) {
         this.game = game;
         this.skin = skin;
     }
 
-    public BattleBoard startBattle(List<NT_Unit> attackers, List<NT_Unit> defenders, Location location) {
+    public BattleBoard startBattle(List<NT_Unit> attackers, List<NT_Unit> defenders, Location location, boolean allowRetreat) {
         if (battleBoard != null) {
             battleBoard.remove();
         }
         AudioPlayer.playSound("battle.ogg");
+        this.allowRetreat = allowRetreat;
         this.attackers = attackers;
         this.defenders = defenders;
         battleBoard = new BattleBoard(location);
@@ -104,8 +106,7 @@ public class BattleHandler {
     private void checkBattleState(int state) {
         battleBoard.addAction(Actions.delay(2, Actions.run(() -> {
             if (state == NT_Battle_Update.STATE_FIGHTING) {
-                //if we are attacker we can decide if keep on attacking
-                if (game.state.getPlayer().getId() == attackers.get(0).owner) {
+                if (allowRetreat) {
                     Table dialog = new Table(game.ui.skin);
                     dialog.setBackground("menu-bg");
                     dialog.pad(10, 20, 10, 20);

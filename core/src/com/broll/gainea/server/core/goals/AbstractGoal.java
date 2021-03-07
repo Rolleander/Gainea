@@ -18,7 +18,6 @@ import org.slf4j.LoggerFactory;
 
 public abstract class AbstractGoal extends GameUpdateReceiverAdapter {
 
-    private final static Logger Log = LoggerFactory.getLogger(AbstractGoal.class);
     protected String text;
     private GoalDifficulty difficulty;
     private String restrictionInfo;
@@ -71,6 +70,10 @@ public abstract class AbstractGoal extends GameUpdateReceiverAdapter {
             GameUtils.sendUpdate(game, nt);
             player.getGoalHandler().addPoints(difficulty.getPoints());
             finished = true;
+            if (!game.isGameOver()) {
+                //give new goal to player
+                game.getGoalStorage().assignNewRandomGoal(player);
+            }
         }
     }
 
@@ -98,7 +101,7 @@ public abstract class AbstractGoal extends GameUpdateReceiverAdapter {
 
     @Override
     public String toString() {
-        return super.toString()+"{" +
+        return super.toString() + "{" +
                 "text='" + text + '\'' +
                 ", difficulty=" + difficulty +
                 ", restrictionInfo='" + restrictionInfo + '\'' +

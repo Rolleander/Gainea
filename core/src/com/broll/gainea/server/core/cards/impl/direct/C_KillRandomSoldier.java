@@ -9,11 +9,13 @@ import com.broll.gainea.server.core.objects.buffs.IntBuff;
 import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.server.core.utils.GameUtils;
 import com.broll.gainea.server.core.utils.PlayerUtils;
+import com.broll.gainea.server.core.utils.StreamUtils;
 import com.broll.gainea.server.core.utils.UnitControl;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class C_KillRandomSoldier extends DirectlyPlayedCard {
 
@@ -27,10 +29,9 @@ public class C_KillRandomSoldier extends DirectlyPlayedCard {
     @Override
     protected void play() {
         PlayerUtils.iteratePlayers(game, 500, player -> {
-            List<BattleObject> units = player.getUnits();
-            for (int i = 0; i < units.size() / COUNT; i++) {
-                UnitControl.damage(game, units.get(((i + 1) * COUNT) - 1), 1);
-            }
+            AtomicInteger integer = new AtomicInteger(0);
+            StreamUtils.safeForEach(player.getUnits().stream().filter(it -> integer.incrementAndGet() % COUNT == 0),
+                    unit -> UnitControl.damage(game, unit, 1));
         });
     }
 

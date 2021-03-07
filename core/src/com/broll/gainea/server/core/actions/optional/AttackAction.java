@@ -62,6 +62,6 @@ public class AttackAction extends AbstractActionHandler<NT_Action_Attack, Attack
 
     private void startFight(List<BattleObject> attackers, Location attackLocation) {
         List<BattleObject> defenders = PlayerUtils.getHostileArmy(player, attackLocation);
-        game.getProcessingCore().execute(()-> game.getBattleHandler().startBattle(attackers, defenders));
+        game.getBattleHandler().startBattle(attackers, defenders);
     }
 }

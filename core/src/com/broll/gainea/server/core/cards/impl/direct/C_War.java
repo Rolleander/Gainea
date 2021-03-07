@@ -5,6 +5,7 @@ import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.server.core.utils.PlayerUtils;
+import com.broll.gainea.server.core.utils.StreamUtils;
 import com.broll.gainea.server.core.utils.UnitControl;
 
 import java.util.ArrayList;
@@ -23,7 +24,8 @@ public class C_War extends DirectlyPlayedCard {
             List<Location> locations = new ArrayList<>(PlayerUtils.getHostileLocations(game, player));
             if (!locations.isEmpty()) {
                 Location location = selectHandler.selectLocation("Wähle feindliches Land", locations);
-                location.getInhabitants().stream().filter(it -> it instanceof BattleObject).map(it -> (BattleObject) it).forEach(unit -> UnitControl.damage(game, unit, 1));
+                StreamUtils.safeForEach(location.getInhabitants().stream().filter(it -> it instanceof BattleObject).map(it -> (BattleObject) it),
+                        unit -> UnitControl.damage(game, unit, 1));
             }
         });
     }

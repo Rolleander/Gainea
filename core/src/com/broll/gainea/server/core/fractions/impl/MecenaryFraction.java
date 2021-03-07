@@ -28,14 +28,14 @@ public class MecenaryFraction extends Fraction {
         FractionDescription desc = new FractionDescription("");
         desc.plus("Jeden zweiten Zug erhaltet Ihr einen weiteren Soldat");
         desc.plus("Minimale Zahl beim Würfeln ist 2");
-        desc.contra("Maximale Zahl beim Würfeln ist 4");
+        desc.contra("Maximale Zahl beim Würfeln ist 5");
         return desc;
     }
 
     @Override
     public FightingPower calcPower(Location location, List<BattleObject> fighters, List<BattleObject> enemies, boolean isAttacker) {
         FightingPower power = super.calcPower(location, fighters, enemies, isAttacker);
-        power.setHighestNumber(4);
+        power.setHighestNumber(5);
         power.setLowestNumber(2);
         return power;
     }

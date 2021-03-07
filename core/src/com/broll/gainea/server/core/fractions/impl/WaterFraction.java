@@ -39,7 +39,7 @@ public class WaterFraction extends Fraction {
         FractionDescription desc = new FractionDescription("");
         desc.plus("Fällt Arn wird er im nächsten Zug als Eiskoloss (2/4) wiederbelebt\n" +
                 "Der Eiskoloss kann für " + FROZEN_TURNS + " Runden nicht angreifen oder sich bewegen\n" +
-                "Fällt der Eiskolos kehrt Arn im nächsten Zug zurück");
+                "Fällt der Eiskoloss kehrt Arn im nächsten Zug zurück");
         desc.plus("Auf Seen +1 Würfel");
         desc.contra("Auf Wüsten -1 Zahl");
         return desc;

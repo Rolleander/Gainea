@@ -147,9 +147,9 @@ public class InGameUI {
         requiredActionHandler.handleAction(action, playerPerformAction);
     }
 
-    public void startBattle(List<NT_Unit> attackers, List<NT_Unit> defenders, Location location) {
+    public void startBattle(List<NT_Unit> attackers, List<NT_Unit> defenders, Location location, boolean allowRetreat) {
         clearSelection();
-        showCenter(battleHandler.startBattle(attackers, defenders, location));
+        showCenter(battleHandler.startBattle(attackers, defenders, location,allowRetreat));
     }
 
     public void updateBattle(int[] attackRolls, int[] defenderRolls, Stack<NT_Unit> damagedAttackers, Stack<NT_Unit> damagedDefenders, int state) {

@@ -34,11 +34,11 @@ public class PlayerWindow extends MenuWindow {
         content.add(LabelUtils.info(skin, "Spieler")).padRight(space * 3).fillX().expandX().left();
         content.add(LabelUtils.info(skin, "Fraktion")).padRight(space * 3).left();
         content.add(LabelUtils.info(skin, "Punkte")).padRight(space).left();
-        content.add(new IconLabel(game, skin, 2, "")).padRight(space).left();
+        content.add(new IconLabel(game,  2, "")).padRight(space).left();
         content.add(LabelUtils.info(skin, "Karten")).padRight(space).left();
         content.add(LabelUtils.info(skin, "Einheiten")).padRight(space).left();
-        content.add(new IconLabel(game, skin, 0, "")).padRight(space).left();
-        content.add(new IconLabel(game, skin, 1, "")).left();
+        content.add(new IconLabel(game,  0, "")).padRight(space).left();
+        content.add(new IconLabel(game,  1, "")).left();
     }
 
     public static void row(Gainea game, Table content, NT_Player player) {

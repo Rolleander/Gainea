@@ -44,6 +44,10 @@ public class ReactionHandler {
 
     public synchronized void finishedProcessing() {
         Log.trace("Processing core finished");
+        tryContinueTurn();
+    }
+
+    private void tryContinueTurn() {
         if (requiredActions.isEmpty() && !game.isGameOver()) {
             continueTurn();
         }
@@ -67,9 +71,9 @@ public class ReactionHandler {
         requiredActions.values().stream().filter(ra -> ra.player == player).findFirst().ifPresent(requiredAction -> {
             player.getServerPlayer().sendTCP(requiredAction.context.nt());
         });
-        if (game.isPlayersTurn(player)) {
+        if (game.isPlayersTurn(player) && !game.getProcessingCore().isBusy() && !game.getBattleHandler().isBattleActive()) {
             //re send remaining optional actions
-            finishedProcessing();
+            tryContinueTurn();
         }
     }
 
@@ -120,9 +124,8 @@ public class ReactionHandler {
             if (actionHandler != null) {
                 actionHandler.update(gamePlayer);
                 actionHandler.handleReaction(actionContext, action, reaction);
-            }
-            else{
-                Log.error("No actionHandler found for action "+action);
+            } else {
+                Log.error("No actionHandler found for action " + action);
             }
         }
         if (completionListener != null) {

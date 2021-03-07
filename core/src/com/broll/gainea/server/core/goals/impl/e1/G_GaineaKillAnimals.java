@@ -1,10 +1,7 @@
 package com.broll.gainea.server.core.goals.impl.e1;
 
-import com.broll.gainea.Gainea;
 import com.broll.gainea.server.core.goals.AbstractGoal;
-import com.broll.gainea.server.core.goals.AbstractOccupyGoal;
 import com.broll.gainea.server.core.goals.GoalDifficulty;
-import com.broll.gainea.server.core.map.Area;
 import com.broll.gainea.server.core.map.ExpansionType;
 import com.broll.gainea.server.core.map.impl.GaineaMap;
 import com.broll.gainea.server.core.objects.Monster;

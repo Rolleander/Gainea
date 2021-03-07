@@ -1,9 +1,11 @@
 package com.broll.gainea.client.network.sites;
 
+import com.broll.gainea.client.ui.ingame.map.MapScrollUtils;
 import com.broll.gainea.net.NT_Battle_Start;
 import com.broll.gainea.net.NT_Battle_Update;
 import com.broll.gainea.net.NT_Unit;
 import com.broll.networklib.PackageReceiver;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,9 +28,10 @@ public class GameBattleSite extends AbstractGameSite {
         this.defenders = Lists.newArrayList(battle.defenders);
         int location = defenders.get(0).location;
         Log.info("Start fight: Attackers (" + attackers.stream().map(it -> it.id + "| " + it.name + " " + it.power + " " + it.health).collect(Collectors.joining(", ")) + ") Defenders (" + defenders.stream().map(it -> it.id + "| " + it.name + " " + it.power + " " + it.health).collect(Collectors.joining(", ")) + ")");
-        game.ui.inGameUI.startBattle(attackers, defenders, game.state.getMap().getLocation(location));
+        boolean allowRetreat = battle.allowRetreat && getPlayer().getId() == battle.attacker;
+        MapScrollUtils.showLocations(game, battle.location);
+        game.ui.inGameUI.startBattle(attackers, defenders, game.state.getMap().getLocation(location), allowRetreat);
     }
-
 
     private Stack<NT_Unit> calcDamageUpdates(List<NT_Unit> before, List<NT_Unit> after) {
         Stack<NT_Unit> damages = new Stack<>();

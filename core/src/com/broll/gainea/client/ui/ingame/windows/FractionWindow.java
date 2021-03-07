@@ -59,8 +59,8 @@ public class FractionWindow extends MenuWindow {
         FractionDescription description = fraction.getDescription();
         int w = 450;
         table.add(LabelUtils.autoWrap(LabelUtils.info(skin, description.getGeneral()), w)).left().spaceTop(20).padBottom(20).width(w).row();
-        description.getPlus().forEach(text -> table.add(new IconLabel(game, skin, 4, text)).left().spaceTop(10).row());
-        description.getContra().forEach(text -> table.add(new IconLabel(game, skin, 5, text)).left().spaceTop(10).row());
+        description.getPlus().forEach(text -> table.add(new IconLabel(game,  4, text)).left().spaceTop(10).row());
+        description.getContra().forEach(text -> table.add(new IconLabel(game,  5, text)).left().spaceTop(10).row());
         return table;
     }
 

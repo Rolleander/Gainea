@@ -4,6 +4,7 @@ import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.player.Player;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,17 +31,17 @@ public class Battle {
         }
     }
 
-    private FightingPower initWildAnimalPower(List<BattleObject> units){
+    private FightingPower initWildAnimalPower(List<BattleObject> units) {
         FightingPower power = new FightingPower();
-        power.setDiceCount(units.stream().map(it->it.getPower().getValue()).reduce(0,Integer::sum));
+        power.setDiceCount(units.stream().map(it -> it.getPower().getValue()).reduce(0, Integer::sum));
         return power;
     }
 
     public FightResult fight() {
         int attacks = attackPower.getDiceCount();
         int blocks = defendingPower.getDiceCount();
-        int rawAttackerPower = attackers.stream().map(it->it.getPower().getValue()).reduce(0, Integer::sum);
-        int rawDefenderPower = defenders.stream().map(it->it.getPower().getValue()).reduce(0, Integer::sum);
+        int rawAttackerPower = attackers.stream().map(it -> it.getPower().getValue()).reduce(0, Integer::sum);
+        int rawDefenderPower = defenders.stream().map(it -> it.getPower().getValue()).reduce(0, Integer::sum);
         int deltaAttacks = attacks - blocks;
         int battleSize = Math.min(attacks, blocks);
         List<Integer> allAttackRolls = attackPower.roll();
@@ -63,9 +64,6 @@ public class Battle {
             //less defender dices => deal remaining damage to defending units without dices
             attackWins += Math.min(deltaAttacks, rawDefenderPower - blocks);
         }
-        //sort ascending (so that weakest power level units die first)
-        attackers.sort((o1, o2) -> Integer.compare(o1.getPower().getValue(), o2.getPower().getValue()));
-        defenders.sort((o1, o2) -> Integer.compare(o1.getPower().getValue(), o2.getPower().getValue()));
         //deal damage
         do {
             if (attackWins > 0) {
@@ -76,28 +74,17 @@ public class Battle {
                 dealDamage(attackers);
                 blockWins--;
             }
-        } while ((attackWins > 0 || blockWins > 0) && bothTeamsAlive());
+        } while (attackWins > 0 || blockWins > 0);
         List<BattleObject> deadAttackers = attackers.stream().filter(BattleObject::isDead).collect(Collectors.toList());
         List<BattleObject> deadDefenders = defenders.stream().filter(BattleObject::isDead).collect(Collectors.toList());
         return new FightResult(allAttackRolls, allBlockRolls, deadAttackers, deadDefenders);
     }
 
-    private boolean bothTeamsAlive() {
-        return !allDead(attackers) && !allDead(defenders);
-    }
-
-    private boolean allDead(List<BattleObject> fighters) {
-        return fighters.stream().map(BattleObject::isDead).reduce(true, Boolean::logicalAnd);
-    }
-
-    private int dealDamage(List<BattleObject> targets) {
-        for (int i = 0; i < targets.size(); i++) {
-            BattleObject fighter = targets.get(i);
-            if (!fighter.isDead()) {
-                fighter.takeDamage();
-                return i;
-            }
-        }
-        return -1;
+    private void dealDamage(List<BattleObject> targets) {
+        //shuffe for damage (so that same powerlevel units get hit randomly)
+        Collections.shuffle(targets);
+        //sort ascending (so that weakest power level units die first)
+        targets.stream().sorted((o1, o2) -> Integer.compare(o1.getPower().getValue(), o2.getPower().getValue())).
+                filter(BattleObject::isAlive).findFirst().ifPresent(BattleObject::takeDamage);
     }
 }

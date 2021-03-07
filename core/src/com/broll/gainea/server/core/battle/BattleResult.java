@@ -5,6 +5,7 @@ import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.Monster;
 import com.broll.gainea.server.core.player.Player;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,16 +33,12 @@ public class BattleResult {
         return defenders.get(0).getOwner();
     }
 
-    public boolean isMonsterFight() {
-        return getDefender() == null;
-    }
-
     public boolean attackersWon() {
-        return defenders.stream().map(BattleObject::isDead).reduce(true, Boolean::logicalAnd);
+        return defenders.stream().map(BattleObject::isDead).reduce(true, Boolean::logicalAnd) && attackers.stream().map(BattleObject::isAlive).reduce(false, Boolean::logicalOr);
     }
 
     public boolean defendersWon() {
-        return defenders.stream().map(BattleObject::isDead).reduce(true, Boolean::logicalAnd);
+        return attackers.stream().map(BattleObject::isDead).reduce(true, Boolean::logicalAnd) && defenders.stream().map(BattleObject::isAlive).reduce(false, Boolean::logicalOr);
     }
 
     public Player getWinnerPlayer() {
@@ -62,7 +59,7 @@ public class BattleResult {
         return null;
     }
 
-    public boolean attackersRetreated() {
+    public boolean drawOrRetreat() {
         return !attackersWon() && !defendersWon();
     }
 
@@ -74,18 +71,22 @@ public class BattleResult {
         return defenders;
     }
 
-    public List<BattleObject> getWinnerUnits(){
-        if(getWinnerPlayer() == getAttacker()){
+    public List<BattleObject> getWinnerUnits() {
+        if (attackersWon()) {
             return getAttackers();
-        }
-        return getDefenders();
-    }
-
-    public List<BattleObject> getLoserUnits(){
-        if(getWinnerPlayer() == getAttacker()){
+        } else if (defendersWon()) {
             return getDefenders();
         }
-        return getAttackers();
+        return new ArrayList<>();
+    }
+
+    public List<BattleObject> getLoserUnits() {
+        if (attackersWon()) {
+            return getDefenders();
+        } else if (defendersWon()) {
+            return getAttackers();
+        }
+        return new ArrayList<>();
     }
 
 }

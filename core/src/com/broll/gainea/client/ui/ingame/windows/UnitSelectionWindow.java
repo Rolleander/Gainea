@@ -55,8 +55,8 @@ public class UnitSelectionWindow {
             int health = units.stream().map(u -> (int)u.health).reduce(0, Integer::sum).intValue();
             int maxHealth = units.stream().map(u -> (int)u.maxHealth).reduce(0, Integer::sum).intValue();
             window.add(new Label("Einheiten: " + count, skin)).left().padLeft(5).row();
-            window.add(IconLabel.attack(game, skin, power)).left().padLeft(5).row();
-            window.add(IconLabel.health(game, skin, health, maxHealth)).left().padLeft(5).row();
+            window.add(IconLabel.attack(game,  power)).left().padLeft(5).row();
+            window.add(IconLabel.health(game,  health, maxHealth)).left().padLeft(5).row();
         }
         Table unitsTable = new Table(skin);
         List<MenuUnit> menuUnits = new ArrayList<>();

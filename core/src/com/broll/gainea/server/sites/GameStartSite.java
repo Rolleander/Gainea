@@ -24,6 +24,7 @@ import com.broll.networklib.server.RestrictionType;
 import com.broll.networklib.server.ShareLevel;
 import com.broll.networklib.server.impl.ConnectionSite;
 import com.broll.networklib.server.impl.ServerLobby;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,7 +61,6 @@ public class GameStartSite extends AbstractGameSite {
         gameStart.startUnitsPlaced = 0;
         gameStart.playerData = new HashMap<>();
         lobby.getPlayers().forEach(p -> gameStart.playerData.put(p.getData().getGamePlayer(), new PlayerStartData()));
-        lobby.lock();
         lobby.sendToAllTCP(game.start());
         Log.info("Started game in lobby " + lobby.getName());
     }
@@ -87,7 +87,7 @@ public class GameStartSite extends AbstractGameSite {
         int startGoalsCount = getLobby().getData().getStartGoals();
         for (int i = 0; i < startGoalsCount; i++) {
             game.getPlayers().forEach(player -> {
-                Log.debug("Add goal to "+player);
+                Log.debug("Add goal to " + player);
                 game.getGoalStorage().assignNewRandomGoal(player);
                 ProcessingUtils.pause(DELAY);
             });
@@ -150,11 +150,13 @@ public class GameStartSite extends AbstractGameSite {
     }
 
     @PackageReceiver
-    @ConnectionRestriction(RestrictionType.LOBBY_LOCKED)
+    //   @ConnectionRestriction(RestrictionType.LOBBY_LOCKED)
     public void playerLoaded(NT_LoadedGame loadedGame) {
         if (gameStart.loading) {
+            Log.info(getGamePlayer() + " loaded game!");
             gameStart.playerData.get(getGamePlayer()).loaded = true;
             if (allPlayersLoaded()) {
+                Log.info("All players loaded game, start with init!");
                 gameLoaded();
             }
         }

@@ -30,10 +30,10 @@ public class StartScreen extends AbstractScreen {
     private boolean connecting = false;
     private Label loadingInfo;
 
-    private static String PLAYER_NAME = //"tester";
-    "";
-   private static String SERVER = //"localhost";
-           "gainea.de";
+    private static String PLAYER_NAME = "tester";
+         //   "";
+    private static String SERVER = "localhost";
+         //   "gainea.de";
 
     public StartScreen() {
 
@@ -45,6 +45,15 @@ public class StartScreen extends AbstractScreen {
             PLAYER_NAME = name;
             SERVER = serverIp.getText();
             game.client.joinLobby(name, lobby);
+        }
+    }
+
+    private void createLobby() {
+        String name = this.name.getText();
+        if (name != null && name.trim().length() > 0) {
+            PLAYER_NAME = name;
+            SERVER = serverIp.getText();
+            game.client.createLobby(name);
         }
     }
 
@@ -69,8 +78,9 @@ public class StartScreen extends AbstractScreen {
             StartScreen.this.lobbies.row();
         });
         if (lobbies.getLobbies().isEmpty()) {
-            this.lobbies.add(LabelUtils.label(skin, "Keine offenen Lobbies auf dem Server gefunden!"));
+            this.lobbies.add(LabelUtils.label(skin, "Keine offenen Lobbies auf dem Server gefunden!")).row();
         }
+        this.lobbies.add(TableUtils.textButton(skin, "Lobby erstellen", this::createLobby));
     }
 
     public void showInfo(String text) {
@@ -80,7 +90,7 @@ public class StartScreen extends AbstractScreen {
 
     @Override
     public Actor build() {
-        AudioPlayer.playSong("celtic.mp3");
+      //  AudioPlayer.playSong("celtic.mp3");
         loadingInfo = info("");
         loadingInfo.setAlignment(Align.center);
         loadingInfo.setVisible(false);
@@ -98,7 +108,7 @@ public class StartScreen extends AbstractScreen {
         table.add(name).padRight(100);
         table.add(label("Server")).padRight(20);
         table.add(serverIp);
-        connect = TableUtils.textButton(skin,"Connect", ()->{
+        connect = TableUtils.textButton(skin, "Connect", () -> {
             lobbies.clear();
             game.client.listLobbies(serverIp.getText());
         });

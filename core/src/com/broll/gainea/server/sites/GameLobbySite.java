@@ -1,10 +1,12 @@
 package com.broll.gainea.server.sites;
 
 import com.broll.gainea.misc.EnumUtils;
+import com.broll.gainea.net.NT_AddBot;
 import com.broll.gainea.net.NT_LobbySettings;
 import com.broll.gainea.net.NT_PlayerChangeFraction;
 import com.broll.gainea.net.NT_PlayerReady;
 import com.broll.gainea.net.NT_UpdateLobbySettings;
+import com.broll.gainea.server.core.bot.RandomBot;
 import com.broll.gainea.server.init.ExpansionSetting;
 import com.broll.gainea.server.init.GoalTypes;
 import com.broll.gainea.server.init.LobbyData;
@@ -22,7 +24,11 @@ import com.broll.networklib.server.impl.LobbyHandler;
 import com.broll.networklib.server.impl.Player;
 import com.broll.networklib.server.impl.ServerLobby;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class GameLobbySite extends LobbyServerSite<LobbyData, PlayerData> {
+    private final static Logger Log = LoggerFactory.getLogger(GameLobbySite.class);
 
     @Override
     public void init(LobbyGameServer<LobbyData, PlayerData> server, LobbyHandler<LobbyData, PlayerData> lobbyHandler) {
@@ -61,6 +67,10 @@ public class GameLobbySite extends LobbyServerSite<LobbyData, PlayerData> {
     @PackageReceiver
     @ConnectionRestriction(RestrictionType.LOBBY_UNLOCKED)
     public void changeSettings(NT_UpdateLobbySettings nt) {
+        if (getPlayer() != getLobby().getOwner()) {
+            Log.warn("Ignore change settings from " + getPlayer() + " because he is not owner of the lobby");
+            return;
+        }
         LobbyData data = getLobby().getData();
         int value = nt.value;
         switch (nt.setting) {
@@ -96,6 +106,19 @@ public class GameLobbySite extends LobbyServerSite<LobbyData, PlayerData> {
                 break;
         }
         getLobby().sendLobbyUpdate();
+    }
+
+    @PackageReceiver
+    @ConnectionRestriction(RestrictionType.LOBBY_UNLOCKED)
+    public void addBot(NT_AddBot nt) {
+        ServerLobby<LobbyData, PlayerData> lobby = getLobby();
+        if (!lobby.isFull()) {
+            PlayerData data = new PlayerData();
+            data.setReady(true);
+            lobbyHandler.createBot(lobby, "bot_" + lobby.getPlayers().size(), data).ifPresent(bot -> {
+                bot.register(new RandomBot());
+            });
+        }
     }
 
     @PackageReceiver

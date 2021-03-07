@@ -9,6 +9,7 @@ import com.broll.gainea.client.network.sites.GameBoardSite;
 import com.broll.gainea.client.network.sites.GameEventSite;
 import com.broll.gainea.client.network.sites.GameStateSite;
 import com.broll.gainea.client.network.sites.GameTurnSite;
+import com.broll.gainea.net.NT_LobbySettings;
 import com.broll.gainea.server.init.NetworkSetup;
 import com.broll.networklib.client.ClientSite;
 import com.broll.networklib.client.LobbyGameClient;
@@ -68,6 +69,10 @@ public class ClientHandler {
 
     public void joinLobby(String playerName, GameLobby lobby) {
         clientExecute(() -> client.joinLobby(lobby, playerName), this::connectedLobby, "Unable to join lobby");
+    }
+
+    public void createLobby(String playerName){
+        clientExecute(()-> client.createLobby(playerName, new NT_LobbySettings()), this::connectedLobby, "Unable to create lobby");
     }
 
     private void connectedLobby(GameLobby lobby) {

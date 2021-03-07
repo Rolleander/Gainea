@@ -94,7 +94,7 @@ public class UnitControl {
     public static void damage(GameContainer game, BattleObject unit, int damage, Consumer<NT_Event_FocusObject> consumer) {
         Log.trace("UnitControl: damage unit " + unit + " for " + damage);
         //dont overkill
-        damage = Math.max(unit.getHealth().getValue(), damage);
+        damage = Math.min(unit.getHealth().getValue(), damage);
         unit.takeDamage(damage);
         boolean lethal = unit.isDead();
         if (lethal) {

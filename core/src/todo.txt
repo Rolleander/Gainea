@@ -1,3 +1,0 @@
-        //TODO events ruin turn order
-        //TODO battle calc fix
-        //TODO selection scrollbar im client
