@@ -118,9 +118,12 @@ public class BattleHandler {
                 }
             } else {
                 //battle done
-                String text = "Sieg der Verteidiger!";
+                String text = "Keine Überlebenden!";
                 if (state == NT_Battle_Update.STATE_ATTACKER_WON) {
                     text = "Sieg der Angreifer!";
+                }
+                if (state == NT_Battle_Update.STATE_DEFENDER_WON) {
+                    text = "Sieg der Verteidiger!";
                 }
                 battleEnd(text);
             }

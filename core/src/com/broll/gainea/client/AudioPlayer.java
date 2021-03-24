@@ -9,6 +9,7 @@ public final class AudioPlayer {
 
     }
 
+    private static float volume = 0.5f;
     private static Assets assets;
     private static Music current;
 
@@ -23,11 +24,12 @@ public final class AudioPlayer {
         }
         current = assets.get(song, Music.class);
         current.setLooping(true);
+        current.setVolume(volume);
         current.play();
     }
 
     public static void playSound(String sound) {
-        assets.get(sound, Sound.class).play();
+        assets.get(sound, Sound.class).play(volume);
     }
 
 }

@@ -3,7 +3,6 @@ package com.broll.gainea.server.core.battle;
 import com.broll.gainea.net.NT_Battle_Reaction;
 import com.broll.gainea.server.core.fractions.Fraction;
 import com.broll.gainea.server.core.objects.BattleObject;
-import com.broll.gainea.server.core.objects.MapObject;
 import com.broll.gainea.server.core.objects.Monster;
 import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.net.NT_Battle_Start;
@@ -16,7 +15,6 @@ import com.broll.gainea.server.core.processing.GameUpdateReceiverProxy;
 import com.broll.gainea.server.core.utils.GameUtils;
 import com.broll.gainea.server.core.utils.ProcessingUtils;
 import com.broll.gainea.server.core.utils.UnitControl;
-import com.broll.networklib.server.impl.ConnectionSite;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -81,7 +79,7 @@ public class BattleHandler {
         start.defenders = defendingArmy.stream().sorted(sortById()).map(BattleObject::nt).toArray(NT_Unit[]::new);
         start.allowRetreat = allowRetreat;
         start.location = battleLocation.getNumber();
-        if(attackerOwner!=null){
+        if (attackerOwner != null) {
             start.attacker = attackerOwner.getServerPlayer().getId();
         }
         reactionResult.sendGameUpdate(start);
@@ -138,12 +136,14 @@ public class BattleHandler {
             killedDefenders.add(unit);
         });
         int state = NT_Battle_Update.STATE_FIGHTING;
-        if (aliveAttackers.isEmpty()) {
+        boolean attackersDead = aliveAttackers.isEmpty();
+        boolean defendersDead = aliveDefenders.isEmpty();
+        if (attackersDead && defendersDead) {
+            state = NT_Battle_Update.STATE_DRAW;
+        } else if (attackersDead) {
             state = NT_Battle_Update.STATE_DEFENDER_WON;
-        } else if (aliveDefenders.isEmpty()) {
+        } else if (defendersDead) {
             state = NT_Battle_Update.STATE_ATTACKER_WON;
-            //attackers won, move them to the fight location
-            attackers.forEach(attacker -> GameUtils.place(attacker, battleLocation));
         }
         update.state = state;
         //send update
@@ -192,7 +192,7 @@ public class BattleHandler {
                 }
             }
             try {
-                Log.trace("Wati for battle reaction");
+                Log.trace("Wait for battle reaction");
                 startNextRound = keepAttacking.get().booleanValue();
             } catch (InterruptedException | ExecutionException e) {
                 Log.error("Failed getting future", e);
@@ -218,16 +218,21 @@ public class BattleHandler {
         battleActive = false;
         GameUpdateReceiverProxy updateReceiver = game.getUpdateReceiver();
         List<BattleObject> fallenUnits = new ArrayList<>();
-        fallenUnits.addAll(attackers.stream().filter(BattleObject::isDead).collect(Collectors.toList()));
-        fallenUnits.addAll(defenders.stream().filter(BattleObject::isDead).collect(Collectors.toList()));
+        fallenUnits.addAll(killedAttackers);
+        fallenUnits.addAll(killedDefenders);
         fallenUnits.forEach(unit -> GameUtils.remove(game, unit));
         fallenUnits.forEach(unit -> updateReceiver.killed(unit, result));
         updateReceiver.battleResult(result);
         GameUtils.sendUpdate(game, game.nt());
         //find dead monsters to give killing player rewards
-        if (attackerOwner != null) {
-            Fraction fraction = attackerOwner.getFraction();
-            killedDefenders.stream().filter(it -> it instanceof Monster && it.getOwner() == null).map(it -> (Monster) it).forEach(fraction::killedMonster);
+        rewardKilledMonsters(attackerOwner, killedDefenders);
+        rewardKilledMonsters(defenderOwner, killedAttackers);
+    }
+
+    private void rewardKilledMonsters(Player killer, List<BattleObject> units) {
+        if (killer != null) {
+            Fraction fraction = killer.getFraction();
+            units.stream().filter(it -> it instanceof Monster && it.getOwner() == null).map(it -> (Monster) it).forEach(fraction::killedMonster);
         }
     }
 

@@ -30,10 +30,10 @@ public class StartScreen extends AbstractScreen {
     private boolean connecting = false;
     private Label loadingInfo;
 
-    private static String PLAYER_NAME = "tester";
-         //   "";
-    private static String SERVER = "localhost";
-         //   "gainea.de";
+    private static String PLAYER_NAME = //"tester";
+            "";
+    private static String SERVER = //"localhost";
+            "gainea.de";
 
     public StartScreen() {
 
@@ -90,7 +90,7 @@ public class StartScreen extends AbstractScreen {
 
     @Override
     public Actor build() {
-      //  AudioPlayer.playSong("celtic.mp3");
+        AudioPlayer.playSong("celtic.mp3");
         loadingInfo = info("");
         loadingInfo.setAlignment(Align.center);
         loadingInfo.setVisible(false);

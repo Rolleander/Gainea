@@ -16,7 +16,7 @@ public class C_Blockade extends AbstractCard {
     private final static int TURNS = 7;
 
     public C_Blockade() {
-        super(54, "Einsamer Landstreicher", "Platziert eine neutrale Befestigung (3/10) auf ein beliebiges freies Feld. Sie zerfällt nach " + TURNS + " Runden.");
+        super(54, "Burgfried", "Platziert eine neutrale Befestigung (3/10) auf ein beliebiges freies Feld. Sie zerfällt nach " + TURNS + " Runden.");
         setDrawChance(0.4f);
     }
 

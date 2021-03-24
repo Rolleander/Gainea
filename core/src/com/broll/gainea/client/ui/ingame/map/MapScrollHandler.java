@@ -39,11 +39,7 @@ public class MapScrollHandler extends InputListener {
         elpasedTime = 0;
         float dst = Vector2.dst(start.x, start.y, end.x, end.y);
         animationTime = Math.min(1f, dst / 500f);
-        if (end.z <= start.z) {
-            transZ = Math.max(MAX_ZOOM, start.z + (dst / 1000f));
-        } else {
-            transZ = (end.z + start.z) / 2;
-        }
+        transZ = Math.min(MAX_ZOOM, Math.max(1, (dst / 750f)));
         if (animationTime > 0) {
             active = false;
         }
@@ -56,12 +52,11 @@ public class MapScrollHandler extends InputListener {
             float progress = Math.min(1f, elpasedTime / animationTime);
             camera.position.x = interpolation.apply(start.x, end.x, progress);
             camera.position.y = interpolation.apply(start.y, end.y, progress);
-          /*  if (progress >= 0.5f) {
+            if (progress >= 0.5f) {
                 camera.zoom = interpolation.apply(transZ, end.z, progress);
             } else {
                 camera.zoom = interpolation.apply(start.z, transZ, progress);
-            }*/
-            camera.zoom = interpolation.apply(start.z, end.z, progress);
+            }
             elpasedTime += delta;
             if (progress == 1) {
                 animationTime = 0;
