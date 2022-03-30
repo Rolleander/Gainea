@@ -56,7 +56,7 @@ public class GameLobbySite extends LobbyServerSite<LobbyData, PlayerData> {
         if (EnumUtils.inBounds(newFraction, FractionType.class)) {
             FractionType fraction = FractionType.values()[newFraction];
             //check if its free
-            if (!getLobby().streamData().map(PlayerData::getFraction).filter(it -> it == fraction).findFirst().isPresent()) {
+            if (!getLobby().getPlayersData().stream().map(PlayerData::getFraction).filter(it -> it == fraction).findFirst().isPresent()) {
                 //update player fraction
                 getPlayer().getData().setFraction(fraction);
                 getLobby().sendLobbyUpdate();
@@ -129,7 +129,7 @@ public class GameLobbySite extends LobbyServerSite<LobbyData, PlayerData> {
         //check for all ready, then lock lobby and start game
         ServerLobby<LobbyData, PlayerData> lobby = getLobby();
         synchronized (lobby) {
-            if (lobby.streamData().map(PlayerData::isReady).reduce(true, Boolean::logicalAnd)) {
+            if (lobby.getPlayersData().stream().map(PlayerData::isReady).reduce(true, Boolean::logicalAnd)) {
                 lobby.lock();
                 accessSite(GameStartSite.class).startGame();
             }

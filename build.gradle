@@ -72,8 +72,8 @@ project(":core") {
 
 
     dependencies {
-        implementation project(":netlib")
         implementation("com.google.guava:guava:28.2-jre")
+        implementation group: 'com.broll', name: 'networklib', version: '1.0'
         api "com.badlogicgames.gdx:gdx:$gdxVersion"
         api "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
         compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
@@ -91,7 +91,6 @@ project(":tests") {
     dependencies {
 
         implementation project(":core")
-        implementation project(":netlib")
         implementation("com.google.guava:guava:28.2-jre")
 
         compile group: 'com.esotericsoftware.minlog', name: 'minlog', version: '1.2'

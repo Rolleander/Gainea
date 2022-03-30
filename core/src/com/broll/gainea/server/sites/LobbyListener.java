@@ -7,9 +7,9 @@ import com.broll.gainea.server.core.utils.ProcessingUtils;
 import com.broll.gainea.server.init.LobbyData;
 import com.broll.gainea.server.init.PlayerData;
 import com.broll.gainea.server.core.fractions.FractionType;
+import com.broll.networklib.server.impl.IServerLobbyListener;
 import com.broll.networklib.server.impl.Player;
 import com.broll.networklib.server.impl.ServerLobby;
-import com.broll.networklib.server.impl.ServerLobbyListener;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class LobbyListener implements ServerLobbyListener<LobbyData, PlayerData> {
+public class LobbyListener implements IServerLobbyListener<LobbyData, PlayerData> {
 
     @Override
     public void playerJoined(ServerLobby<LobbyData, PlayerData> lobby, Player<PlayerData> player) {

@@ -3,9 +3,9 @@ package com.broll.gainea.server.init;
 import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.net.NT_PlayerSettings;
 import com.broll.gainea.server.core.fractions.FractionType;
-import com.broll.networklib.server.impl.LobbySettings;
+import com.broll.networklib.server.impl.ILobbyData;
 
-public class PlayerData implements LobbySettings {
+public class PlayerData implements ILobbyData {
 
     private FractionType fraction;
 
@@ -38,7 +38,7 @@ public class PlayerData implements LobbySettings {
     }
 
     @Override
-    public NT_PlayerSettings getSettings() {
+    public NT_PlayerSettings nt() {
         NT_PlayerSettings playerSettings = new NT_PlayerSettings();
         playerSettings.fraction = fraction.ordinal();
         playerSettings.ready = ready;

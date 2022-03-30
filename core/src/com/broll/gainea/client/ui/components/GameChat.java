@@ -13,8 +13,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.broll.gainea.client.ui.utils.LabelUtils;
 import com.broll.gainea.client.ui.utils.TableUtils;
-import com.broll.networklib.client.impl.ChatMessageListener;
 import com.broll.networklib.client.impl.GameLobby;
+import com.broll.networklib.client.impl.IChatMessageListener;
 import com.broll.networklib.client.impl.LobbyPlayer;
 
 import org.apache.commons.lang3.StringUtils;
@@ -30,7 +30,7 @@ public class GameChat extends Table {
         this.skin = skin;
         this.lobby = lobby;
         this.setSkin(skin);
-        lobby.setChatMessageListener(new ChatMessageListener() {
+        lobby.setChatMessageListener(new IChatMessageListener() {
             @Override
             public void fromPlayer(String msg, LobbyPlayer from) {
                 addChatMessage(from, msg);

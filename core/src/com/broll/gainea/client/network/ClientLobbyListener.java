@@ -5,10 +5,11 @@ import com.broll.gainea.client.ui.AbstractScreen;
 import com.broll.gainea.client.ui.screens.LobbyScreen;
 import com.broll.gainea.client.ui.screens.StartScreen;
 import com.broll.networklib.client.auth.LastConnection;
+import com.broll.networklib.client.impl.GameLobby;
+import com.broll.networklib.client.impl.ILobbyUpdateListener;
 import com.broll.networklib.client.impl.LobbyPlayer;
-import com.broll.networklib.client.impl.LobbyUpdateListener;
 
-public class ClientLobbyListener implements LobbyUpdateListener {
+public class ClientLobbyListener implements ILobbyUpdateListener {
 
     private Gainea game;
 
@@ -17,36 +18,36 @@ public class ClientLobbyListener implements LobbyUpdateListener {
     }
 
     @Override
-    public void lobbyUpdated() {
+    public void lobbyUpdated(GameLobby lobby) {
         updateLobby();
     }
 
     @Override
-    public void playerJoined(LobbyPlayer player) {
+    public void playerJoined(GameLobby lobby, LobbyPlayer player) {
         updateLobby();
     }
 
     @Override
-    public void playerLeft(LobbyPlayer player) {
+    public void playerLeft(GameLobby lobby, LobbyPlayer player) {
         updateLobby();
     }
 
     @Override
-    public void kickedFromLobby() {
+    public void kickedFromLobby(GameLobby lobby) {
         LastConnection.clear();
         backToTitle();
         game.ui.showErrorDialog("Kicked from lobby");
     }
 
     @Override
-    public void closed() {
+    public void closed(GameLobby lobby) {
         LastConnection.clear();
         backToTitle();
         game.ui.showErrorDialog("Lobby closed");
     }
 
     @Override
-    public void disconnected() {
+    public void disconnected(GameLobby lobby) {
         //disconnected is called on shutdown as well
         if (!game.shutdown) {
             backToTitle();

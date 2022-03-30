@@ -2,9 +2,9 @@ package com.broll.gainea.server.init;
 
 import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.net.NT_LobbySettings;
-import com.broll.networklib.server.impl.LobbySettings;
+import com.broll.networklib.server.impl.ILobbyData;
 
-public class LobbyData implements LobbySettings {
+public class LobbyData implements ILobbyData {
 
     private final static int START_LOCATIONS_DEFAULT = 3;
 
@@ -85,7 +85,7 @@ public class LobbyData implements LobbySettings {
     }
 
     @Override
-    public NT_LobbySettings getSettings() {
+    public NT_LobbySettings nt() {
         NT_LobbySettings settings = new NT_LobbySettings();
         settings.expansionSetting = expansionSetting.ordinal();
         settings.startGoals = startGoals;

@@ -1,16 +1,12 @@
 package com.broll.gainea.server.core.processing;
 
 import com.broll.gainea.server.core.GameContainer;
-import com.broll.networklib.server.impl.ConnectionSite;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Deque;
 import java.util.Queue;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -21,7 +17,7 @@ public class ProcessingCore {
     private final static Logger Log = LoggerFactory.getLogger(ProcessingCore.class);
     private GameContainer game;
     private ScheduledExecutorService executor;
-    private ScheduledExecutorService parallalExecutor;
+    private ScheduledExecutorService parallelExecutor;
     private ScheduledFuture<?> lastFuture;
     private Runnable finishedProcessingListener;
     private Queue<RunnableWrapper> queue = new ConcurrentLinkedQueue<>();
@@ -30,7 +26,7 @@ public class ProcessingCore {
         this.game = game;
         this.finishedProcessingListener = finishedProcessingListener;
         this.executor = Executors.newScheduledThreadPool(1);
-        this.parallalExecutor = Executors.newScheduledThreadPool(3);
+        this.parallelExecutor = Executors.newScheduledThreadPool(3);
     }
 
     public void executeParallel(Runnable runnable) {
@@ -38,7 +34,7 @@ public class ProcessingCore {
     }
 
     public synchronized void executeParallel(Runnable runnable, int afterDelay) {
-        parallalExecutor.schedule(runnable, afterDelay, TimeUnit.MILLISECONDS);
+        parallelExecutor.schedule(runnable, afterDelay, TimeUnit.MILLISECONDS);
     }
 
     public void execute(Runnable runnable) {
