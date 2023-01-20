@@ -1,1 +1,1 @@
-include 'desktop', 'core','netlib','tests'
+include 'desktop', 'core','tests'

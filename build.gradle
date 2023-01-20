@@ -1,5 +1,5 @@
 buildscript {
-    
+
 
     repositories {
         mavenLocal()
@@ -16,7 +16,6 @@ buildscript {
 }
 
 allprojects {
-    apply plugin: "eclipse"
 
     version = '1.0'
     ext {
@@ -47,6 +46,9 @@ project(":desktop") {
         api "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
         api "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
         api "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
+        implementation group: 'org.slf4j', name: 'slf4j-log4j12', version: '2.0.6'
+        implementation 'org.apache.logging.log4j:log4j-slf4j-impl:2.19.0'
+
     }
 }
 /*
@@ -76,10 +78,12 @@ project(":core") {
         implementation group: 'com.broll', name: 'networklib', version: '1.0'
         api "com.badlogicgames.gdx:gdx:$gdxVersion"
         api "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
-        compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
+        implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
         // https://mvnrepository.com/artifact/org.apache.commons/commons-collections4
-        compile group: 'org.apache.commons', name: 'commons-collections4', version: '4.0'
-        compile group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.29'
+        implementation group: 'org.apache.commons', name: 'commons-collections4', version: '4.0'
+        implementation group: 'org.slf4j', name: 'slf4j-api', version: '2.0.6'
+        // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
+
     }
 }
 
@@ -93,18 +97,18 @@ project(":tests") {
         implementation project(":core")
         implementation("com.google.guava:guava:28.2-jre")
 
-        compile group: 'com.esotericsoftware.minlog', name: 'minlog', version: '1.2'
-        compile "junit:junit:4.+"
-        compile "org.mockito:mockito-all:1.9.+"
+        implementation group: 'com.esotericsoftware.minlog', name: 'minlog', version: '1.2'
+        implementation "junit:junit:4.+"
+        implementation "org.mockito:mockito-all:1.9.+"
 
-        compile "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
-        compile "com.badlogicgames.gdx:gdx:$gdxVersion"
+        implementation "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
+        implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
 
-        testCompile 'junit:junit:4.+'
-        testCompile "org.mockito:mockito-all:1.9.+"
+        testImplementation 'junit:junit:4.+'
+        testImplementation "org.mockito:mockito-all:1.9.+"
 
-        testCompile "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
-        testCompile "com.badlogicgames.gdx:gdx:$gdxVersion"
-        testCompile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+        testImplementation "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
+        testImplementation "com.badlogicgames.gdx:gdx:$gdxVersion"
+        testImplementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
     }
 }
