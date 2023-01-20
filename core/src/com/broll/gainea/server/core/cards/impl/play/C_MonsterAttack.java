@@ -31,8 +31,9 @@ public class C_MonsterAttack extends AbstractCard {
         monster.setPower(4);
         monster.setHealth(4);
         Location target = selectHandler.selectLocation("Wählt die feindliche Truppe", new ArrayList<>(PlayerUtils.getHostileLocations(game, owner)));
+        List<BattleObject> hostileArmy = PlayerUtils.getHostileArmy(owner, target);
         UnitControl.spawn(game, monster, target);
-        game.getBattleHandler().startBattle(Lists.newArrayList(monster), PlayerUtils.getHostileArmy(owner, target));
+        game.getBattleHandler().startBattle(Lists.newArrayList(monster),hostileArmy);
     }
 
 

@@ -18,7 +18,7 @@ public class G_KillCommander extends AbstractGoal {
         if (throughBattle != null) {
             if (throughBattle.getAttacker() == player && throughBattle.getDefenders().stream().anyMatch(it -> it instanceof Commander && it.isDead())) {
                 success();
-            } else if (throughBattle.getDefenders() == player && throughBattle.getAttackers().stream().anyMatch(it -> it instanceof Commander && it.isDead())) {
+            } else if (throughBattle.getDefender() == player && throughBattle.getAttackers().stream().anyMatch(it -> it instanceof Commander && it.isDead())) {
                 success();
             }
         }
