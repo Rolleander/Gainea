@@ -43,7 +43,7 @@ public class Monster extends BattleObject {
 
     @Override
     public void roundStarted() {
-        if (actionTimer != NT_Monster.NO_ACTION_TIMER) {
+        if (actionTimer != NT_Monster.NO_ACTION_TIMER && owner == null) {
             actionTimer--;
             if (actionTimer == 0) {
                 this.behavior.doAction(game, this);

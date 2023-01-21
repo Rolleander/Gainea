@@ -13,15 +13,15 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public enum MonsterBehavior {
-    RESIDENT((game, monster) -> {
+    RESIDENT("Sesshaft",(game, monster) -> {
     }),
-    RANDOM((game, monster) -> {
+    RANDOM("Wild",(game, monster) -> {
         Location target = RandomUtils.pickRandom(getPossibleTargets(monster).collect(Collectors.toList()));
         if (target != null) {
             UnitControl.conquer(game, Lists.newArrayList(monster), target);
         }
     }),
-    AGGRESSIVE((game, monster) -> {
+    AGGRESSIVE("Aggressiv",(game, monster) -> {
         Location target = RandomUtils.pickRandom(getPossibleTargets(monster).filter(it -> !LocationUtils.noControlledUnits(it)).collect(Collectors.toList()));
         if (target != null) {
             UnitControl.conquer(game, Lists.newArrayList(monster), target);
@@ -29,7 +29,7 @@ public enum MonsterBehavior {
             RANDOM.doAction(game, monster);
         }
     }),
-    FLEEING((game, monster) -> {
+    FLEEING("Scheu",(game, monster) -> {
         Location target = RandomUtils.pickRandom(getPossibleTargets(monster).filter(Location::isFree).collect(Collectors.toList()));
         if (target != null) {
             UnitControl.move(game, monster, target);
@@ -37,9 +37,15 @@ public enum MonsterBehavior {
     });
 
     private BiConsumer<GameContainer, Monster> action;
+    private String label;
 
-    MonsterBehavior(BiConsumer<GameContainer, Monster> action) {
+    MonsterBehavior(String label, BiConsumer<GameContainer, Monster> action) {
+        this.label = label;
         this.action = action;
+    }
+
+    public String getLabel() {
+        return label;
     }
 
     public void doAction(GameContainer game, Monster monster) {

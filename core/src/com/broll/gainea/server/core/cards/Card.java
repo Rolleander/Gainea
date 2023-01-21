@@ -7,7 +7,7 @@ import com.broll.gainea.server.core.actions.required.PlaceUnitAction;
 import com.broll.gainea.server.core.actions.required.SelectChoiceAction;
 import com.broll.gainea.server.core.player.Player;
 
-public abstract class AbstractCard {
+public abstract class Card {
 
     protected GameContainer game;
     protected Player owner;
@@ -20,7 +20,7 @@ public abstract class AbstractCard {
     private String title, text;
     private float drawChance = 1;
 
-    public AbstractCard(int picture, String title, String text) {
+    public Card(int picture, String title, String text) {
         this.text = text;
         this.picture = picture;
         this.title = title;

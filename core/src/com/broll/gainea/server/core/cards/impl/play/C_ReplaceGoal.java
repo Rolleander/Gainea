@@ -1,6 +1,6 @@
 package com.broll.gainea.server.core.cards.impl.play;
 
-import com.broll.gainea.server.core.cards.AbstractCard;
+import com.broll.gainea.server.core.cards.Card;
 import com.broll.gainea.server.core.goals.AbstractGoal;
 import com.broll.gainea.server.core.goals.GoalDifficulty;
 
@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class C_ReplaceGoal extends AbstractCard {
+public class C_ReplaceGoal extends Card {
     public C_ReplaceGoal() {
         super(39,"Zielstrategie", "Ersetze eines deiner Ziele durch ein neues Ziel einer beliebigen Schwierigkeitsstufe");
         setDrawChance(0.5f);

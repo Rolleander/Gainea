@@ -1,6 +1,6 @@
 package com.broll.gainea.server.core.cards.impl.play;
 
-import com.broll.gainea.server.core.cards.AbstractCard;
+import com.broll.gainea.server.core.cards.Card;
 import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.Monster;
@@ -10,9 +10,8 @@ import com.google.common.collect.Lists;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
-public class C_MonsterAttack extends AbstractCard {
+public class C_MonsterAttack extends Card {
     public C_MonsterAttack() {
         super(36, "Ogerangriff", "Wählt eine feindliche Truppe und ruft einen wilden Kriegsoger (4/4) herbei der diese angreift.");
         setDrawChance(0.5f);

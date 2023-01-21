@@ -1,8 +1,8 @@
 package com.broll.gainea.server.core.cards.impl.play;
 
-import com.broll.gainea.server.core.cards.AbstractCard;
+import com.broll.gainea.server.core.cards.Card;
 
-public class C_SuspendPlayer extends AbstractCard {
+public class C_SuspendPlayer extends Card {
     public C_SuspendPlayer() {
         super(12,"In den Kerker", "Ein Spieler deiner Wahl muss eine Runde aussetzen");
         setDrawChance(0.4f);

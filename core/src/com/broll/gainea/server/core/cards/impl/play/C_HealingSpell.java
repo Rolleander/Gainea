@@ -1,11 +1,10 @@
 package com.broll.gainea.server.core.cards.impl.play;
 
-import com.broll.gainea.server.core.cards.AbstractCard;
+import com.broll.gainea.server.core.cards.Card;
 import com.broll.gainea.server.core.objects.BattleObject;
-import com.broll.gainea.server.core.utils.PlayerUtils;
 import com.broll.gainea.server.core.utils.UnitControl;
 
-public class C_HealingSpell extends AbstractCard {
+public class C_HealingSpell extends Card {
     public C_HealingSpell() {
         super(62, "Lichtbeschwörung", "Heilt alle eure Einheiten");
     }

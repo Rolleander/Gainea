@@ -13,8 +13,10 @@ import com.broll.gainea.client.ui.utils.ActionListener;
 import com.broll.gainea.client.ui.components.IconLabel;
 import com.broll.gainea.client.ui.utils.LabelUtils;
 import com.broll.gainea.client.ui.utils.TextureUtils;
+import com.broll.gainea.net.NT_Battle_Reaction;
 import com.broll.gainea.net.NT_Monster;
 import com.broll.gainea.net.NT_Unit;
+import com.broll.gainea.server.core.objects.MonsterBehavior;
 
 public class MenuUnit extends Table {
 
@@ -34,16 +36,20 @@ public class MenuUnit extends Table {
         left();
         Table table = new Table();
         table.left();
-        table.add(LabelUtils.info(skin,unit.name)).left().spaceBottom(10).row();
+        table.add(LabelUtils.info(skin, unit.name)).left().spaceBottom(5).row();
         if (unit instanceof NT_Monster) {
             Table stars = new Table();
             for (int i = 0; i < ((NT_Monster) unit).stars; i++) {
                 stars.add(new Image(TextureUtils.icon(game, 2))).left();
             }
             table.add(stars).left().row();
+            if(unit.owner == NT_Unit.NO_OWNER){
+                String behavior = MonsterBehavior.values()[((NT_Monster) unit).behavior].getLabel();
+                table.add(LabelUtils.info(skin, behavior)).center().spaceBottom(5).row();
+            }
         }
-        table.add(IconLabel.attack(game,  unit.power)).left().row();
-        table.add(IconLabel.health(game,  unit.health, unit.maxHealth)).left().row();
+        table.add(IconLabel.attack(game, unit.power)).left().row();
+        table.add(IconLabel.health(game, unit.health, unit.maxHealth)).left().row();
         add(table).fillX().expandX().spaceLeft(10);
         setTouchable(Touchable.enabled);
         addListener(new ClickListener() {

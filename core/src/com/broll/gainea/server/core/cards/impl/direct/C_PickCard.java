@@ -1,15 +1,9 @@
 package com.broll.gainea.server.core.cards.impl.direct;
 
-import com.badlogic.gdx.math.MathUtils;
-import com.broll.gainea.server.core.cards.AbstractCard;
+import com.broll.gainea.server.core.cards.Card;
 import com.broll.gainea.server.core.cards.DirectlyPlayedCard;
-import com.broll.gainea.server.core.map.Ship;
-import com.broll.gainea.server.core.objects.Soldier;
-import com.broll.gainea.server.core.utils.LocationUtils;
-import com.broll.gainea.server.core.utils.UnitControl;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,11 +17,11 @@ public class C_PickCard extends DirectlyPlayedCard {
 
     @Override
     protected void play() {
-        List<AbstractCard> cards = new ArrayList<>();
+        List<Card> cards = new ArrayList<>();
         for (int i = 0; i < OPTIONS; i++) {
             cards.add(game.getCardStorage().getRandomCard());
         }
-        AbstractCard card = cards.get(selectHandler.selection("Wählt eine Karte", cards.stream().map(AbstractCard::getTitle).collect(Collectors.toList())));
+        Card card = cards.get(selectHandler.selection("Wählt eine Karte", cards.stream().map(Card::getTitle).collect(Collectors.toList())));
         owner.getCardHandler().receiveCard(card);
     }
 

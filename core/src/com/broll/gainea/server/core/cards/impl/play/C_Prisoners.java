@@ -1,19 +1,12 @@
 package com.broll.gainea.server.core.cards.impl.play;
 
 import com.broll.gainea.server.core.battle.BattleResult;
-import com.broll.gainea.server.core.cards.AbstractCard;
-import com.broll.gainea.server.core.map.Location;
-import com.broll.gainea.server.core.objects.Monster;
+import com.broll.gainea.server.core.cards.Card;
 import com.broll.gainea.server.core.objects.Soldier;
 import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.server.core.processing.GameUpdateReceiverAdapter;
-import com.broll.gainea.server.core.utils.PlayerUtils;
-import com.broll.gainea.server.core.utils.UnitControl;
-import com.google.common.collect.Lists;
 
-import java.util.ArrayList;
-
-public class C_Prisoners extends AbstractCard {
+public class C_Prisoners extends Card {
     private final static int COUNT = 3;
 
     public C_Prisoners() {

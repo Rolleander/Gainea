@@ -1,18 +1,14 @@
 package com.broll.gainea.server.core.cards.impl.play;
 
-import com.broll.gainea.server.core.cards.AbstractCard;
+import com.broll.gainea.server.core.cards.Card;
 import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.objects.BattleObject;
-import com.broll.gainea.server.core.objects.GodDragon;
-import com.broll.gainea.server.core.objects.Monster;
-import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.server.core.utils.PlayerUtils;
-import com.broll.gainea.server.core.utils.UnitControl;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class C_BlitzAttack extends AbstractCard {
+public class C_BlitzAttack extends Card {
     public C_BlitzAttack() {
         super(11, "Blitzkrieg", "Wählt eine Truppe und greift damit ein beliebiges feindliches Land auf der gleichen Karte an");
         setDrawChance(0.3f);

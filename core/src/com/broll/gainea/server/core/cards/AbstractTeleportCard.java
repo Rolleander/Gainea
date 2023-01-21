@@ -1,8 +1,6 @@
 package com.broll.gainea.server.core.cards;
 
 import com.broll.gainea.server.core.map.Location;
-import com.broll.gainea.server.core.objects.BattleObject;
-import com.broll.gainea.server.core.objects.MapObject;
 import com.broll.gainea.server.core.utils.LocationUtils;
 import com.broll.gainea.server.core.utils.PlayerUtils;
 import com.broll.gainea.server.core.utils.UnitControl;
@@ -10,7 +8,7 @@ import com.broll.gainea.server.core.utils.UnitControl;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public abstract class AbstractTeleportCard extends AbstractCard {
+public abstract class AbstractTeleportCard extends Card {
     public AbstractTeleportCard(int picture, String title, String text) {
         super(picture, title, text);
     }

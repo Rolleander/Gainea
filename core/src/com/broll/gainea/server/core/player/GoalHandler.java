@@ -1,15 +1,12 @@
 package com.broll.gainea.server.core.player;
 
-import com.broll.gainea.net.NT_Card;
 import com.broll.gainea.net.NT_Event_OtherPlayerReceivedGoal;
 import com.broll.gainea.net.NT_Event_ReceivedGoal;
 import com.broll.gainea.net.NT_Event_ReceivedPoints;
 import com.broll.gainea.net.NT_Event_ReceivedStars;
 import com.broll.gainea.net.NT_Goal;
 import com.broll.gainea.server.core.GameContainer;
-import com.broll.gainea.server.core.cards.AbstractCard;
 import com.broll.gainea.server.core.goals.AbstractGoal;
-import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.server.core.utils.GameUtils;
 import com.broll.gainea.server.core.utils.ProcessingUtils;
 

@@ -1,12 +1,11 @@
 package com.broll.gainea.server.core.processing;
 
 import com.broll.gainea.server.core.battle.BattleResult;
-import com.broll.gainea.server.core.cards.AbstractCard;
+import com.broll.gainea.server.core.cards.Card;
 import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.MapObject;
 import com.broll.gainea.server.core.player.Player;
-import com.broll.networklib.server.impl.ConnectionSite;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -74,7 +72,7 @@ public class GameUpdateReceiverProxy implements IGameUpdateReceiver {
     }
 
     @Override
-    public void playedCard(AbstractCard card) {
+    public void playedCard(Card card) {
         runNested(() -> proxies.forEach(proxy -> proxy.playedCard(card)));
     }
 

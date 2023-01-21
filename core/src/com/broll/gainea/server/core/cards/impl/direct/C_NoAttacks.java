@@ -1,12 +1,10 @@
 package com.broll.gainea.server.core.cards.impl.direct;
 
 import com.broll.gainea.net.NT_Abstract_Event;
-import com.broll.gainea.server.core.cards.AbstractCard;
 import com.broll.gainea.server.core.cards.DirectlyPlayedCard;
 import com.broll.gainea.server.core.objects.buffs.BuffType;
 import com.broll.gainea.server.core.objects.buffs.GlobalBuff;
 import com.broll.gainea.server.core.objects.buffs.IntBuff;
-import com.broll.gainea.server.core.player.Player;
 
 public class C_NoAttacks extends DirectlyPlayedCard {
 

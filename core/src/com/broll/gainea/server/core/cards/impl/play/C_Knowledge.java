@@ -1,12 +1,9 @@
 package com.broll.gainea.server.core.cards.impl.play;
 
-import com.broll.gainea.server.core.cards.AbstractCard;
-import com.broll.gainea.server.core.objects.buffs.BuffType;
-import com.broll.gainea.server.core.objects.buffs.GlobalBuff;
-import com.broll.gainea.server.core.objects.buffs.IntBuff;
+import com.broll.gainea.server.core.cards.Card;
 import com.google.common.collect.Lists;
 
-public class C_Knowledge extends AbstractCard {
+public class C_Knowledge extends Card {
 
     private final static int STARS = 5;
 

@@ -1,13 +1,9 @@
 package com.broll.gainea.server.core.cards.impl.play;
 
-import com.broll.gainea.server.core.cards.AbstractCard;
-import com.broll.gainea.server.core.objects.BattleObject;
-import com.broll.gainea.server.core.objects.GodDragon;
+import com.broll.gainea.server.core.cards.Card;
 import com.broll.gainea.server.core.utils.PlayerUtils;
-import com.broll.gainea.server.core.utils.SelectionUtils;
-import com.broll.gainea.server.core.utils.UnitControl;
 
-public class C_ResurrectCommander extends AbstractCard {
+public class C_ResurrectCommander extends Card {
     public C_ResurrectCommander() {
         super(61, "Auferstehung", "Lasst euren gefallenen Feldherr zurückkehren");
     }

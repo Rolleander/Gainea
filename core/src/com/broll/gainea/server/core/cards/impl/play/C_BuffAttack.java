@@ -1,13 +1,12 @@
 package com.broll.gainea.server.core.cards.impl.play;
 
 import com.broll.gainea.net.NT_Abstract_Event;
-import com.broll.gainea.server.core.cards.AbstractCard;
+import com.broll.gainea.server.core.cards.Card;
 import com.broll.gainea.server.core.objects.BattleObject;
-import com.broll.gainea.server.core.objects.Commander;
 import com.broll.gainea.server.core.utils.SelectionUtils;
 import com.broll.gainea.server.core.utils.UnitControl;
 
-public class C_BuffAttack extends AbstractCard {
+public class C_BuffAttack extends Card {
     public C_BuffAttack() {
         super(51, "Aufrüsten", "Verleiht einer Einheit +2 Angriff");
     }

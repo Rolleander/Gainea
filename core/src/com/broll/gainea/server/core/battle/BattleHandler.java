@@ -13,6 +13,7 @@ import com.broll.gainea.server.core.actions.ReactionActions;
 import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.processing.GameUpdateReceiverProxy;
 import com.broll.gainea.server.core.utils.GameUtils;
+import com.broll.gainea.server.core.utils.PlayerUtils;
 import com.broll.gainea.server.core.utils.ProcessingUtils;
 import com.broll.gainea.server.core.utils.UnitControl;
 
@@ -103,7 +104,7 @@ public class BattleHandler {
         this.aliveAttackers = attackers.stream().filter(BattleObject::isAlive).collect(Collectors.toList());
         this.aliveDefenders = defenders.stream().filter(BattleObject::isAlive).collect(Collectors.toList());
         //attackers are always of one owner
-        attackerOwner = aliveAttackers.get(0).getOwner();
+        attackerOwner = PlayerUtils.getOwner(aliveAttackers);
         if (attackerOwner == null) {
             //wild monsters are attackers, will always keep attacking
             allowRetreat = false;

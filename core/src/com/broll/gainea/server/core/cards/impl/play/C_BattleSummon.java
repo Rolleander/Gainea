@@ -1,6 +1,6 @@
 package com.broll.gainea.server.core.cards.impl.play;
 
-import com.broll.gainea.server.core.cards.AbstractCard;
+import com.broll.gainea.server.core.cards.Card;
 import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.objects.Soldier;
 import com.broll.gainea.server.core.objects.buffs.BuffType;
@@ -8,7 +8,7 @@ import com.broll.gainea.server.core.objects.buffs.IntBuff;
 
 import java.util.List;
 
-public class C_BattleSummon extends AbstractCard {
+public class C_BattleSummon extends Card {
 
     public C_BattleSummon() {
         super(66, "Rachedämon", "Beschwört einen Rachedämon (5/3) der nächste Runde stirbt.");

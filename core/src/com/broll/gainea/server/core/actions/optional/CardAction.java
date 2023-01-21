@@ -5,11 +5,10 @@ import com.broll.gainea.net.NT_Event_PlayedCard;
 import com.broll.gainea.net.NT_Reaction;
 import com.broll.gainea.server.core.actions.AbstractActionHandler;
 import com.broll.gainea.server.core.actions.ActionContext;
-import com.broll.gainea.server.core.cards.AbstractCard;
+import com.broll.gainea.server.core.cards.Card;
 import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.server.core.utils.MessageUtils;
 import com.broll.gainea.server.core.utils.ProcessingUtils;
-import com.broll.networklib.server.impl.ConnectionSite;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +19,7 @@ public class CardAction extends AbstractActionHandler<NT_Action_Card, CardAction
     private final static Logger Log = LoggerFactory.getLogger(CardAction.class);
 
     class Context extends ActionContext<NT_Action_Card> {
-        AbstractCard card;
+        Card card;
         Player player;
 
         public Context(NT_Action_Card action) {
@@ -28,7 +27,7 @@ public class CardAction extends AbstractActionHandler<NT_Action_Card, CardAction
         }
     }
 
-    public Context playableCard(Player player, AbstractCard card) {
+    public Context playableCard(Player player, Card card) {
         NT_Action_Card action = new NT_Action_Card();
         action.cardId = card.getId();
         Context context = new Context(action);
@@ -42,7 +41,7 @@ public class CardAction extends AbstractActionHandler<NT_Action_Card, CardAction
         playCard(context.player, context.card);
     }
 
-    public void playCard(Player player, AbstractCard card) {
+    public void playCard(Player player, Card card) {
         game.getProcessingCore().execute(() -> {
             Log.trace("Handle card reaction");
             NT_Event_PlayedCard playedCard = new NT_Event_PlayedCard();

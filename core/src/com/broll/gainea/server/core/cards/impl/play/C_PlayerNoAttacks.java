@@ -1,13 +1,13 @@
 package com.broll.gainea.server.core.cards.impl.play;
 
 import com.broll.gainea.net.NT_Abstract_Event;
-import com.broll.gainea.server.core.cards.AbstractCard;
+import com.broll.gainea.server.core.cards.Card;
 import com.broll.gainea.server.core.objects.buffs.BuffType;
 import com.broll.gainea.server.core.objects.buffs.GlobalBuff;
 import com.broll.gainea.server.core.objects.buffs.IntBuff;
 import com.broll.gainea.server.core.player.Player;
 
-public class C_PlayerNoAttacks extends AbstractCard {
+public class C_PlayerNoAttacks extends Card {
 
     private final static int DURATION = 3;
 

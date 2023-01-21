@@ -28,6 +28,7 @@ public abstract class MapObject extends GameUpdateReceiverAdapter {
 
     public void init(GameContainer game) {
         this.id = game.newObjectId();
+        this.game = game;
     }
 
     public void turnStart() {

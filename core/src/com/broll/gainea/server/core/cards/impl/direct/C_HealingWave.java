@@ -1,6 +1,5 @@
 package com.broll.gainea.server.core.cards.impl.direct;
 
-import com.broll.gainea.server.core.cards.AbstractCard;
 import com.broll.gainea.server.core.cards.DirectlyPlayedCard;
 import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.utils.UnitControl;

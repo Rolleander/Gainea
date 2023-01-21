@@ -1,20 +1,13 @@
 package com.broll.gainea.server.core.cards.impl.direct;
 
 import com.badlogic.gdx.math.MathUtils;
-import com.broll.gainea.server.core.cards.AbstractCard;
 import com.broll.gainea.server.core.cards.DirectlyPlayedCard;
-import com.broll.gainea.server.core.map.Area;
-import com.broll.gainea.server.core.map.AreaType;
-import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.map.Ship;
-import com.broll.gainea.server.core.objects.Monster;
 import com.broll.gainea.server.core.objects.Soldier;
 import com.broll.gainea.server.core.utils.LocationUtils;
-import com.broll.gainea.server.core.utils.ShipUtils;
 import com.broll.gainea.server.core.utils.UnitControl;
 
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 

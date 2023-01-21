@@ -1,15 +1,13 @@
 package com.broll.gainea.server.core.cards.impl.play;
 
-import com.broll.gainea.net.NT_Goal;
-import com.broll.gainea.server.core.cards.AbstractCard;
+import com.broll.gainea.server.core.cards.Card;
 import com.broll.gainea.server.core.goals.AbstractGoal;
 import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.server.core.utils.MessageUtils;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
-public class C_Secrets extends AbstractCard {
+public class C_Secrets extends Card {
     public C_Secrets() {
         super(40, "Bestechung", "Schaut euch die Ziele und Aktionskarten eines beliebigen Spielers an");
         setDrawChance(0.8f);
@@ -23,7 +21,7 @@ public class C_Secrets extends AbstractCard {
     @Override
     protected void play() {
         Player player = selectHandler.selectOtherPlayer(owner, "Welchen Spieler bestechen?");
-        List<AbstractCard> cards = player.getCardHandler().getCards();
+        List<Card> cards = player.getCardHandler().getCards();
         List<AbstractGoal> goals = player.getGoalHandler().getGoals();
         String name = player.getServerPlayer().getName();
         String text = name + "'s Ziele: \n";
@@ -31,7 +29,7 @@ public class C_Secrets extends AbstractCard {
             text += " - " + goal.getText() + " ( " +goal.getDifficulty().getPoints()+"P "  + goal.getRestrictionInfo() + ")\n";
         }
         text += name + "'s Aktionskarten: \n";
-        for (AbstractCard card : cards) {
+        for (Card card : cards) {
             text += " - " + card.getTitle() + "\n";
         }
         MessageUtils.displayMessage(game, owner, text);

@@ -1,17 +1,15 @@
 package com.broll.gainea.server.core.cards.impl.play;
 
-import com.broll.gainea.server.core.cards.AbstractCard;
+import com.broll.gainea.server.core.cards.Card;
 import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.utils.SelectionUtils;
 import com.broll.gainea.server.core.utils.UnitControl;
-import com.google.common.collect.Lists;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class C_TeleportGate extends AbstractCard {
+public class C_TeleportGate extends Card {
     public C_TeleportGate() {
         super(56, "Teleporter", "Teleportiert eine eurer Einheiten auf ein beliebiges freies Feld");
         setDrawChance(0.3f);

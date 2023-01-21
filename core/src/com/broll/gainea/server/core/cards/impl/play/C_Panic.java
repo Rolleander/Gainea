@@ -1,12 +1,8 @@
 package com.broll.gainea.server.core.cards.impl.play;
 
-import com.broll.gainea.server.core.cards.AbstractCard;
-import com.broll.gainea.server.core.map.Area;
-import com.broll.gainea.server.core.map.AreaType;
+import com.broll.gainea.server.core.cards.Card;
 import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.objects.MapObject;
-import com.broll.gainea.server.core.objects.Monster;
-import com.broll.gainea.server.core.utils.LocationUtils;
 import com.broll.gainea.server.core.utils.UnitControl;
 import com.google.common.collect.Lists;
 
@@ -15,7 +11,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class C_Panic extends AbstractCard {
+public class C_Panic extends Card {
     public C_Panic() {
         super(46, "Massenpanik", "Wählt ein Ort mit mindestens einer Einheit. Alle Einheiten des gewählten Ortes werden auf freie angrenzende Orte verteilt.");
         setDrawChance(0.9f);

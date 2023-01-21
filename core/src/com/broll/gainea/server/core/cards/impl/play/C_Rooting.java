@@ -1,7 +1,7 @@
 package com.broll.gainea.server.core.cards.impl.play;
 
 import com.broll.gainea.net.NT_Abstract_Event;
-import com.broll.gainea.server.core.cards.AbstractCard;
+import com.broll.gainea.server.core.cards.Card;
 import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.objects.MapObject;
 import com.broll.gainea.server.core.objects.buffs.IntBuff;
@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class C_Rooting extends AbstractCard {
+public class C_Rooting extends Card {
 
     private final static int DURATION = 3;
 

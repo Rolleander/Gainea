@@ -1,6 +1,6 @@
 package com.broll.gainea.server.core.cards.impl.play;
 
-import com.broll.gainea.server.core.cards.AbstractCard;
+import com.broll.gainea.server.core.cards.Card;
 import com.broll.gainea.server.core.map.Area;
 import com.broll.gainea.server.core.map.AreaType;
 import com.broll.gainea.server.core.map.Location;
@@ -11,7 +11,7 @@ import com.broll.gainea.server.core.utils.UnitControl;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class C_PlaceWatersnake extends AbstractCard {
+public class C_PlaceWatersnake extends Card {
     public C_PlaceWatersnake() {
         super(49, "Verseuchte Gewässer", "Platziert eine wilde Seeschlange auf ein beliebiges unbesetztes Meer");
         setDrawChance(0.8f);

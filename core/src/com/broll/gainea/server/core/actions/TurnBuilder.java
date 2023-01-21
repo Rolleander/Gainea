@@ -6,7 +6,7 @@ import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.actions.optional.AttackAction;
 import com.broll.gainea.server.core.actions.optional.CardAction;
 import com.broll.gainea.server.core.actions.optional.MoveUnitAction;
-import com.broll.gainea.server.core.cards.AbstractCard;
+import com.broll.gainea.server.core.cards.Card;
 import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.server.core.map.Location;
@@ -60,7 +60,7 @@ public class TurnBuilder {
 
     private List<ActionContext> buildCardActions(Player player) {
         CardAction cardAction = actionHandlers.getHandler(CardAction.class);
-        return player.getCardHandler().getCards().stream().filter(AbstractCard::isPlayable).map(card -> (ActionContext) cardAction.playableCard(player, card)).collect(Collectors.toList());
+        return player.getCardHandler().getCards().stream().filter(Card::isPlayable).map(card -> (ActionContext) cardAction.playableCard(player, card)).collect(Collectors.toList());
     }
 
 }

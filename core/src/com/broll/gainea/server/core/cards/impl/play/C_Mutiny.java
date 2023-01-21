@@ -1,18 +1,15 @@
 package com.broll.gainea.server.core.cards.impl.play;
 
 import com.badlogic.gdx.math.MathUtils;
-import com.broll.gainea.net.NT_Abstract_Event;
-import com.broll.gainea.server.core.cards.AbstractCard;
+import com.broll.gainea.server.core.cards.Card;
 import com.broll.gainea.server.core.objects.BattleObject;
-import com.broll.gainea.server.core.objects.MapObject;
-import com.broll.gainea.server.core.utils.SelectionUtils;
 import com.broll.gainea.server.core.utils.UnitControl;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class C_Mutiny extends AbstractCard {
+public class C_Mutiny extends Card {
 
     private static float DAMAGE_CHANCE = 0.5f;
 

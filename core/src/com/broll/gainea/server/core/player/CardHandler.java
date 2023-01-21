@@ -5,9 +5,8 @@ import com.broll.gainea.net.NT_Event_OtherPlayerReceivedCard;
 import com.broll.gainea.net.NT_Event_ReceivedCard;
 import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.actions.optional.CardAction;
-import com.broll.gainea.server.core.cards.AbstractCard;
+import com.broll.gainea.server.core.cards.Card;
 import com.broll.gainea.server.core.cards.DirectlyPlayedCard;
-import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.server.core.utils.GameUtils;
 
 import java.util.List;
@@ -15,7 +14,7 @@ import java.util.ArrayList;
 
 public class CardHandler {
 
-    private List<AbstractCard> cards = new ArrayList<>();
+    private List<Card> cards = new ArrayList<>();
     private GameContainer game;
     private Player player;
 
@@ -28,11 +27,11 @@ public class CardHandler {
         game.getCardStorage().drawRandomCard(player);
     }
 
-    public List<AbstractCard> getCards() {
+    public List<Card> getCards() {
         return cards;
     }
 
-    public void receiveCard(AbstractCard card) {
+    public void receiveCard(Card card) {
         if (card instanceof DirectlyPlayedCard) {
             game.getReactionHandler().getActionHandlers().getHandler(CardAction.class).playCard(player, card);
             return;
@@ -46,7 +45,7 @@ public class CardHandler {
         GameUtils.sendUpdate(game, player, nt, nt2);
     }
 
-    public void discardCard(AbstractCard card) {
+    public void discardCard(Card card) {
         this.cards.remove(card);
     }
 
@@ -55,6 +54,6 @@ public class CardHandler {
     }
 
     public NT_Card[] ntCards() {
-        return cards.stream().map(AbstractCard::nt).toArray(NT_Card[]::new);
+        return cards.stream().map(Card::nt).toArray(NT_Card[]::new);
     }
 }

@@ -1,7 +1,7 @@
 package com.broll.gainea.server.core.processing;
 
 import com.broll.gainea.server.core.battle.BattleResult;
-import com.broll.gainea.server.core.cards.AbstractCard;
+import com.broll.gainea.server.core.cards.Card;
 import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.MapObject;
@@ -16,7 +16,7 @@ public abstract class GameUpdateReceiverAdapter implements IGameUpdateReceiver {
     }
 
     @Override
-    public void playedCard(AbstractCard card) {
+    public void playedCard(Card card) {
 
     }
 
