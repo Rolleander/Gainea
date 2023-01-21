@@ -57,4 +57,8 @@ public final class PlayerUtils {
         locations.removeIf(location -> getHostileArmy(player, location).isEmpty());
         return locations;
     }
+
+    public static Player getOwner(List<BattleObject> units) {
+        return units.stream().map(it -> it.getOwner()).filter(it -> it != null).findFirst().orElse(null);
+    }
 }

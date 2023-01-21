@@ -1,5 +1,7 @@
 package com.broll.gainea.server.core.utils;
 
+
+import com.broll.gainea.misc.RandomUtils;
 import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.map.Area;
 import com.broll.gainea.server.core.map.AreaType;
@@ -11,12 +13,14 @@ import com.broll.gainea.server.core.objects.MapObject;
 import com.broll.gainea.server.core.objects.Monster;
 import com.broll.gainea.server.core.player.Player;
 
+import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -87,13 +91,14 @@ public final class LocationUtils {
         return location.getInhabitants().stream().filter(it -> it instanceof Monster).map(it -> (Monster) it).collect(Collectors.toList());
     }
 
+    public static List<BattleObject> getUnits(Location location) {
+        return location.getInhabitants().stream().filter(it -> it instanceof BattleObject).map(it -> (BattleObject) it).collect(Collectors.toList());
+    }
+
     public static Location getRandomFree(List<? extends Location> locations) {
         List<Location> free = locations.stream().filter(Location::isFree).collect(Collectors.toList());
-        if (free.isEmpty()) {
-            return null;
-        }
-        Collections.shuffle(free);
-        return free.get(0);
+        return RandomUtils.pickRandom(free);
     }
+
 
 }

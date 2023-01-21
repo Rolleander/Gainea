@@ -211,10 +211,6 @@ public class BattleHandler {
     private void battleFinished() {
         BattleResult result = new BattleResult(attackers, defenders, battleLocation);
         Log.info("Battle over! Surviving Attackers: (" + aliveAttackers.stream().map(it -> it.getId() + "| " + it.getName() + " " + it.getPower() + " " + it.getHealth()).collect(Collectors.joining(", ")) + ")  Surviving Defenders: (" + aliveDefenders.stream().map(it -> it.getId() + "| " + it.getName() + " " + it.getPower() + " " + it.getHealth()).collect(Collectors.joining(", ")) + ")");
-        //if defenders lost, move surviving attackers to location (unless attackers are wild monsters)
-        if (result.attackersWon()) {
-            UnitControl.move(game, attackers.stream().filter(BattleObject::isAlive).collect(Collectors.toList()), battleLocation);
-        }
         battleActive = false;
         GameUpdateReceiverProxy updateReceiver = game.getUpdateReceiver();
         List<BattleObject> fallenUnits = new ArrayList<>();
@@ -223,6 +219,10 @@ public class BattleHandler {
         fallenUnits.forEach(unit -> GameUtils.remove(game, unit));
         fallenUnits.forEach(unit -> updateReceiver.killed(unit, result));
         updateReceiver.battleResult(result);
+        //if defenders lost, move surviving attackers to location
+        if (result.attackersWon()) {
+            UnitControl.move(game, attackers.stream().filter(BattleObject::isAlive).collect(Collectors.toList()), battleLocation);
+        }
         GameUtils.sendUpdate(game, game.nt());
         //find dead monsters to give killing player rewards
         rewardKilledMonsters(attackerOwner, killedDefenders);

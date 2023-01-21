@@ -5,8 +5,11 @@ import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.objects.buffs.BuffableInt;
 import com.broll.gainea.server.core.player.Player;
+import com.broll.gainea.server.core.processing.GameUpdateReceiverAdapter;
 
-public abstract class MapObject {
+public abstract class MapObject extends GameUpdateReceiverAdapter {
+    protected GameContainer game;
+
     protected Player owner;
 
     private Location location;

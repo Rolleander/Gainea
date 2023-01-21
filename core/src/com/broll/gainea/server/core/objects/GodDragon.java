@@ -6,6 +6,8 @@ public class GodDragon extends Monster {
         setIcon(58);
         setName("Götterdrache");
         setStats(8,8);
+        setBehavior(MonsterBehavior.AGGRESSIVE);
+        setActivity(MonsterActivity.ALWAYS);
     }
 
 }

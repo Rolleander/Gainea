@@ -17,4 +17,5 @@ public final class StreamUtils {
     public static <T> Stream<T> copy(Stream<T> stream) {
         return stream.collect(Collectors.toList()).stream();
     }
+
 }

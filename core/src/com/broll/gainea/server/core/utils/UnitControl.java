@@ -143,6 +143,7 @@ public class UnitControl {
             game.getBuffProcessor().applyGlobalBuffs((BattleObject) object);
         }
         GameUtils.place(object, location);
+        game.getUpdateReceiver().register(object);
         NT_Event_PlacedObject nt = new NT_Event_PlacedObject();
         nt.object = object.nt();
         nt.sound = defaultSpawnSound(object, location);
@@ -154,13 +155,12 @@ public class UnitControl {
         ProcessingUtils.pause(SPAWN_PAUSE);
     }
 
-    private static String defaultSpawnSound(MapObject object, Location location){
+    private static String defaultSpawnSound(MapObject object, Location location) {
         String sound = null;
-        if(object instanceof Monster){
-            sound="monster.ogg";
-        }
-        else {
-            sound="recruit.ogg";
+        if (object instanceof Monster) {
+            sound = "monster.ogg";
+        } else {
+            sound = "recruit.ogg";
         }
         return sound;
     }
@@ -182,6 +182,21 @@ public class UnitControl {
         if (monster != null) {
             Log.debug("spawn monster " + monster.getName() + " on " + area);
             spawn(game, monster, area);
+        }
+    }
+
+    public static void conquer(GameContainer game, List<BattleObject> units, Location target) {
+        Player owner = PlayerUtils.getOwner(units);
+        List<BattleObject> targetUnits;
+        if (owner == null) {
+            targetUnits = LocationUtils.getUnits(target);
+        } else {
+            targetUnits = PlayerUtils.getHostileArmy(owner, target);
+        }
+        if (targetUnits.isEmpty()) {
+            move(game, units, target);
+        } else {
+            game.getBattleHandler().startBattle(units, targetUnits);
         }
     }
 

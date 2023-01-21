@@ -34,11 +34,16 @@ public final class GameUtils {
     public static boolean remove(GameContainer game, MapObject object) {
         Player owner = object.getOwner();
         object.getLocation().getInhabitants().remove(object);
+        boolean removed;
         if (owner == null) {
-            return game.getObjects().remove(object);
+            removed= game.getObjects().remove(object);
         } else {
-            return owner.getUnits().remove(object);
+            removed= owner.getUnits().remove(object);
         }
+        if(removed){
+            game.getUpdateReceiver().unregister(object);
+        }
+        return removed;
     }
 
     public static void place(MapObject object, Location location) {
