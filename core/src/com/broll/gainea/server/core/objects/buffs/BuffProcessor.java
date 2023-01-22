@@ -1,15 +1,10 @@
 package com.broll.gainea.server.core.objects.buffs;
 
-import com.broll.gainea.net.NT_Abstract_Event;
-import com.broll.gainea.net.NT_Event_FocusObject;
 import com.broll.gainea.server.core.GameContainer;
-import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.objects.BattleObject;
-import com.broll.gainea.server.core.objects.MapObject;
 import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.server.core.processing.GameUpdateReceiverAdapter;
-import com.broll.gainea.server.core.utils.GameUtils;
-import com.broll.gainea.server.core.utils.ProcessingUtils;
+import com.broll.gainea.server.core.processing.IGameUpdateReceiver;
 import com.broll.gainea.server.core.utils.UnitControl;
 
 import org.apache.commons.collections4.map.MultiValueMap;
@@ -26,8 +21,8 @@ public class BuffProcessor extends GameUpdateReceiverAdapter {
     private GameContainer game;
     private int currentTurnCount;
 
-    private MultiValueMap<Integer, AbstractBuff> timedBuffs = new MultiValueMap<>();
-    private Map<AbstractBuff, GlobalBuff> gloabalBuffs = new HashMap<>();
+    private MultiValueMap<Integer, Buff> timedBuffs = new MultiValueMap<>();
+    private Map<Buff, GlobalBuff> gloabalBuffs = new HashMap<>();
 
     public BuffProcessor(GameContainer game) {
         this.game = game;
@@ -37,14 +32,14 @@ public class BuffProcessor extends GameUpdateReceiverAdapter {
     @Override
     public void turnStarted(Player player) {
         currentTurnCount++;
-        Collection<AbstractBuff> timedout = timedBuffs.getCollection(currentTurnCount);
+        Collection<Buff> timedout = timedBuffs.getCollection(currentTurnCount);
         if (timedout != null) {
             timedout.forEach(this::timedout);
             timedBuffs.remove(currentTurnCount);
         }
     }
 
-    private void timedout(AbstractBuff buff) {
+    private void timedout(Buff buff) {
         List<Object> affectedObjects = new ArrayList<>(buff.getAffectedObjects());
         buff.remove();
         gloabalBuffs.remove(buff);
@@ -59,7 +54,7 @@ public class BuffProcessor extends GameUpdateReceiverAdapter {
         }
     }
 
-    public void timeoutBuff(AbstractBuff buff, int turns) {
+    public void timeoutBuff(Buff buff, int turns) {
         int timeoutTurn = currentTurnCount + game.getPlayers().size() * Math.max(1, turns);
         timedBuffs.put(timeoutTurn, buff);
     }

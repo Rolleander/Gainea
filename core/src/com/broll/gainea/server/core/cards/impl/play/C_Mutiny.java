@@ -1,20 +1,16 @@
 package com.broll.gainea.server.core.cards.impl.play;
 
-import com.badlogic.gdx.math.MathUtils;
+import com.broll.gainea.net.NT_Abstract_Event;
 import com.broll.gainea.server.core.cards.Card;
-import com.broll.gainea.server.core.objects.BattleObject;
-import com.broll.gainea.server.core.utils.UnitControl;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
+import com.broll.gainea.server.core.objects.buffs.BuffType;
+import com.broll.gainea.server.core.objects.buffs.GlobalBuff;
+import com.broll.gainea.server.core.objects.buffs.IntBuff;
 
 public class C_Mutiny extends Card {
 
-    private static float DAMAGE_CHANCE = 0.5f;
-
+    private final static int TURNS = 3;
     public C_Mutiny() {
-        super(15, "Meuterei", "Verursacht 1 Schaden an zufälligen Einheiten auf Schiffen");
+        super(15, "Meuterei", "Alle Einheiten auf Schiffen können für "+TURNS+" weder angreifen noch sich bewegen");
         setDrawChance(0.6f);
     }
 
@@ -25,14 +21,12 @@ public class C_Mutiny extends Card {
 
     @Override
     protected void play() {
-        List<BattleObject> units = game.getMap().getAllShips().stream().flatMap(it -> it.getInhabitants().stream()).
-                filter(it -> it instanceof BattleObject).map(it -> (BattleObject) it).collect(Collectors.toList());
-        Collections.shuffle(units);
-        units.forEach(unit -> {
-            if (MathUtils.randomBoolean(DAMAGE_CHANCE)) {
-                UnitControl.damage(game, unit, 1);
-            }
-        });
+        IntBuff buff = new IntBuff(BuffType.SET, 0);
+        GlobalBuff.createForAllPlayers(game, buff, unit->{
+            unit.getMovesPerTurn().addBuff(buff);
+            unit.getAttacksPerTurn().addBuff(buff);
+            },  NT_Abstract_Event.EFFECT_DEBUFF);
+        game.getBuffProcessor().timeoutBuff(buff, 3);
     }
 
 }

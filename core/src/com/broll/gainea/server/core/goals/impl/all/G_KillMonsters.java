@@ -1,12 +1,10 @@
 package com.broll.gainea.server.core.goals.impl.all;
 
-import com.broll.gainea.server.core.GameContainer;
-import com.broll.gainea.server.core.battle.BattleResult;
-import com.broll.gainea.server.core.goals.AbstractGoal;
+import com.broll.gainea.server.core.goals.Goal;
 import com.broll.gainea.server.core.goals.GoalDifficulty;
 import com.broll.gainea.server.core.player.Player;
 
-public class G_KillMonsters extends AbstractGoal {
+public class G_KillMonsters extends Goal {
     private final int starsTarget;
     private int stars;
 

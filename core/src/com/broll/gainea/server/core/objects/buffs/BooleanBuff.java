@@ -1,6 +1,6 @@
 package com.broll.gainea.server.core.objects.buffs;
 
-public class BooleanBuff extends AbstractBuff<BuffableInt> {
+public class BooleanBuff extends Buff<BuffableInt> {
 
     private boolean modifier;
 

@@ -25,7 +25,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public abstract class OccupyGoal extends AbstractGoal {
+public abstract class OccupyGoal extends Goal {
 
     private final static Logger Log = LoggerFactory.getLogger(OccupyGoal.class);
     private List<Location> locations = new ArrayList<>();

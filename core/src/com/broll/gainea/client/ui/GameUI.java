@@ -25,10 +25,10 @@ public class GameUI implements IClientListener {
     public MapScrollHandler mapScrollHandler;
     private Gainea game;
     private ConnectionCircle connectionCircle;
-    private AbstractScreen currentScreen;
+    private Screen currentScreen;
     private boolean reconnectCheck = false;
 
-    public GameUI(Gainea game, AbstractScreen startScreen, boolean reconnectCheck) {
+    public GameUI(Gainea game, Screen startScreen, boolean reconnectCheck) {
         this.game = game;
         this.reconnectCheck = reconnectCheck;
         this.mapScrollHandler = new  MapScrollHandler(game, game.gameStage);
@@ -51,7 +51,7 @@ public class GameUI implements IClientListener {
         game.gameStage.addListener(mapScrollHandler);
     }
 
-    public void showScreen(AbstractScreen screen) {
+    public void showScreen(Screen screen) {
         this.currentScreen = screen;
         game.gameStage.clear();
         game.uiStage.clear();
@@ -91,7 +91,7 @@ public class GameUI implements IClientListener {
         }
     }
 
-    public AbstractScreen getCurrentScreen() {
+    public Screen getCurrentScreen() {
         return currentScreen;
     }
 }

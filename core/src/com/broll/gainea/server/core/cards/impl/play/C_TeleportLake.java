@@ -1,6 +1,6 @@
 package com.broll.gainea.server.core.cards.impl.play;
 
-import com.broll.gainea.server.core.cards.AbstractTeleportCard;
+import com.broll.gainea.server.core.cards.TeleportCard;
 import com.broll.gainea.server.core.map.AreaType;
 import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.utils.LocationUtils;
@@ -8,7 +8,7 @@ import com.broll.gainea.server.core.utils.LocationUtils;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class C_TeleportLake extends AbstractTeleportCard {
+public class C_TeleportLake extends TeleportCard {
     public C_TeleportLake() {
         super(47, "Küstenreise", "Bewegt eine Truppe zu einem beliebigem Meer auf der gleichen Karte");
     }

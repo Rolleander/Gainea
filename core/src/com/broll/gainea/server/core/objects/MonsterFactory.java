@@ -28,7 +28,7 @@ public class MonsterFactory {
     }
 
     private void init() {
-        add("Kriegselefant", 50, 2, 4, FLEEING, RARELY, new AreaType[]{DESERT});
+        add("Kriegselefant", 50, 2, 4, FRIENDLY, RARELY, new AreaType[]{DESERT});
         add("Zombie", 51, 2, 1, RANDOM, new AreaType[]{BOG});
         add("Wendigo", 52, 3, 2, AGGRESSIVE, RARELY, new AreaType[]{SNOW});
         add("Picker", 53, 1, 1, RANDOM, OFTEN, new AreaType[]{DESERT});
@@ -39,14 +39,14 @@ public class MonsterFactory {
         add("Eberkrieger", 59, 2, 2, AGGRESSIVE, new AreaType[]{MOUNTAIN, DESERT, PLAINS});
         add("Dämonenlord", 60, 4, 3, AGGRESSIVE, OFTEN, new AreaType[]{BOG});
         add("Keiler", 61, 1, 2, RANDOM, new AreaType[]{PLAINS, SNOW});
-        add("Riesenkröte", 62, 1, 1, FLEEING, new AreaType[]{BOG, PLAINS});
+        add("Riesenkröte", 62, 1, 1, FRIENDLY, new AreaType[]{BOG, PLAINS});
         add("Donnerdrache", 63, 5, 4, RANDOM, new AreaType[]{MOUNTAIN, DESERT});
         add("Bergriese", 64, 3, 4, AGGRESSIVE, new AreaType[]{MOUNTAIN, SNOW});
         add("Ork", 65, 2, 2, AGGRESSIVE, ALL_BUT_LAKE);
         add("Dämonenhyäne", 66, 2, 1, FLEEING, OFTEN, new AreaType[]{MOUNTAIN, DESERT});
         add("Geisterpirat", 67, 2, 1, AGGRESSIVE, new AreaType[]{LAKE});
         add("Mantikor", 68, 3, 3, RANDOM, new AreaType[]{DESERT});
-        add("Tundranashorn", 69, 2, 4, FLEEING, RARELY, new AreaType[]{SNOW});
+        add("Tundranashorn", 69, 2, 4, FRIENDLY, RARELY, new AreaType[]{SNOW});
         add("Grizzly", 70, 2, 3, RANDOM, new AreaType[]{PLAINS, SNOW, MOUNTAIN});
         add("Urkrabbe", 71, 2, 3, RANDOM, RARELY, new AreaType[]{LAKE});
         add("Smaragddrache", 72, 4, 2, RANDOM, new AreaType[]{PLAINS});
@@ -58,10 +58,10 @@ public class MonsterFactory {
         add("Hydra", 78, 6, 5, new AreaType[]{LAKE});
         add("Riffhai", 79, 3, 2, new AreaType[]{LAKE});
         add("Yeti", 80, 3, 4, AGGRESSIVE, RARELY, new AreaType[]{SNOW, MOUNTAIN});
-        add("Eismammut", 81, 2, 6, FLEEING, RARELY, new AreaType[]{SNOW});
+        add("Eismammut", 81, 2, 6, FRIENDLY, RARELY, new AreaType[]{SNOW});
         add("Säbeltiger", 82, 4, 2, AGGRESSIVE, OFTEN, new AreaType[]{SNOW});
         add("Tiefseewal", 83, 2, 8, new AreaType[]{LAKE});
-        add("Panzerschildkröte", 84, 1, 5, FLEEING, RARELY, new AreaType[]{PLAINS, DESERT});
+        add("Panzerschildkröte", 84, 1, 5, FRIENDLY, RARELY, new AreaType[]{PLAINS, DESERT});
         add("Kraken", 85, 5, 3, new AreaType[]{LAKE});
         add("Yotun", 86, 4, 4, RANDOM, new AreaType[]{SNOW});
         add("Waldriese", 87, 4, 4, AGGRESSIVE, RARELY, new AreaType[]{PLAINS});
@@ -72,6 +72,7 @@ public class MonsterFactory {
         add("Skelettdrache", 92, 5, 5, AGGRESSIVE, new AreaType[]{BOG, MOUNTAIN});
         add("Wüstenkoloss", 97, 6, 6, RANDOM, RARELY, new AreaType[]{DESERT});
         add("Titanschnapper", 98, 2, 6, FLEEING, RARELY, new AreaType[]{LAKE});
+        add("Phönix", 124, 2, 2, FRIENDLY, OFTEN, new AreaType[]{PLAINS, MOUNTAIN, DESERT});
     }
 
     public static void main(String[] args) {

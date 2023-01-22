@@ -1,12 +1,10 @@
 package com.broll.gainea.server.core.goals.impl.all;
 
 import com.broll.gainea.server.core.battle.BattleResult;
-import com.broll.gainea.server.core.goals.AbstractGoal;
+import com.broll.gainea.server.core.goals.Goal;
 import com.broll.gainea.server.core.goals.GoalDifficulty;
-import com.broll.gainea.server.core.objects.BattleObject;
-import com.broll.gainea.server.core.objects.Soldier;
 
-public class G_WinBattles extends AbstractGoal {
+public class G_WinBattles extends Goal {
     private final int winTarget;
     private int wins = 0;
 

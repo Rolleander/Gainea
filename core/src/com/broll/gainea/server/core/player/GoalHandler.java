@@ -6,7 +6,7 @@ import com.broll.gainea.net.NT_Event_ReceivedPoints;
 import com.broll.gainea.net.NT_Event_ReceivedStars;
 import com.broll.gainea.net.NT_Goal;
 import com.broll.gainea.server.core.GameContainer;
-import com.broll.gainea.server.core.goals.AbstractGoal;
+import com.broll.gainea.server.core.goals.Goal;
 import com.broll.gainea.server.core.utils.GameUtils;
 import com.broll.gainea.server.core.utils.ProcessingUtils;
 
@@ -17,7 +17,7 @@ public class GoalHandler {
 
     private int score;
     private int stars;
-    private List<AbstractGoal> goals = new ArrayList<>();
+    private List<Goal> goals = new ArrayList<>();
     private GameContainer game;
     private Player player;
 
@@ -56,16 +56,16 @@ public class GoalHandler {
         return stars;
     }
 
-    public List<AbstractGoal> getGoals() {
+    public List<Goal> getGoals() {
         return goals;
     }
 
-    public void removeGoal(AbstractGoal oldGoal) {
+    public void removeGoal(Goal oldGoal) {
         goals.remove(oldGoal);
         game.getUpdateReceiver().unregister(oldGoal);
     }
 
-    public void newGoal(AbstractGoal goal) {
+    public void newGoal(Goal goal) {
         this.goals.add(goal);
         game.getUpdateReceiver().register(goal);
         NT_Event_ReceivedGoal nt = new NT_Event_ReceivedGoal();
@@ -79,6 +79,6 @@ public class GoalHandler {
     }
 
     public NT_Goal[] ntGoals() {
-        return goals.stream().map(AbstractGoal::nt).toArray(NT_Goal[]::new);
+        return goals.stream().map(Goal::nt).toArray(NT_Goal[]::new);
     }
 }

@@ -6,15 +6,15 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.broll.gainea.client.AudioPlayer;
-import com.broll.gainea.client.ui.AbstractScreen;
+import com.broll.gainea.client.ui.Screen;
 
-public class LoadingScreen extends AbstractScreen {
+public class LoadingScreen extends Screen {
 
     private LoadingActor loadingActor = new LoadingActor();
 
-    private AbstractScreen startScreen;
+    private Screen startScreen;
 
-    public LoadingScreen(AbstractScreen startScreen) {
+    public LoadingScreen(Screen startScreen) {
         this.startScreen = startScreen;
     }
 

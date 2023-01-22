@@ -22,7 +22,9 @@ public enum MonsterBehavior {
         }
     }),
     AGGRESSIVE("Aggressiv",(game, monster) -> {
-        Location target = RandomUtils.pickRandom(getPossibleTargets(monster).filter(it -> !LocationUtils.noControlledUnits(it)).collect(Collectors.toList()));
+        Location target = RandomUtils.pickRandom(getPossibleTargets(monster).filter(it ->
+           monster.getBattleStrength() > LocationUtils.getUnits(it).stream().map(BattleObject::getBattleStrength).reduce(0, Integer::sum)
+        ).collect(Collectors.toList()));
         if (target != null) {
             UnitControl.conquer(game, Lists.newArrayList(monster), target);
         } else {
@@ -31,6 +33,12 @@ public enum MonsterBehavior {
     }),
     FLEEING("Scheu",(game, monster) -> {
         Location target = RandomUtils.pickRandom(getPossibleTargets(monster).filter(Location::isFree).collect(Collectors.toList()));
+        if (target != null) {
+            UnitControl.move(game, monster, target);
+        }
+    }),
+    FRIENDLY("Freundlich",(game, monster) -> {
+        Location target = RandomUtils.pickRandom(getPossibleTargets(monster).collect(Collectors.toList()));
         if (target != null) {
             UnitControl.move(game, monster, target);
         }

@@ -5,6 +5,7 @@ import com.broll.gainea.server.core.actions.required.SelectChoiceAction;
 import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.MapObject;
+import com.broll.gainea.server.core.objects.Monster;
 import com.broll.gainea.server.core.player.Player;
 
 import java.util.ArrayList;
@@ -48,20 +49,20 @@ public final class SelectionUtils {
         return selectUnitFromLocations(game, new ArrayList<>(locations), predicate, text);
     }
 
-    public static BattleObject selectWildUnit(GameContainer game, String text) {
-        return selectWildUnit(game, text, it -> true);
+    public static Monster selectWildMonster(GameContainer game, String text) {
+        return selectWildMonster(game, text, it -> true);
     }
 
-    public static BattleObject selectWildUnit(GameContainer game, String text, Predicate<BattleObject> predicate) {
-        return selectUnitFromLocations(game, game.getObjects().stream().map(MapObject::getLocation).distinct().collect(Collectors.toList()),
-                it -> it.getOwner() == null && predicate.test(it), text);
+    public static Monster selectWildMonster(GameContainer game, String text, Predicate<BattleObject> predicate) {
+        return (Monster) selectUnitFromLocations(game, game.getObjects().stream().filter(it->it instanceof Monster).map(MapObject::getLocation).distinct().collect(Collectors.toList()),
+                it -> it.getOwner() == null && it instanceof Monster && predicate.test(it), text);
     }
 
-    private static BattleObject selectUnitFromLocations(GameContainer game, List<Location> locations, Predicate<BattleObject> predicate, String text) {
+    public static BattleObject selectUnitFromLocations(GameContainer game, List<Location> locations, Predicate<BattleObject> predicate, String text) {
         return (BattleObject) selectFromLocations(game, locations, it -> it instanceof BattleObject && predicate.test((BattleObject) it), text);
     }
 
-    private static MapObject selectFromLocations(GameContainer game, List<Location> locations, Predicate<MapObject> predicate, String text) {
+    public static MapObject selectFromLocations(GameContainer game, List<Location> locations, Predicate<MapObject> predicate, String text) {
         Location pickedLocation;
         if (locations.isEmpty()) {
             return null;
@@ -75,7 +76,7 @@ public final class SelectionUtils {
         return selectFromLocation(game, pickedLocation, predicate, text);
     }
 
-    private static MapObject selectFromLocation(GameContainer game, Location location, Predicate<MapObject> predicate, String text) {
+    public static MapObject selectFromLocation(GameContainer game, Location location, Predicate<MapObject> predicate, String text) {
         List<MapObject> selection = location.getInhabitants().stream().filter(it -> predicate.test(it)).collect(Collectors.toList());
         if (selection.isEmpty()) {
             return null;

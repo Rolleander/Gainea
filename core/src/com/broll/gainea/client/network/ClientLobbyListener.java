@@ -1,7 +1,7 @@
 package com.broll.gainea.client.network;
 
 import com.broll.gainea.Gainea;
-import com.broll.gainea.client.ui.AbstractScreen;
+import com.broll.gainea.client.ui.Screen;
 import com.broll.gainea.client.ui.screens.LobbyScreen;
 import com.broll.gainea.client.ui.screens.StartScreen;
 import com.broll.networklib.client.auth.LastConnection;
@@ -56,7 +56,7 @@ public class ClientLobbyListener implements ILobbyUpdateListener {
     }
 
     private void updateLobby() {
-        AbstractScreen screen = game.ui.getCurrentScreen();
+        Screen screen = game.ui.getCurrentScreen();
         if (screen instanceof LobbyScreen) {
             ((LobbyScreen) screen).updateLobby();
         }

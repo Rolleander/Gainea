@@ -11,33 +11,33 @@ import java.util.function.Consumer;
 
 public class GlobalBuff {
 
-    private AbstractBuff buff;
+    private Buff buff;
     private Consumer<BattleObject> applier;
     private List<Player> targets;
 
-    private GlobalBuff(List<Player> targets, AbstractBuff buff, Consumer<BattleObject> applier) {
+    private GlobalBuff(List<Player> targets, Buff buff, Consumer<BattleObject> applier) {
         this.buff = buff;
         this.applier = applier;
         this.targets = targets;
     }
 
-    public static void createForPlayer(GameContainer game, Player target, AbstractBuff buff, Consumer<BattleObject> applier, int effect) {
+    public static void createForPlayer(GameContainer game, Player target, Buff buff, Consumer<BattleObject> applier, int effect) {
         register(game, new GlobalBuff(Lists.newArrayList(target), buff, applier), effect);
     }
 
-    public static void createForAllPlayers(GameContainer game, AbstractBuff buff, Consumer<BattleObject> applier, int effect) {
+    public static void createForAllPlayers(GameContainer game, Buff buff, Consumer<BattleObject> applier, int effect) {
         register(game, new GlobalBuff(new ArrayList<>(game.getPlayers()), buff, applier), effect);
     }
 
-    public static void createForPlayers(GameContainer game, List<Player> targets, AbstractBuff buff, Consumer<BattleObject> applier, int effect) {
+    public static void createForPlayers(GameContainer game, List<Player> targets, Buff buff, Consumer<BattleObject> applier, int effect) {
         register(game, new GlobalBuff(new ArrayList<>(targets), buff, applier), effect);
     }
 
-    public static void createForNeutral(GameContainer game, AbstractBuff buff, Consumer<BattleObject> applier, int effect) {
+    public static void createForNeutral(GameContainer game, Buff buff, Consumer<BattleObject> applier, int effect) {
         register(game, new GlobalBuff(Lists.newArrayList((Player) null), buff, applier), effect);
     }
 
-    public static void createForAll(GameContainer game, AbstractBuff buff, Consumer<BattleObject> applier, int effect) {
+    public static void createForAll(GameContainer game, Buff buff, Consumer<BattleObject> applier, int effect) {
         List<Player> targets = new ArrayList<>();
         targets.addAll(game.getPlayers());
         targets.add(null);
@@ -48,7 +48,7 @@ public class GlobalBuff {
         game.getBuffProcessor().addGlobalBuff(buff, effect);
     }
 
-    public AbstractBuff getBuff() {
+    public Buff getBuff() {
         return buff;
     }
 

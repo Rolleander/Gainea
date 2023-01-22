@@ -13,7 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.broll.gainea.client.AudioPlayer;
-import com.broll.gainea.client.ui.AbstractScreen;
+import com.broll.gainea.client.ui.Screen;
 import com.broll.gainea.client.ui.components.GameChat;
 import com.broll.gainea.client.ui.components.IconLabel;
 import com.broll.gainea.client.ui.utils.TableUtils;
@@ -40,9 +40,8 @@ import org.slf4j.LoggerFactory;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.Arrays;
-import java.util.List;
 
-public class LobbyScreen extends AbstractScreen {
+public class LobbyScreen extends Screen {
     private final static Logger Log = LoggerFactory.getLogger(LobbyScreen.class);
 
     private GameLobby lobby;

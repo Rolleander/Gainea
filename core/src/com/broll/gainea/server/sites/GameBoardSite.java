@@ -11,12 +11,11 @@ import com.broll.gainea.server.core.actions.ReactionHandler;
 import com.broll.networklib.PackageReceiver;
 import com.broll.networklib.server.ConnectionRestriction;
 import com.broll.networklib.server.RestrictionType;
-import com.broll.networklib.server.impl.ConnectionSite;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class GameBoardSite extends AbstractGameSite {
+public class GameBoardSite extends GameSite {
     private final static Logger Log = LoggerFactory.getLogger(GameBoardSite.class);
 
     @PackageReceiver

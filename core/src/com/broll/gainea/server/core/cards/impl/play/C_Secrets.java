@@ -1,7 +1,7 @@
 package com.broll.gainea.server.core.cards.impl.play;
 
 import com.broll.gainea.server.core.cards.Card;
-import com.broll.gainea.server.core.goals.AbstractGoal;
+import com.broll.gainea.server.core.goals.Goal;
 import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.server.core.utils.MessageUtils;
 
@@ -22,10 +22,10 @@ public class C_Secrets extends Card {
     protected void play() {
         Player player = selectHandler.selectOtherPlayer(owner, "Welchen Spieler bestechen?");
         List<Card> cards = player.getCardHandler().getCards();
-        List<AbstractGoal> goals = player.getGoalHandler().getGoals();
+        List<Goal> goals = player.getGoalHandler().getGoals();
         String name = player.getServerPlayer().getName();
         String text = name + "'s Ziele: \n";
-        for (AbstractGoal goal : goals) {
+        for (Goal goal : goals) {
             text += " - " + goal.getText() + " ( " +goal.getDifficulty().getPoints()+"P "  + goal.getRestrictionInfo() + ")\n";
         }
         text += name + "'s Aktionskarten: \n";

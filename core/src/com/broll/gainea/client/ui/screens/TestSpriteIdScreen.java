@@ -7,10 +7,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.broll.gainea.client.ui.AbstractScreen;
+import com.broll.gainea.client.ui.Screen;
 import com.broll.gainea.client.ui.utils.TextureUtils;
 
-public class TestSpriteIdScreen extends AbstractScreen {
+public class TestSpriteIdScreen extends Screen {
     @Override
     public Actor build() {
         Table vg = new Table();

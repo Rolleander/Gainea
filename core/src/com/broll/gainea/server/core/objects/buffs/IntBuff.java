@@ -1,6 +1,6 @@
 package com.broll.gainea.server.core.objects.buffs;
 
-public class IntBuff extends AbstractBuff<BuffableInt> {
+public class IntBuff extends Buff<BuffableInt> {
 
     private BuffType type;
     private int modifier;

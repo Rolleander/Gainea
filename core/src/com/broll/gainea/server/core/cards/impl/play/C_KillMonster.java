@@ -18,7 +18,7 @@ public class C_KillMonster extends Card {
 
     @Override
     protected void play() {
-        BattleObject monster = SelectionUtils.selectWildUnit(game, "Wählt ein Monster das vernichtet werden soll", it -> it instanceof GodDragon == false);
+        BattleObject monster = SelectionUtils.selectWildMonster(game, "Wählt ein Monster das vernichtet werden soll", it -> it instanceof GodDragon == false);
         UnitControl.kill(game, monster);
     }
 

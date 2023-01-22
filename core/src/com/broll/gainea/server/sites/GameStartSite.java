@@ -19,10 +19,7 @@ import com.broll.gainea.server.core.map.Area;
 import com.broll.gainea.server.core.map.Location;
 import com.broll.networklib.PackageReceiver;
 import com.broll.networklib.server.Autoshared;
-import com.broll.networklib.server.ConnectionRestriction;
-import com.broll.networklib.server.RestrictionType;
 import com.broll.networklib.server.ShareLevel;
-import com.broll.networklib.server.impl.ConnectionSite;
 import com.broll.networklib.server.impl.ServerLobby;
 
 import org.slf4j.Logger;
@@ -33,7 +30,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class GameStartSite extends AbstractGameSite {
+public class GameStartSite extends GameSite {
     private final static Logger Log = LoggerFactory.getLogger(GameStartSite.class);
 
     private class GameStartData {

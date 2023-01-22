@@ -1,17 +1,10 @@
 package com.broll.gainea.client.ui.screens;
 
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.broll.gainea.client.ui.AbstractScreen;
+import com.broll.gainea.client.ui.Screen;
 import com.broll.gainea.client.ui.components.GameChat;
 import com.broll.gainea.client.ui.components.StatisticGraph;
 import com.broll.gainea.client.ui.components.TabbedPane;
@@ -19,17 +12,14 @@ import com.broll.gainea.client.ui.ingame.windows.PlayerWindow;
 import com.broll.gainea.net.NT_GameOver;
 import com.broll.gainea.net.NT_GameStatistic;
 import com.broll.gainea.net.NT_Player;
-import com.broll.gainea.net.NT_Unit;
-import com.broll.networklib.client.impl.GameLobby;
 import com.google.common.collect.Lists;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ScoreScreen extends AbstractScreen {
+public class ScoreScreen extends Screen {
 
     private NT_GameOver end;
 

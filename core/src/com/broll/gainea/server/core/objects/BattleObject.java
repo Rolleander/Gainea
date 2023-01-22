@@ -170,6 +170,10 @@ public abstract class BattleObject extends MapObject {
         this.owner = owner;
     }
 
+    public int getBattleStrength(){
+        return getPower().getValue() + getHealth().getValue();
+    }
+
     @Override
     public NT_Unit nt() {
         NT_Unit unit = new NT_Unit();

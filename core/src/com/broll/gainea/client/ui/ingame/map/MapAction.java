@@ -31,16 +31,18 @@ public class MapAction extends Image {
         setDrawable(new TextureRegionDrawable(region));
         setSize(SIZE, SIZE);
         setOrigin(Align.center);
-        addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                clicked.action();
-                if (trail != null) {
-                    trail.remove();
+        if(clicked!=null){
+            addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    clicked.action();
+                    if (trail != null) {
+                        trail.remove();
+                    }
+                    remove();
                 }
-                remove();
-            }
-        });
+            });
+        }
     }
 
     @Override

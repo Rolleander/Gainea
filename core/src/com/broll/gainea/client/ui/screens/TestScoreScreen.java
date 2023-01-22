@@ -3,29 +3,21 @@ package com.broll.gainea.client.ui.screens;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.Cell;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.broll.gainea.client.ui.AbstractScreen;
-import com.broll.gainea.client.ui.components.ColorCircle;
-import com.broll.gainea.client.ui.components.GameChat;
+import com.broll.gainea.client.ui.Screen;
 import com.broll.gainea.client.ui.components.StatisticGraph;
 import com.broll.gainea.client.ui.components.TabbedPane;
 import com.broll.gainea.client.ui.ingame.windows.PlayerWindow;
-import com.broll.gainea.client.ui.utils.TextureUtils;
 import com.broll.gainea.net.NT_Player;
 import com.broll.gainea.net.NT_Unit;
-import com.broll.gainea.server.init.ExpansionSetting;
 import com.google.common.collect.Lists;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class TestScoreScreen extends AbstractScreen {
+public class TestScoreScreen extends Screen {
     @Override
     public Actor build() {
         Table vg = new Table();

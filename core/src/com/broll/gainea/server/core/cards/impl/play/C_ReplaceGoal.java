@@ -1,7 +1,7 @@
 package com.broll.gainea.server.core.cards.impl.play;
 
 import com.broll.gainea.server.core.cards.Card;
-import com.broll.gainea.server.core.goals.AbstractGoal;
+import com.broll.gainea.server.core.goals.Goal;
 import com.broll.gainea.server.core.goals.GoalDifficulty;
 
 import java.util.Arrays;
@@ -21,8 +21,8 @@ public class C_ReplaceGoal extends Card {
 
     @Override
     protected void play() {
-        List<AbstractGoal> goals = owner.getGoalHandler().getGoals();
-        AbstractGoal oldGoal = goals.get(selectHandler.selectObject("Welches Ziel soll ersetzt werden?", goals.stream().map(AbstractGoal::nt).collect(Collectors.toList())));
+        List<Goal> goals = owner.getGoalHandler().getGoals();
+        Goal oldGoal = goals.get(selectHandler.selectObject("Welches Ziel soll ersetzt werden?", goals.stream().map(Goal::nt).collect(Collectors.toList())));
         owner.getGoalHandler().removeGoal(oldGoal);
         List<String> difficulties = Arrays.stream(GoalDifficulty.values()).map(GoalDifficulty::getLabel).collect(Collectors.toList());
         GoalDifficulty difficulty = GoalDifficulty.values()[selectHandler.selection("Welche Schwierigkeit soll das neue Ziel sein?", difficulties)];

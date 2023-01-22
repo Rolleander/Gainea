@@ -10,13 +10,10 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.broll.gainea.client.Assets;
 import com.broll.gainea.client.network.ClientHandler;
 import com.broll.gainea.client.game.GameState;
-import com.broll.gainea.client.ui.AbstractScreen;
+import com.broll.gainea.client.ui.Screen;
 import com.broll.gainea.client.ui.GameUI;
 import com.broll.gainea.client.ui.screens.LoadingScreen;
 import com.broll.gainea.client.ui.screens.StartScreen;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class Gainea extends ApplicationAdapter {
 
@@ -29,14 +26,14 @@ public class Gainea extends ApplicationAdapter {
     public ShapeRenderer gameShapeRenderer;
     public GameState state;
     public boolean shutdown = false;
-    private AbstractScreen startScreen;
+    private Screen startScreen;
     private boolean reconnectCheck;
 
     public Gainea() {
         this(new StartScreen(), true);
     }
 
-    public Gainea(AbstractScreen startScreen, boolean reconnectCheck) {
+    public Gainea(Screen startScreen, boolean reconnectCheck) {
         this.startScreen = startScreen;
         this.reconnectCheck = reconnectCheck;
     }

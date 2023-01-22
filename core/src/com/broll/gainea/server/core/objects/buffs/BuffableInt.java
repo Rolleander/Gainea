@@ -1,7 +1,7 @@
 package com.broll.gainea.server.core.objects.buffs;
 
 
-public class BuffableInt<T> extends AbstractBuffableValue<T, IntBuff, Integer> {
+public class BuffableInt<T> extends BuffableValue<T, IntBuff, Integer> {
 
     private int minValue = Integer.MIN_VALUE;
     private int maxValue = Integer.MAX_VALUE;

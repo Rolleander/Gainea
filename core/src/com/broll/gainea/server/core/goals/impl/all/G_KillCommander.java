@@ -1,13 +1,12 @@
 package com.broll.gainea.server.core.goals.impl.all;
 
 import com.broll.gainea.server.core.battle.BattleResult;
-import com.broll.gainea.server.core.goals.AbstractGoal;
+import com.broll.gainea.server.core.goals.Goal;
 import com.broll.gainea.server.core.goals.GoalDifficulty;
 import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.Commander;
-import com.broll.gainea.server.core.objects.Soldier;
 
-public class G_KillCommander extends AbstractGoal {
+public class G_KillCommander extends Goal {
 
     public G_KillCommander() {
         super(GoalDifficulty.EASY, "Besiege den Feldherr eines anderen Spielers im Kampf");

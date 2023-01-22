@@ -13,16 +13,26 @@ public class BattleResult {
 
     private List<BattleObject> attackers;
     private List<BattleObject> defenders;
+    private List<BattleObject> killedAttackers;
+    private List<BattleObject> killedDefenders;
     private Location location;
+    private Location attackerSourceLocation;
 
-    public BattleResult(List<BattleObject> attackers, List<BattleObject> defenders, Location location) {
+    public BattleResult(List<BattleObject> attackers, List<BattleObject> defenders, List<BattleObject> killedAttackers, List<BattleObject> killedDefenders, Location location) {
         this.attackers = attackers;
         this.defenders = defenders;
+        this.killedAttackers = killedAttackers;
+        this.killedDefenders = killedDefenders;
         this.location = location;
+        this.attackerSourceLocation = this.attackers.get(0).getLocation();
     }
 
     public Location getLocation() {
         return location;
+    }
+
+    public Location getAttackerSourceLocation() {
+        return attackerSourceLocation;
     }
 
     public Player getAttacker() {
@@ -69,6 +79,14 @@ public class BattleResult {
 
     public List<BattleObject> getDefenders() {
         return defenders;
+    }
+
+    public List<BattleObject> getKilledAttackers() {
+        return killedAttackers;
+    }
+
+    public List<BattleObject> getKilledDefenders() {
+        return killedDefenders;
     }
 
     public List<BattleObject> getWinnerUnits() {

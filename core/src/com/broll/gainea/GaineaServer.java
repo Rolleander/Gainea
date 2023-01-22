@@ -2,9 +2,7 @@ package com.broll.gainea;
 
 import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.bot.RandomBot;
-import com.broll.gainea.server.core.goals.AbstractGoal;
 import com.broll.gainea.server.core.map.Location;
-import com.broll.gainea.server.core.objects.MapObject;
 import com.broll.gainea.server.init.ExpansionSetting;
 import com.broll.gainea.server.init.LobbyData;
 import com.broll.gainea.server.init.LobbyFactory;

@@ -5,7 +5,7 @@ import com.broll.gainea.server.core.objects.MapObject;
 
 import java.util.List;
 
-public abstract class CustomOccupyGoal extends AbstractGoal {
+public abstract class CustomOccupyGoal extends Goal {
     public CustomOccupyGoal(GoalDifficulty difficulty, String text) {
         super(difficulty, text);
     }

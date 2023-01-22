@@ -22,7 +22,7 @@ public class C_MoveMonster extends Card {
 
     @Override
     protected void play() {
-        BattleObject monster = SelectionUtils.selectWildUnit(game, "Wählt ein Monster das bewegt werden soll");
+        BattleObject monster = SelectionUtils.selectWildMonster(game, "Wählt ein Monster das bewegt werden soll");
         List<Area> locations = monster.getLocation().getContainer().getExpansion().getAllAreas().stream().filter(Area::isFree).collect(Collectors.toList());
         Location target = selectHandler.selectLocation("Wählt das Reiseziel", locations);
         UnitControl.move(game, monster, target);

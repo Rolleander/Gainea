@@ -1,8 +1,10 @@
 package com.broll.gainea.server.core.battle;
 
+import com.broll.gainea.net.NT_Battle_Intention;
 import com.broll.gainea.net.NT_Battle_Reaction;
 import com.broll.gainea.server.core.fractions.Fraction;
 import com.broll.gainea.server.core.objects.BattleObject;
+import com.broll.gainea.server.core.objects.MapObject;
 import com.broll.gainea.server.core.objects.Monster;
 import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.net.NT_Battle_Start;
@@ -61,13 +63,16 @@ public class BattleHandler {
             this.allowRetreat = allowRetreat;
             this.attackers = new ArrayList<>(attackers);
             this.defenders = new ArrayList<>(defenders);
-            killedDefenders.clear();
-            killedAttackers.clear();
-            battleActive = true;
-            prepareFight();
-            sendFightStart();
-            ProcessingUtils.pause(BATTLE_ANIMATION_DELAY);
-            fight();
+            if(this.attackers.stream().anyMatch(BattleObject::isAlive) && this.attackers.stream().anyMatch(BattleObject::isAlive)){
+                killedDefenders.clear();
+                killedAttackers.clear();
+                battleActive = true;
+                prepareFight();
+                sendFightIntention();
+                sendFightStart();
+                ProcessingUtils.pause(BATTLE_ANIMATION_DELAY);
+                fight();
+            }
         } else {
             Log.warn("Could not start battle because a battle is still going on");
         }
@@ -86,8 +91,20 @@ public class BattleHandler {
         reactionResult.sendGameUpdate(start);
     }
 
+    private void sendFightIntention(){
+        Location attackerSource = aliveAttackers.get(0).getLocation();
+        NT_Battle_Intention intention = new NT_Battle_Intention();
+        if (attackerOwner != null) {
+            intention.attacker = attackerOwner.getServerPlayer().getId();
+        }
+        intention.fromLocation = attackerSource.getNumber();
+        intention.toLocation = battleLocation.getNumber();
+        reactionResult.sendGameUpdate(intention);
+        ProcessingUtils.pause(BATTLE_ANIMATION_DELAY);
+    }
+
     private Comparator<BattleObject> sortById() {
-        return (o1, o2) -> Integer.compare(o1.getId(), o2.getId());
+        return Comparator.comparingInt(MapObject::getId);
     }
 
     public void playerReaction(Player player, NT_Battle_Reaction battle_reaction) {
@@ -210,7 +227,7 @@ public class BattleHandler {
     }
 
     private void battleFinished() {
-        BattleResult result = new BattleResult(attackers, defenders, battleLocation);
+        BattleResult result = new BattleResult(attackers, defenders, killedAttackers, killedDefenders, battleLocation);
         Log.info("Battle over! Surviving Attackers: (" + aliveAttackers.stream().map(it -> it.getId() + "| " + it.getName() + " " + it.getPower() + " " + it.getHealth()).collect(Collectors.joining(", ")) + ")  Surviving Defenders: (" + aliveDefenders.stream().map(it -> it.getId() + "| " + it.getName() + " " + it.getPower() + " " + it.getHealth()).collect(Collectors.joining(", ")) + ")");
         battleActive = false;
         GameUpdateReceiverProxy updateReceiver = game.getUpdateReceiver();

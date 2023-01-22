@@ -1,9 +1,18 @@
 package com.broll.gainea.client.network.sites;
 
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.actions.RemoveAction;
+import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
+import com.broll.gainea.client.ui.ingame.map.ActionTrail;
+import com.broll.gainea.client.ui.ingame.map.MapAction;
 import com.broll.gainea.client.ui.ingame.map.MapScrollUtils;
+import com.broll.gainea.net.NT_Battle_Intention;
 import com.broll.gainea.net.NT_Battle_Start;
 import com.broll.gainea.net.NT_Battle_Update;
 import com.broll.gainea.net.NT_Unit;
+import com.broll.gainea.server.core.map.Coordinates;
+import com.broll.gainea.server.core.map.Location;
 import com.broll.networklib.PackageReceiver;
 
 import org.slf4j.Logger;
@@ -21,8 +30,38 @@ public class GameBattleSite extends AbstractGameSite {
     private List<NT_Unit> attackers;
     private List<NT_Unit> defenders;
 
+    private MapAction battleIntention;
+    private ActionTrail battleIntentionTrail;
+
+    @PackageReceiver
+    public void received(NT_Battle_Intention battle) {
+        game.state.updateIdleState(false);
+        MapScrollUtils.showLocations(game, battle.fromLocation, battle.toLocation);
+        game.ui.inGameUI.clearSelection();
+        battleIntention = new MapAction(game, 1, battle.toLocation, null);
+        Location from = game.state.getMap().getLocation(battle.fromLocation);
+        Location to = game.state.getMap().getLocation(battle.toLocation);
+        Coordinates toC = to.getCoordinates();
+        Coordinates fromC = from.getCoordinates();
+        battleIntention.setPosition(toC.getDisplayX(), toC.getDisplayY());
+        float angle = MathUtils.atan2(toC.getDisplayY() - fromC.getDisplayY(), toC.getDisplayX() - fromC.getDisplayX());
+        battleIntention.setRotation((float) Math.toDegrees(angle - Math.PI / 2));
+        battleIntention.setFromTo(from.getNumber(), to.getNumber());
+        battleIntentionTrail = new ActionTrail(game, 1, toC, fromC);
+        game.gameStage.addActor(battleIntentionTrail);
+        battleIntention.setTrail(battleIntentionTrail);
+        battleIntention.setVisible(true);
+        game.gameStage.addActor(battleIntention);
+    }
+
     @PackageReceiver
     public void received(NT_Battle_Start battle) {
+        if(battleIntention!= null){
+            battleIntention.addAction(Actions.sequence(Actions.fadeOut(0.3f), Actions.removeActor()));
+        }
+        if(battleIntentionTrail!= null){
+            battleIntentionTrail.addAction(Actions.sequence(Actions.fadeOut(0.3f), Actions.removeActor()));
+        }
         game.state.updateIdleState(false);
         this.attackers = Lists.newArrayList(battle.attackers);
         this.defenders = Lists.newArrayList(battle.defenders);
