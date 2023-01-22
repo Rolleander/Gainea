@@ -6,6 +6,7 @@ import com.broll.gainea.server.core.utils.PlayerUtils;
 public class C_ResurrectCommander extends Card {
     public C_ResurrectCommander() {
         super(61, "Auferstehung", "Lasst euren gefallenen Feldherr zurückkehren");
+        setDrawChance(2f);
     }
 
     @Override

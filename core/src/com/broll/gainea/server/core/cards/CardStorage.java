@@ -42,7 +42,7 @@ public class CardStorage {
             }
             chanceSum += drawChances[i];
         }
-        return null;
+        return getRandomCard();
     }
 
 }

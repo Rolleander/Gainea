@@ -69,6 +69,7 @@ public class Assets {
         manager.load("textures/unit_plate.png", Texture.class);
         manager.load("textures/map_actions.png", Texture.class);
         manager.load("textures/battles.jpg", Texture.class);
+        manager.load("textures/bubble.png", Texture.class);
     }
 
     private void loadUi() {

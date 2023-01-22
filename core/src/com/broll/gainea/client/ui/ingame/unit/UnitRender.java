@@ -25,8 +25,8 @@ public class UnitRender extends MapObjectRender {
     private Texture plate;
     private boolean hidePlate;
     private boolean alwaysDrawPlate;
-    private Label numberLabel;
-    private Label.LabelStyle blackStyle, redStyle;
+    protected Label numberLabel;
+    protected Label.LabelStyle blackStyle, redStyle;
     private Animation<TextureRegion> blood;
     private float bloodAnimation;
     private static int BLOOD_SIZE = 150;
