@@ -10,7 +10,7 @@ public class C_Speed extends Card {
 
 
     public C_Speed() {
-        super(21, "Friedliche Eroberung", "Eure Einheiten können diesen Zug ein zusätzliches Feld bewegt werden. Während dieses Zuges könnt ihr nicht angreifen.");
+        super(21, "Friedliche Eroberung", "Eure Einheiten können diese Runde ein zusätzliches Feld bewegt werden. Während dieses Zuges könnt ihr nicht angreifen.");
         setDrawChance(0.7f);
     }
 

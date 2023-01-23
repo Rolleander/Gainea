@@ -161,7 +161,8 @@ public class InGameUI {
     }
 
     public void hideWindows() {
-        windows.hideWindows();
+        //dont hide for now, todo: rethink when to hide windows
+       // windows.hideWindows();
     }
 
     public void gameOver(NT_GameOver end) {
