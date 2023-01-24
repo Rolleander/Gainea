@@ -25,8 +25,10 @@ public class C_HuntMonster extends Card {
         List<BattleObject> attackers = PlayerUtils.getUnits(owner, from);
         List<Location> attackLocations = LocationUtils.getWildMonsterLocations(game).stream()
                 .filter(it -> it.getContainer().getExpansion() == from.getContainer().getExpansion()).collect(Collectors.toList());
-        Location target = selectHandler.selectLocation("Wählt den Angriffsort aus", attackLocations);
-        game.getBattleHandler().startBattle(attackers, LocationUtils.getMonsters(target));
+        if(!attackLocations.isEmpty()){
+            Location target = selectHandler.selectLocation("Wählt den Angriffsort aus", attackLocations);
+            game.getBattleHandler().startBattle(attackers, LocationUtils.getMonsters(target));
+        }
     }
 
 }

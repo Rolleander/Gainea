@@ -21,6 +21,7 @@ public class C_Necromantie extends Card {
 
     @Override
     protected void play() {
+        //todo geht nicht ?
         TimedEffect.forCurrentTurn(game, new TimedEffect() {
             @Override
             public void battleResult(BattleResult result) {

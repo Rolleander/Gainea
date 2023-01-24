@@ -23,9 +23,9 @@ public class G_AreaTypes extends CustomOccupyGoal {
         int count = 0;
         List<Location> locations = LocationUtils.getControlledLocationsIn(player, ExpansionType.GAINEA);
         for (AreaType type : TYPES) {
-            count += LocationUtils.filterByType(locations, type).count();
+            count +=Math.min(2,  LocationUtils.filterByType(locations, type).count());
         }
-        if (count >= TYPES.length * 2) {
+        if (count == TYPES.length * 2) {
             success();
         }
     }

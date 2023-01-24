@@ -11,14 +11,11 @@ public class C_ResurrectCommander extends Card {
 
     @Override
     public boolean isPlayable() {
-        return true;
+        return !PlayerUtils.isCommanderAlive(owner);
     }
 
     @Override
     protected void play() {
-        if (PlayerUtils.isCommanderAlive(owner)) {
-            return;
-        }
         placeUnitHandler.placeCommander(owner, owner.getControlledLocations());
     }
 

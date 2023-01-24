@@ -235,6 +235,7 @@ public class BattleHandler {
         fallenUnits.addAll(killedAttackers);
         fallenUnits.addAll(killedDefenders);
         fallenUnits.forEach(unit -> GameUtils.remove(game, unit));
+        fallenUnits.forEach(unit -> unit.onDeath(result));
         fallenUnits.forEach(unit -> updateReceiver.killed(unit, result));
         updateReceiver.battleResult(result);
         //if defenders lost, move surviving attackers to location

@@ -4,6 +4,7 @@ import com.broll.gainea.server.core.cards.Card;
 import com.broll.gainea.server.core.map.Area;
 import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.objects.BattleObject;
+import com.broll.gainea.server.core.objects.Monster;
 import com.broll.gainea.server.core.utils.SelectionUtils;
 import com.broll.gainea.server.core.utils.UnitControl;
 
@@ -17,7 +18,7 @@ public class C_MoveMonster extends Card {
 
     @Override
     public boolean isPlayable() {
-        return true;
+        return game.getObjects().stream().anyMatch(it -> it instanceof Monster);
     }
 
     @Override
@@ -25,7 +26,9 @@ public class C_MoveMonster extends Card {
         BattleObject monster = SelectionUtils.selectWildMonster(game, "Wählt ein Monster das bewegt werden soll");
         List<Area> locations = monster.getLocation().getContainer().getExpansion().getAllAreas().stream().filter(Area::isFree).collect(Collectors.toList());
         Location target = selectHandler.selectLocation("Wählt das Reiseziel", locations);
-        UnitControl.move(game, monster, target);
+        if(target!=null){
+            UnitControl.move(game, monster, target);
+        }
     }
 
 }

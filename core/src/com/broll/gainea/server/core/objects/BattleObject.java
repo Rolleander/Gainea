@@ -1,6 +1,7 @@
 package com.broll.gainea.server.core.objects;
 
 import com.broll.gainea.net.NT_Unit;
+import com.broll.gainea.server.core.battle.BattleResult;
 import com.broll.gainea.server.core.objects.buffs.IntBuff;
 import com.broll.gainea.server.core.objects.buffs.BuffableInt;
 import com.broll.gainea.server.core.player.Player;
@@ -61,6 +62,10 @@ public abstract class BattleObject extends MapObject {
             return false;
         }
         return attackCount < attacksPerTurn.getValue();
+    }
+
+    public void onDeath(BattleResult throughBattle){
+
     }
 
     @Override

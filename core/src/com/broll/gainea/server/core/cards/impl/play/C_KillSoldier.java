@@ -20,7 +20,9 @@ public class C_KillSoldier extends Card {
     @Override
     protected void play() {
         BattleObject unit = SelectionUtils.selectOtherPlayersUnit(game, owner, "Wählt eine Einheit aus die vernichtet werden soll", it -> it instanceof Commander == false);
-        UnitControl.kill(game, unit);
+        if(unit!=null){
+            UnitControl.kill(game, unit);
+        }
     }
 
 }

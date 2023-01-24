@@ -9,7 +9,7 @@ import java.util.Set;
 
 public class C_Spion extends Card {
     public C_Spion() {
-        super(8, "Spion", "Platziert einen Soldat auf ein besetztes Land eines beliebigen Spielers ohne einen Kampf.");
+        super(8, "Spion", "Platziert einen Soldat auf ein besetztes Land eines anderen Spielers ohne einen Kampf.");
     }
 
     @Override

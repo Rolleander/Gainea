@@ -23,7 +23,7 @@ public class C_War extends DirectlyPlayedCard {
         PlayerUtils.iteratePlayers(game, 500, player -> {
             List<Location> locations = new ArrayList<>(PlayerUtils.getHostileLocations(game, player));
             if (!locations.isEmpty()) {
-                Location location = selectHandler.selectLocation("Wähle feindliches Land", locations);
+                Location location = selectHandler.selectLocation(player,"Wähle feindliches Land", locations);
                 StreamUtils.safeForEach(location.getInhabitants().stream().filter(it -> it instanceof BattleObject).map(it -> (BattleObject) it),
                         unit -> UnitControl.damage(game, unit, 1));
             }

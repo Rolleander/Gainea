@@ -16,7 +16,7 @@ public class C_MonsterBait extends Card {
 
     @Override
     public boolean isPlayable() {
-        return true;
+        return game.getObjects().stream().anyMatch(it -> it instanceof Monster);
     }
 
     @Override

@@ -19,7 +19,11 @@ public class C_PlaceDragon extends Card {
 
     @Override
     public boolean isPlayable() {
-        return true;
+        return !getLocations().isEmpty();
+    }
+
+    private List<Location> getLocations() {
+        return game.getMap().getAllAreas().stream().filter(it -> it.getType() == AreaType.MOUNTAIN && LocationUtils.emptyOrWildMonster(it)).collect(Collectors.toList());
     }
 
     @Override
@@ -31,10 +35,7 @@ public class C_PlaceDragon extends Card {
         monster.setHealth(5);
         monster.setActivity(MonsterActivity.RARELY);
         monster.setBehavior(MonsterBehavior.AGGRESSIVE);
-        List<Location> locations = game.getMap().getAllAreas().stream().filter(it -> it.getType() == AreaType.MOUNTAIN && LocationUtils.emptyOrWildMonster(it)).collect(Collectors.toList());
-        if (!locations.isEmpty()) {
-            placeUnitHandler.placeUnit(owner, monster, locations, "Platziert den Feuerdrachen");
-        }
+        placeUnitHandler.placeUnit(owner, monster, getLocations(), "Platziert den Feuerdrachen");
     }
 
 

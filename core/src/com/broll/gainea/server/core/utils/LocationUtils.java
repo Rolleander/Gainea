@@ -5,8 +5,13 @@ import com.broll.gainea.misc.RandomUtils;
 import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.map.Area;
 import com.broll.gainea.server.core.map.AreaType;
+import com.broll.gainea.server.core.map.Continent;
+import com.broll.gainea.server.core.map.ContinentID;
 import com.broll.gainea.server.core.map.ExpansionType;
+import com.broll.gainea.server.core.map.Island;
+import com.broll.gainea.server.core.map.IslandID;
 import com.broll.gainea.server.core.map.Location;
+import com.broll.gainea.server.core.map.Ship;
 import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.GodDragon;
 import com.broll.gainea.server.core.objects.MapObject;
@@ -53,7 +58,7 @@ public final class LocationUtils {
     }
 
     public static List<Location> getControlledLocationsIn(Player player, ExpansionType expansionType) {
-        return player.getControlledLocations().stream().filter(it -> it.getContainer().getExpansion().getType() == ExpansionType.GAINEA).collect(Collectors.toList());
+        return player.getControlledLocations().stream().filter(it -> it.getContainer().getExpansion().getType() == expansionType).collect(Collectors.toList());
     }
 
     public static boolean emptyOrControlled(Location location, Player player) {
@@ -100,5 +105,18 @@ public final class LocationUtils {
         return RandomUtils.pickRandom(free);
     }
 
+    public static boolean isInContinent(Location location, ContinentID id){
+        if(!(location instanceof Ship) && location.getContainer()  instanceof Continent){
+            return ((Continent)location.getContainer()).getId() == id;
+        }
+        return false;
+    }
+
+    public static boolean isInIsland(Location location, IslandID id){
+        if(!(location instanceof Ship) && location.getContainer()  instanceof Island){
+            return ((Island)location.getContainer()).getId() == id;
+        }
+        return false;
+    }
 
 }

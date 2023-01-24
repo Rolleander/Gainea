@@ -1,5 +1,7 @@
 package com.broll.gainea.server.core.objects;
 
+import com.broll.gainea.server.core.battle.BattleResult;
+
 public class GodDragon extends Monster {
 
     public GodDragon() {
@@ -10,4 +12,10 @@ public class GodDragon extends Monster {
         setActivity(MonsterActivity.ALWAYS);
     }
 
+    @Override
+    public void onDeath(BattleResult throughBattle) {
+        if(throughBattle!=null){
+            throughBattle.getWinnerPlayer().getGoalHandler().addPoints(1);
+        }
+    }
 }

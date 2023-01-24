@@ -50,7 +50,7 @@ public class ClientHandler {
         initGameSites(game);
     }
 
-    public void initGameSites(Gainea game) {
+    private void initGameSites(Gainea game) {
         client.clearSites();
         GameActionSite actionSite = new GameActionSite();
         Lists.newArrayList(actionSite, new GameBattleSite(), new GameBoardSite(), new GameEventSite(), new GameStateSite(), new GameTurnSite(actionSite)).forEach(site -> {

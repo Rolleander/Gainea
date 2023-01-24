@@ -12,6 +12,7 @@ import com.broll.gainea.server.core.utils.UnitControl;
 import com.google.common.collect.Lists;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -24,21 +25,26 @@ public class C_MonsterRecruit extends Card {
 
     @Override
     public boolean isPlayable() {
-        return true;
+        return !getMonsterLocations().isEmpty();
     }
 
     private boolean validMonster(MapObject object){
         return object instanceof Monster && object.getOwner() == null && !(object instanceof GodDragon);
     }
 
-    @Override
-    protected void play() {
+    private Collection<Location> getMonsterLocations(){
         Set<Location> monsterLocations = new HashSet<>();
         owner.getControlledLocations().forEach(location ->
                 location.getConnectedLocations().stream().
                         filter(it->it.getInhabitants().stream().anyMatch(this::validMonster))
                         .forEach(monsterLocations::add)
         );
+        return monsterLocations;
+    }
+
+    @Override
+    protected void play() {
+        Collection<Location> monsterLocations = getMonsterLocations();
         if (!monsterLocations.isEmpty()) {
             Monster monster = (Monster) SelectionUtils.selectUnitFromLocations(game,
                     new ArrayList<>(monsterLocations), this::validMonster,
@@ -46,6 +52,7 @@ public class C_MonsterRecruit extends Card {
             owner.getUnits().add(monster);
             monster.setOwner(owner);
             game.getObjects().remove(monster);
+            //todo send update to client
         }
     }
 }

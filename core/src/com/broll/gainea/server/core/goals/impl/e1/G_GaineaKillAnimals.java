@@ -6,6 +6,7 @@ import com.broll.gainea.server.core.map.ExpansionType;
 import com.broll.gainea.server.core.map.impl.GaineaMap;
 import com.broll.gainea.server.core.objects.Monster;
 import com.broll.gainea.server.core.player.Player;
+import com.broll.gainea.server.core.utils.LocationUtils;
 
 public class G_GaineaKillAnimals extends Goal {
     public G_GaineaKillAnimals() {
@@ -15,8 +16,8 @@ public class G_GaineaKillAnimals extends Goal {
 
     @Override
     public void check() {
-        long monstersInGainea = game.getMap().getContinent(GaineaMap.Continents.GAINEA).getAreas().stream().flatMap(area -> area.getInhabitants().stream()).filter(it -> it instanceof Monster).count();
-        if (monstersInGainea == 0) {
+        if (game.getObjects().stream().noneMatch(it -> it instanceof Monster &&
+                LocationUtils.isInContinent(it.getLocation(), GaineaMap.Continents.GAINEA))) {
             success();
         }
     }

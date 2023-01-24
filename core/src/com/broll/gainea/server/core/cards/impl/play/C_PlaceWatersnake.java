@@ -19,7 +19,11 @@ public class C_PlaceWatersnake extends Card {
 
     @Override
     public boolean isPlayable() {
-        return true;
+        return !getLocations().isEmpty();
+    }
+
+    private List<Location> getLocations() {
+        return game.getMap().getAllAreas().stream().filter(it -> it.getType() == AreaType.MOUNTAIN && LocationUtils.emptyOrWildMonster(it)).collect(Collectors.toList());
     }
 
     @Override
@@ -29,11 +33,7 @@ public class C_PlaceWatersnake extends Card {
         monster.setIcon(120);
         monster.setPower(4);
         monster.setHealth(4);
-        List<Area> locations = game.getMap().getAllAreas().stream().filter(it -> it.getType() == AreaType.LAKE && LocationUtils.emptyOrWildMonster(it)).collect(Collectors.toList());
-        if(!locations.isEmpty()){
-            Location target = selectHandler.selectLocation("Wählt einen Ort", locations);
-            UnitControl.spawn(game, monster, target);
-        }
+        placeUnitHandler.placeUnit(owner, monster, getLocations(), "Platziert die Seeschlange");
     }
 
 

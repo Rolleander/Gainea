@@ -116,6 +116,7 @@ public class UnitControl {
         GameUtils.sendUpdate(game, nt);
         game.getUpdateReceiver().damaged(unit, damage);
         if (lethal) {
+            unit.onDeath(null);
             game.getUpdateReceiver().killed(unit, null);
         }
         ProcessingUtils.pause(DAMAGE_PAUSE);

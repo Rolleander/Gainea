@@ -23,17 +23,6 @@ public class C_UnknownSoldier extends DirectlyPlayedCard {
         if (location != null) {
             Challenger soldier = new Challenger();
             UnitControl.spawn(game, soldier, location);
-            game.getUpdateReceiver().register(new GameUpdateReceiverAdapter() {
-                @Override
-                public void killed(BattleObject unit, BattleResult throughBattle) {
-                    if(unit == soldier){
-                        if(throughBattle!=null){
-                            throughBattle.getWinnerPlayer().getGoalHandler().addPoints(1);
-                        }
-                        game.getUpdateReceiver().unregister(this);
-                    }
-                }
-            });
         }
     }
 
@@ -44,6 +33,13 @@ public class C_UnknownSoldier extends DirectlyPlayedCard {
             setName("Der Fremde");
             setIcon(126);
             setStats(7, 7);
+        }
+
+        @Override
+        public void onDeath(BattleResult throughBattle) {
+            if(throughBattle!=null){
+                throughBattle.getWinnerPlayer().getGoalHandler().addPoints(1);
+            }
         }
 
     }
