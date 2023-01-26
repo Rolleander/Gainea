@@ -13,6 +13,7 @@ import com.broll.gainea.client.game.PlayerPerformAction;
 import com.broll.gainea.client.game.PlayerPerformOptionalAction;
 import com.broll.gainea.client.ui.components.RoundInformation;
 import com.broll.gainea.client.ui.ingame.actions.EndTurnButton;
+import com.broll.gainea.client.ui.ingame.windows.LogWindow;
 import com.broll.gainea.client.ui.ingame.windows.MenuWindows;
 import com.broll.gainea.client.ui.ingame.windows.UnitSelectionWindow;
 import com.broll.gainea.client.ui.screens.ScoreScreen;
@@ -60,7 +61,7 @@ public class InGameUI {
         this.game = game;
         this.skin = skin;
         this.windows = new MenuWindows(game, skin);
-        this.roundInformation = new RoundInformation(skin);
+        this.roundInformation = new RoundInformation(game, skin);
         topBar = new Table(skin);
         bottomBar = new Table(skin);
         centerOverlay = new Table(skin);
@@ -72,6 +73,8 @@ public class InGameUI {
         buttonBar.add(TableUtils.textButton(skin, "Spieler", () -> windows.showPlayerWindow()));
         buttonBar.add(TableUtils.textButton(skin, "Ziele", () -> windows.showGoalWindow()));
         buttonBar.add(TableUtils.textButton(skin, "Karten", () -> windows.showCardWindow()));
+        buttonBar.add(TableUtils.textButton(skin, "Chat", () -> windows.showChatWindow()));
+        buttonBar.add(TableUtils.textButton(skin, "Log", () -> windows.showLogWindow()));
         bottomBar.add(buttonBar).right().expandX().padRight(10);
         endTurnButton = new EndTurnButton(skin);
         topBar.add(endTurnButton).left().space(15).padTop(10);
@@ -163,6 +166,9 @@ public class InGameUI {
     public void hideWindows() {
         //dont hide for now, todo: rethink when to hide windows
        // windows.hideWindows();
+    }
+    public LogWindow getLogWindow(){
+        return windows.getLogWindow();
     }
 
     public void gameOver(NT_GameOver end) {

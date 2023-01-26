@@ -144,6 +144,9 @@ com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
 		font: font
 		fontColor: black
 	}
+	markup: {
+		font: font
+	}
 	title: {
 		font: title
 		fontColor: black

@@ -35,7 +35,7 @@ public class BattleHandler {
     private final static Logger Log = LoggerFactory.getLogger(BattleHandler.class);
     private GameContainer game;
     private boolean battleActive = false;
-    public final static int BATTLE_ANIMATION_DELAY = 3000;
+    public final static int BATTLE_ANIMATION_DELAY = 1500;
     private ReactionActions reactionResult;
     private List<BattleObject> attackers;
     private List<BattleObject> defenders;
@@ -167,22 +167,22 @@ public class BattleHandler {
         //send update
         reactionResult.sendGameUpdate(update);
         int delay = getAnimationDelay(result.getAttackRolls().size(), result.getDefenderRolls().size());
+        ProcessingUtils.pause(delay);
         if (state == NT_Battle_Update.STATE_FIGHTING) {
             //wait for player if he wants to keep attacking
             if (allowRetreat) {
                 keepAttacking = new CompletableFuture<>();
             }
-            ProcessingUtils.pause(delay);
             prepareNextRound();
         } else {
             //battle finished, all attackers or defenders died
-            ProcessingUtils.pause(delay);
+            ProcessingUtils.pause(BATTLE_ANIMATION_DELAY / 2);
             battleFinished();
         }
     }
 
     public static int getAnimationDelay(int atkRolls, int defRolls) {
-        return BATTLE_ANIMATION_DELAY + 1500 * Math.min(atkRolls, defRolls);
+        return BATTLE_ANIMATION_DELAY / 2 + 500 * Math.min(atkRolls, defRolls);
     }
 
     private void fightRound() {

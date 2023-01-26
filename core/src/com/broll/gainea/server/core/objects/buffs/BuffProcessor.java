@@ -70,7 +70,7 @@ public class BuffProcessor extends GameUpdateReceiverAdapter {
                 units = target.getUnits();
             }
             units.forEach(globalBuff::apply);
-            UnitControl.focus(game, units, effect);
+            UnitControl.update(game, units);
         });
     }
 

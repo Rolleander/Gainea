@@ -15,6 +15,10 @@ public class LabelUtils {
         return new Label(text, skin);
     }
 
+    public static Label markup(Skin skin, String text) {
+        return new Label("[BLACK]"+text, skin, "markup");
+    }
+
     public static Label title(Skin skin, String text) {
         Label l = new Label(text, skin, "title");
         return l;

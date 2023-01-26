@@ -10,16 +10,10 @@ import com.broll.gainea.net.NT_Goal;
 import com.broll.gainea.net.NT_Player;
 import com.broll.gainea.net.NT_Unit;
 import com.broll.gainea.server.init.ExpansionSetting;
-import com.broll.networklib.client.GameClient;
 import com.broll.networklib.client.impl.LobbyPlayer;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Streams;
-
-import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -101,7 +95,7 @@ public class GameState {
         this.objects = Lists.newArrayList(update.objects);
         this.players = Arrays.asList(update.players);
         updateMapObjects();
-        game.ui.inGameUI.getRoundInformation().setRound(update.turns);
+        game.ui.inGameUI.getRoundInformation().updateRound(update.turns);
     }
 
     public void updateMapObjects() {

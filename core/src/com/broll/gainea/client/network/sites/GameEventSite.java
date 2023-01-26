@@ -7,6 +7,7 @@ import com.broll.gainea.client.AudioPlayer;
 import com.broll.gainea.client.game.GameUtils;
 import com.broll.gainea.client.ui.ingame.map.MapScrollUtils;
 import com.broll.gainea.client.ui.components.Popup;
+import com.broll.gainea.client.ui.ingame.windows.LogWindow;
 import com.broll.gainea.client.ui.utils.LabelUtils;
 import com.broll.gainea.client.ui.utils.MessageUtils;
 import com.broll.gainea.client.ui.utils.TableUtils;
@@ -15,7 +16,6 @@ import com.broll.gainea.client.ui.ingame.windows.GoalWindow;
 import com.broll.gainea.client.ui.ingame.map.MapObjectRender;
 import com.broll.gainea.net.NT_Abstract_Event;
 import com.broll.gainea.net.NT_BoardObject;
-import com.broll.gainea.net.NT_Event_Bundle;
 import com.broll.gainea.net.NT_Event_FinishedGoal;
 import com.broll.gainea.net.NT_Event_FocusObjects;
 import com.broll.gainea.net.NT_Event_OtherPlayerReceivedCard;
@@ -32,6 +32,7 @@ import com.broll.gainea.net.NT_Event_ReceivedStars;
 import com.broll.gainea.net.NT_Event_RemoveCard;
 import com.broll.gainea.net.NT_Event_RemoveGoal;
 import com.broll.gainea.net.NT_Event_TextInfo;
+import com.broll.gainea.net.NT_Event_UpdateObjects;
 import com.broll.gainea.net.NT_Player;
 import com.broll.gainea.server.core.actions.optional.CardAction;
 import com.broll.gainea.server.core.map.Location;
@@ -43,6 +44,10 @@ import org.slf4j.LoggerFactory;
 public class GameEventSite extends AbstractGameSite {
 
     private final static Logger Log = LoggerFactory.getLogger(GameEventSite.class);
+
+    private LogWindow logWindow(){
+        return  this.game.ui.inGameUI.getLogWindow();
+    }
 
     @Override
     public void receive(Object object) {
@@ -57,16 +62,11 @@ public class GameEventSite extends AbstractGameSite {
     }
 
     @PackageReceiver
-    public void received(NT_Event_Bundle bundle) {
-
-    }
-
-    @PackageReceiver
     public void received(NT_Event_TextInfo text) {
         if (text.type == NT_Event_TextInfo.TYPE_MESSAGE_DISPLAY) {
             MessageUtils.showCenterMessage(game, text.text);
         } else {
-            //just for eventlog window
+            logWindow().log(text.text);
         }
     }
 
@@ -80,6 +80,7 @@ public class GameEventSite extends AbstractGameSite {
         game.ui.inGameUI.showCenterOverlay(new Popup(game.ui.skin, table, 3f));
         game.state.getCards().add(card.card);
         game.ui.inGameUI.updateWindows();
+        logWindow().logCardEvent("Du hast [VIOLET]"+card.card.title+"[] erhalten!");
     }
 
     @PackageReceiver
@@ -90,6 +91,12 @@ public class GameEventSite extends AbstractGameSite {
     @PackageReceiver
     public void received(NT_Event_FocusObjects focus) {
         focus(focus.objects);
+    }
+
+    @PackageReceiver
+    public void received(NT_Event_UpdateObjects update) {
+        GameUtils.updateMapObjects(game, update.objects);
+        game.state.updateMapObjects();
     }
 
     private void focus(NT_BoardObject... objects) {

@@ -7,6 +7,10 @@ import com.broll.gainea.server.core.objects.buffs.BuffType;
 import com.broll.gainea.server.core.objects.buffs.IntBuff;
 import com.broll.gainea.server.core.utils.UnitControl;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 public class C_MonsterRevenge extends DirectlyPlayedCard {
 
     private final static int TURNS = 3;
@@ -20,11 +24,12 @@ public class C_MonsterRevenge extends DirectlyPlayedCard {
     @Override
     protected void play() {
         IntBuff buff = new IntBuff(BuffType.ADD, BUFF);
-        game.getObjects().stream().filter(it -> it instanceof Monster).map(it -> (Monster) it).forEach(monster->{
+        List<Monster> monsters = game.getObjects().stream().filter(it -> it instanceof Monster).map(it -> (Monster) it).collect(Collectors.toList());
+        monsters.forEach(monster->{
             monster.addHealthBuff(buff);
             monster.getPower().addBuff(buff);
-            UnitControl.focus(game, monster, NT_Abstract_Event.EFFECT_BUFF);
         });
+        UnitControl.update(game, monsters);
         game.getBuffProcessor().timeoutBuff(buff, TURNS);
     }
 

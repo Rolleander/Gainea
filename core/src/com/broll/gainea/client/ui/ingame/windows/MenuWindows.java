@@ -19,6 +19,8 @@ public class MenuWindows {
         addWindow(new PlayerWindow(game, skin));
         addWindow(new GoalWindow(game, skin));
         addWindow(new CardWindow(game, skin));
+        addWindow(new ChatWindow(game, skin));
+        addWindow(new LogWindow(game, skin));
     }
 
     public void showFractionWindow() {
@@ -35,6 +37,14 @@ public class MenuWindows {
 
     public void showCardWindow() {
         toggle(CardWindow.class);
+    }
+
+    public void showChatWindow() {
+        toggle(ChatWindow.class);
+    }
+
+    public void showLogWindow() {
+        toggle(LogWindow.class);
     }
 
     public void hideWindows() {
@@ -60,6 +70,10 @@ public class MenuWindows {
 
     public CardWindow getCardWindow() {
         return (CardWindow) windows.get(CardWindow.class);
+    }
+
+    public LogWindow getLogWindow() {
+        return (LogWindow) windows.get(LogWindow.class);
     }
 
 }

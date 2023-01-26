@@ -1,5 +1,7 @@
 package com.broll.gainea.client.ui;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.broll.gainea.Gainea;
 import com.broll.gainea.client.Assets;
@@ -38,6 +40,7 @@ public class GameUI implements IClientListener {
 
     public void assetsLoaded() {
         this.skin = game.assets.get("ui/cloud-form-ui.json", Skin.class);
+        skin.getFont("font").getData().markupEnabled = true;
         connectionCircle = new ConnectionCircle(game.assets);
         connectionCircle.toFront();
         if (reconnectCheck) {

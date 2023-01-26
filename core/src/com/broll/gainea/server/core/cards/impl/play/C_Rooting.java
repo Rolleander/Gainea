@@ -30,12 +30,12 @@ public class C_Rooting extends Card {
     @Override
     protected void play() {
         Location location = selectHandler.selectLocation("Ziel für Schattenfesseln wählen", new ArrayList<>(PlayerUtils.getHostileLocations(game, owner)));
-        List<MapObject> units = location.getInhabitants().stream().collect(Collectors.toList());
+        List<MapObject> units = new ArrayList<>(location.getInhabitants());
         IntBuff rootDebuff = new IntBuff(BuffType.SET,0);
         units.forEach(unit->{
             unit.getMovesPerTurn().addBuff(rootDebuff);
-            UnitControl.focus(game, unit, NT_Abstract_Event.EFFECT_DEBUFF);
         });
+        UnitControl.focus(game, units, NT_Abstract_Event.EFFECT_DEBUFF);
         game.getBuffProcessor().timeoutBuff(rootDebuff, DURATION);
     }
 

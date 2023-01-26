@@ -6,6 +6,7 @@ import com.broll.gainea.net.NT_Event_FocusObject;
 import com.broll.gainea.net.NT_Event_FocusObjects;
 import com.broll.gainea.net.NT_Event_MovedObject;
 import com.broll.gainea.net.NT_Event_PlacedObject;
+import com.broll.gainea.net.NT_Event_UpdateObjects;
 import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.map.Area;
 import com.broll.gainea.server.core.map.Location;
@@ -75,6 +76,12 @@ public class UnitControl {
             GameUtils.sendUpdate(game, nt);
             ProcessingUtils.pause(DAMAGE_PAUSE);
         });
+    }
+
+    public static void update(GameContainer game,  List<? extends MapObject> objects){
+        NT_Event_UpdateObjects nt = new NT_Event_UpdateObjects();
+        nt.objects = objects.stream().map(MapObject::nt).toArray(NT_BoardObject[]::new);
+        GameUtils.sendUpdate(game, nt);
     }
 
     public static void heal(GameContainer game, BattleObject unit, int heal, Consumer<NT_Event_FocusObject> consumer) {

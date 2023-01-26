@@ -27,7 +27,7 @@ public class BattleRollRender {
     private float showAnimation;
     private Label numberLabel;
     private final static float ROLL_TIME = 0.05f;
-    private final static float SHOW_NUMBER_TIME = 1.5f;
+    private final static float SHOW_NUMBER_TIME = 0.5f;
     private TextureRegion rollback, rollwin, rolllose;
     private IRollAnimationListener listener;
     private Sound rollSound;

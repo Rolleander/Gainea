@@ -19,6 +19,19 @@ public class StatisticGraph extends Table {
     private int maxTotal;
     private int total[];
 
+    public final static Color[] PLAYER_COLORS = new Color[]{
+            Color.valueOf("ea0000"),
+            Color.valueOf("001cea"),
+            Color.valueOf("00ff06)"),
+            Color.valueOf("ead100"),
+            Color.valueOf("cd00ec"),
+            Color.valueOf("00ecea"),
+            Color.valueOf("eb5300"),
+            Color.valueOf("f8f8f8"),
+            Color.valueOf("525252"),
+    };
+
+
     public StatisticGraph(Gainea game, int[][] data) {
         super(game.ui.skin);
         this.game = game;
@@ -54,7 +67,7 @@ public class StatisticGraph extends Table {
                 //draw bar
                 float v = ((float) data[i][x]) * vh;
                 if (v > 0) {
-                    game.uiShapeRenderer.setColor(ColorCircle.PLAYER_COLORS[i]);
+                    game.uiShapeRenderer.setColor(PLAYER_COLORS[i]);
                     game.uiShapeRenderer.rect(xp, yp, b, v);
                 }
                 yp += v;
@@ -87,7 +100,7 @@ public class StatisticGraph extends Table {
             for (int i = 0; i < names.length; i++) {
                 game.uiShapeRenderer.setColor(Color.BLACK);
                 game.uiShapeRenderer.circle(sx + i * lb + 10, sy+10 , 12);
-                game.uiShapeRenderer.setColor(ColorCircle.PLAYER_COLORS[i]);
+                game.uiShapeRenderer.setColor(PLAYER_COLORS[i]);
                 game.uiShapeRenderer.circle(sx + i * lb + 10, sy+10 , 10);
             }
             game.uiShapeRenderer.end();
