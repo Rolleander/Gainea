@@ -26,7 +26,7 @@ public class RoundInformation extends Table {
     public void updateRound(int round) {
         if(round != previousRound){
             previousRound = round;
-            game.ui.inGameUI.logEvent(">> Runde - "+round);
+            game.ui.inGameUI.getLogWindow().log(">> Runde - "+round);
         }
         rounds.setText("" + round);
     }
