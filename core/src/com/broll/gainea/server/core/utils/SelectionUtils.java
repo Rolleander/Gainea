@@ -28,6 +28,10 @@ public final class SelectionUtils {
         return selectUnitFromLocations(game, player.getControlledLocations(), it -> it.getOwner() == player && predicate.test(it), text);
     }
 
+    public static BattleObject selectPlayerUnit(GameContainer game, Player selectingPlayer, Player unitsFromPlayer, String text, Predicate<BattleObject> predicate) {
+        return selectUnitFromLocations(game, selectingPlayer, unitsFromPlayer.getControlledLocations(), it -> it.getOwner() == unitsFromPlayer && predicate.test(it), text);
+    }
+
     public static BattleObject selectOtherPlayersUnit(GameContainer game, Player player, String text) {
         return selectOtherPlayersUnit(game, player, text, it -> true);
     }
@@ -59,10 +63,15 @@ public final class SelectionUtils {
     }
 
     public static BattleObject selectUnitFromLocations(GameContainer game, List<Location> locations, Predicate<BattleObject> predicate, String text) {
-        return (BattleObject) selectFromLocations(game, locations, it -> it instanceof BattleObject && predicate.test((BattleObject) it), text);
+        Player selectingPlayer = game.getPlayers().get(game.getCurrentPlayer());
+        return (BattleObject) selectFromLocations(game, selectingPlayer, locations, it -> it instanceof BattleObject && predicate.test((BattleObject) it), text);
     }
 
-    public static MapObject selectFromLocations(GameContainer game, List<Location> locations, Predicate<MapObject> predicate, String text) {
+    public static BattleObject selectUnitFromLocations(GameContainer game, Player selectingPlayer, List<Location> locations, Predicate<BattleObject> predicate, String text) {
+        return (BattleObject) selectFromLocations(game,selectingPlayer, locations, it -> it instanceof BattleObject && predicate.test((BattleObject) it), text);
+    }
+
+    public static MapObject selectFromLocations(GameContainer game, Player selectingPlayer, List<Location> locations, Predicate<MapObject> predicate, String text) {
         Location pickedLocation;
         if (locations.isEmpty()) {
             return null;
@@ -71,12 +80,12 @@ public final class SelectionUtils {
             pickedLocation = locations.get(0);
         } else {
             SelectChoiceAction handler = game.getReactionHandler().getActionHandlers().getHandler(SelectChoiceAction.class);
-            pickedLocation = handler.selectLocation(text, locations);
+            pickedLocation = handler.selectLocation(selectingPlayer, text, locations);
         }
-        return selectFromLocation(game, pickedLocation, predicate, text);
+        return selectFromLocation(game, selectingPlayer, pickedLocation, predicate, text);
     }
 
-    public static MapObject selectFromLocation(GameContainer game, Location location, Predicate<MapObject> predicate, String text) {
+    public static MapObject selectFromLocation(GameContainer game, Player selectingPlayer, Location location, Predicate<MapObject> predicate, String text) {
         List<MapObject> selection = location.getInhabitants().stream().filter(it -> predicate.test(it)).collect(Collectors.toList());
         if (selection.isEmpty()) {
             return null;
@@ -85,6 +94,6 @@ public final class SelectionUtils {
             return selection.get(0);
         }
         SelectChoiceAction handler = game.getReactionHandler().getActionHandlers().getHandler(SelectChoiceAction.class);
-        return selection.get(handler.selectObject(text, selection.stream().map(MapObject::nt).collect(Collectors.toList())));
+        return selection.get(handler.selectObject(selectingPlayer, text, selection.stream().map(MapObject::nt).collect(Collectors.toList())));
     }
 }
