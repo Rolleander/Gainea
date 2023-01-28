@@ -8,7 +8,7 @@ import com.broll.gainea.server.core.objects.GodDragon;
 public class G_Goddrake extends Goal {
 
     public G_Goddrake() {
-        super(GoalDifficulty.MEDIUM, "Töte den Götterdrachen");
+        super(GoalDifficulty.EASY, "Töte den Götterdrachen");
     }
 
     @Override
