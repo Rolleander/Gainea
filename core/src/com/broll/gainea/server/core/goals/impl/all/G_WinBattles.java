@@ -9,18 +9,18 @@ public class G_WinBattles extends Goal {
     private int wins = 0;
 
     public G_WinBattles() {
-        this(GoalDifficulty.MEDIUM, 5);
+        this(GoalDifficulty.MEDIUM, 4);
     }
 
     public G_WinBattles(GoalDifficulty difficulty, int wins) {
-        super(difficulty, "Gewinne " + wins + " Schlachten");
+        super(difficulty, "Gewinne " + wins + " Schlachten gegen andere Spieler");
         this.winTarget = wins;
         setProgressionGoal(wins);
     }
 
     @Override
     public void battleResult(BattleResult result) {
-        if (result.getWinnerPlayer() == player) {
+        if (result.getWinnerPlayer() == player && result.getLoserPlayer() != null) {
             wins++;
             check();
         }

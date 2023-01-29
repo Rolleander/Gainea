@@ -22,7 +22,7 @@ public enum MonsterBehavior {
         }
     }),
     AGGRESSIVE("Aggressiv",(game, monster) -> {
-        Location target = RandomUtils.pickRandom(getPossibleTargets(monster).filter(it ->
+        Location target = RandomUtils.pickRandom(getPossibleTargets(monster).filter(it -> !it.isFree() &&
            monster.getBattleStrength() > LocationUtils.getUnits(it).stream().map(BattleObject::getBattleStrength).reduce(0, Integer::sum)
         ).collect(Collectors.toList()));
         if (target != null) {

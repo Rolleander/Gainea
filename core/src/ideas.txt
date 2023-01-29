@@ -1,22 +1,21 @@
 general:
 
-monsters have aggro timer that dec every turn
-if it goes to 0 they move to a random neighbour location or attack anything near
 
 cards:
 - choose your army and a field next to it , the inhabitants attack your army
+- swap place with enemy army
 
 karten:
->1  rotes portal  > gegnerische armee zufällig teleportieren auf feld gleicher karte
+
 >4  assassine
 >7  glaube
 >17  könig
 >27 buch
->28 spätrupp
+>28 spähtrupp
 >53 schlacht
 >68 seeschlacht
 >69 leuchtsteine
->75 dragonfier
+>75 dragonfire
 
 
 

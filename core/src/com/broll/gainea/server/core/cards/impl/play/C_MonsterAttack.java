@@ -31,7 +31,7 @@ public class C_MonsterAttack extends Card {
         monster.setIcon(118);
         monster.setPower(4);
         monster.setHealth(4);
-        monster.setBehavior(MonsterBehavior.AGGRESSIVE);
+        monster.setBehavior(MonsterBehavior.RANDOM);
         monster.setActivity(MonsterActivity.SOMETIMES);
         Location target = selectHandler.selectLocation("Wählt die feindliche Truppe", new ArrayList<>(PlayerUtils.getHostileLocations(game, owner)));
         List<BattleObject> hostileArmy = PlayerUtils.getHostileArmy(owner, target);

@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 public class C_MoveMonster extends Card {
     public C_MoveMonster() {
-        super(57, "Herdentrieb", "Wählt ein Monster und bewegt es auf ein freies Feld der gleichen Karte");
+        super(57, "Herdentrieb", "Wählt ein Monster und bewegt es auf ein beliebiges freies Feld");
     }
 
     @Override
@@ -24,7 +24,7 @@ public class C_MoveMonster extends Card {
     @Override
     protected void play() {
         BattleObject monster = SelectionUtils.selectWildMonster(game, "Wählt ein Monster das bewegt werden soll");
-        List<Area> locations = monster.getLocation().getContainer().getExpansion().getAllAreas().stream().filter(Area::isFree).collect(Collectors.toList());
+        List<Area> locations = game.getMap().getAllAreas().stream().filter(Area::isFree).collect(Collectors.toList());
         Location target = selectHandler.selectLocation("Wählt das Reiseziel", locations);
         if(target!=null){
             UnitControl.move(game, monster, target);
