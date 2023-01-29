@@ -32,6 +32,7 @@ public class CardHandler {
     }
 
     public void receiveCard(Card card) {
+        card.init(game, player, game.newObjectId());
         if (card instanceof DirectlyPlayedCard) {
             game.getReactionHandler().getActionHandlers().getHandler(CardAction.class).playCard(player, card);
             return;

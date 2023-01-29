@@ -14,11 +14,14 @@ public class G_OccupyShips extends CustomOccupyGoal {
     public G_OccupyShips(GoalDifficulty difficulty, int ships) {
         super(difficulty, "Erobere " + ships + " Schiffe");
         this.ships = ships;
+        setProgressionGoal(ships);
     }
 
     @Override
     public void check() {
-        if (player.getControlledLocations().stream().filter(it -> it instanceof Ship).count() >= ships) {
+        long count = player.getControlledLocations().stream().filter(it -> it instanceof Ship).count();
+        updateProgression((int) count);
+        if (count >= ships) {
             success();
         }
     }

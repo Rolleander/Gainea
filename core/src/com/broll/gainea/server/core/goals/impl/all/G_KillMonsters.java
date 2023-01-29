@@ -14,6 +14,7 @@ public class G_KillMonsters extends Goal {
 
     public G_KillMonsters(GoalDifficulty difficulty, int stars) {
         super(difficulty, "Erledige Monster mit insgesamt " + stars + " Sternen");
+        setProgressionGoal(stars);
         this.starsTarget = stars;
     }
 
@@ -27,6 +28,7 @@ public class G_KillMonsters extends Goal {
 
     @Override
     public void check() {
+        updateProgression(this.stars);
         if (this.stars >= starsTarget) {
             success();
         }

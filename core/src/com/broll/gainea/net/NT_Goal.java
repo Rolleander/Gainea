@@ -4,9 +4,12 @@ import java.util.Objects;
 
 public class NT_Goal {
 
+    public final static int NO_PROGRESSION_GOAL = -1;
     public String description;
     public String restriction;
     public int points;
+    public int progression;
+    public int progressionGoal = NO_PROGRESSION_GOAL;
 
     @Override
     public boolean equals(Object o) {

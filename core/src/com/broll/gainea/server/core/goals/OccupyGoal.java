@@ -52,6 +52,7 @@ public abstract class OccupyGoal extends Goal {
         }
         //set expansion restrictions by required locations
         setExpansionRestriction(Arrays.stream(ExpansionType.values()).filter(this::hasLocationsOf).toArray(ExpansionType[]::new));
+        setProgressionGoal(locations.size());
         return true;
     }
 
@@ -147,33 +148,35 @@ public abstract class OccupyGoal extends Goal {
         ));
     }
 
-    protected Function<Location, Boolean> minPlayerUnitCount(int count) {
-        return location -> {
-            long playerUnits = location.getInhabitants().stream().filter(it -> it.getOwner() == player && it instanceof BattleObject).count();
-            return playerUnits >= count;
-        };
-    }
-
     @Override
     public void check() {
         Log.trace("check occupy goal (" + this + ") for player " + player);
         List<Location> occupiedLocations = player.getControlledLocations();
+        boolean success = true;
+        int progress = 0;
         for (Location location : locations) {
             Function<Location, Boolean> condition = conditions.get(location);
             if (condition != null) {
-                if (!condition.apply(location)) {
+                if (condition.apply(location)) {
+                    progress++;
+                } else {
                     //condition for the location not satisfied
-                    return;
+                    success = false;
                 }
             } else {
                 //default condition: simply occupied
-                if (!occupiedLocations.contains(location)) {
+                if (occupiedLocations.contains(location)) {
+                    progress++;
+                } else {
                     //area not occupied by player
-                    return;
+                    success = false;
                 }
             }
         }
-        success();
+        updateProgression(progress);
+        if (success) {
+            success();
+        }
     }
 
     @Override

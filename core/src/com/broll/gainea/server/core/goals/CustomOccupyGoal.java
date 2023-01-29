@@ -23,4 +23,5 @@ public abstract class CustomOccupyGoal extends Goal {
             check();
         }
     }
+
 }

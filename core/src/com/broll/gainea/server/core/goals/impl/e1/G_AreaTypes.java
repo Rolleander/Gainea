@@ -16,6 +16,7 @@ public class G_AreaTypes extends CustomOccupyGoal {
     public G_AreaTypes() {
         super(GoalDifficulty.MEDIUM, "Erobere zwei beliebige Steppen, Wüsten, Meere und Berge");
         setExpansionRestriction(ExpansionType.GAINEA);
+        setProgressionGoal(8);
     }
 
     @Override
@@ -25,6 +26,7 @@ public class G_AreaTypes extends CustomOccupyGoal {
         for (AreaType type : TYPES) {
             count +=Math.min(2,  LocationUtils.filterByType(locations, type).count());
         }
+        updateProgression(count);
         if (count == TYPES.length * 2) {
             success();
         }

@@ -13,11 +13,13 @@ public class G_Snow extends CustomOccupyGoal {
     public G_Snow() {
         super(GoalDifficulty.EASY, "Erobere " + COUNT + " Schneegebiete");
         setExpansionRestriction(ExpansionType.ICELANDS);
+        setProgressionGoal(COUNT);
     }
 
     @Override
     public void check() {
-        long count = LocationUtils.getControlledLocationsIn(player, ExpansionType.ICELANDS).stream().filter(it -> LocationUtils.isAreaType(it, AreaType.SNOW)).count();
+        int count = (int) LocationUtils.getControlledLocationsIn(player, ExpansionType.ICELANDS).stream().filter(it -> LocationUtils.isAreaType(it, AreaType.SNOW)).count();
+        updateProgression(count);
         if (count >= COUNT) {
             success();
         }

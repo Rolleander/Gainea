@@ -15,6 +15,7 @@ public class G_WinBattles extends Goal {
     public G_WinBattles(GoalDifficulty difficulty, int wins) {
         super(difficulty, "Gewinne " + wins + " Schlachten");
         this.winTarget = wins;
+        setProgressionGoal(wins);
     }
 
     @Override
@@ -27,6 +28,7 @@ public class G_WinBattles extends Goal {
 
     @Override
     public void check() {
+        updateProgression(wins);
         if (wins >= winTarget) {
             success();
         }

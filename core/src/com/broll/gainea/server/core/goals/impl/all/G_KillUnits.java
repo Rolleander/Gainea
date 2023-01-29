@@ -17,6 +17,7 @@ public class G_KillUnits extends Goal {
     public G_KillUnits(GoalDifficulty difficulty, int kills) {
         super(difficulty, "Vernichte " + kills + " Soldaten anderer Spieler durch Kämpfe");
         this.killTarget = kills;
+        setProgressionGoal(kills);
     }
 
     @Override
@@ -34,6 +35,7 @@ public class G_KillUnits extends Goal {
 
     @Override
     public void check() {
+        updateProgression(kills);
         if (kills >= killTarget) {
             success();
         }

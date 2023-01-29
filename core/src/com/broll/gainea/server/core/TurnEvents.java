@@ -2,6 +2,7 @@ package com.broll.gainea.server.core;
 
 import com.broll.gainea.net.NT_PlayerWait;
 import com.broll.gainea.server.core.cards.EventCard;
+import com.broll.gainea.server.core.cards.events.E_GetCards;
 import com.broll.gainea.server.core.cards.events.E_SpawnGoddrake;
 import com.broll.gainea.server.core.cards.events.E_SpawnMonster;
 import com.broll.gainea.server.core.processing.GameUpdateReceiverAdapter;
@@ -12,6 +13,7 @@ import org.slf4j.LoggerFactory;
 public class TurnEvents extends GameUpdateReceiverAdapter {
 
     private final static int SPAWN_MONSTER_TURNS = 2;
+    private final static int GET_CARDS_TURNS = 5;
     private final static int SPAWN_GODDRAKE_TURNS = SPAWN_MONSTER_TURNS * 5;
     private final static int SPAWN_TURNS_START = SPAWN_GODDRAKE_TURNS; //first spawn is goddrake
 
@@ -47,6 +49,9 @@ public class TurnEvents extends GameUpdateReceiverAdapter {
                     turnEvent(E_SpawnMonster.class);
                 }
             }
+        }
+        if (turn % GET_CARDS_TURNS == 0) {
+            turnEvent(E_GetCards.class);
         }
     }
 

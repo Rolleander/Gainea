@@ -13,11 +13,10 @@ karten:
 >17  könig
 >27 buch
 >28 spätrupp
->35 markt
 >53 schlacht
 >68 seeschlacht
 >69 leuchtsteine
-
+>75 dragonfier
 
 
 

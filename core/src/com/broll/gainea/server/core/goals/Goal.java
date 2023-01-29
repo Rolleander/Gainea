@@ -6,21 +6,20 @@ import java.util.stream.Collectors;
 
 import com.broll.gainea.net.NT_Event_FinishedGoal;
 import com.broll.gainea.net.NT_Goal;
+import com.broll.gainea.net.NT_GoalProgression;
 import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.map.ExpansionType;
 import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.server.core.processing.GameUpdateReceiverAdapter;
 import com.broll.gainea.server.core.utils.GameUtils;
-import com.broll.networklib.server.impl.ConnectionSite;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public abstract class Goal extends GameUpdateReceiverAdapter {
 
     protected String text;
     private GoalDifficulty difficulty;
     private String restrictionInfo;
+    private int progression;
+    private int progressionGoal = NT_Goal.NO_PROGRESSION_GOAL;
     private ExpansionType[] requiredExpansions;
     protected GameContainer game;
     protected Player player;
@@ -35,6 +34,10 @@ public abstract class Goal extends GameUpdateReceiverAdapter {
         this.game = game;
         this.player = player;
         return validForGame();
+    }
+
+    protected void setProgressionGoal(int goal) {
+        this.progressionGoal = goal;
     }
 
     protected void setCustomRestrictionInfo(String restrictionInfo) {
@@ -77,6 +80,16 @@ public abstract class Goal extends GameUpdateReceiverAdapter {
         }
     }
 
+    protected void updateProgression(int progression) {
+        if (this.progression != progression && this.progressionGoal != NT_Goal.NO_PROGRESSION_GOAL) {
+            this.progression = progression;
+            NT_GoalProgression nt = new NT_GoalProgression();
+            nt.progression = progression;
+            nt.index = player.getGoalHandler().getGoals().indexOf(this);
+            player.getServerPlayer().sendTCP(nt);
+        }
+    }
+
     public abstract void check();
 
     public GoalDifficulty getDifficulty() {
@@ -88,6 +101,8 @@ public abstract class Goal extends GameUpdateReceiverAdapter {
         goal.description = text;
         goal.points = difficulty.getPoints();
         goal.restriction = restrictionInfo;
+        goal.progression = progression;
+        goal.progressionGoal = progressionGoal;
         return goal;
     }
 

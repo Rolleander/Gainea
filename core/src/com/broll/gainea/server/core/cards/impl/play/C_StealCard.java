@@ -25,7 +25,6 @@ public class C_StealCard extends Card {
         if (!cards.isEmpty()) {
             Card card = cards.get(selectHandler.selection("Wählt eine Karte", cards.stream().map(Card::getTitle).collect(Collectors.toList())));
             player.getCardHandler().discardCard(card);
-            card.init(game, owner, card.getId());
             owner.getCardHandler().receiveCard(card);
             //update stolen player to remove his card
             NT_Event_RemoveCard nt = new NT_Event_RemoveCard();

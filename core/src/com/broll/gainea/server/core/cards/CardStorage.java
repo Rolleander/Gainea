@@ -28,7 +28,6 @@ public class CardStorage {
 
     public void drawRandomCard(Player player) {
         Card card = getRandomCard();
-        card.init(game, player, game.newObjectId());
         player.getCardHandler().receiveCard(card);
     }
 
@@ -45,4 +44,12 @@ public class CardStorage {
         return getRandomCard();
     }
 
+    public Card getRandomPlayableCard() {
+        while (true) {
+            Card card = getRandomCard();
+            if (!(card instanceof DirectlyPlayedCard)) {
+                return card;
+            }
+        }
+    }
 }
