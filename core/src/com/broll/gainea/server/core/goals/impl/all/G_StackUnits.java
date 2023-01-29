@@ -1,13 +1,13 @@
 package com.broll.gainea.server.core.goals.impl.all;
 
+import com.broll.gainea.misc.RandomUtils;
 import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.goals.CustomOccupyGoal;
-import com.broll.gainea.server.core.goals.OccupyGoal;
 import com.broll.gainea.server.core.goals.GoalDifficulty;
 import com.broll.gainea.server.core.map.Area;
-import com.broll.gainea.server.core.map.LocationPicker;
 import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.player.Player;
+import com.broll.gainea.server.core.utils.LocationUtils;
 
 public class G_StackUnits extends CustomOccupyGoal {
     private final static int COUNT = 6;
@@ -21,7 +21,7 @@ public class G_StackUnits extends CustomOccupyGoal {
     public boolean init(GameContainer game, Player player) {
         this.game = game;
         this.player = player;
-        area = LocationPicker.pickRandom(game.getMap(), 1).get(0);
+        area = RandomUtils.pickRandom(game.getMap().getAllAreas());
         text = "Besetze " + area.getName() + " mit mindestens " + COUNT + " Einheiten";
         setExpansionRestriction(area.getContainer().getExpansion().getType());
         setProgressionGoal(COUNT);

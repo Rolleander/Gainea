@@ -16,7 +16,7 @@ import com.broll.gainea.server.core.utils.GameUtils;
 public abstract class Goal extends GameUpdateReceiverAdapter {
 
     protected String text;
-    private GoalDifficulty difficulty;
+    protected GoalDifficulty difficulty;
     private String restrictionInfo;
     private int progression;
     private int progressionGoal = NT_Goal.NO_PROGRESSION_GOAL;

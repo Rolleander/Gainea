@@ -6,9 +6,9 @@ import java.util.List;
 import com.broll.gainea.net.NT_LoadedGame;
 import com.broll.gainea.server.core.ReactionResultHandler;
 import com.broll.gainea.server.core.actions.required.PlaceUnitAction;
-import com.broll.gainea.server.core.map.LocationPicker;
 import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.player.Player;
+import com.broll.gainea.server.core.utils.LocationUtils;
 import com.broll.gainea.server.core.utils.ProcessingUtils;
 import com.broll.gainea.server.core.utils.UnitControl;
 import com.broll.gainea.server.init.LobbyData;
@@ -96,7 +96,7 @@ public class GameStartSite extends GameSite {
         GameContainer game = getGame();
         int startLocationsCount = getLobby().getData().getStartLocations();
         int playerCount = game.getPlayers().size();
-        List<Area> startLocations = LocationPicker.pickRandomEmpty(game.getMap(), playerCount * startLocationsCount);
+        List<Area> startLocations = LocationUtils.pickRandomEmpty(game.getMap(), playerCount * startLocationsCount);
         for (Player player : game.getPlayers()) {
             List<Location> playerStartLocations = startLocations.stream().limit(startLocationsCount).collect(Collectors.toList());
             startLocations.removeAll(playerStartLocations);

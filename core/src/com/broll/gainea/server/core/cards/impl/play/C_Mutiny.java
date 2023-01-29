@@ -6,13 +6,14 @@ import com.broll.gainea.server.core.map.Ship;
 import com.broll.gainea.server.core.objects.buffs.BuffType;
 import com.broll.gainea.server.core.objects.buffs.GlobalBuff;
 import com.broll.gainea.server.core.objects.buffs.IntBuff;
+import com.broll.gainea.server.core.objects.buffs.TimedEffect;
 
 public class C_Mutiny extends Card {
 
-    private final static int TURNS = 3;
+    private final static int ROUNDS = 3;
 
     public C_Mutiny() {
-        super(15, "Meuterei", "Alle Einheiten auf Schiffen können sich für " + TURNS + " Runden weder angreifen noch sich bewegen");
+        super(15, "Meuterei", "Alle Schiffe sind für" + ROUNDS + " Runden nicht mehr begehbar");
         setDrawChance(0.6f);
     }
 
@@ -23,14 +24,14 @@ public class C_Mutiny extends Card {
 
     @Override
     protected void play() {
-        IntBuff buff = new IntBuff(BuffType.SET, 0);
-        GlobalBuff.createForAllPlayers(game, buff, unit -> {
-            if (unit.getLocation() instanceof Ship) {
-                unit.getMovesPerTurn().addBuff(buff);
-                unit.getAttacksPerTurn().addBuff(buff);
+        game.getMap().getAllShips().forEach(it -> it.setTraversable(false));
+        TimedEffect.forPlayerRounds(game, owner, ROUNDS, new TimedEffect() {
+            @Override
+            protected void unregister() {
+                super.unregister();
+                game.getMap().getAllShips().forEach(it -> it.setTraversable(true));
             }
-        }, NT_Abstract_Event.EFFECT_DEBUFF);
-        game.getBuffProcessor().timeoutBuff(buff, 3);
+        });
     }
 
 }

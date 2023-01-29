@@ -11,8 +11,17 @@ public abstract class Location {
 
     private int number;
     private AreaCollection container;
+    private boolean traversable = true;
 
     private Coordinates coordinates;
+
+    public boolean isTraversable() {
+        return traversable;
+    }
+
+    public void setTraversable(boolean traversable) {
+        this.traversable = traversable;
+    }
 
     private Set<MapObject> inhabitants = new HashSet<>();
 

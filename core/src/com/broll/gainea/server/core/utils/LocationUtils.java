@@ -11,6 +11,7 @@ import com.broll.gainea.server.core.map.ExpansionType;
 import com.broll.gainea.server.core.map.Island;
 import com.broll.gainea.server.core.map.IslandID;
 import com.broll.gainea.server.core.map.Location;
+import com.broll.gainea.server.core.map.MapContainer;
 import com.broll.gainea.server.core.map.Ship;
 import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.GodDragon;
@@ -119,4 +120,15 @@ public final class LocationUtils {
         return false;
     }
 
+    public static List<Area> pickRandom(MapContainer map, int amount) {
+        List<Area> areas = map.getAllAreas();
+        Collections.shuffle(areas);
+        return areas.stream().limit(amount).collect(Collectors.toList());
+    }
+
+    public static List<Area> pickRandomEmpty(MapContainer map, int amount) {
+        List<Area> areas = map.getAllAreas();
+        Collections.shuffle(areas);
+        return areas.stream().filter(it -> it.getInhabitants().isEmpty()).limit(amount).collect(Collectors.toList());
+    }
 }
