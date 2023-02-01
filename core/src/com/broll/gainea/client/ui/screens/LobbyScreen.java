@@ -49,6 +49,7 @@ public class LobbyScreen extends Screen {
     private CheckBox ready;
     private SelectBox fratcionBox, expansions, goals, points, startGoals, startLocations, monsters;
     private Fraction playerFraction;
+    private boolean updatesRunning = false;
 
     public LobbyScreen(GameLobby lobby) {
         this.lobby = lobby;
@@ -61,6 +62,7 @@ public class LobbyScreen extends Screen {
     }
 
     public void updateLobby() {
+        updatesRunning = true;
         NT_LobbySettings lobbySettings = (NT_LobbySettings) lobby.getSettings();
         updateSelection(expansions, lobbySettings.expansionSetting);
         updateSelection(goals, lobbySettings.goalTypes);
@@ -110,6 +112,7 @@ public class LobbyScreen extends Screen {
             lobbyTable.row();
         });
         lobbyTable.pack();
+        updatesRunning = false;
     }
 
     private void kickPlayer(LobbyPlayer player) {
@@ -123,6 +126,7 @@ public class LobbyScreen extends Screen {
         ready.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                if(updatesRunning) return;
                 AudioPlayer.playSound("button.ogg");
                 NT_PlayerReady nt = new NT_PlayerReady();
                 nt.ready = ready.isChecked();
@@ -139,6 +143,7 @@ public class LobbyScreen extends Screen {
         selectBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                if(updatesRunning) return;
                 AudioPlayer.playSound("button.ogg");
                 if (ArrayUtils.contains(takenFractions, selectBox.getSelectedIndex())) {
                     //fraction taken, reset selection
@@ -160,6 +165,7 @@ public class LobbyScreen extends Screen {
             selectBox.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
+                    if(updatesRunning) return;
                     AudioPlayer.playSound("button.ogg");
                     NT_UpdateLobbySettings nt = new NT_UpdateLobbySettings();
                     nt.setting = setting;

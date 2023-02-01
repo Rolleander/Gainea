@@ -6,6 +6,7 @@ public abstract class RoundGoal extends Goal {
 
     private int roundTarget;
     private int rounds;
+    private int turns;
 
     public RoundGoal(GoalDifficulty difficulty, String text, int rounds) {
         super(difficulty, text);
@@ -15,12 +16,16 @@ public abstract class RoundGoal extends Goal {
 
     @Override
     public void turnStarted(Player player) {
-        if (player == this.player && game.getRounds() > 1) {
-            check();
+        if (game.getCurrentPlayer() > 0 || game.getRounds() > 1) {
+            turns++;
+            if (turns > game.getPlayers().size()) {
+                check();
+            }
         }
     }
 
     protected void progressRound() {
+        turns = 0;
         rounds++;
         updateProgression(rounds);
         if (rounds >= roundTarget) {
@@ -29,6 +34,7 @@ public abstract class RoundGoal extends Goal {
     }
 
     protected void resetRounds() {
+        turns = 0;
         rounds = 0;
         updateProgression(rounds);
     }

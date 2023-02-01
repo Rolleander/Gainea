@@ -155,7 +155,10 @@ public class IcelandMap extends ExpansionFactory {
     @Override
     protected void connectWithExpansion(ExpansionFactory expansion) {
         if (expansion instanceof GaineaMap) {
-            ships(GRASSUMPF, GaineaMap.Areas.UFERLAND, new float[]{83.7f, 95.1f}, new float[]{45.1f, 48.2f});
+            ships(GRASSUMPF, GaineaMap.Areas.UFERLAND, new float[]{84.2f, 92.1f}, new float[]{45.1f, 48.2f});
+        }
+        if(expansion instanceof BoglandMap){
+            ships(EISLAND, BoglandMap.Areas.SCHRECKENHORN, new float[]{89.4f, 92.3f, 95.5f}, new float[]{29.9f, 24.9f, 20f});
         }
     }
 

@@ -75,7 +75,7 @@ public class GameLobbySite extends LobbyServerSite<LobbyData, PlayerData> {
         int value = nt.value;
         switch (nt.setting) {
             case NT_UpdateLobbySettings.SETTING_EXPANSIONS:
-                if (EnumUtils.inBounds(value, ExpansionType.class)) {
+                if (EnumUtils.inBounds(value, ExpansionSetting.class)) {
                     data.setExpansionSetting(ExpansionSetting.values()[value]);
                 }
                 break;
