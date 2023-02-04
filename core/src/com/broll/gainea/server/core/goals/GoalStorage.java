@@ -1,5 +1,6 @@
 package com.broll.gainea.server.core.goals;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -46,11 +47,31 @@ public class GoalStorage {
         assignNewGoal(player, goal -> goal.getDifficulty() == difficulty);
     }
 
+    public List<Goal> getAnyGoals(Player player, int count) {
+        List<Goal> goals = new ArrayList<>();
+        List<Class<? extends Goal>> goalClasses = loader.getClasses().stream().collect(Collectors.toList());
+        Collections.shuffle(goalClasses);
+        for (Class<? extends Goal> clazz : goalClasses) {
+            Goal goal = loader.instantiate(clazz);
+            if (goal.init(game, player)) {
+                goals.add(goal);
+                if (goals.size() == count) {
+                    break;
+                }
+            }
+        }
+        return goals;
+    }
+
     public void assignNewGoal(Player player, Function<Goal, Boolean> condition) {
+        Goal goal = getGoal(player, condition);
+        player.getGoalHandler().newGoal(goal);
+    }
+
+    private Goal getGoal(Player player, Function<Goal, Boolean> condition) {
         Goal goal = newGoal(player, condition);
         if (goal != null) {
-            //assign goal to player
-            player.getGoalHandler().newGoal(goal);
+            return goal;
         } else {
             //no goal found for condition
             if (goalClasses.isEmpty()) {
@@ -59,8 +80,7 @@ public class GoalStorage {
                 //try again to find one
                 goal = newGoal(player, condition);
                 if (goal != null) {
-                    //assign goal to player
-                    player.getGoalHandler().newGoal(goal);
+                    return goal;
                 } else {
                     Log.error("No goal for condition " + condition + " was found");
                 }
@@ -68,9 +88,10 @@ public class GoalStorage {
                 Log.error("No goal for condition " + condition + " was found in remaining goals");
             }
         }
+        return null;
     }
 
-    public Goal newGoal(Player forPlayer, Function<Goal, Boolean> condition) {
+    private Goal newGoal(Player forPlayer, Function<Goal, Boolean> condition) {
         for (Class clazz : goalClasses) {
             Goal goal = loader.instantiate(clazz);
             if (goalTypes.contains(goal.getDifficulty())) {

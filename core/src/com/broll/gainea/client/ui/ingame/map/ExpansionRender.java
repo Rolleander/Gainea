@@ -37,12 +37,6 @@ public class ExpansionRender extends Actor {
         texture = game.assets.get("textures/" + textureName, Texture.class);
         shipTexture = new TextureRegion(game.assets.get("textures/ship.png", Texture.class));
         Coordinates coords = expansion.getCoordinates();
-        coords.calcDisplayLocation(SIZE);
-        expansion.getAllLocations().stream().map(Location::getCoordinates).forEach(it -> {
-            it.shift(-0.5f, 0);
-            it.mirrorY(0.5f);
-            it.calcDisplayLocation(SIZE);
-        });
         this.setBounds(coords.getDisplayX() - SIZE / 2, coords.getDisplayY() - SIZE / 2, SIZE, SIZE);
     }
 

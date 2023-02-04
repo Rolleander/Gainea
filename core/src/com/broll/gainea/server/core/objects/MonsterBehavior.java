@@ -61,7 +61,7 @@ public enum MonsterBehavior {
     }
 
     private static Stream<Location> getPossibleTargets(Monster monster) {
-        return monster.getLocation().getConnectedLocations().stream().filter(it -> !(it instanceof Ship));
+        return monster.getLocation().getWalkableNeighbours().stream().filter(it -> !(it instanceof Ship));
     }
 
 }

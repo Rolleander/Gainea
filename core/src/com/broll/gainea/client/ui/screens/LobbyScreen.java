@@ -160,7 +160,7 @@ public class LobbyScreen extends Screen {
 
     private SelectBox lobbySettingsBox(int setting, int indexDelta, String[] values) {
         SelectBox selectBox = new SelectBox(skin);
-        selectBox.setItems(values);
+        selectBox.setItems((Object[]) values);
         if (lobby.getOwner() == lobby.getMyPlayer()) {
             selectBox.addListener(new ChangeListener() {
                 @Override

@@ -66,6 +66,7 @@ public class CardWindow extends MenuWindow {
                 Optional<NT_Action_Card> playableCard = playableCards.stream().filter(it -> it.cardId == card.id).findFirst();
                 if (cardsPlayable && playableCard.isPresent()) {
                     table.add(TableUtils.textButton(game.ui.skin, "Aktivieren!", () -> {
+                        CardWindow.this.setVisible(false);
                         playerPerformAction.perform(playableCard.get(), 0, null);
                     })).right().bottom().colspan(2).padTop(-80);
                 }

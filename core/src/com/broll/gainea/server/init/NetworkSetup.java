@@ -1,5 +1,6 @@
 package com.broll.gainea.server.init;
 
+import com.broll.gainea.net.NT_BoardEffect;
 import com.broll.gainea.net.NT_Card;
 import com.broll.gainea.net.NT_RoundStatistic;
 import com.broll.gainea.server.sites.GameLobbySite;
@@ -39,5 +40,6 @@ public class NetworkSetup {
         register.registerNetworkType(String[].class);
         register.registerNetworkType(Object[].class);
         register.registerNetworkType(NT_RoundStatistic[].class);
+        register.registerNetworkType(NT_BoardEffect[].class);
     }
 }

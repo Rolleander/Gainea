@@ -1,6 +1,6 @@
 package com.broll.gainea.server.core.cards.impl.play;
 
-import com.broll.gainea.net.NT_Abstract_Event;
+import com.broll.gainea.net.NT_Event;
 import com.broll.gainea.server.core.cards.Card;
 import com.broll.gainea.server.core.objects.buffs.BuffType;
 import com.broll.gainea.server.core.objects.buffs.GlobalBuff;
@@ -25,8 +25,8 @@ public class C_Barriere extends Card {
     protected void play() {
         IntBuff healthBuff = new IntBuff(BuffType.ADD, BUFF);
         IntBuff noAttackBuff = new IntBuff(BuffType.SET, 0);
-        GlobalBuff.createForPlayer(game, owner, healthBuff, unit -> unit.addHealthBuff(healthBuff), NT_Abstract_Event.EFFECT_BUFF);
-        GlobalBuff.createForPlayer(game, owner, noAttackBuff, unit -> unit.getAttacksPerTurn().addBuff(noAttackBuff), NT_Abstract_Event.EFFECT_DEBUFF);
+        GlobalBuff.createForPlayer(game, owner, healthBuff, unit -> unit.addHealthBuff(healthBuff), NT_Event.EFFECT_BUFF);
+        GlobalBuff.createForPlayer(game, owner, noAttackBuff, unit -> unit.getAttacksPerTurn().addBuff(noAttackBuff), NT_Event.EFFECT_DEBUFF);
         game.getBuffProcessor().timeoutBuff(healthBuff, DURATION);
         game.getBuffProcessor().timeoutBuff(noAttackBuff, DURATION);
     }

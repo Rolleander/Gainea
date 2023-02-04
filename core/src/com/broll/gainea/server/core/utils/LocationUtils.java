@@ -21,7 +21,9 @@ import com.broll.gainea.server.core.player.Player;
 
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.ArrayUtils;
+import org.checkerframework.checker.units.qual.A;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
@@ -33,11 +35,11 @@ import java.util.stream.Stream;
 
 public final class LocationUtils {
 
-    public static short[] getLocationNumbers(Collection<Location> locations){
+    public static short[] getLocationNumbers(Collection<Location> locations) {
         short[] numbers = new short[locations.size()];
         Iterator<Location> iterator = locations.iterator();
-        int i=0;
-        while(iterator.hasNext()){
+        int i = 0;
+        while (iterator.hasNext()) {
             numbers[i] = (short) iterator.next().getNumber();
             i++;
         }
@@ -106,16 +108,16 @@ public final class LocationUtils {
         return RandomUtils.pickRandom(free);
     }
 
-    public static boolean isInContinent(Location location, ContinentID id){
-        if(!(location instanceof Ship) && location.getContainer()  instanceof Continent){
-            return ((Continent)location.getContainer()).getId() == id;
+    public static boolean isInContinent(Location location, ContinentID id) {
+        if (!(location instanceof Ship) && location.getContainer() instanceof Continent) {
+            return ((Continent) location.getContainer()).getId() == id;
         }
         return false;
     }
 
-    public static boolean isInIsland(Location location, IslandID id){
-        if(!(location instanceof Ship) && location.getContainer()  instanceof Island){
-            return ((Island)location.getContainer()).getId() == id;
+    public static boolean isInIsland(Location location, IslandID id) {
+        if (!(location instanceof Ship) && location.getContainer() instanceof Island) {
+            return ((Island) location.getContainer()).getId() == id;
         }
         return false;
     }
@@ -131,4 +133,27 @@ public final class LocationUtils {
         Collections.shuffle(areas);
         return areas.stream().filter(it -> it.getInhabitants().isEmpty()).limit(amount).collect(Collectors.toList());
     }
+
+    public static int getWalkingDistance(Location from, Location to) {
+        List<Location> visited = new ArrayList<>();
+        List<Location> remaining;
+        int distance = 0;
+        if (from == to) {
+            return 0;
+        }
+        remaining = from.getWalkableNeighbours();
+        do {
+            distance++;
+            for (Location area : remaining) {
+                if (area == to) {
+                    return distance;
+                }
+            }
+            visited.addAll(remaining);
+            remaining = remaining.stream().flatMap(it->it.getWalkableNeighbours().stream()).collect(Collectors.toList());
+            remaining.removeAll(visited);
+        } while (!remaining.isEmpty());
+        return -1;
+    }
+
 }

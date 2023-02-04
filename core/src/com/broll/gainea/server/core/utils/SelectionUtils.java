@@ -42,6 +42,13 @@ public final class SelectionUtils {
         return selectUnitFromLocations(game, new ArrayList<>(locations), it -> it.getOwner() != player && it.getOwner() != null && predicate.test(it), text);
     }
 
+    public static BattleObject selectEnemyUnit(GameContainer game, Player player, String text) {
+        Set<Location> locations = new HashSet<>();
+        PlayerUtils.getOtherPlayers(game, player).forEach(otherPlayer -> locations.addAll(otherPlayer.getControlledLocations()));
+        locations.addAll(game.getObjects().stream().filter(it-> it instanceof Monster).map(MapObject::getLocation).collect(Collectors.toList()));
+        return selectUnitFromLocations(game, new ArrayList<>(locations), it -> it.getOwner() != player , text);
+    }
+
     public static BattleObject selectAnyUnit(GameContainer game, String text) {
         return selectAnyUnit(game, text, it -> true);
     }

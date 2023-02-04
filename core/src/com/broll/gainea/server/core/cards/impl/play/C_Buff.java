@@ -1,6 +1,6 @@
 package com.broll.gainea.server.core.cards.impl.play;
 
-import com.broll.gainea.net.NT_Abstract_Event;
+import com.broll.gainea.net.NT_Event;
 import com.broll.gainea.server.core.cards.Card;
 import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.utils.SelectionUtils;
@@ -23,7 +23,7 @@ public class C_Buff extends Card {
             unit.getPower().addValue(1);
             unit.getHealth().addValue(1);
             unit.getMaxHealth().addValue(1);
-            UnitControl.focus(game, unit, NT_Abstract_Event.EFFECT_BUFF);
+            UnitControl.focus(game, unit, NT_Event.EFFECT_BUFF);
         }
     }
 

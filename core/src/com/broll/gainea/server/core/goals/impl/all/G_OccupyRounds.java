@@ -26,12 +26,10 @@ public class G_OccupyRounds extends RoundGoal {
         container = RandomUtils.pickRandom(game.getMap().getAllAreas()).getContainer();
         this.text = "Sei für " + ROUND_TARGET + " Runden der einzige Spieler mit Einheiten auf " + container.getName();
         int containerSize = container.getAreas().size();
-        if (containerSize < 5) {
+        if (containerSize <= 5) {
             this.difficulty = GoalDifficulty.EASY;
-        } else if (containerSize <= 10) {
-            this.difficulty = GoalDifficulty.MEDIUM;
         } else {
-            this.difficulty = GoalDifficulty.HARD;
+            this.difficulty = GoalDifficulty.MEDIUM;
         }
         return super.init(game, player);
     }
@@ -41,6 +39,7 @@ public class G_OccupyRounds extends RoundGoal {
         if(units.stream().anyMatch(object-> object.getOwner()!=null && object.getOwner()!= player) && location.getContainer() == container){
             resetRounds();
         }
+        check();
     }
 
     @Override
@@ -48,6 +47,7 @@ public class G_OccupyRounds extends RoundGoal {
         if(object.getOwner()!=null && object.getOwner()!= player && location.getContainer() == container){
             resetRounds();
         }
+        check();
     }
 
     @Override

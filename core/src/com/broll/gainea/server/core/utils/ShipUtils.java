@@ -3,10 +3,10 @@ package com.broll.gainea.server.core.utils;
 import com.broll.gainea.server.core.map.Area;
 import com.broll.gainea.server.core.map.AreaCollection;
 import com.broll.gainea.server.core.map.Expansion;
-import com.broll.gainea.server.core.map.Island;
 import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.map.Ship;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -70,7 +70,16 @@ public class ShipUtils {
         return startsFrom(ship, from) && leadsTo(ship, to);
     }
 
-    public static List<Ship> getShips(AreaCollection from, AreaCollection to) {
+    public static List<Ship> getAllShips(AreaCollection from, AreaCollection to) {
         return from.getShips().stream().filter(it -> ShipUtils.leadsTo(it, to)).collect(Collectors.toList());
+    }
+
+    public static List<Ship> getAllShips(AreaCollection fromAndTo){
+        List<Ship> ships = new ArrayList<>();
+        ships.addAll(fromAndTo.getShips());
+        fromAndTo.getExpansion().getContents().stream().filter(it-> it != fromAndTo).forEach(collection -> {
+            ships.addAll(getAllShips(collection, fromAndTo));
+        });
+        return ships;
     }
 }

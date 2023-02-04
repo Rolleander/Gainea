@@ -22,7 +22,7 @@ public class C_MonsterMove extends Card {
     @Override
     protected void play() {
         Monster monster = SelectionUtils.selectWildMonster(game,"Wähle das Monster das bewegt werden soll");
-        Location target = selectHandler.selectLocation("Wähle das Ziel (Einheiten werden angegriffen)", new ArrayList<>(monster.getLocation().getConnectedLocations()));
+        Location target = selectHandler.selectLocation("Wähle das Ziel (Einheiten werden angegriffen)", new ArrayList<>(monster.getLocation().getWalkableNeighbours()));
         UnitControl.conquer(game, Lists.newArrayList(monster), target);
     }
 }

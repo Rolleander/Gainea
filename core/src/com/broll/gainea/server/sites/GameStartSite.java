@@ -6,6 +6,7 @@ import java.util.List;
 import com.broll.gainea.net.NT_LoadedGame;
 import com.broll.gainea.server.core.ReactionResultHandler;
 import com.broll.gainea.server.core.actions.required.PlaceUnitAction;
+import com.broll.gainea.server.core.cards.impl.play.C_Fire;
 import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.server.core.utils.LocationUtils;
@@ -22,6 +23,7 @@ import com.broll.networklib.server.Autoshared;
 import com.broll.networklib.server.ShareLevel;
 import com.broll.networklib.server.impl.ServerLobby;
 
+import org.checkerframework.checker.units.qual.C;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

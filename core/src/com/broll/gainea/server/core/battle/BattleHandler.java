@@ -177,7 +177,7 @@ public class BattleHandler {
         } else {
             //battle finished, all attackers or defenders died
             ProcessingUtils.pause(BATTLE_ANIMATION_DELAY );
-            battleFinished();
+            battleFinished(false);
         }
     }
 
@@ -206,7 +206,7 @@ public class BattleHandler {
                 if (!attackerOwner.getServerPlayer().isOnline()) {
                     //retreat cause offline
                     Log.info("Retreat from battle because attacking player is offline");
-                    battleFinished();
+                    battleFinished(true);
                 }
             }
             try {
@@ -222,12 +222,12 @@ public class BattleHandler {
             fightRound();
         } else {
             //end battle, attackers retreat
-            battleFinished();
+            battleFinished(true);
         }
     }
 
-    private void battleFinished() {
-        BattleResult result = new BattleResult(attackers, defenders, killedAttackers, killedDefenders, battleLocation);
+    private void battleFinished(boolean retreated) {
+        BattleResult result = new BattleResult(retreated, attackers, defenders, killedAttackers, killedDefenders, battleLocation);
         Log.info("Battle over! Surviving Attackers: (" + aliveAttackers.stream().map(it -> it.getId() + "| " + it.getName() + " " + it.getPower() + " " + it.getHealth()).collect(Collectors.joining(", ")) + ")  Surviving Defenders: (" + aliveDefenders.stream().map(it -> it.getId() + "| " + it.getName() + " " + it.getPower() + " " + it.getHealth()).collect(Collectors.joining(", ")) + ")");
         battleActive = false;
         GameUpdateReceiverProxy updateReceiver = game.getUpdateReceiver();

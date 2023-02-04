@@ -1,6 +1,6 @@
 package com.broll.gainea.server.core.cards.impl.play;
 
-import com.broll.gainea.net.NT_Abstract_Event;
+import com.broll.gainea.net.NT_Event;
 import com.broll.gainea.server.core.cards.Card;
 import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.objects.MapObject;
@@ -11,7 +11,6 @@ import com.broll.gainea.server.core.utils.UnitControl;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class C_Rooting extends Card {
 
@@ -35,7 +34,7 @@ public class C_Rooting extends Card {
         units.forEach(unit->{
             unit.getMovesPerTurn().addBuff(rootDebuff);
         });
-        UnitControl.focus(game, units, NT_Abstract_Event.EFFECT_DEBUFF);
+        UnitControl.focus(game, units, NT_Event.EFFECT_DEBUFF);
         game.getBuffProcessor().timeoutBuff(rootDebuff, DURATION);
     }
 

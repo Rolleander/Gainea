@@ -1,6 +1,5 @@
 package com.broll.gainea.server.core.cards.impl.direct;
 
-import com.broll.gainea.net.NT_Abstract_Event;
 import com.broll.gainea.server.core.cards.DirectlyPlayedCard;
 import com.broll.gainea.server.core.objects.Monster;
 import com.broll.gainea.server.core.objects.buffs.BuffType;
@@ -9,7 +8,6 @@ import com.broll.gainea.server.core.utils.UnitControl;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class C_MonsterRevenge extends DirectlyPlayedCard {
 

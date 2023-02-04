@@ -5,4 +5,5 @@ public class NT_BoardUpdate {
     public short turns;
     public NT_Player[] players;
     public NT_BoardObject[] objects;
+    public NT_BoardEffect[] effects;
 }

@@ -14,8 +14,10 @@ import com.broll.gainea.client.ui.utils.TableUtils;
 import com.broll.gainea.client.ui.ingame.windows.CardWindow;
 import com.broll.gainea.client.ui.ingame.windows.GoalWindow;
 import com.broll.gainea.client.ui.ingame.map.MapObjectRender;
-import com.broll.gainea.net.NT_Abstract_Event;
+import com.broll.gainea.net.NT_BoardEffect;
+import com.broll.gainea.net.NT_Event;
 import com.broll.gainea.net.NT_BoardObject;
+import com.broll.gainea.net.NT_Event_BoardEffect;
 import com.broll.gainea.net.NT_Event_FinishedGoal;
 import com.broll.gainea.net.NT_Event_FocusObjects;
 import com.broll.gainea.net.NT_Event_OtherPlayerReceivedCard;
@@ -41,6 +43,8 @@ import com.broll.networklib.PackageReceiver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
+
 public class GameEventSite extends AbstractGameSite {
 
     private final static Logger Log = LoggerFactory.getLogger(GameEventSite.class);
@@ -52,7 +56,7 @@ public class GameEventSite extends AbstractGameSite {
     @Override
     public void receive(Object object) {
         super.receive(object);
-        NT_Abstract_Event event = (NT_Abstract_Event) object;
+        NT_Event event = (NT_Event) object;
         if (event.screenEffect != 0) {
 
         }
@@ -239,5 +243,11 @@ public class GameEventSite extends AbstractGameSite {
         message.add(LabelUtils.label(game.ui.skin, text)).center().row();
         message.add(GoalWindow.renderGoal(game.ui.skin, goal.goal));
         game.ui.inGameUI.showCenterOverlay(TableUtils.removeAfter(message, 3));
+    }
+
+    @PackageReceiver
+    public void received(NT_Event_BoardEffect nt) {
+        GameUtils.updateMapEffects(game.state, nt.effects);
+        game.state.updateMapObjects();
     }
 }

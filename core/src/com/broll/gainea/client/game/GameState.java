@@ -2,6 +2,7 @@ package com.broll.gainea.client.game;
 
 import com.broll.gainea.Gainea;
 import com.broll.gainea.net.NT_Action;
+import com.broll.gainea.net.NT_BoardEffect;
 import com.broll.gainea.net.NT_BoardObject;
 import com.broll.gainea.net.NT_BoardUpdate;
 import com.broll.gainea.net.NT_Card;
@@ -26,9 +27,11 @@ public class GameState {
     //game data:
     private int turnNumber;
     private List<NT_BoardObject> objects;
+    private List<NT_BoardEffect> effects;
     private List<NT_Player> players;
     private ClientMapContainer mapContainer;
     private MapObjectContainer mapObjectsContainer;
+    private MapEffectContainer mapEffectContainer;
     //my player specific data:
     private List<NT_Goal> goals;
     private List<NT_Card> cards;
@@ -46,9 +49,11 @@ public class GameState {
         this.player = player;
         mapContainer = new ClientMapContainer(game, setting);
         mapObjectsContainer = new MapObjectContainer(this);
+        mapEffectContainer = new MapEffectContainer(game);
         goals = new ArrayList<>();
         cards = new ArrayList<>();
         objects = new ArrayList<>();
+        effects = new ArrayList<>();
     }
 
     public void addListener(GameStateListener listener) {
@@ -94,12 +99,14 @@ public class GameState {
         this.turnNumber = update.turns;
         this.objects = Lists.newArrayList(update.objects);
         this.players = Arrays.asList(update.players);
+        this.effects = Lists.newArrayList(update.effects);
         updateMapObjects();
         game.ui.inGameUI.getRoundInformation().updateRound(update.turns);
     }
 
     public void updateMapObjects() {
         mapObjectsContainer.update(Streams.concat(objects.stream(), players.stream().flatMap(p -> Arrays.stream(p.units))).collect(Collectors.toList()));
+        mapEffectContainer.update(this.effects);
     }
 
     public void performAction(NT_Action action, PlayerPerformAction playerPerformAction) {
@@ -122,6 +129,10 @@ public class GameState {
 
     public List<NT_BoardObject> getObjects() {
         return objects;
+    }
+
+    public List<NT_BoardEffect> getEffects() {
+        return effects;
     }
 
     public List<NT_Player> getPlayers() {

@@ -1,6 +1,6 @@
 package com.broll.gainea.server.core.cards.impl.play;
 
-import com.broll.gainea.net.NT_Abstract_Event;
+import com.broll.gainea.net.NT_Event;
 import com.broll.gainea.server.core.cards.Card;
 import com.broll.gainea.server.core.objects.buffs.BuffType;
 import com.broll.gainea.server.core.objects.buffs.GlobalBuff;
@@ -23,8 +23,8 @@ public class C_Speed extends Card {
     protected void play() {
         IntBuff buffSpeed = new IntBuff(BuffType.ADD, 1);
         IntBuff buffNoAttaks = new IntBuff(BuffType.SET, 0);
-        GlobalBuff.createForPlayer(game, owner, buffSpeed, unit -> unit.getMovesPerTurn().addBuff(buffSpeed), NT_Abstract_Event.EFFECT_BUFF);
-        GlobalBuff.createForPlayer(game, owner, buffNoAttaks, unit -> unit.getAttacksPerTurn().addBuff(buffNoAttaks), NT_Abstract_Event.EFFECT_DEBUFF);
+        GlobalBuff.createForPlayer(game, owner, buffSpeed, unit -> unit.getMovesPerTurn().addBuff(buffSpeed), NT_Event.EFFECT_BUFF);
+        GlobalBuff.createForPlayer(game, owner, buffNoAttaks, unit -> unit.getAttacksPerTurn().addBuff(buffNoAttaks), NT_Event.EFFECT_DEBUFF);
         game.getBuffProcessor().timeoutBuff(buffSpeed, 1);
         game.getBuffProcessor().timeoutBuff(buffNoAttaks, 1);
     }

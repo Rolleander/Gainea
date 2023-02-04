@@ -1,5 +1,6 @@
 package com.broll.gainea.server.core.map;
 
+import com.broll.gainea.client.ui.ingame.map.ExpansionRender;
 import com.broll.gainea.server.init.ExpansionSetting;
 import com.broll.gainea.server.core.map.impl.BoglandMap;
 import com.broll.gainea.server.core.map.impl.GaineaMap;
@@ -19,15 +20,21 @@ public class MapFactory {
 
     public static List<Pair<ExpansionFactory, Expansion>> create(ExpansionSetting settings) {
         List<ExpansionFactory> expansions = new ArrayList<>();
-        switch (settings) {
-            case FULL:
-                expansions.add(new MountainsMap());
-            case PLUS_ICELANDS_AND_BOG:
-                expansions.add(new BoglandMap());
-            case PLUS_ICELANDS:
-                expansions.add(new IcelandMap());
-            case BASIC_GAME:
-                expansions.add(new GaineaMap());
+        for (ExpansionType type : settings.getMaps()) {
+            switch (type) {
+                case GAINEA:
+                    expansions.add(new GaineaMap());
+                    break;
+                case ICELANDS:
+                    expansions.add(new IcelandMap());
+                    break;
+                case BOGLANDS:
+                    expansions.add(new BoglandMap());
+                    break;
+                case MOUNTAINS:
+                    expansions.add(new MountainsMap());
+                    break;
+            }
         }
         List<Pair<ExpansionFactory, Expansion>> set = expansions.stream().map(it -> Pair.of(it, it.create())).collect(Collectors.toList());
         expansions.forEach(map1 -> {
@@ -40,6 +47,14 @@ public class MapFactory {
         List<Expansion> maps = set.stream().map(it -> it.getRight()).collect(Collectors.toList());
         AtomicInteger locationNumer = new AtomicInteger(0);
         maps.stream().flatMap(it -> it.getAllLocations().stream()).sorted((l1, l2) -> l1.getCoordinates().compareTo(l2.getCoordinates())).forEach(it -> it.setNumber(locationNumer.getAndIncrement()));
+        set.forEach(it -> {
+            it.getRight().getCoordinates().calcDisplayLocation(ExpansionRender.SIZE);
+            it.getRight().getAllLocations().stream().map(Location::getCoordinates).forEach(coords -> {
+                coords.shift(-0.5f, 0);
+                coords.mirrorY(0.5f);
+                coords.calcDisplayLocation(ExpansionRender.SIZE);
+            });
+        });
         return set;
     }
 

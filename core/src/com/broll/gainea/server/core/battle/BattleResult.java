@@ -11,6 +11,7 @@ import java.util.Optional;
 
 public class BattleResult {
 
+    private boolean retreated;
     private List<BattleObject> attackers;
     private List<BattleObject> defenders;
     private List<BattleObject> killedAttackers;
@@ -18,7 +19,8 @@ public class BattleResult {
     private Location location;
     private Location attackerSourceLocation;
 
-    public BattleResult(List<BattleObject> attackers, List<BattleObject> defenders, List<BattleObject> killedAttackers, List<BattleObject> killedDefenders, Location location) {
+    public BattleResult(boolean retreated, List<BattleObject> attackers, List<BattleObject> defenders, List<BattleObject> killedAttackers, List<BattleObject> killedDefenders, Location location) {
+        this.retreated = retreated;
         this.attackers = attackers;
         this.defenders = defenders;
         this.killedAttackers = killedAttackers;
@@ -48,7 +50,7 @@ public class BattleResult {
     }
 
     public boolean defendersWon() {
-        return attackers.stream().map(BattleObject::isDead).reduce(true, Boolean::logicalAnd) && defenders.stream().map(BattleObject::isAlive).reduce(false, Boolean::logicalOr);
+        return retreated || attackers.stream().map(BattleObject::isDead).reduce(true, Boolean::logicalAnd) && defenders.stream().map(BattleObject::isAlive).reduce(false, Boolean::logicalOr);
     }
 
     public Player getWinnerPlayer() {
@@ -69,7 +71,9 @@ public class BattleResult {
         return null;
     }
 
-    public boolean drawOrRetreat() {
+    public boolean retreated() {return retreated;}
+
+    public boolean draw() {
         return !attackersWon() && !defendersWon();
     }
 

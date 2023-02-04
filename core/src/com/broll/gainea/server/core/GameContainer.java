@@ -1,5 +1,6 @@
 package com.broll.gainea.server.core;
 
+import com.broll.gainea.net.NT_BoardEffect;
 import com.broll.gainea.net.NT_GameOver;
 import com.broll.gainea.net.NT_ReconnectGame;
 import com.broll.gainea.net.NT_StartGame;
@@ -9,6 +10,7 @@ import com.broll.gainea.server.core.battle.BattleHandler;
 import com.broll.gainea.server.core.cards.CardStorage;
 import com.broll.gainea.server.core.goals.GoalStorage;
 import com.broll.gainea.server.core.map.MapContainer;
+import com.broll.gainea.server.core.objects.MapEffect;
 import com.broll.gainea.server.core.objects.MapObject;
 import com.broll.gainea.server.core.objects.MonsterFactory;
 import com.broll.gainea.server.core.objects.buffs.BuffProcessor;
@@ -41,6 +43,7 @@ public class GameContainer {
     private MapContainer map;
     private List<Player> players;
     private List<MapObject> objects = new ArrayList<>();
+    private List<MapEffect> effects = new ArrayList<>();
     private Map<Integer, ActionContext> actions = new HashMap<>();
     private int rounds = 1;
     private int currentPlayer = -1;
@@ -142,6 +145,7 @@ public class GameContainer {
         update.turns = (short) rounds;
         update.players = players.stream().map(Player::nt).toArray(NT_Player[]::new);
         update.objects = objects.stream().map(MapObject::nt).toArray(NT_BoardObject[]::new);
+        update.effects = effects.stream().map(MapEffect::nt).toArray(NT_BoardEffect[]::new);
     }
 
     public NT_BoardUpdate nt() {
@@ -227,4 +231,6 @@ public class GameContainer {
     public BuffProcessor getBuffProcessor() {
         return buffProcessor;
     }
+
+    public List<MapEffect> getEffects() { return effects;    }
 }

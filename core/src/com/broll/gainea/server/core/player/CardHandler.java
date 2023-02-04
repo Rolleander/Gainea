@@ -7,6 +7,7 @@ import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.actions.optional.CardAction;
 import com.broll.gainea.server.core.cards.Card;
 import com.broll.gainea.server.core.cards.DirectlyPlayedCard;
+import com.broll.gainea.server.core.cards.impl.play.C_Fire;
 import com.broll.gainea.server.core.utils.GameUtils;
 
 import java.util.List;

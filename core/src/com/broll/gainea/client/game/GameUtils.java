@@ -1,6 +1,7 @@
 package com.broll.gainea.client.game;
 
 import com.broll.gainea.Gainea;
+import com.broll.gainea.net.NT_BoardEffect;
 import com.broll.gainea.net.NT_BoardObject;
 import com.broll.gainea.net.NT_Player;
 import com.broll.gainea.net.NT_Unit;
@@ -20,6 +21,13 @@ public class GameUtils {
                 }
             });
             addMapObject(game, object);
+        }
+    }
+
+    public static void updateMapEffects(GameState state, NT_BoardEffect[] effects) {
+        for(NT_BoardEffect effect: effects){
+            state.getEffects().remove(effect);
+            state.getEffects().add(effect);
         }
     }
 
@@ -54,4 +62,5 @@ public class GameUtils {
         }
         return null;
     }
+
 }

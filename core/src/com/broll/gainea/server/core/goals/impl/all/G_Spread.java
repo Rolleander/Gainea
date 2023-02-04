@@ -5,10 +5,10 @@ import com.broll.gainea.server.core.goals.GoalDifficulty;
 import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.map.Ship;
 
-public class G_Travel extends CustomOccupyGoal {
+public class G_Spread extends CustomOccupyGoal {
 
 
-    public G_Travel() {
+    public G_Spread() {
         super(GoalDifficulty.MEDIUM, "Kontrolliere Einheiten auf 5 verschiedenen Landmassen");
         setProgressionGoal(5);
     }

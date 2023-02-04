@@ -1,6 +1,6 @@
 package com.broll.gainea.server.core.cards.impl.play;
 
-import com.broll.gainea.net.NT_Abstract_Event;
+import com.broll.gainea.net.NT_Event;
 import com.broll.gainea.server.core.cards.Card;
 import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.objects.BattleObject;
@@ -31,7 +31,7 @@ public class C_BattlePower extends Card {
         units.forEach(unit -> {
             unit.getPower().addBuff(buff);
         });
-        UnitControl.focus(game, units, NT_Abstract_Event.EFFECT_BUFF);
+        UnitControl.focus(game, units, NT_Event.EFFECT_BUFF);
         game.getBuffProcessor().timeoutBuff(buff, 1);
     }
 

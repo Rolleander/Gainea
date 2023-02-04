@@ -1,6 +1,6 @@
 package com.broll.gainea.server.core.utils;
 
-import com.broll.gainea.net.NT_Abstract_Event;
+import com.broll.gainea.net.NT_Event;
 import com.broll.gainea.net.NT_BoardObject;
 import com.broll.gainea.net.NT_Event_FocusObject;
 import com.broll.gainea.net.NT_Event_FocusObjects;
@@ -13,13 +13,11 @@ import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.MapObject;
 import com.broll.gainea.server.core.objects.Monster;
-import com.broll.gainea.server.core.objects.Soldier;
 import com.broll.gainea.server.core.player.Player;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.broll.networklib.server.impl.ConnectionSite;
 import com.google.common.collect.Lists;
 
 import java.util.Collections;
@@ -90,7 +88,7 @@ public class UnitControl {
         unit.heal(heal);
         NT_Event_FocusObject nt = new NT_Event_FocusObject();
         nt.object = unit.nt();
-        nt.screenEffect = NT_Abstract_Event.EFFECT_HEAL;
+        nt.screenEffect = NT_Event.EFFECT_HEAL;
         if (consumer != null) {
             consumer.accept(nt);
         }
@@ -116,7 +114,7 @@ public class UnitControl {
         //send update to focus clients on object
         NT_Event_FocusObject nt = new NT_Event_FocusObject();
         nt.object = unit.nt();
-        nt.screenEffect = NT_Abstract_Event.EFFECT_DAMAGE;
+        nt.screenEffect = NT_Event.EFFECT_DAMAGE;
         if (consumer != null) {
             consumer.accept(nt);
         }

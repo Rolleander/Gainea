@@ -27,9 +27,9 @@ public class G_GaineaShips extends OccupyGoal {
             Continent zuba = expansion.getContinent(GaineaMap.Continents.ZUBA);
             Island vulkanInsel = expansion.getIsland(GaineaMap.Islands.VULKANINSEL);
             List<Location> ships = new ArrayList<>();
-            ships.addAll(ShipUtils.getShips(zuba, gainea));
-            ships.addAll(ShipUtils.getShips(moor, gainea));
-            ships.addAll(ShipUtils.getShips(vulkanInsel, gainea));
+            ships.addAll(ShipUtils.getAllShips(zuba, gainea));
+            ships.addAll(ShipUtils.getAllShips(moor, gainea));
+            ships.addAll(ShipUtils.getAllShips(vulkanInsel, gainea));
             occupy(ships);
         }
     }

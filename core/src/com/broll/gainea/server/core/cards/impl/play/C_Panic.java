@@ -28,7 +28,7 @@ public class C_Panic extends Card {
         if (!locations.isEmpty()) {
             Location source = selectHandler.selectLocation("Wählt einen Zielort für die Panik", locations);
             List<MapObject> inhabitants = new ArrayList<>(source.getInhabitants());
-            List<Location> emptyNeighbours = source.getConnectedLocations().stream().filter(it -> it.getInhabitants().isEmpty()).collect(Collectors.toList());
+            List<Location> emptyNeighbours = source.getWalkableNeighbours().stream().filter(Location::isFree).collect(Collectors.toList());
             if (!emptyNeighbours.isEmpty()) {
                 Collections.shuffle(emptyNeighbours);
                 int index = 0;

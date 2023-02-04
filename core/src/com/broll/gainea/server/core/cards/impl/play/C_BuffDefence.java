@@ -1,6 +1,6 @@
 package com.broll.gainea.server.core.cards.impl.play;
 
-import com.broll.gainea.net.NT_Abstract_Event;
+import com.broll.gainea.net.NT_Event;
 import com.broll.gainea.server.core.cards.Card;
 import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.utils.SelectionUtils;
@@ -23,7 +23,7 @@ public class C_BuffDefence extends Card {
     protected void play() {
         BattleObject unit = SelectionUtils.selectPlayerUnit(game, owner, "Welche Einheit soll ausgerüstet werden?");
         unit.changeHealth(BUFF);
-        UnitControl.focus(game, unit, NT_Abstract_Event.EFFECT_BUFF);
+        UnitControl.focus(game, unit, NT_Event.EFFECT_BUFF);
     }
 
 }
