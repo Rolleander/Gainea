@@ -52,6 +52,8 @@ public class G_MoveUnit extends CustomOccupyGoal {
 
     @Override
     public boolean init(GameContainer game, Player player) {
+        this.game = game;
+        this.player = player;
         List<Area> startingPoints = game.getMap().getAllAreas();
         Collections.shuffle(startingPoints);
         while (!startingPoints.isEmpty() && to == null) {
