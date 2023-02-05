@@ -1,8 +1,10 @@
 package com.broll.gainea.client.ui.screens;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -107,6 +109,8 @@ public class StartScreen extends Screen {
         table.add(label("Server")).padRight(20);
         table.add(serverIp);
         connect = TableUtils.textButton(skin, "Connect", () -> {
+            game.uiStage.setKeyboardFocus(null);
+            Gdx.input.setOnscreenKeyboardVisible(false);
             lobbies.clear();
             game.client.listLobbies(serverIp.getText());
         });
@@ -131,7 +135,6 @@ public class StartScreen extends Screen {
         vg.add(new Image(game.assets.get("textures/logo.png", Texture.class))).padTop(-300);
         vg.row();
         vg.add(table);
-
         vg.row();
         return vg;
     }

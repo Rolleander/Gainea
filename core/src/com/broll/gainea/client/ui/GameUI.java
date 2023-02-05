@@ -1,11 +1,13 @@
 package com.broll.gainea.client.ui;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.broll.gainea.Gainea;
 import com.broll.gainea.client.Assets;
 import com.broll.gainea.client.network.IClientListener;
+import com.broll.gainea.client.ui.ingame.map.MapScrollControl;
+import com.broll.gainea.client.ui.ingame.map.MapScrollGestureHandler;
 import com.broll.gainea.client.ui.ingame.map.MapScrollHandler;
 import com.broll.gainea.client.ui.components.ConnectionCircle;
 import com.broll.gainea.client.ui.components.NetworkProblemDialog;
@@ -24,7 +26,7 @@ public class GameUI implements IClientListener {
     private final static Logger Log = LoggerFactory.getLogger(GameUI.class);
     public Skin skin;
     public InGameUI inGameUI;
-    public MapScrollHandler mapScrollHandler;
+    public MapScrollControl mapScrollControl;
     private Gainea game;
     private ConnectionCircle connectionCircle;
     private Screen currentScreen;
@@ -33,7 +35,6 @@ public class GameUI implements IClientListener {
     public GameUI(Gainea game, Screen startScreen, boolean reconnectCheck) {
         this.game = game;
         this.reconnectCheck = reconnectCheck;
-        this.mapScrollHandler = new  MapScrollHandler(game, game.gameStage);
         game.assets = new Assets();
         showScreen(startScreen);
     }
@@ -51,7 +52,18 @@ public class GameUI implements IClientListener {
     public void initInGameUi() {
         game.gameStage.clear();
         inGameUI = new InGameUI(game, skin);
-        game.gameStage.addListener(mapScrollHandler);
+        if(Gdx.app.getType() != Application.ApplicationType.Desktop){
+            Log.info("Setup MapScrollGestureHandler");
+            MapScrollGestureHandler handler = new MapScrollGestureHandler(game);
+            this.mapScrollControl = handler.getMapScrollControl();
+            game.gameStage.addListener(handler);
+        }
+        else{
+            Log.info("Setup MapScrollHandler");
+            MapScrollHandler handler = new MapScrollHandler(game);
+            this.mapScrollControl = handler.getMapScrollControl();
+            game.gameStage.addListener(handler);
+        }
     }
 
     public void showScreen(Screen screen) {

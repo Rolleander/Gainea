@@ -13,13 +13,13 @@ import com.broll.gainea.server.core.objects.Soldier;
 
 import java.util.List;
 
-public class MecenaryFraction extends Fraction {
+public class MercenaryFraction extends Fraction {
 
     private final static int[] ICONS = new int[]{2, 4, 8, 9, 13, 14, 17, 20, 26, 27, 29, 30, 31, 32, 34, 36, 37, 38, 39, 40, 41, 43};
     private int turns;
     private final static int SPAWN_TURN = 2;
 
-    public MecenaryFraction() {
+    public MercenaryFraction() {
         super(FractionType.MERCENARY);
     }
 

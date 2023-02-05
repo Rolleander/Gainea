@@ -20,7 +20,7 @@ public class DesktopLauncher {
 //		config.height=1080;
         config.width = 1280;
         config.height = 900;
-        new LwjglApplication(new Gainea(), config);
+        new LwjglApplication(new Gainea(1), config);
     }
 
 

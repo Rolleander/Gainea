@@ -12,10 +12,12 @@ import com.broll.gainea.client.ui.ingame.unit.MenuUnit;
 import com.broll.gainea.client.ui.utils.TableUtils;
 import com.broll.gainea.server.core.fractions.Fraction;
 import com.broll.gainea.server.core.fractions.FractionDescription;
-import com.broll.gainea.server.core.fractions.FractionFactory;
+import com.broll.gainea.server.core.fractions.FractionType;
 import com.broll.gainea.server.core.objects.BattleObject;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class FractionWindow extends MenuWindow {
     public FractionWindow(Gainea game, Skin skin) {
@@ -25,7 +27,7 @@ public class FractionWindow extends MenuWindow {
         add(list).left().top().space(10).padTop(5);
         Table content = new Table(skin);
         add(content).top().expand().fill().space(10);
-        List<Fraction> fractions = FractionFactory.createAll();
+        List<Fraction> fractions = Arrays.stream(FractionType.values()).map(FractionType::create).collect(Collectors.toList());
         fractions.sort((f1, f2) -> f1.getType().compareTo(f2.getType()));
         fractions.forEach(fraction -> {
             Table button = new Table(skin);

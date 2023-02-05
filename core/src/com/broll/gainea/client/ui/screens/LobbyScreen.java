@@ -26,7 +26,6 @@ import com.broll.gainea.net.NT_PlayerReady;
 import com.broll.gainea.net.NT_PlayerSettings;
 import com.broll.gainea.net.NT_UpdateLobbySettings;
 import com.broll.gainea.server.core.fractions.Fraction;
-import com.broll.gainea.server.core.fractions.FractionFactory;
 import com.broll.gainea.server.core.fractions.FractionType;
 import com.broll.gainea.server.init.ExpansionSetting;
 import com.broll.gainea.server.init.GoalTypes;
@@ -73,7 +72,7 @@ public class LobbyScreen extends Screen {
         lobbyTable.clear();
         lobby.getPlayers().forEach(player -> {
             NT_PlayerSettings settings = (NT_PlayerSettings) player.getSettings();
-            Fraction fraction = FractionFactory.create(FractionType.values()[settings.fraction]);
+            Fraction fraction = FractionType.values()[settings.fraction].create();
             if (player == lobby.getOwner()) {
                 lobbyTable.add(new IconLabel(game, 6, ""));
             } else {

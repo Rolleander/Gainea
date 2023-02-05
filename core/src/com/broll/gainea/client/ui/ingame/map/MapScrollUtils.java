@@ -1,8 +1,6 @@
 package com.broll.gainea.client.ui.ingame.map;
 
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.broll.gainea.Gainea;
-import com.broll.gainea.client.ui.ingame.map.MapObjectRender;
 import com.broll.gainea.net.NT_BoardObject;
 import com.broll.gainea.server.core.map.Coordinates;
 
@@ -45,7 +43,7 @@ public class MapScrollUtils {
     }
 
     private static void show(Gainea game, float x, float y, float zoom) {
-        game.ui.mapScrollHandler.scrollTo(x, y, zoom);
+        game.ui.mapScrollControl.scrollTo(x, y, zoom);
         /*
         OrthographicCamera camera = (OrthographicCamera) game.gameStage.getCamera();
         camera.zoom = zoom;

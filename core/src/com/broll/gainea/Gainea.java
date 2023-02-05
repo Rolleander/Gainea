@@ -28,9 +28,11 @@ public class Gainea extends ApplicationAdapter {
     public boolean shutdown = false;
     private Screen startScreen;
     private boolean reconnectCheck;
+    private float screenScale = 1;
 
-    public Gainea() {
+    public Gainea(float screenScale) {
         this(new StartScreen(), true);
+        this.screenScale = screenScale;
     }
 
     public Gainea(Screen startScreen, boolean reconnectCheck) {
@@ -38,12 +40,18 @@ public class Gainea extends ApplicationAdapter {
         this.reconnectCheck = reconnectCheck;
     }
 
+    private Stage createStage(){
+        ScreenViewport viewport = new ScreenViewport();
+        viewport.setUnitsPerPixel(1/screenScale);
+        return new Stage(viewport);
+    }
+
     @Override
     public void create() {
         //new StretchViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight())
         client = new ClientHandler(this);
-        gameStage = new Stage(new ScreenViewport());
-        uiStage = new Stage(new ScreenViewport());
+        gameStage = createStage();
+        uiStage = createStage();
         state = new GameState(this);
         ui = new GameUI(this, new LoadingScreen(startScreen), reconnectCheck);
         client.setClientListener(ui);
@@ -67,7 +75,9 @@ public class Gainea extends ApplicationAdapter {
         gameShapeRenderer.setProjectionMatrix(gameStage.getViewport().getCamera().combined);
         gameStage.act(delta);
         uiStage.act(delta);
-        ui.mapScrollHandler.update(delta);
+        if(ui.mapScrollControl!=null){
+            ui.mapScrollControl.update(delta);
+        }
         gameStage.draw();
         uiStage.draw();
     }
