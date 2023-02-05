@@ -23,7 +23,7 @@ public class C_PlaceWatersnake extends Card {
     }
 
     private List<Location> getLocations() {
-        return game.getMap().getAllAreas().stream().filter(it -> it.getType() == AreaType.MOUNTAIN && LocationUtils.emptyOrWildMonster(it)).collect(Collectors.toList());
+        return game.getMap().getAllAreas().stream().filter(it -> it.getType() == AreaType.LAKE && LocationUtils.emptyOrWildMonster(it)).collect(Collectors.toList());
     }
 
     @Override

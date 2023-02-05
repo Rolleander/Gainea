@@ -11,7 +11,7 @@ public class G_KillUnits extends Goal {
     private int kills = 0;
 
     public G_KillUnits() {
-        this(GoalDifficulty.EASY, 5);
+        this(GoalDifficulty.EASY, 6);
     }
 
     public G_KillUnits(GoalDifficulty difficulty, int kills) {

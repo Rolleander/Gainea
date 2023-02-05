@@ -7,7 +7,7 @@ import com.broll.gainea.server.core.goals.GoalDifficulty;
 public class G_WinBattles2 extends G_WinBattles {
 
     public G_WinBattles2() {
-        super(GoalDifficulty.HARD, 7);
+        super(GoalDifficulty.HARD, 10);
     }
 
 }

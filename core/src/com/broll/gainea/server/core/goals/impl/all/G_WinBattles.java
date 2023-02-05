@@ -9,7 +9,7 @@ public class G_WinBattles extends Goal {
     private int wins = 0;
 
     public G_WinBattles() {
-        this(GoalDifficulty.MEDIUM, 4);
+        this(GoalDifficulty.MEDIUM, 6);
     }
 
     public G_WinBattles(GoalDifficulty difficulty, int wins) {

@@ -8,7 +8,7 @@ public class C_Mutiny extends Card {
     private final static int ROUNDS = 3;
 
     public C_Mutiny() {
-        super(15, "Meuterei", "Alle Schiffe sind für" + ROUNDS + " Runden nicht mehr begehbar");
+        super(15, "Meuterei", "Alle Schiffe sind für " + ROUNDS + " Runden nicht mehr begehbar");
         setDrawChance(0.6f);
     }
 
