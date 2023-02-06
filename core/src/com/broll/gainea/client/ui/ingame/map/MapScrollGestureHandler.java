@@ -12,7 +12,9 @@ public class MapScrollGestureHandler extends ActorGestureListener {
     private Gainea game;
     private MapScrollControl control;
     private OrthographicCamera camera;
-    private static float DRAG_SPEED = 0.9f;
+    private static float DRAG_SPEED = 1f;
+    private float lastX, lastY;
+    private boolean lastCoords = false;
 
     public MapScrollGestureHandler(Gainea game) {
         this.game = game;
@@ -31,16 +33,24 @@ public class MapScrollGestureHandler extends ActorGestureListener {
         if (ui != null) {
             ui.clearSelection();
         }
+       lastCoords=false;
     }
 
     @Override
     public void pan(InputEvent event, float x, float y, float deltaX, float deltaY) {
-        game.uiStage.setScrollFocus(null);
-        float dx = deltaX * DRAG_SPEED ;
-        float dy = deltaY * DRAG_SPEED;
-        if (!control.isAnimationActive()) {
-            camera.translate(-dx, -dy);
+        Vector2 screenVec = game.gameStage.stageToScreenCoordinates(new Vector2(x, y));
+        x = screenVec.x;
+        y = screenVec.y;
+        if(lastCoords){
+            float dx = (x - lastX) * DRAG_SPEED * camera.zoom;
+            float dy = (y - lastY) * DRAG_SPEED * camera.zoom;
+            if (!control.isAnimationActive()) {
+                camera.translate(-dx, dy);
+            }
         }
+        lastCoords = true;
+        this.lastX = x;
+        this.lastY = y;
     }
 
     @Override
@@ -59,5 +69,16 @@ public class MapScrollGestureHandler extends ActorGestureListener {
         } else if (camera.zoom > MapScrollControl.MAX_ZOOM) {
             camera.zoom = MapScrollControl.MAX_ZOOM;
         }
+        lastCoords=false;
+    }
+
+    @Override
+    public void fling(InputEvent event, float velocityX, float velocityY, int button) {
+        lastCoords=false;
+    }
+
+    @Override
+    public void pinch(InputEvent event, Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
+        lastCoords=false;
     }
 }

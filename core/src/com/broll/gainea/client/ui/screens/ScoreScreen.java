@@ -91,7 +91,7 @@ public class ScoreScreen extends Screen {
         Table vg = new Table();
         vg.setFillParent(true);
         vg.center();
-        vg.setBackground(new TextureRegionDrawable(new Texture("textures/title.png")));
+        vg.setBackground(new TextureRegionDrawable(new Texture("textures/title.jpg")));
         vg.pad(50, 50, 50, 50);
         Table window = new Table(skin);
         window.pad(30, 20, 10, 20);

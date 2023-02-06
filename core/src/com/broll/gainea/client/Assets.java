@@ -55,11 +55,16 @@ public class Assets {
         for (int i = 0; i < 4; i++) {
             manager.load("textures/expansion_" + i + ".png", Texture.class);
         }
+        for(int i=0; i<7; i++){
+            manager.load("textures/battles/battle_"+i+".jpg", Texture.class);
+        }
+        for(int i=0; i<16; i++){
+            manager.load("textures/cards/cards_"+i+".png", Texture.class);
+        }
         manager.load("textures/logo.png", Texture.class);
-        manager.load("textures/title.png", Texture.class);
+        manager.load("textures/title.jpg", Texture.class);
         manager.load("textures/chips.png", Texture.class);
         manager.load("textures/icons.png", Texture.class);
-        manager.load("textures/cards.png", Texture.class);
         manager.load("textures/units.png", Texture.class);
         manager.load("textures/ship.png", Texture.class);
         manager.load("textures/blood.png", Texture.class);
@@ -68,7 +73,6 @@ public class Assets {
         manager.load("textures/dot.png", Texture.class);
         manager.load("textures/unit_plate.png", Texture.class);
         manager.load("textures/map_actions.png", Texture.class);
-        manager.load("textures/battles.jpg", Texture.class);
         manager.load("textures/bubble.png", Texture.class);
         manager.load("textures/colors.png", Texture.class);
         manager.load("textures/fire.png", Texture.class);

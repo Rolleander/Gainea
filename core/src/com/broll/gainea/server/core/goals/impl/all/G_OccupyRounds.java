@@ -39,7 +39,6 @@ public class G_OccupyRounds extends RoundGoal {
         if(units.stream().anyMatch(object-> object.getOwner()!=null && object.getOwner()!= player) && location.getContainer() == container){
             resetRounds();
         }
-        check();
     }
 
     @Override
@@ -47,7 +46,6 @@ public class G_OccupyRounds extends RoundGoal {
         if(object.getOwner()!=null && object.getOwner()!= player && location.getContainer() == container){
             resetRounds();
         }
-        check();
     }
 
     @Override

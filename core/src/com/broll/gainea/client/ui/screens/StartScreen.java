@@ -99,7 +99,7 @@ public class StartScreen extends Screen {
         name = new TextField(PLAYER_NAME, skin);
         Table vg = new Table();
         vg.setFillParent(true);
-        vg.setBackground(new TextureRegionDrawable(game.assets.get("textures/title.png", Texture.class)));
+        vg.setBackground(new TextureRegionDrawable(game.assets.get("textures/title.jpg", Texture.class)));
         vg.center();
         Table table = new Table(skin);
         table.setBackground("window");

@@ -1,5 +1,6 @@
 package com.broll.gainea;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
@@ -28,11 +29,9 @@ public class Gainea extends ApplicationAdapter {
     public boolean shutdown = false;
     private Screen startScreen;
     private boolean reconnectCheck;
-    private float screenScale = 1;
 
-    public Gainea(float screenScale) {
+    public Gainea() {
         this(new StartScreen(), true);
-        this.screenScale = screenScale;
     }
 
     public Gainea(Screen startScreen, boolean reconnectCheck) {
@@ -42,6 +41,10 @@ public class Gainea extends ApplicationAdapter {
 
     private Stage createStage(){
         ScreenViewport viewport = new ScreenViewport();
+        float screenScale = 1;
+        if(Gdx.app.getType() != Application.ApplicationType.Desktop && Gdx.graphics.getWidth() >= 1500){
+            screenScale = 1.5f;
+        }
         viewport.setUnitsPerPixel(1/screenScale);
         return new Stage(viewport);
     }

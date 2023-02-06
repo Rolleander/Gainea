@@ -15,6 +15,7 @@ android {
         }
     }
     compileOptions {
+        coreLibraryDesugaringEnabled true
         sourceCompatibility 1.8
         targetCompatibility 1.8
     }
@@ -38,6 +39,9 @@ android {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+    dependencies{
+        coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.0.9'
     }
 }
 
