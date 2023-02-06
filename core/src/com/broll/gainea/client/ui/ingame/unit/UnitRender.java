@@ -83,10 +83,10 @@ public class UnitRender extends MapObjectRender {
     }
 
     public void attack(UnitRender target) {
-        float x = target.getX() < this.getX()?  ATTACK_MOVE : -ATTACK_MOVE;
+        float x = target.getX() > this.getX()?  ATTACK_MOVE : -ATTACK_MOVE;
         float y = (target.getY() - this.getY()) / 2;
-        this.addAction(Actions.sequence(Actions.moveBy(x, y,0.3f, Interpolation.exp10Out),
-                Actions.moveBy(-x, -y,0.2f, Interpolation.sineIn)));
+        addAction(Actions.sequence(Actions.moveBy(x, y,0.1f, Interpolation.exp10Out),
+               Actions.moveBy(-x, -y,0.3f, Interpolation.sineIn)));
     }
 
     private void deathSound(NT_Unit unit) {

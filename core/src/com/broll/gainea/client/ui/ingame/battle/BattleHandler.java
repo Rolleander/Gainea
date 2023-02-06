@@ -58,7 +58,6 @@ public class BattleHandler {
         this.defenders = defenders;
         battleBoard = new BattleBoard(location);
         battleBoard.addAction(Actions.sequence(Actions.alpha(0), Actions.fadeIn(0.3f)));
-        battleBoard.setSize(1000, 800);
         return battleBoard;
     }
 
@@ -155,9 +154,11 @@ public class BattleHandler {
         private List<UnitRender> attackerRenders;
         private List<UnitRender> defenderRenders;
         private BattleRollRender rollRender;
+        private boolean place = true;
 
         public BattleBoard(Location location) {
             super(skin);
+            setSize(1000, 800);
             TableUtils.consumeClicks(this);
             int backgroundNr = 0;
             if (location instanceof Area) {
@@ -174,33 +175,35 @@ public class BattleHandler {
                 it.flip();
             });
             this.rollRender = new BattleRollRender(game, skin);
+            placeUnits();
         }
 
         public void attackRolls(int[] attackRolls, int[] defenderRolls, IRollAnimationListener listener) {
+            place = true;
             rollRender.start(attackRolls, defenderRolls, listener);
         }
 
         @Override
         public void act(float delta) {
             super.act(delta);
+            if (place) {
+                placeUnits();
+                place = false;
+            }
             rollRender.update(delta);
             attackerRenders.forEach(it -> it.act(delta));
             defenderRenders.forEach(it -> it.act(delta));
         }
 
-        @Override
-        protected void drawChildren(Batch batch, float parentAlpha) {
-            float lx = 150 + getX();
-            float startY = getY() + getHeight() - 100;
-            renderUnits(batch, attackerRenders, lx, startY, 175);
-            float rx = getX() + getWidth() - 150;
-            renderUnits(batch, defenderRenders, rx, startY, -175);
-            float rollY = startY + 70;
-            rollRender.render(batch, getX() + getWidth() / 2, rollY, parentAlpha);
-            super.drawChildren(batch, parentAlpha);
+        private void placeUnits() {
+            float lx = 150;
+            float startY = +getHeight() - 100;
+            placeUnits(attackerRenders, lx, startY, 175);
+            float rx = +getWidth() - 150;
+            placeUnits(defenderRenders, rx, startY, -175);
         }
 
-        private void renderUnits(Batch batch, List<UnitRender> units, float x, float y, float dx) {
+        private void placeUnits(List<UnitRender> units, float x, float y, float dx) {
             int count = units.size();
             float deltaY = 650 / (float) count;
             if (count == 1) {
@@ -215,10 +218,30 @@ public class BattleHandler {
                 }
                 y -= deltaY;
             }
+        }
+
+        @Override
+        protected void drawChildren(Batch batch, float parentAlpha) {
+            float startY = getY() + getHeight() - 100;
+            renderUnits(batch, attackerRenders);
+            renderUnits(batch, defenderRenders);
+            float rollY = startY + 70;
+            rollRender.render(batch, getX() + getWidth() / 2, rollY, parentAlpha);
+            super.drawChildren(batch, parentAlpha);
+        }
+
+        private void renderUnits(Batch batch, List<UnitRender> units) {
+            int count = units.size();
             //draw reverse order
             for (int i = count - 1; i >= 0; i--) {
                 UnitRender render = units.get(i);
+                float x = render.getX();
+                float y = render.getY();
+                render.setX(x + getX());
+                render.setY(y + getY());
                 render.draw(batch, 1);
+                render.setX(x);
+                render.setY(y);
             }
         }
     }

@@ -75,7 +75,7 @@ public class Battle {
                 attackWins--;
             }
             if (blockWins > 0) {
-                dealDamage(result, remainingAttackers, remainingDefenders);
+                dealDamage(result, remainingDefenders, remainingAttackers);
                 blockWins--;
             }
             remainingAttackers.removeIf(it -> it.unit.isDead());
