@@ -42,6 +42,7 @@ public class ReactionResultHandler implements ReactionActions {
             int turn = game.getRounds();
             Player player = game.nextTurn();
             boolean newRound = game.getRounds() > turn;
+            sendBoardUpdate();
             if (newRound) {
                 game.getUpdateReceiver().roundStarted();
             }
@@ -69,7 +70,6 @@ public class ReactionResultHandler implements ReactionActions {
     }
 
     private void doPlayerTurn(Player player) {
-        sendBoardUpdate();
         //send turnstart to player and wait to other players
         NT_PlayerWait wait = new NT_PlayerWait();
         wait.playersTurn = player.getServerPlayer().getId();

@@ -42,8 +42,9 @@ public class Gainea extends ApplicationAdapter {
     private Stage createStage(){
         ScreenViewport viewport = new ScreenViewport();
         float screenScale = 1;
-        if(Gdx.app.getType() != Application.ApplicationType.Desktop && Gdx.graphics.getWidth() >= 1500){
-            screenScale = 1.5f;
+        float minHeight = 850;
+        if(Gdx.app.getType() != Application.ApplicationType.Desktop && Gdx.graphics.getHeight() > minHeight){
+            screenScale = Math.min(1.5f, (float)Gdx.graphics.getHeight() / minHeight);
         }
         viewport.setUnitsPerPixel(1/screenScale);
         return new Stage(viewport);
