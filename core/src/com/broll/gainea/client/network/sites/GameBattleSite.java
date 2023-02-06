@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.broll.gainea.client.ui.ingame.map.ActionTrail;
 import com.broll.gainea.client.ui.ingame.map.MapAction;
 import com.broll.gainea.client.ui.ingame.map.MapScrollUtils;
+import com.broll.gainea.net.NT_Battle_Damage;
 import com.broll.gainea.net.NT_Battle_Intention;
 import com.broll.gainea.net.NT_Battle_Start;
 import com.broll.gainea.net.NT_Battle_Update;
@@ -20,6 +21,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Lists;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
 import java.util.stream.Collectors;
@@ -72,17 +74,6 @@ public class GameBattleSite extends AbstractGameSite {
         game.ui.inGameUI.startBattle(attackers, defenders, game.state.getMap().getLocation(location), allowRetreat);
     }
 
-    private Stack<NT_Unit> calcDamageUpdates(List<NT_Unit> before, List<NT_Unit> after) {
-        Stack<NT_Unit> damages = new Stack<>();
-        for (int i = 0; i < after.size(); i++) {
-            int delta = before.get(i).health - after.get(i).health;
-            for (int d = 0; d < delta; d++) {
-                damages.push(after.get(i));
-            }
-        }
-        return damages;
-    }
-
     @PackageReceiver
     public void received(NT_Battle_Update battle) {
         int[] attackRolls = battle.attackerRolls;
@@ -90,12 +81,12 @@ public class GameBattleSite extends AbstractGameSite {
         List<NT_Unit> attackers = Lists.newArrayList(battle.attackers);
         List<NT_Unit> defenders = Lists.newArrayList(battle.defenders);
         Log.info("Update fight: Attackers (" + attackers.stream().map(it -> it.id + "| " + it.name + " " + it.power + " " + it.health).collect(Collectors.joining(", ")) + ") Defenders (" + defenders.stream().map(it -> it.id + "| " + it.name + " " + it.power + " " + it.health).collect(Collectors.joining(", ")) + ")");
-        Stack<NT_Unit> damagedAttackers = calcDamageUpdates(this.attackers, attackers);
-        Stack<NT_Unit> damagedDefenders = calcDamageUpdates(this.defenders, defenders);
         this.attackers = attackers;
         this.defenders = defenders;
         this.attackers.removeIf(it -> it.health <= 0);
         this.defenders.removeIf(it -> it.health <= 0);
-        game.ui.inGameUI.updateBattle(attackRolls, defenderRolls, damagedAttackers, damagedDefenders, battle.state);
+        Stack<NT_Battle_Damage> damage = new Stack<>();
+        damage.addAll(Arrays.asList(battle.damage));
+        game.ui.inGameUI.updateBattle(attackRolls, defenderRolls, damage,  battle.state);
     }
 }

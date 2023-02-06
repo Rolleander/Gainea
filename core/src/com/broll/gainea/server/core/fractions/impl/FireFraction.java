@@ -15,6 +15,7 @@ import com.broll.gainea.server.core.objects.Monster;
 import com.broll.gainea.server.core.objects.Soldier;
 import com.broll.gainea.server.core.utils.LocationUtils;
 import com.broll.gainea.server.core.utils.SelectionUtils;
+import com.broll.gainea.server.core.utils.UnitControl;
 
 import java.util.List;
 
@@ -29,19 +30,19 @@ public class FireFraction extends Fraction {
     @Override
     protected FractionDescription description() {
         FractionDescription desc = new FractionDescription("");
-        desc.plus("Erhält jede dritte Runde eine Feuerregen-Karte (Verursacht 1 Schaden)");
+        desc.plus("Erhält jede dritte Runde eine Feuerregen-Karte (Verursacht 1 Schaden an einer beliebigen feindlichen Einheit)");
         desc.contra("Erhält keine Belohnung für besiegte Monster auf Schnee oder Seen");
         return desc;
     }
 
     @Override
-    public void turnStarted(ActionHandlers actionHandlers) {
+    public void prepareTurn(ActionHandlers actionHandlers) {
+        turns++;
         if (turns == 3) {
             owner.getCardHandler().receiveCard(new FireRain());
             turns = 0;
-        } else {
-            turns++;
         }
+        super.prepareTurn(actionHandlers);
     }
 
     @Override
@@ -80,7 +81,7 @@ public class FireFraction extends Fraction {
         protected void play() {
             BattleObject unit = SelectionUtils.selectEnemyUnit(game, owner, "Welcher Einheit soll Schaden zugeführt werden?");
             if (unit != null) {
-                unit.takeDamage();
+                UnitControl.damage(game, unit,1);
             }
         }
     }

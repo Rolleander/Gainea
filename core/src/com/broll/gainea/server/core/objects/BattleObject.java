@@ -17,6 +17,7 @@ public abstract class BattleObject extends MapObject {
     private boolean attacked = false;
     private boolean moved = false;
     private int type = NT_Unit.TYPE_MALE;
+    private int kills;
 
     public BattleObject(Player owner) {
         super(owner);
@@ -101,12 +102,14 @@ public abstract class BattleObject extends MapObject {
         return owner;
     }
 
-    public void takeDamage() {
-        takeDamage(1);
+    public boolean takeDamage() {
+        return takeDamage(1);
     }
 
-    public void takeDamage(int damage) {
+    public boolean takeDamage(int damage) {
+        boolean aliveBefore = isAlive();
         health.addValue(-damage);
+        return aliveBefore && isDead();
     }
 
     public void heal(int heal) {
@@ -192,6 +195,7 @@ public abstract class BattleObject extends MapObject {
         unit.maxHealth = maxHealth.getValue().shortValue();
         unit.power = power.getValue().shortValue();
         unit.type = (byte) type;
+        unit.kills = (short) kills;
         if (owner != null) {
             unit.owner = (short) owner.getServerPlayer().getId();
         }
@@ -203,6 +207,14 @@ public abstract class BattleObject extends MapObject {
 
     public void setType(int type) {
         this.type = type;
+    }
+
+    public int getKills() {
+        return kills;
+    }
+
+    public void addKill(){
+        this.kills++;
     }
 
     @Override

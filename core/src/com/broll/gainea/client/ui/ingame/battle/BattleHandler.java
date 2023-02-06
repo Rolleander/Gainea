@@ -17,6 +17,7 @@ import com.broll.gainea.client.ui.ingame.map.MapObjectRender;
 import com.broll.gainea.client.ui.ingame.unit.UnitRender;
 import com.broll.gainea.client.ui.utils.TableUtils;
 import com.broll.gainea.client.ui.utils.TextureUtils;
+import com.broll.gainea.net.NT_Battle_Damage;
 import com.broll.gainea.net.NT_Battle_Reaction;
 import com.broll.gainea.net.NT_Battle_Update;
 import com.broll.gainea.net.NT_Unit;
@@ -30,6 +31,7 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.Stack;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class BattleHandler {
 
@@ -60,25 +62,20 @@ public class BattleHandler {
         return battleBoard;
     }
 
-    public void updateBattle(int[] attackRolls, int[] defenderRolls, Stack<NT_Unit> damageOrderAttacker, Stack<NT_Unit> damageOrderDefender, int state) {
-        Log.info("damage to attackers: " + damageOrderAttacker.stream().map(it -> it.name).collect(Collectors.joining(",")));
-        Log.info("damage to defenders: " + damageOrderDefender.stream().map(it -> it.name).collect(Collectors.joining(",")));
+    public void updateBattle(int[] attackRolls, int[] defenderRolls, Stack<NT_Battle_Damage> damage, int state) {
         battleBoard.attackRolls(attackRolls, defenderRolls, new IRollAnimationListener() {
             @Override
             public void diceSet(boolean attackerWon) {
-                Stack<NT_Unit> damageOrder = damageOrderAttacker;
-                if (attackerWon) {
-                    damageOrder = damageOrderDefender;
-                }
-                if (!damageOrder.empty()) {
-                    damage(damageOrder.pop());
+                if (!damage.empty()) {
+                    damage(damage.pop());
                 }
             }
 
             @Override
             public void rollingDone() {
-                doRemainingDamage(damageOrderAttacker);
-                doRemainingDamage(damageOrderDefender);
+                while (!damage.empty()) {
+                    damage(damage.pop());
+                }
                 removeDeadUnits();
                 checkBattleState(state);
             }
@@ -88,17 +85,16 @@ public class BattleHandler {
                 battleBoard.defenderRenders.forEach(UnitRender::removeIfDead);
             }
 
-            private void doRemainingDamage(Stack<NT_Unit> units) {
-                while (!units.empty()) {
-                    damage(units.pop());
-                }
+            private UnitRender getUnit(int id) {
+                return Stream.concat(battleBoard.attackerRenders.stream(), battleBoard.defenderRenders.stream())
+                        .filter(it -> it.getObject().id == id).findFirst().orElse(null);
             }
 
-            private void damage(NT_Unit unit) {
-                if (unit != null) {
-                    battleBoard.attackerRenders.stream().filter(it -> it.getObject().id == unit.id).findFirst().ifPresent(it -> it.takeDamage(1));
-                    battleBoard.defenderRenders.stream().filter(it -> it.getObject().id == unit.id).findFirst().ifPresent(it -> it.takeDamage(1));
-                }
+            private void damage(NT_Battle_Damage damage) {
+                UnitRender source = getUnit(damage.source);
+                UnitRender target = getUnit(damage.target);
+                target.takeDamage(1);
+                source.attack(target);
             }
         });
     }

@@ -1,5 +1,6 @@
 package com.broll.gainea.server.core.battle;
 
+import com.broll.gainea.net.NT_Battle_Damage;
 import com.broll.gainea.net.NT_Battle_Intention;
 import com.broll.gainea.net.NT_Battle_Reaction;
 import com.broll.gainea.server.core.fractions.Fraction;
@@ -164,6 +165,7 @@ public class BattleHandler {
             state = NT_Battle_Update.STATE_ATTACKER_WON;
         }
         update.state = state;
+        update.damage = result.getDamage().stream().map(FightResult.AttackDamage::nt).toArray(NT_Battle_Damage[]::new);
         //send update
         reactionResult.sendGameUpdate(update);
         int delay = getAnimationDelay(result.getAttackRolls().size(), result.getDefenderRolls().size());

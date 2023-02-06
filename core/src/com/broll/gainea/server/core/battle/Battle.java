@@ -1,5 +1,6 @@
 package com.broll.gainea.server.core.battle;
 
+import com.broll.gainea.misc.RandomUtils;
 import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.player.Player;
@@ -64,27 +65,63 @@ public class Battle {
             //less defender dices => deal remaining damage to defending units without dices
             attackWins += Math.min(deltaAttacks, rawDefenderPower - blocks);
         }
+        FightResult result = new FightResult(allAttackRolls, allBlockRolls);
         //deal damage
+        List<DamageDealer> remainingAttackers = attackers.stream().map(DamageDealer::from).collect(Collectors.toList());
+        List<DamageDealer> remainingDefenders = defenders.stream().map(DamageDealer::from).collect(Collectors.toList());
         do {
             if (attackWins > 0) {
-                dealDamage(defenders);
+                dealDamage(result, remainingAttackers, remainingDefenders);
                 attackWins--;
             }
             if (blockWins > 0) {
-                dealDamage(attackers);
+                dealDamage(result, remainingAttackers, remainingDefenders);
                 blockWins--;
             }
+            remainingAttackers.removeIf(it -> it.unit.isDead());
+            remainingDefenders.removeIf(it -> it.unit.isDead());
         } while (attackWins > 0 || blockWins > 0);
         List<BattleObject> deadAttackers = attackers.stream().filter(BattleObject::isDead).collect(Collectors.toList());
         List<BattleObject> deadDefenders = defenders.stream().filter(BattleObject::isDead).collect(Collectors.toList());
-        return new FightResult(allAttackRolls, allBlockRolls, deadAttackers, deadDefenders);
+        result.killed(deadAttackers, deadDefenders);
+        return result;
     }
 
-    private void dealDamage(List<BattleObject> targets) {
+    private void dealDamage(FightResult result, List<DamageDealer> sources, List<DamageDealer> targets) {
         //shuffe for damage (so that same powerlevel units get hit randomly)
         Collections.shuffle(targets);
         //sort ascending (so that weakest power level units die first)
-        targets.stream().sorted((o1, o2) -> Integer.compare(o1.getPower().getValue(), o2.getPower().getValue())).
-                filter(BattleObject::isAlive).findFirst().ifPresent(BattleObject::takeDamage);
+        targets.stream().sorted((o1, o2) -> Integer.compare(o1.unit.getPower().getValue(), o2.unit.getPower().getValue()))
+                .findFirst().ifPresent(target -> {
+            boolean lethal = target.unit.takeDamage();
+            DamageDealer source = findDamageDealer(sources);
+            source.remainingAttacks--;
+            if (source != null) {
+                if (lethal) {
+                    source.unit.addKill();
+                }
+                result.damage(source.unit, target.unit, lethal);
+            }
+        });
+    }
+
+    private DamageDealer findDamageDealer(List<DamageDealer> sources) {
+        DamageDealer dealer = RandomUtils.pickRandom(sources.stream().filter(it -> it.remainingAttacks > 0).collect(Collectors.toList()));
+        if (dealer == null) {
+            dealer = RandomUtils.pickRandom(sources);
+        }
+        return dealer;
+    }
+
+    private static class DamageDealer {
+        private BattleObject unit;
+        private int remainingAttacks;
+
+        private static DamageDealer from(BattleObject object) {
+            DamageDealer ds = new DamageDealer();
+            ds.unit = object;
+            ds.remainingAttacks = object.getPower().getValue();
+            return ds;
+        }
     }
 }

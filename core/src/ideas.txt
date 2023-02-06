@@ -10,14 +10,12 @@ cards:
 karten:
 
 >4  assassine
->7  glaube
 >17  könig
 >27 buch
 >28 spähtrupp
 >53 schlacht
 >68 seeschlacht
 >69 leuchtsteine
->75 dragonfire  :  flamme spawnen auf einem gebiet, kann für paar runden nicht betreten werden
 
 
 

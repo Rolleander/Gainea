@@ -6,6 +6,7 @@ import com.broll.gainea.net.NT_Action_Move;
 import com.broll.gainea.net.NT_Action_PlaceUnit;
 import com.broll.gainea.net.NT_Action_SelectChoice;
 import com.broll.gainea.net.NT_AddBot;
+import com.broll.gainea.net.NT_Battle_Damage;
 import com.broll.gainea.net.NT_Battle_Intention;
 import com.broll.gainea.net.NT_Battle_Reaction;
 import com.broll.gainea.net.NT_Battle_Start;
@@ -83,6 +84,7 @@ public class NetworkSetup {
                 NT_Action.class, NT_Action_Attack.class, NT_Action_Card.class,
                 NT_Action_Move.class, NT_Action_PlaceUnit.class, NT_Action_SelectChoice.class,
                 NT_AddBot.class, NT_Battle_Intention.class, NT_Battle_Reaction.class,
+                NT_Battle_Damage.class,
                 NT_Battle_Start.class, NT_Battle_Update.class, NT_BoardEffect.class,
                 NT_BoardObject.class, NT_BoardUpdate.class, NT_Card.class,
                 NT_EndTurn.class, NT_Event.class, NT_Event_BoardEffect.class,
@@ -98,7 +100,7 @@ public class NetworkSetup {
                 NT_PlayerReady.class, NT_PlayerSettings.class, NT_PlayerTurnActions.class,
                 NT_PlayerTurnStart.class, NT_PlayerWait.class, NT_Reaction.class,
                 NT_ReconnectGame.class, NT_RoundStatistic.class, NT_StartGame.class,
-                NT_Unit.class, NT_UpdateLobbySettings.class,
+                NT_Unit.class, NT_UpdateLobbySettings.class, NT_Battle_Damage[].class,
                 NT_Action[].class, NT_BoardObject[].class, NT_Unit[].class, NT_Player[].class,
                 NT_Goal[].class, NT_Card[].class, int[].class, short[].class, byte[].class,
                 String[].class, Object[].class, NT_RoundStatistic[].class, NT_BoardEffect[].class);

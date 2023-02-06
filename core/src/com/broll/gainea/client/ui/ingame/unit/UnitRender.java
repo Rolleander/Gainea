@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -30,6 +31,7 @@ public class UnitRender extends MapObjectRender {
     private Animation<TextureRegion> blood;
     private float bloodAnimation;
     private static int BLOOD_SIZE = 150;
+    private static float ATTACK_MOVE = 50;
     private boolean showBlood = false;
 
     public UnitRender(Gainea game, Skin skin, NT_Unit unit) {
@@ -78,6 +80,13 @@ public class UnitRender extends MapObjectRender {
         }
         bloodAnimation = 0;
         showBlood = true;
+    }
+
+    public void attack(UnitRender target) {
+        float x = target.getX() < this.getX()?  ATTACK_MOVE : -ATTACK_MOVE;
+        float y = (target.getY() - this.getY()) / 2;
+        this.addAction(Actions.sequence(Actions.moveBy(x, y,0.3f, Interpolation.exp10Out),
+                Actions.moveBy(-x, -y,0.2f, Interpolation.sineIn)));
     }
 
     private void deathSound(NT_Unit unit) {
@@ -145,6 +154,5 @@ public class UnitRender extends MapObjectRender {
         }
         return dead;
     }
-
 
 }
