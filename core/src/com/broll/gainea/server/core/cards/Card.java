@@ -68,6 +68,10 @@ public abstract class Card {
         return id;
     }
 
+    public int getPicture() {
+        return picture;
+    }
+
     public String getText() {
         return text;
     }

@@ -58,13 +58,13 @@ public class Battle {
             }
         }
         int blockWins = battleSize - attackWins;
-        if (deltaAttacks < 0) {
+        /*if (deltaAttacks < 0) {
             //less attacker dices => deal remaining damage to attacking units without dices
             blockWins += Math.min(deltaAttacks * -1, rawAttackerPower - attacks);
         } else if (deltaAttacks > 0) {
             //less defender dices => deal remaining damage to defending units without dices
             attackWins += Math.min(deltaAttacks, rawDefenderPower - blocks);
-        }
+        }*/
         FightResult result = new FightResult(allAttackRolls, allBlockRolls);
         //deal damage
         List<DamageDealer> remainingAttackers = attackers.stream().map(DamageDealer::from).collect(Collectors.toList());

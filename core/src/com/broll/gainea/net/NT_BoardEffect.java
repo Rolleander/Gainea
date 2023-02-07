@@ -4,11 +4,12 @@ import java.util.Objects;
 
 public class NT_BoardEffect {
 
-    final public static int EFFECT_FIRE=0;
+    public static final int EFFECT_FIRE = 0;
+    public static final int EFFECT_PORTAL = 1;
     public int effect;
     public int id;
     public String info;
-    public float x,y;
+    public float x, y;
 
     @Override
     public boolean equals(Object o) {

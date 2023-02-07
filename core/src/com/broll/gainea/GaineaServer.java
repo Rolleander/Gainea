@@ -15,6 +15,7 @@ import com.broll.networklib.server.impl.ServerLobby;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -43,16 +44,35 @@ public class GaineaServer {
     }
 
     public void appendCLI() {
-        LobbyServerCLI.open(server, nextTurn(), gameInfo());
+        LobbyServerCLI.open(server, nextTurn(), gameInfo(), giveCard());
+    }
+
+    private LobbyServerCLI.CliCommand giveCard() {
+        return LobbyServerCLI.cmd("givecard", "gives current player a specific card", options -> {
+            if (options.size() < 2) {
+                System.err.println("givecard needs to be followed by a lobby id and card picture id");
+                return;
+            }
+            int id = Integer.parseInt(options.get(0));
+            int picId = Integer.parseInt(options.get(1));
+            getGame(id).ifPresent(game -> {
+                game.getCardStorage().getAllCards().stream().filter(it -> it.getPicture() == picId)
+                        .findFirst().ifPresent(card ->
+                    game.getPlayers().get(game.getCurrentPlayer()).getCardHandler().receiveCard(card)
+                );
+            });
+        });
     }
 
     private LobbyServerCLI.CliCommand nextTurn() {
         return LobbyServerCLI.cmd("nextturn", "Ends the current turn", options -> {
             if (options.isEmpty()) {
                 System.err.println("nextturn needs to be followed by a lobby id");
+                return;
             }
             int id = Integer.parseInt(options.get(0));
             getGame(id).ifPresent(game -> {
+                game.getBattleHandler().reset();
                 game.getReactionHandler().getActionHandlers().getReactionActions().endTurn();
                 print("Ended turn");
             });
@@ -63,6 +83,7 @@ public class GaineaServer {
         return LobbyServerCLI.cmd("game", "Info about a running game", options -> {
             if (options.isEmpty()) {
                 System.err.println("game needs to be followed by a lobby id");
+                return;
             }
             int id = Integer.parseInt(options.get(0));
             getGame(id).ifPresent(game -> {

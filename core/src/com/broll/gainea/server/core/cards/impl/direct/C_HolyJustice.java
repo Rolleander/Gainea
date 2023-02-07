@@ -9,9 +9,10 @@ import com.broll.gainea.server.core.utils.UnitControl;
 
 public class C_HolyJustice extends DirectlyPlayedCard {
     public C_HolyJustice() {
-        super(7, "Göttliche Gerechtigkeit", "Spieler mit weniger Einheiten erhalten zusätzliche Soldaten");
+        super(7, "GÃ¶ttliche Gerechtigkeit", "Spieler mit weniger Einheiten erhalten zusÃ¤tzliche Soldaten");
         setDrawChance(0.6f);
     }
+
 
     @Override
     protected void play() {

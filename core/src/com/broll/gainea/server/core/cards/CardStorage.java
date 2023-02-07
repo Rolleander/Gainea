@@ -52,4 +52,8 @@ public class CardStorage {
             }
         }
     }
+
+    public List<Card> getAllCards() {
+        return loader.instantiateAll();
+    }
 }

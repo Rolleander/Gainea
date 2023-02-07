@@ -38,7 +38,7 @@ public class UnitRender extends MapObjectRender {
         super(game, skin, unit);
         this.plate = game.assets.get("textures/unit_plate.png", Texture.class);
         setWidth(R * 2 + 37 * 2);
-        setZIndex(0);
+        setZIndex(100);
         numberLabel = LabelUtils.label(skin, "");
         blackStyle = numberLabel.getStyle();
         redStyle = new Label.LabelStyle(blackStyle.font, Color.RED);

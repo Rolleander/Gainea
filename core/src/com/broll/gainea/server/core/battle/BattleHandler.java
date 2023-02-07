@@ -55,6 +55,10 @@ public class BattleHandler {
         this.reactionResult = reactionResult;
     }
 
+    public void reset(){
+        this.battleActive = false;
+    }
+
     public void startBattle(List<? extends BattleObject> attackers, List<? extends BattleObject> defenders) {
         startBattle(attackers, defenders, true);
     }

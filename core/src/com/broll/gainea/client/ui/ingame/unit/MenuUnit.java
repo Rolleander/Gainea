@@ -48,8 +48,13 @@ public class MenuUnit extends Table {
                 table.add(LabelUtils.info(skin, behavior)).center().spaceBottom(5).row();
             }
         }
-        table.add(IconLabel.attack(game, unit.power)).left().row();
-        table.add(IconLabel.health(game, unit.health, unit.maxHealth)).left().row();
+        Table row = new Table(skin);
+        row.add(IconLabel.attack(game, unit.power)).left();
+        row.add(IconLabel.health(game, unit.health, unit.maxHealth)).spaceLeft(20).left();
+        table.add(row).left().row();
+        if(unit.kills>0){
+            table.add(new IconLabel(game, 8, ""+unit.kills)).left().row();
+        }
         add(table).fillX().expandX().spaceLeft(10);
         setTouchable(Touchable.enabled);
         addListener(new ClickListener() {
@@ -60,6 +65,7 @@ public class MenuUnit extends Table {
                 selectChanged.action();
             }
         });
+        this.padRight(8);
     }
 
 

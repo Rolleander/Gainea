@@ -150,7 +150,6 @@ public abstract class OccupyGoal extends Goal {
 
     @Override
     public void check() {
-        Log.trace("check occupy goal (" + this + ") for player " + player);
         List<Location> occupiedLocations = player.getControlledLocations();
         boolean success = true;
         int progress = 0;
