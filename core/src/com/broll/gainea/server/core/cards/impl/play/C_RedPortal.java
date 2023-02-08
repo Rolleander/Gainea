@@ -17,7 +17,7 @@ public class C_RedPortal extends Card {
 
     public C_RedPortal() {
         super(1, "Dunkles Portal",
-                "Wählt zwei freie Gebiete von der gleichen Karte. Stellt ein Portal zwischen diesen Gebieten für " + ROUNDS + " her.");
+                "Wählt zwei freie Gebiete von der gleichen Karte. Stellt ein Portal zwischen diesen Gebieten für " + ROUNDS + " Runden her.");
         setDrawChance(0.6f);
     }
 
@@ -29,12 +29,13 @@ public class C_RedPortal extends Card {
     @Override
     protected void play() {
         Location from = selectHandler.selectLocation("Wähle den Startort für das Portal", game.getMap().getAllLocations().stream().filter(Location::isFree).collect(Collectors.toList()));
+        MapEffect startPortal = new MapEffect(NT_BoardEffect.EFFECT_PORTAL, "", from);
+        MapEffect.spawn(game, startPortal);
         Location to = selectHandler.selectLocation("Wähle den Zielort für das Portal", from.getContainer().getExpansion().getAllAreas().stream()
                 .filter(it -> it.isFree() && it != from && !from.getConnectedLocations().contains(it)).collect(Collectors.toList()));
         if (from != null && to != null) {
-            MapEffect startPortal = new MapEffect(NT_BoardEffect.EFFECT_PORTAL, "", from);
             MapEffect endPortal = new MapEffect(NT_BoardEffect.EFFECT_PORTAL, "", to);
-            MapEffect.spawn(game, startPortal, endPortal);
+            MapEffect.spawn(game, endPortal);
             from.getConnectedLocations().add(to);
             to.getConnectedLocations().add(from);
             TimedEffect.forPlayerRounds(game, owner, ROUNDS, new TimedEffect() {
@@ -47,6 +48,8 @@ public class C_RedPortal extends Card {
                     to.getConnectedLocations().remove(from);
                 }
             });
+        } else {
+            MapEffect.despawn(game, startPortal);
         }
     }
 

@@ -1,8 +1,10 @@
 package com.broll.gainea.client.game;
 
+import com.badlogic.gdx.math.Vector2;
 import com.broll.gainea.Gainea;
 import com.broll.gainea.client.ui.ingame.map.ExpansionDebugRender;
 import com.broll.gainea.client.ui.ingame.map.ExpansionRender;
+import com.broll.gainea.client.ui.ingame.map.WaterRender;
 import com.broll.gainea.server.core.map.Expansion;
 import com.broll.gainea.server.core.map.ExpansionFactory;
 import com.broll.gainea.server.core.map.MapContainer;
@@ -34,6 +36,10 @@ public class ClientMapContainer extends MapContainer {
         }).collect(Collectors.toList());
     }
 
+    public List<ExpansionRender> getRenders() {
+        return renders;
+    }
+
     @Override
     protected void init(ExpansionSetting setting) {
         this.initSet = MapFactory.create(setting);
@@ -41,6 +47,7 @@ public class ClientMapContainer extends MapContainer {
     }
 
     public void displayRenders() {
+        game.gameStage.addActor(new WaterRender(game));
         this.renders.forEach(render -> game.gameStage.addActor(render));
         if (RENDER_DEBUG) {
             this.expansions.forEach(expansion -> game.gameStage.addActor(new ExpansionDebugRender(game, expansion)));

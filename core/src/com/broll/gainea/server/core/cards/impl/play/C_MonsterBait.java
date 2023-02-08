@@ -1,22 +1,17 @@
 package com.broll.gainea.server.core.cards.impl.play;
 
 import com.broll.gainea.server.core.cards.Card;
+import com.broll.gainea.server.core.map.Area;
 import com.broll.gainea.server.core.map.Location;
-import com.broll.gainea.server.core.objects.BattleObject;
-import com.broll.gainea.server.core.objects.Monster;
-import com.broll.gainea.server.core.objects.MonsterActivity;
-import com.broll.gainea.server.core.objects.MonsterBehavior;
-import com.broll.gainea.server.core.utils.PlayerUtils;
+import com.broll.gainea.server.core.utils.LocationUtils;
 import com.broll.gainea.server.core.utils.UnitControl;
-import com.google.common.collect.Lists;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class C_MonsterBait extends Card {
     public C_MonsterBait() {
-        super(36, "Ogerangriff", "WÃ¤hlt eine feindliche Truppe und ruft einen wilden Kriegsoger (4/4) herbei der diese angreift.");
-        setDrawChance(0.5f);
+        super(69, "Köderstein", "Wählt ein neutrales Gebiet, alle benchbarten Monster bewegen sich dorthin.");
     }
 
     @Override
@@ -26,18 +21,9 @@ public class C_MonsterBait extends Card {
 
     @Override
     protected void play() {
-        Monster monster = new Monster();
-        monster.setName("Kriegsoger");
-        monster.setIcon(118);
-        monster.setPower(4);
-        monster.setHealth(4);
-        monster.setBehavior(MonsterBehavior.RANDOM);
-        monster.setActivity(MonsterActivity.SOMETIMES);
-        Location target = selectHandler.selectLocation("WÃ¤hlt die feindliche Truppe", new ArrayList<>(PlayerUtils.getHostileLocations(game, owner)));
-        List<BattleObject> hostileArmy = PlayerUtils.getHostileArmy(owner, target);
-        UnitControl.spawn(game, monster, target);
-        game.getBattleHandler().startBattle(Lists.newArrayList(monster),hostileArmy);
+        List<Area> areas = game.getMap().getAllAreas().stream().filter(LocationUtils::emptyOrWildMonster).collect(Collectors.toList());
+        Location location = selectHandler.selectLocation(owner, "Wähle einen Zielort", areas);
+        location.getConnectedLocations().stream().flatMap(it -> LocationUtils.getMonsters(it).stream())
+                .forEach(monster -> UnitControl.move(game, monster, location));
     }
-
-
 }

@@ -60,7 +60,7 @@ public class MapScrollHandler extends InputListener  {
         float dx = (x - lastX) * DRAG_SPEED * camera.zoom;
         float dy = (y - lastY) * DRAG_SPEED * camera.zoom;
         if (!control.isAnimationActive()) {
-            camera.translate(-dx, dy);
+            control.scrollBy(-dx, dy);
         }
         this.lastX = x;
         this.lastY = y;

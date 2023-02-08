@@ -7,7 +7,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 
 public class Assets {
@@ -50,6 +52,7 @@ public class Assets {
         }).forEach(it -> manager.load(SOUNDS + it, Sound.class));
     }
 
+
     private void loadTextures() {
         manager.load("ui/loading.png", Texture.class);
         for (int i = 0; i < 4; i++) {
@@ -77,6 +80,7 @@ public class Assets {
         manager.load("textures/colors.png", Texture.class);
         manager.load("textures/fire.png", Texture.class);
         manager.load("textures/gate.png", Texture.class);
+        manager.load("textures/water.jpg", Texture.class);
     }
 
     private void loadUi() {

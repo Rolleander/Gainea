@@ -9,7 +9,7 @@ import com.broll.gainea.server.core.utils.UnitControl;
 
 public class C_KillMonster extends Card {
     public C_KillMonster() {
-        super(6, "Rangereinsatz", "Tötet ein beliebiges Monster auf der Karte (Außer Götterdrache)");
+        super(6, "Rangereinsatz", "Tötet ein beliebiges Monster (Außer Götterdrache)");
     }
 
     @Override

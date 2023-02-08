@@ -14,7 +14,6 @@ karten:
 >28 spähtrupp
 >53 schlacht
 >68 seeschlacht
->69 leuchtsteine
 
 
 

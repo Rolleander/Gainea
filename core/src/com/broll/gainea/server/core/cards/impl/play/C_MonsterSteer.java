@@ -9,8 +9,8 @@ import com.google.common.collect.Lists;
 
 import java.util.ArrayList;
 
-public class C_MonsterMove extends Card {
-    public C_MonsterMove() {
+public class C_MonsterSteer extends Card {
+    public C_MonsterSteer() {
         super(72, "Monsterköder", "Wählt ein Monster und bewegt es um ein Feld weiter, mögliche Ziele werden dabei angegriffen.");
     }
 

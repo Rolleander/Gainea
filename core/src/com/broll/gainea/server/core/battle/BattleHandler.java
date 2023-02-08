@@ -68,7 +68,7 @@ public class BattleHandler {
             this.allowRetreat = allowRetreat;
             this.attackers = new ArrayList<>(attackers);
             this.defenders = new ArrayList<>(defenders);
-            if(this.attackers.stream().anyMatch(BattleObject::isAlive) && this.attackers.stream().anyMatch(BattleObject::isAlive)){
+            if(this.attackers.stream().anyMatch(BattleObject::isAlive) && this.defenders.stream().anyMatch(BattleObject::isAlive)){
                 killedDefenders.clear();
                 killedAttackers.clear();
                 battleActive = true;
@@ -133,7 +133,7 @@ public class BattleHandler {
         }
         //there can be defenders of multiple owners, so attack the army of a random owner first
         Collections.shuffle(aliveDefenders);
-        defenderOwner = aliveDefenders.get(0).getOwner();
+        defenderOwner = PlayerUtils.getOwner(aliveDefenders);
         battleLocation = aliveDefenders.get(0).getLocation();
         defendingArmy = aliveDefenders.stream().filter(defender -> defender.getOwner() == defenderOwner).collect(Collectors.toList());
     }

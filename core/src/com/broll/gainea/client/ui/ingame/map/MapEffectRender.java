@@ -1,6 +1,7 @@
 package com.broll.gainea.client.ui.ingame.map;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -33,24 +34,30 @@ public class MapEffectRender extends Actor {
         else if( this.effect == NT_BoardEffect.EFFECT_PORTAL){
             setZIndex(50);
             texture = new TextureRegion(game.assets.get("textures/gate.png",Texture.class));
-            addAction(Actions.forever(Actions.rotateBy(20,1)));
+            addAction(Actions.alpha(0.8f));
+            addAction(Actions.forever(Actions.rotateBy(150,1)));
         }
     }
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
+        animationTime += Gdx.graphics.getDeltaTime();
         if(effect == NT_BoardEffect.EFFECT_FIRE){
             int srcFunc = batch.getBlendSrcFunc();
             int dstFunc = batch.getBlendDstFunc();
             batch.enableBlending();
-            animationTime += Gdx.graphics.getDeltaTime();
             TextureRegion frame = animation.getKeyFrame(animationTime);
             batch.setBlendFunction(GL30.GL_ONE, GL30.GL_ONE_MINUS_SRC_COLOR);
             batch.draw(frame, getX() - frame.getRegionWidth() / 2 , getY() - frame.getRegionHeight()/2);
             batch.setBlendFunction(srcFunc, dstFunc);
         }
         else if(effect == NT_BoardEffect.EFFECT_PORTAL){
-            batch.draw(texture, getX() - texture.getRegionWidth()/2, getY()-texture.getRegionHeight()/2);
+            Color color = getColor();
+            batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
+            float xc = texture.getRegionWidth() /2;
+            float yc = texture.getRegionHeight() / 2;
+            batch.draw(texture, getX() - xc, getY()-yc, xc,yc, xc*2, yc*2, 1, 1, getRotation());
+            batch.setColor(color.r, color.g, color.b, 1f);
         }
     }
 }
