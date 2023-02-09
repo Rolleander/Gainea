@@ -7,7 +7,7 @@ sourceSets.main.resources.srcDirs = ["../core/assets"]
 project.ext.mainClassName = "com.broll.gainea.desktop.DesktopLauncher"
 project.ext.assetsDir = new File("../core/assets")
 
-task run(dependsOn: classes, type: JavaExec) {
+task runClient(dependsOn: classes, type: JavaExec) {
     main = project.mainClassName
     classpath = sourceSets.main.runtimeClasspath
     standardInput = System.in
@@ -22,14 +22,6 @@ task debug(dependsOn: classes, type: JavaExec) {
     workingDir = project.assetsDir
     ignoreExitValue = true
     debug = true
-}
-
-task startServer(type: JavaExec) {
-    group = "Execution"
-    standardInput = System.in
-    description = "Runs the server"
-    classpath =  sourceSets.main.runtimeClasspath
-    main = "com.broll.gainea.desktop.ServerLauncher"
 }
 
 task dist(type: Jar) {

@@ -3,13 +3,6 @@ package com.broll.gainea.desktop;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.broll.gainea.Gainea;
-import com.broll.gainea.misc.PackageLoader;
-import com.broll.gainea.server.init.NetworkSetup;
-
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class DesktopLauncher {
 

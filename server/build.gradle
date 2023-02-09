@@ -1,0 +1,14 @@
+apply plugin: "java"
+
+sourceCompatibility = 1.8
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+sourceSets.main.java.srcDirs = [ "src/" ]
+
+task runServer(type: JavaExec) {
+    group = "Execution"
+    standardInput = System.in
+    description = "Runs the server"
+    classpath =  sourceSets.main.runtimeClasspath
+    main = "com.broll.gainea.server.ServerLauncher"
+}

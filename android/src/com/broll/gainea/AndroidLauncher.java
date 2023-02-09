@@ -1,21 +1,11 @@
 package com.broll.gainea;
 
-import android.graphics.Rect;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.WindowManager;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
-import com.badlogic.gdx.backends.android.surfaceview.ResolutionStrategy;
 import com.broll.gainea.server.init.NetworkSetup;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
 
 public class AndroidLauncher extends AndroidApplication {
 

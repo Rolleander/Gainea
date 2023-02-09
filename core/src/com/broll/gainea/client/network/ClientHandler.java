@@ -10,7 +10,7 @@ import com.broll.gainea.client.network.sites.GameEventSite;
 import com.broll.gainea.client.network.sites.GameStateSite;
 import com.broll.gainea.client.network.sites.GameTurnSite;
 import com.broll.gainea.net.NT_LobbySettings;
-import com.broll.gainea.server.init.NetworkSetup;
+import com.broll.gainea.NetworkSetup;
 import com.broll.networklib.client.ClientSite;
 import com.broll.networklib.client.LobbyGameClient;
 import com.broll.networklib.client.impl.GameLobby;

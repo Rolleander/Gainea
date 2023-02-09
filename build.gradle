@@ -38,19 +38,58 @@ allprojects {
     }
 }
 
+project(":shared") {
+    apply plugin: "java-library"
+
+    dependencies {
+            implementation("com.google.guava:guava:28.2-jre")
+            implementation group: 'com.broll', name: 'networklib', version: '1.0'
+            implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.3.2'
+            implementation group: 'org.apache.commons', name: 'commons-collections4', version: '4.0'
+            implementation group: 'org.slf4j', name: 'slf4j-api', version: '2.0.6'
+        // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
+    }
+}
+
+project(":server") {
+    apply plugin: "java-library"
+
+    dependencies {
+        implementation project(":shared")
+        implementation("com.google.guava:guava:28.2-jre")
+        implementation group: 'com.broll', name: 'networklib', version: '1.0'
+        implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.3.2'
+        implementation group: 'org.apache.commons', name: 'commons-collections4', version: '4.0'
+        implementation group: 'org.slf4j', name: 'slf4j-api', version: '2.0.6'
+    }
+}
+
+project(":core") {
+    apply plugin: "java-library"
+
+    dependencies {
+        implementation project(":shared")
+        implementation project(":server")
+        api "com.badlogicgames.gdx:gdx:$gdxVersion"
+        api "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
+        implementation("com.google.guava:guava:28.2-jre")
+        implementation group: 'com.broll', name: 'networklib', version: '1.0'
+        implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.3.2'
+        implementation group: 'org.apache.commons', name: 'commons-collections4', version: '4.0'
+        implementation group: 'org.slf4j', name: 'slf4j-api', version: '2.0.6'
+    }
+}
+
 project(":desktop") {
     apply plugin: "java-library"
 
 
     dependencies {
         implementation project(":core")
-        implementation("com.google.guava:guava:28.2-jre")
         api "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
         api "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
         api "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
-        implementation group: 'org.slf4j', name: 'slf4j-log4j12', version: '2.0.6'
-        implementation 'org.apache.logging.log4j:log4j-slf4j-impl:2.19.0'
-
+        implementation group: 'org.slf4j', name: 'slf4j-api', version: '2.0.6'
     }
 }
 
@@ -88,23 +127,6 @@ project(":html") {
     }
 }
 */
-project(":core") {
-    apply plugin: "java-library"
-
-
-    dependencies {
-        implementation("com.google.guava:guava:28.2-jre")
-        implementation group: 'com.broll', name: 'networklib', version: '1.0'
-        api "com.badlogicgames.gdx:gdx:$gdxVersion"
-        api "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
-        implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.3.2'
-        // https://mvnrepository.com/artifact/org.apache.commons/commons-collections4
-        implementation group: 'org.apache.commons', name: 'commons-collections4', version: '4.0'
-        implementation group: 'org.slf4j', name: 'slf4j-api', version: '2.0.6'
-        // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
-
-    }
-}
 
 project(":tests") {
     apply plugin: "java"
