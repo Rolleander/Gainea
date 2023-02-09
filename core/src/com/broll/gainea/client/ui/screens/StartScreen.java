@@ -30,9 +30,9 @@ public class StartScreen extends Screen {
     private boolean connecting = false;
     private Label loadingInfo;
 
-    private static String PLAYER_NAME = //"tester";
+    public static String PLAYER_NAME = //"tester";
             "";
-    private static String SERVER = //"localhost";
+    public static String SERVER = //"localhost";
             "gainea.de";
 
     public StartScreen() {

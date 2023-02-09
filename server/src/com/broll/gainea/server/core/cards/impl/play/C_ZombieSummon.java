@@ -1,11 +1,10 @@
 package com.broll.gainea.server.core.cards.impl.play;
 
-import com.broll.gainea.misc.RandomUtils;
 import com.broll.gainea.server.core.cards.Card;
-import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.objects.Monster;
 import com.broll.gainea.server.core.objects.MonsterActivity;
 import com.broll.gainea.server.core.objects.MonsterBehavior;
+import com.broll.gainea.server.core.utils.StreamUtils;
 import com.broll.gainea.server.core.utils.UnitControl;
 
 public class C_ZombieSummon extends Card {
@@ -25,7 +24,7 @@ public class C_ZombieSummon extends Card {
 
     @Override
     protected void play() {
-        owner.getUnits().forEach(unit -> {
+        StreamUtils.safeForEach(owner.getUnits().stream(), unit->{
             for (int i = 0; i < unit.getKills(); i++) {
                 Zombie zombie = new Zombie();
                 zombie.setOwner(owner);
@@ -38,6 +37,7 @@ public class C_ZombieSummon extends Card {
 
         public Zombie() {
             controllable = false;
+            setName("Verdammter");
             setBehavior(MonsterBehavior.RANDOM);
             setActivity(MonsterActivity.OFTEN);
             setStats(1, 1);
