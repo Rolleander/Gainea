@@ -43,12 +43,23 @@ public class Monster extends BattleObject {
 
     @Override
     public void roundStarted() {
-        if (actionTimer != NT_Monster.NO_ACTION_TIMER && owner == null && isAlive()) {
-            actionTimer--;
-            if (actionTimer == 0) {
-                this.behavior.doAction(game, this);
-                resetActionTimer();
-            }
+        if (actionTimer != NT_Monster.NO_ACTION_TIMER && isAlive() && isBehaviorActive()) {
+            progressBehavior();
+        }
+    }
+
+    protected boolean isBehaviorActive() {
+        if (owner == null) {
+            return true;
+        }
+        return !controllable;
+    }
+
+    private void progressBehavior() {
+        actionTimer--;
+        if (actionTimer == 0) {
+            this.behavior.doAction(game, this);
+            resetActionTimer();
         }
     }
 

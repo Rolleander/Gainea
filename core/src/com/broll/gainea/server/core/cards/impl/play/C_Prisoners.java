@@ -4,8 +4,6 @@ import com.broll.gainea.server.core.battle.BattleResult;
 import com.broll.gainea.server.core.cards.Card;
 import com.broll.gainea.server.core.objects.Soldier;
 import com.broll.gainea.server.core.objects.buffs.TimedEffect;
-import com.broll.gainea.server.core.player.Player;
-import com.broll.gainea.server.core.processing.GameUpdateReceiverAdapter;
 
 public class C_Prisoners extends Card {
     private final static int COUNT = 3;
@@ -24,7 +22,7 @@ public class C_Prisoners extends Card {
     protected void play() {
         TimedEffect.forCurrentTurn(game , new TimedEffect(){
             public void battleResult(BattleResult result) {
-                if (result.getAttacker() == owner && result.attackersWon()) {
+                if (result.getAttackingPlayer() == owner && result.attackersWon()) {
                     if (result.getDefenders().stream().anyMatch(it -> it instanceof Soldier)) {
                         for (int i = 0; i < COUNT; i++) {
                             placeUnitHandler.placeSoldier(owner);

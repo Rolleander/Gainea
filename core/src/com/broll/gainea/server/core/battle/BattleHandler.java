@@ -234,7 +234,10 @@ public class BattleHandler {
 
     private void battleFinished(boolean retreated) {
         BattleResult result = new BattleResult(retreated, attackers, defenders, killedAttackers, killedDefenders, battleLocation);
-        Log.info("Battle over! Surviving Attackers: (" + aliveAttackers.stream().map(it -> it.getId() + "| " + it.getName() + " " + it.getPower() + " " + it.getHealth()).collect(Collectors.joining(", ")) + ")  Surviving Defenders: (" + aliveDefenders.stream().map(it -> it.getId() + "| " + it.getName() + " " + it.getPower() + " " + it.getHealth()).collect(Collectors.joining(", ")) + ")");
+        Log.info("Battle over! Surviving Attackers: (" + aliveAttackers.stream().map(it -> it.getId() + "| " + it.getName() + " " + it.getPower() + " " + it.getHealth()).collect(Collectors.joining(", ")) + ")" +
+                " Killed Attackers: (" + result.getKilledAttackers().stream().map(it -> it.getId() + "| " + it.getName() + " " + it.getPower() + " " + it.getHealth()).collect(Collectors.joining(", ")) + ")" +
+                " Surviving Defenders: (" + aliveDefenders.stream().map(it -> it.getId() + "| " + it.getName() + " " + it.getPower() + " " + it.getHealth()).collect(Collectors.joining(", ")) + ")"+
+                " Killed Defenders: (" + result.getKilledDefenders().stream().map(it -> it.getId() + "| " + it.getName() + " " + it.getPower() + " " + it.getHealth()).collect(Collectors.joining(", ")) + ")");
         battleActive = false;
         GameUpdateReceiverProxy updateReceiver = game.getUpdateReceiver();
         List<BattleObject> fallenUnits = new ArrayList<>();

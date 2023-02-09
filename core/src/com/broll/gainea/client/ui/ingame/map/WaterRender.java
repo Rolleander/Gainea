@@ -26,8 +26,8 @@ public class WaterRender extends Actor {
     public void draw(Batch batch, float parentAlpha) {
         movement += Gdx.graphics.getDeltaTime() * 12;
         displacement += Gdx.graphics.getDeltaTime() / 3;
-        float cw = (camera.viewportWidth + S * 3) * camera.zoom;
-        float ch = (camera.viewportHeight + S * 3) * camera.zoom;
+        float cw = (camera.viewportWidth + S * 4) * camera.zoom;
+        float ch = (camera.viewportHeight + S * 4) * camera.zoom;
         float lx = camera.position.x - cw / 2;
         float ly = camera.position.y - ch / 2;
         float xd = lx % S;
@@ -36,7 +36,7 @@ public class WaterRender extends Actor {
             for (float y = ly; y <= ly + ch; y += S) {
                 float m = movement % S;
                 float jump = (float) (Math.cos(displacement) * S / 6);
-                batch.draw(water, x - xd - m, y - yd + m + jump);
+                batch.draw(water, x - xd - m, y - yd + m - jump);
             }
         }
     }

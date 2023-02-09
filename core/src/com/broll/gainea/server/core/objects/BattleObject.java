@@ -16,6 +16,7 @@ public abstract class BattleObject extends MapObject {
     private boolean moveOrAttackRestriction = true; //usually units can only attack or move in one turn
     private boolean attacked = false;
     private boolean moved = false;
+    protected boolean controllable = true;
     private int type = NT_Unit.TYPE_MALE;
     private int kills;
 
@@ -215,6 +216,10 @@ public abstract class BattleObject extends MapObject {
 
     public void addKill(){
         this.kills++;
+    }
+
+    public boolean isControllable() {
+        return controllable;
     }
 
     @Override

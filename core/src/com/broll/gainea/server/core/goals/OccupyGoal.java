@@ -39,7 +39,11 @@ public abstract class OccupyGoal extends Goal {
     @Override
     protected boolean validForGame() {
         map = game.getMap();
-        initOccupations();
+        try {
+            initOccupations();
+        } catch (MissingExpansionException e) {
+            return false;
+        }
         //if any area is null, then its not part of the expansions, so goal is invalid
         for (Location area : locations) {
             if (area == null) {
@@ -68,6 +72,30 @@ public abstract class OccupyGoal extends Goal {
 
     protected abstract void initOccupations();
 
+    private void assureIslandExists(IslandID... islands) {
+        for (IslandID island : islands) {
+            if (map.getIsland(island) == null) {
+                throw new MissingExpansionException();
+            }
+        }
+    }
+
+    private void assureContinentExists(ContinentID... continents) {
+        for (ContinentID continent : continents) {
+            if (map.getContinent(continent) == null) {
+                throw new MissingExpansionException();
+            }
+        }
+    }
+
+    private void assureExpansionExists(ExpansionType... expansions) {
+        for (ExpansionType expansion : expansions) {
+            if (map.getExpansion(expansion) == null) {
+                throw new MissingExpansionException();
+            }
+        }
+    }
+
     protected List<Area> occupy(AreaID... areas) {
         List<Area> list = Arrays.stream(areas).map(map::getArea).filter(Objects::nonNull).collect(Collectors.toList());
         this.locations.addAll(list);
@@ -82,6 +110,7 @@ public abstract class OccupyGoal extends Goal {
     }
 
     protected List<Area> occupy(IslandID... islands) {
+        assureIslandExists(islands);
         List<Area> list = new ArrayList<>();
         Arrays.stream(islands).map(map::getIsland).filter(Objects::nonNull).map(AreaCollection::getAreas).forEach(areas -> list.addAll(areas));
         locations.addAll(list);
@@ -89,6 +118,7 @@ public abstract class OccupyGoal extends Goal {
     }
 
     protected List<Area> occupy(Function<Area, Boolean> filter, IslandID... islands) {
+        assureIslandExists(islands);
         List<Area> list = new ArrayList<>();
         Arrays.stream(islands).map(map::getIsland).filter(Objects::nonNull).map(AreaCollection::getAreas).forEach(areas -> list.addAll(areas));
         list.removeIf(it -> !filter.apply(it));
@@ -97,6 +127,7 @@ public abstract class OccupyGoal extends Goal {
     }
 
     protected List<Area> occupy(ContinentID... continents) {
+        assureContinentExists(continents);
         List<Area> list = new ArrayList<>();
         Arrays.stream(continents).map(map::getContinent).filter(Objects::nonNull).map(AreaCollection::getAreas).forEach(areas -> list.addAll(areas));
         locations.addAll(list);
@@ -104,6 +135,7 @@ public abstract class OccupyGoal extends Goal {
     }
 
     protected List<Area> occupy(Function<Area, Boolean> filter, ContinentID... continents) {
+        assureContinentExists(continents);
         List<Area> list = new ArrayList<>();
         Arrays.stream(continents).map(map::getContinent).filter(Objects::nonNull).map(AreaCollection::getAreas).forEach(areas -> list.addAll(areas));
         list.removeIf(it -> !filter.apply(it));
@@ -112,6 +144,7 @@ public abstract class OccupyGoal extends Goal {
     }
 
     protected List<Area> occupy(ExpansionType... expansions) {
+        assureExpansionExists(expansions);
         List<Area> list = new ArrayList<>();
         Arrays.stream(expansions).map(map::getExpansion).filter(Objects::nonNull).map(Expansion::getContents).forEach(col -> col.stream().map(AreaCollection::getAreas).forEach(areas -> list.addAll(areas)));
         locations.addAll(list);
@@ -119,6 +152,7 @@ public abstract class OccupyGoal extends Goal {
     }
 
     protected List<Area> occupy(Function<Area, Boolean> filter, ExpansionType... expansions) {
+        assureExpansionExists(expansions);
         List<Area> list = new ArrayList<>();
         Arrays.stream(expansions).map(map::getExpansion).filter(Objects::nonNull).map(Expansion::getContents).forEach(col -> col.stream().map(AreaCollection::getAreas).forEach(areas -> list.addAll(areas)));
         list.removeIf(it -> !filter.apply(it));

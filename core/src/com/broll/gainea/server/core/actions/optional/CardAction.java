@@ -38,22 +38,22 @@ public class CardAction extends AbstractActionHandler<NT_Action_Card, CardAction
 
     @Override
     public void handleReaction(Context context, NT_Action_Card action, NT_Reaction reaction) {
-        playCard(context.player, context.card);
+        game.getProcessingCore().execute(() -> {
+            playCard(context.player, context.card);
+        });
     }
 
     public void playCard(Player player, Card card) {
-        game.getProcessingCore().execute(() -> {
-            Log.trace("Handle card reaction");
-            NT_Event_PlayedCard playedCard = new NT_Event_PlayedCard();
-            playedCard.player = player.getServerPlayer().getId();
-            playedCard.card = card.nt();
-            reactionResult.sendGameUpdate(playedCard);
-            MessageUtils.gameLog(game, "Karte " + card.getTitle() + " ausgespielt");
-            player.getCardHandler().discardCard(card);
-            ProcessingUtils.pause(PLAY_CARD_DELAY);
-            card.play(actionHandlers);
-            game.getUpdateReceiver().playedCard(card);
-        });
+        Log.trace("Handle card reaction");
+        NT_Event_PlayedCard playedCard = new NT_Event_PlayedCard();
+        playedCard.player = player.getServerPlayer().getId();
+        playedCard.card = card.nt();
+        reactionResult.sendGameUpdate(playedCard);
+        MessageUtils.gameLog(game, "Karte " + card.getTitle() + " ausgespielt");
+        player.getCardHandler().discardCard(card);
+        ProcessingUtils.pause(PLAY_CARD_DELAY);
+        card.play(actionHandlers);
+        game.getUpdateReceiver().playedCard(card);
     }
 
 }

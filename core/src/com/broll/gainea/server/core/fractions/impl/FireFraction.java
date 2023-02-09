@@ -30,7 +30,7 @@ public class FireFraction extends Fraction {
     @Override
     protected FractionDescription description() {
         FractionDescription desc = new FractionDescription("");
-        desc.plus("Erhält jede dritte Runde eine Feuerregen-Karte (Verursacht 1 Schaden an einer beliebigen feindlichen Einheit)");
+        desc.plus("Erhält jede dritte Runde eine Feuerregen-Karte\n(Verursacht 1 Schaden an einer beliebigen feindlichen Einheit)");
         desc.contra("Erhält keine Belohnung für besiegte Monster auf Schnee oder Seen");
         return desc;
     }

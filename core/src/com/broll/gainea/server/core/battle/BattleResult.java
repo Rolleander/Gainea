@@ -2,12 +2,10 @@ package com.broll.gainea.server.core.battle;
 
 import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.objects.BattleObject;
-import com.broll.gainea.server.core.objects.Monster;
 import com.broll.gainea.server.core.player.Player;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class BattleResult {
 
@@ -37,11 +35,11 @@ public class BattleResult {
         return attackerSourceLocation;
     }
 
-    public Player getAttacker() {
+    public Player getAttackingPlayer() {
         return attackers.get(0).getOwner();
     }
 
-    public Player getDefender() {
+    public Player getDefendingPlayer() {
         return defenders.get(0).getOwner();
     }
 
@@ -55,18 +53,18 @@ public class BattleResult {
 
     public Player getWinnerPlayer() {
         if (attackersWon()) {
-            return getAttacker();
+            return getAttackingPlayer();
         } else if (defendersWon()) {
-            return getDefender();
+            return getDefendingPlayer();
         }
         return null;
     }
 
     public Player getLoserPlayer() {
         if (attackersWon()) {
-            return getDefender();
+            return getDefendingPlayer();
         } else if (defendersWon()) {
-            return getAttacker();
+            return getAttackingPlayer();
         }
         return null;
     }

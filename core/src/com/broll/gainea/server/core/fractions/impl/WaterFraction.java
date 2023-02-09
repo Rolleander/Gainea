@@ -97,9 +97,8 @@ public class WaterFraction extends Fraction {
             IntBuff debuff = new IntBuff(BuffType.SET, 0);
             getMovesPerTurn().addBuff(debuff);
             getAttacksPerTurn().addBuff(debuff);
-            game.getBuffProcessor().timeoutBuff(debuff, FROZEN_TURNS);
+            WaterFraction.this.game.getBuffProcessor().timeoutBuff(debuff, FROZEN_TURNS);
         }
     }
-
 
 }

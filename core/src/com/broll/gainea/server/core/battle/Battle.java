@@ -95,8 +95,8 @@ public class Battle {
                 .findFirst().ifPresent(target -> {
             boolean lethal = target.unit.takeDamage();
             DamageDealer source = findDamageDealer(sources);
-            source.remainingAttacks--;
             if (source != null) {
+                source.remainingAttacks--;
                 if (lethal) {
                     source.unit.addKill();
                 }

@@ -5,7 +5,6 @@ import com.broll.gainea.server.core.goals.Goal;
 import com.broll.gainea.server.core.goals.GoalDifficulty;
 import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.Monster;
-import com.broll.gainea.server.core.objects.Soldier;
 
 public class G_KillStrongMonster extends Goal {
 
@@ -15,7 +14,7 @@ public class G_KillStrongMonster extends Goal {
 
     @Override
     public void killed(BattleObject unit, BattleResult throughBattle) {
-        if (throughBattle != null && throughBattle.getAttacker() == player && throughBattle.getAttackers().size() == 1 &&
+        if (throughBattle != null && throughBattle.getAttackingPlayer() == player && throughBattle.getAttackers().size() == 1 &&
                 throughBattle.getKilledDefenders().stream().filter(it -> it instanceof Monster).map(it -> (Monster) it)
                         .anyMatch(it -> it.getStars() >= 4 && it.getOwner() == null)) {
             success();

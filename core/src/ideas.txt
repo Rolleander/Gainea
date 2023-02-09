@@ -11,8 +11,7 @@ karten:
 >4  assassine
 >17  könig
 >27 buch
->28 spähtrupp
->53 schlacht
+>53 pfeilhagel
 >68 seeschlacht
 
 

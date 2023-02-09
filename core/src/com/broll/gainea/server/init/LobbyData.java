@@ -10,7 +10,7 @@ public class LobbyData implements ILobbyData {
 
     private final static int START_GOALS_DEFAULT = 3;
 
-    private final static int POINT_LIMIT_DEFAULT = 3;
+    private final static int POINT_LIMIT_DEFAULT = 5;
 
     private final static int MONSTERS_PER_MAP = 10;
 

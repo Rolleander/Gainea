@@ -21,15 +21,13 @@ public class G_KillUnits extends Goal {
     }
 
     @Override
-    public void killed(BattleObject unit, BattleResult throughBattle) {
-        if (throughBattle != null) {
-            if (throughBattle.getAttacker() == player) {
-                kills += throughBattle.getDefenders().stream().filter(BattleObject::isDead).filter(it -> it instanceof Soldier).count();
-                check();
-            } else if (throughBattle.getDefenders() == player) {
-                kills += throughBattle.getAttackers().stream().filter(BattleObject::isDead).filter(it -> it instanceof Soldier).count();
-                check();
-            }
+    public void battleResult(BattleResult result) {
+        if (result.getAttackingPlayer() == player) {
+            kills += result.getKilledDefenders().stream().filter(it -> it instanceof Soldier).count();
+            check();
+        } else if (result.getDefendingPlayer() == player) {
+            kills += result.getKilledAttackers().stream().filter(it -> it instanceof Soldier).count();
+            check();
         }
     }
 

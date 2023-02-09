@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 public class C_MonsterBait extends Card {
     public C_MonsterBait() {
-        super(69, "Köderstein", "Wählt ein neutrales Gebiet, alle benchbarten Monster bewegen sich dorthin.");
+        super(69, "KÃ¶derstein", "WÃ¤hlt ein neutrales Gebiet, alle benchbarten Monster bewegen sich dorthin.");
     }
 
     @Override
@@ -22,7 +22,7 @@ public class C_MonsterBait extends Card {
     @Override
     protected void play() {
         List<Area> areas = game.getMap().getAllAreas().stream().filter(LocationUtils::emptyOrWildMonster).collect(Collectors.toList());
-        Location location = selectHandler.selectLocation(owner, "Wähle einen Zielort", areas);
+        Location location = selectHandler.selectLocation(owner, "WÃ¤hle einen Zielort", areas);
         location.getConnectedLocations().stream().flatMap(it -> LocationUtils.getMonsters(it).stream())
                 .forEach(monster -> UnitControl.move(game, monster, location));
     }

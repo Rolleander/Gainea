@@ -46,8 +46,8 @@ public class TurnBuilder {
             List<Location> attackLocations = moveLocations.stream().filter(
                     moveLocation -> !PlayerUtils.getHostileArmy(player, moveLocation).isEmpty()).collect(Collectors.toList());
             moveLocations.removeAll(attackLocations);
-            List<BattleObject> moveableUnits = player.getUnits().stream().filter(it -> location == it.getLocation() && it.canMove()).collect(Collectors.toList());
-            List<BattleObject> attackingUnits = player.getUnits().stream().filter(it -> location == it.getLocation() && it.canAttack()).collect(Collectors.toList());
+            List<BattleObject> moveableUnits = player.getUnits().stream().filter(it -> location == it.getLocation() && it.canMove() && it.isControllable()).collect(Collectors.toList());
+            List<BattleObject> attackingUnits = player.getUnits().stream().filter(it -> location == it.getLocation() && it.canAttack() && it.isControllable()).collect(Collectors.toList());
             if (!attackLocations.isEmpty() && !attackingUnits.isEmpty()) {
                 actions.add(attackHandler.attack(attackingUnits, attackLocations));
             }
