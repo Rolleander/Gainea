@@ -37,7 +37,7 @@ public class C_UnknownSoldier extends DirectlyPlayedCard {
 
         @Override
         public void onDeath(BattleResult throughBattle) {
-            if(throughBattle!=null){
+            if(throughBattle!=null && throughBattle.getWinnerPlayer() != null){
                 throughBattle.getWinnerPlayer().getGoalHandler().addPoints(1);
             }
         }

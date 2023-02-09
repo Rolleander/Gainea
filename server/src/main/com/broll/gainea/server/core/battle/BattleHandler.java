@@ -55,7 +55,7 @@ public class BattleHandler {
         this.reactionResult = reactionResult;
     }
 
-    public void reset(){
+    public void reset() {
         this.battleActive = false;
     }
 
@@ -68,7 +68,7 @@ public class BattleHandler {
             this.allowRetreat = allowRetreat;
             this.attackers = new ArrayList<>(attackers);
             this.defenders = new ArrayList<>(defenders);
-            if(this.attackers.stream().anyMatch(BattleObject::isAlive) && this.defenders.stream().anyMatch(BattleObject::isAlive)){
+            if (this.attackers.stream().anyMatch(BattleObject::isAlive) && this.defenders.stream().anyMatch(BattleObject::isAlive)) {
                 killedDefenders.clear();
                 killedAttackers.clear();
                 battleActive = true;
@@ -96,7 +96,7 @@ public class BattleHandler {
         reactionResult.sendGameUpdate(start);
     }
 
-    private void sendFightIntention(){
+    private void sendFightIntention() {
         Location attackerSource = aliveAttackers.get(0).getLocation();
         NT_Battle_Intention intention = new NT_Battle_Intention();
         if (attackerOwner != null) {
@@ -182,7 +182,7 @@ public class BattleHandler {
             prepareNextRound();
         } else {
             //battle finished, all attackers or defenders died
-            ProcessingUtils.pause(BATTLE_ANIMATION_DELAY );
+            ProcessingUtils.pause(BATTLE_ANIMATION_DELAY);
             battleFinished(false);
         }
     }
@@ -236,7 +236,7 @@ public class BattleHandler {
         BattleResult result = new BattleResult(retreated, attackers, defenders, killedAttackers, killedDefenders, battleLocation);
         Log.info("Battle over! Surviving Attackers: (" + aliveAttackers.stream().map(it -> it.getId() + "| " + it.getName() + " " + it.getPower() + " " + it.getHealth()).collect(Collectors.joining(", ")) + ")" +
                 " Killed Attackers: (" + result.getKilledAttackers().stream().map(it -> it.getId() + "| " + it.getName() + " " + it.getPower() + " " + it.getHealth()).collect(Collectors.joining(", ")) + ")" +
-                " Surviving Defenders: (" + aliveDefenders.stream().map(it -> it.getId() + "| " + it.getName() + " " + it.getPower() + " " + it.getHealth()).collect(Collectors.joining(", ")) + ")"+
+                " Surviving Defenders: (" + aliveDefenders.stream().map(it -> it.getId() + "| " + it.getName() + " " + it.getPower() + " " + it.getHealth()).collect(Collectors.joining(", ")) + ")" +
                 " Killed Defenders: (" + result.getKilledDefenders().stream().map(it -> it.getId() + "| " + it.getName() + " " + it.getPower() + " " + it.getHealth()).collect(Collectors.joining(", ")) + ")");
         battleActive = false;
         GameUpdateReceiverProxy updateReceiver = game.getUpdateReceiver();
@@ -260,7 +260,12 @@ public class BattleHandler {
     private void rewardKilledMonsters(Player killer, List<BattleObject> units) {
         if (killer != null) {
             Fraction fraction = killer.getFraction();
-            units.stream().filter(it -> it instanceof Monster && it.getOwner() == null).map(it -> (Monster) it).forEach(fraction::killedMonster);
+            units.stream().filter(it -> it instanceof Monster).map(it -> (Monster) it).forEach(monster -> {
+                killer.getGoalHandler().addStars(monster.getStars());
+                if (monster.getOwner() == null) {
+                    fraction.killedMonster(monster);
+                }
+            });
         }
     }
 

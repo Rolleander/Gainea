@@ -14,12 +14,15 @@ public class G_KillStrongMonster extends Goal {
 
     @Override
     public void killed(BattleObject unit, BattleResult throughBattle) {
-        if (throughBattle != null && throughBattle.getAttackingPlayer() == player && throughBattle.getAttackers().size() == 1 &&
-                throughBattle.getKilledDefenders().stream().filter(it -> it instanceof Monster).map(it -> (Monster) it)
-                        .anyMatch(it -> it.getStars() >= 4 && it.getOwner() == null)) {
-            success();
+        if (unit instanceof Monster) {
+            Monster monster = (Monster) unit;
+            if (monster.getOwner() == null && monster.getStars() >= 4 && throughBattle != null
+                    && throughBattle.getAttackingPlayer() == player && throughBattle.getAttackers().size() == 1) {
+                success();
+            }
         }
     }
+
 
     @Override
     public void check() {

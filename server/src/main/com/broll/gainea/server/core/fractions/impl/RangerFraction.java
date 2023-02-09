@@ -24,7 +24,7 @@ public class RangerFraction extends Fraction {
     @Override
     protected FractionDescription description() {
         FractionDescription desc = new FractionDescription("");
-        desc.plus("Gegen wilde Monster +2 Zahl");
+        desc.plus("Gegen wilde Monster +1 Zahl");
         desc.plus("Auf Grasland +1 Würfel");
         desc.contra("Auf Schnee -2 Würfel");
         desc.contra("Auf Wüste -2 Würfel");
@@ -36,7 +36,7 @@ public class RangerFraction extends Fraction {
         FightingPower power = super.calcPower(location, fighters, enemies, isAttacker);
         if (enemies.stream().map(it -> it instanceof Monster).reduce(true, Boolean::logicalAnd)) {
             //vs monsters +2 Z
-            power.changeNumberPlus(2);
+            power.changeNumberPlus(1);
         }
         if (LocationUtils.isAreaType(location, AreaType.PLAINS)) {
             //plains +1 W

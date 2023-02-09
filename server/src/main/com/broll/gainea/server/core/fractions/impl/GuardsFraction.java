@@ -51,14 +51,5 @@ public class GuardsFraction extends Fraction {
         commander.setIcon(15);
     }
 
-    @Override
-    public void killedMonster(Monster monster) {
-        if (LocationUtils.isAreaType(monster.getLocation(), AreaType.SNOW, AreaType.LAKE)) {
-            //no card when monster on ice or water
-            return;
-        }
-        super.killedMonster(monster);
-    }
-
 
 }

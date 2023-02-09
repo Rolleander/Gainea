@@ -68,8 +68,6 @@ public abstract class Fraction extends GameUpdateReceiverAdapter {
     }
 
     public void killedMonster(Monster monster) {
-        //give player monster stars
-        owner.getGoalHandler().addStars(monster.getStars());
         //receive random card as bounty
         owner.getCardHandler().drawRandomCard();
     }

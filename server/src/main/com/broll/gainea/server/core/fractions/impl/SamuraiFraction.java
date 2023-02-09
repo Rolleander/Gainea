@@ -24,7 +24,7 @@ public class SamuraiFraction extends Fraction {
     protected FractionDescription description() {
         FractionDescription desc = new FractionDescription("");
         desc.plus("Als Angreifer +1 Zahl");
-        desc.plus("Auf Bergen +1 Zahl");
+        desc.plus("Auf Bergen +1 Würfel");
         desc.contra("Als Verteidiger höchste Würfelzahl 5");
         return desc;
     }
@@ -38,7 +38,7 @@ public class SamuraiFraction extends Fraction {
             power.setHighestNumber(5);
         }
         if (LocationUtils.isAreaType(location, AreaType.MOUNTAIN)) {
-            power.changeNumberPlus(1);
+            power.changeDiceNumber(1);
         }
         return power;
     }

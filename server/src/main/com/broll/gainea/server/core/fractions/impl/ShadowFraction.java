@@ -17,7 +17,7 @@ import com.broll.gainea.server.core.utils.UnitControl;
 import java.util.List;
 
 public class ShadowFraction extends Fraction {
-    private static float SUMMON_CHANCE = 0.3f;
+    private static float SUMMON_CHANCE = 0.35f;
 
     public ShadowFraction() {
         super(FractionType.SHADOW);
