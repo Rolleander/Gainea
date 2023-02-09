@@ -3,8 +3,6 @@ package com.broll.gainea.desktop;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.broll.gainea.Gainea;
-import com.broll.gainea.client.game.ClientMapContainer;
-import com.broll.gainea.client.ui.screens.TestMapScreen;
 import com.broll.gainea.client.ui.screens.TestScoreScreen;
 
 public class DesktopTestLauncher {

@@ -8,6 +8,7 @@ project.ext.mainClassName = "com.broll.gainea.desktop.DesktopLauncher"
 project.ext.assetsDir = new File("../core/assets")
 
 task runClient(dependsOn: classes, type: JavaExec) {
+    group = "Execution"
     main = project.mainClassName
     classpath = sourceSets.main.runtimeClasspath
     standardInput = System.in
@@ -16,6 +17,7 @@ task runClient(dependsOn: classes, type: JavaExec) {
 }
 
 task testClient(dependsOn: classes, type: JavaExec) {
+    group = "Execution"
     main = project.mainClassName
     classpath = sourceSets.main.runtimeClasspath
     standardInput = System.in

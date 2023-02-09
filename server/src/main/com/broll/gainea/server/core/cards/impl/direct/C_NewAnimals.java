@@ -15,9 +15,8 @@ public class C_NewAnimals extends DirectlyPlayedCard {
         int totalAtStart = E_SpawnMonster.getTotalStartMonsters(game);
         int currentMonsters = E_SpawnMonster.getCurrentMonsters(game);
         int missing = totalAtStart - currentMonsters;
-        UnitControl.spawnMonsters(game, RandomUtils.random(1, Math.max(missing, 1)));
+        UnitControl.spawnMonsters(game, RandomUtils.random(1, Math.max(missing, 3)));
     }
-
 
 
 }

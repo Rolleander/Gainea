@@ -7,14 +7,14 @@ public class GodDragon extends Monster {
     public GodDragon() {
         setIcon(58);
         setName("Götterdrache");
-        setStats(8,8);
+        setStats(8, 8);
         setBehavior(MonsterBehavior.AGGRESSIVE);
         setActivity(MonsterActivity.ALWAYS);
     }
 
     @Override
     public void onDeath(BattleResult throughBattle) {
-        if(throughBattle!=null){
+        if (throughBattle != null && throughBattle.getWinnerPlayer() != null) {
             throughBattle.getWinnerPlayer().getGoalHandler().addPoints(1);
         }
     }

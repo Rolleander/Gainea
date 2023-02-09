@@ -3,7 +3,8 @@ apply plugin: "java"
 sourceCompatibility = 1.8
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
-sourceSets.main.java.srcDirs = [ "src/" ]
+sourceSets.main.java.srcDirs = [ "src/main" ]
+sourceSets.main.resources.srcDir file("src/resources")
 
 task runServer(type: JavaExec) {
     group = "Execution"
@@ -11,4 +12,6 @@ task runServer(type: JavaExec) {
     description = "Runs the server"
     classpath =  sourceSets.main.runtimeClasspath
     main = "com.broll.gainea.server.ServerLauncher"
+
+     println "proeject dir is " + workingDir.toString()
 }
