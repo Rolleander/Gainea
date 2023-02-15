@@ -39,7 +39,7 @@ public abstract class OccupyGoal extends Goal {
     @Override
     public void botStrategy(GoalStrategy strategy) {
         strategy.setRequiredUnits(locations.size());
-        strategy.updateTargets(locations);
+        strategy.updateTargets(locations.stream().collect(Collectors.toSet()));
     }
 
     @Override

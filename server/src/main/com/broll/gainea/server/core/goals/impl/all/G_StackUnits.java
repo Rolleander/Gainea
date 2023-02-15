@@ -9,6 +9,7 @@ import com.broll.gainea.server.core.map.Area;
 import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.player.Player;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 public class G_StackUnits extends CustomOccupyGoal {
     private final static int COUNT = 6;
@@ -41,7 +42,7 @@ public class G_StackUnits extends CustomOccupyGoal {
     @Override
     public void botStrategy(GoalStrategy strategy) {
         strategy.setRequiredUnits(COUNT);
-        strategy.updateTargets(Lists.newArrayList(area));
+        strategy.updateTargets(Sets.newHashSet(area));
     }
 
 }

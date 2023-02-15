@@ -1,8 +1,11 @@
 package com.broll.gainea.server.core.goals.impl.all;
 
+import com.broll.gainea.server.core.bot.strategy.GoalStrategy;
 import com.broll.gainea.server.core.goals.CustomOccupyGoal;
 import com.broll.gainea.server.core.goals.GoalDifficulty;
 import com.broll.gainea.server.core.map.Area;
+
+import java.util.stream.Collectors;
 
 public class G_AnyAreas extends CustomOccupyGoal {
     private int count =0;
@@ -24,5 +27,11 @@ public class G_AnyAreas extends CustomOccupyGoal {
         if(current>=count){
             success();
         }
+    }
+
+    @Override
+    public void botStrategy(GoalStrategy strategy) {
+        strategy.updateTargets(game.getMap().getAllAreas().stream().collect(Collectors.toSet()));
+        strategy.setRequiredUnits(count);
     }
 }

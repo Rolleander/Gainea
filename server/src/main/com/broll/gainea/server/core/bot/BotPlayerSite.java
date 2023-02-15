@@ -14,6 +14,7 @@ import com.broll.gainea.net.NT_StartGame;
 import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.battle.BattleHandler;
 import com.broll.gainea.server.core.bot.strategy.BotStrategy;
+import com.broll.gainea.server.core.bot.strategy.StrategyConstants;
 import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.server.core.utils.ProcessingUtils;
 import com.broll.gainea.server.init.LobbyData;
@@ -39,7 +40,7 @@ public class BotPlayerSite extends BotSite<PlayerData> {
         sendServer(new NT_LoadedGame());
         GameContainer game = ((LobbyData) getBot().getServerLobby().getData()).getGame();
         Player player = getBot().getData().getGamePlayer();
-        strategy = new BotStrategy(game, player);
+        strategy = new BotStrategy(game, player, new StrategyConstants());
         this.botActionHandler = new BotActionHandler(game, player, strategy);
     }
 

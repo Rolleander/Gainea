@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -108,9 +109,9 @@ public class BotMove extends BotAction<NT_Action_Move> {
     }
 
     private Location provideNextTarget(Location from, GoalStrategy goalStrategy) {
-        List<Location> targets = goalStrategy.getTargetedGoalLocations();
+        Set<Location> targets = goalStrategy.getTargetedGoalLocations();
         if (targets.size() == 1) {
-            return targets.get(0);
+            return targets.iterator().next();
         }
         if (targets.isEmpty()) {
             return null;

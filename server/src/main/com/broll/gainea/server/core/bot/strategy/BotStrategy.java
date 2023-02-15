@@ -18,16 +18,24 @@ import java.util.stream.Collectors;
 
 public class BotStrategy {
 
-    private StrategyConstants constants = new StrategyConstants();
+    private StrategyConstants constants;
     private GameContainer game;
     private Player player;
     private List<GoalStrategy> goalStrategies = new ArrayList<>();
     private Map<BattleObject, GoalStrategy> strategizedUnits = new HashMap<>();
     private Map<BattleObject, Location> moveTargets = new HashMap<>();
 
-    public BotStrategy(GameContainer game, Player player) {
+    private GoalStrategy fallbackStrategy;
+
+    public BotStrategy(GameContainer game, Player player, StrategyConstants constants) {
         this.game = game;
         this.player = player;
+        this.constants = constants;
+        this.fallbackStrategy = FallbackStrategy.create(this,  player, game, constants);
+    }
+
+    public GoalStrategy getFallbackStrategy() {
+        return fallbackStrategy;
     }
 
     public Map<BattleObject, Location> getMoveTargets() {
@@ -62,7 +70,9 @@ public class BotStrategy {
             strategizeUnit(goal, unit);
             return;
         }
-        strategizeUnit(RandomUtils.pickRandom(goalStrategies), unit);
+        GoalStrategy goal = goalStrategies.stream().filter(it -> !it.getTargetLocations().isEmpty())
+                .findFirst().orElse(getFallbackStrategy());
+        strategizeUnit(goal, unit);
     }
 
     private void strategizeUnit(GoalStrategy goal, BattleObject unit) {
@@ -72,7 +82,15 @@ public class BotStrategy {
 
     public void prepareTurn() {
         strategizeNewUnits();
-        goalStrategies.forEach(GoalStrategy::prepare);
+        goalStrategies.forEach(goal -> {
+            List<BattleObject> deadUnits = goal.getUnits().stream().filter(BattleObject::isDead).collect(Collectors.toList());
+            deadUnits.forEach(unit -> {
+                strategizedUnits.remove(unit);
+                moveTargets.remove(unit);
+            });
+            goal.getUnits().removeAll(deadUnits);
+            goal.prepare();
+        });
     }
 
     public void synchronizeGoalStrategies() {
@@ -90,7 +108,10 @@ public class BotStrategy {
     }
 
     public void restrategizeUnits(GoalStrategy goal) {
-        goal.getUnits().forEach(it -> strategizedUnits.remove(it));
+        goal.getUnits().forEach(it -> {
+            strategizedUnits.remove(it);
+            moveTargets.remove(it);
+        });
         goal.getUnits().clear();
     }
 

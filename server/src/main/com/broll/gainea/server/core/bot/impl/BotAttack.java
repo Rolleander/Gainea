@@ -54,7 +54,7 @@ public class BotAttack extends BotAction<NT_Action_Attack> {
         }
         for (Pair<Location, Integer> option : options) {
             float winChance = getRequiredWinChance(option.getValue());
-            List<BattleObject> fighters = BattleSimulation.caclulateRequiredFighters(option.getKey(), usableUnits, winChance);
+            List<BattleObject> fighters = BattleSimulation.calculateRequiredFighters(option.getKey(), usableUnits, winChance);
             if (fighters != null) {
                 moveTo = locations.indexOf(option.getKey());
                 attackUnits = fighters.stream().mapToInt(it -> ArrayUtils.indexOf(unitIds, it.getId())).toArray();

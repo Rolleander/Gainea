@@ -1,6 +1,8 @@
 package com.broll.gainea.server.core.goals.impl.all;
 
 import com.broll.gainea.server.core.battle.BattleResult;
+import com.broll.gainea.server.core.bot.BotUtils;
+import com.broll.gainea.server.core.bot.strategy.GoalStrategy;
 import com.broll.gainea.server.core.goals.GoalDifficulty;
 import com.broll.gainea.server.core.goals.RoundGoal;
 
@@ -27,5 +29,13 @@ public class G_Fight extends RoundGoal {
             resetRounds();
         }
         fighting = false;
+    }
+
+    @Override
+    public void botStrategy(GoalStrategy strategy) {
+        strategy.setPrepareStrategy(()->{
+            strategy.updateTargets(BotUtils.huntPlayersTargets(game));
+            strategy.setRequiredUnits(5);
+        });
     }
 }

@@ -11,8 +11,12 @@ import com.broll.gainea.server.core.utils.LocationUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class BotUtils {
 
@@ -66,9 +70,9 @@ public class BotUtils {
         return index;
     }
 
-    public static Pair<Location, Integer> getBestPath(List<Location> fromOptions, Location to) {
+    public static Pair<Location, Integer> getBestPath(Collection<Location> fromOptions, Location to) {
         int distance = Integer.MAX_VALUE;
-        Location location = fromOptions.get(0);
+        Location location = fromOptions.iterator().next();
         for (Location from : fromOptions) {
             int d = LocationUtils.getWalkingDistance(from, to);
             if (d != -1 && d < distance) {
@@ -79,9 +83,9 @@ public class BotUtils {
         return Pair.of(location, distance);
     }
 
-    public static Pair<Location, Integer> getBestPath(Location from, List<Location> toOptions) {
+    public static Pair<Location, Integer> getBestPath(Location from, Collection<Location> toOptions) {
         int distance = Integer.MAX_VALUE;
-        Location location = toOptions.get(0);
+        Location location = toOptions.iterator().next();
         for (Location to : toOptions) {
             int d = LocationUtils.getWalkingDistance(from, to);
             if (d != -1 && d < distance) {
@@ -90,6 +94,14 @@ public class BotUtils {
             }
         }
         return Pair.of(location, distance);
+    }
+
+    public static Set<Location> huntPlayersTargets(GameContainer game){
+        return game.getPlayers().stream().flatMap(it->it.getControlledLocations().stream()).collect(Collectors.toSet());
+    }
+
+    public static Set<Location> huntPlayerTargets(Player player){
+        return new HashSet<>(player.getControlledLocations());
     }
 
 }

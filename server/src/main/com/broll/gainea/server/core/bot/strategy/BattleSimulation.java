@@ -15,7 +15,7 @@ public class BattleSimulation {
 
     private static int SIMULATIONS = 10;
 
-    public static List<BattleObject> caclulateRequiredFighters(Location location, List<BattleObject> units, float winChance) {
+    public static List<BattleObject> calculateRequiredFighters(Location location, List<BattleObject> units, float winChance) {
         List<BattleObject> fighters = new ArrayList<>();
         for (BattleObject unit : units) {
             fighters.add(unit);

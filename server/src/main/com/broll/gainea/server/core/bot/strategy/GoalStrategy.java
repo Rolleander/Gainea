@@ -11,8 +11,10 @@ import com.broll.gainea.server.core.utils.PlayerUtils;
 import org.apache.commons.lang3.tuple.MutablePair;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class GoalStrategy {
@@ -23,7 +25,7 @@ public class GoalStrategy {
     private GameContainer game;
     private StrategyConstants constants;
     private List<BattleObject> units = new ArrayList<>();
-    private List<Location> targetLocations = new ArrayList<>();
+    private Set<Location> targetLocations = new HashSet<>();
     private IPrepareStrategy prepareStrategy;
     private int requiredUnits;
     private float score = -1;
@@ -35,7 +37,9 @@ public class GoalStrategy {
         this.player = player;
         this.game = game;
         this.constants = constants;
-        goal.botStrategy(this);
+        if (goal != null) {
+            goal.botStrategy(this);
+        }
     }
 
     public boolean allowFighting(BattleObject unit) {
@@ -59,7 +63,10 @@ public class GoalStrategy {
         return units;
     }
 
-    public void updateTargets(List<Location> targetLocations) {
+    public void updateTargets(Set<Location> targetLocations) {
+        if (this.targetLocations.isEmpty() && !targetLocations.isEmpty()) {
+            strategy.restrategizeUnits(strategy.getFallbackStrategy());
+        }
         this.targetLocations = targetLocations;
         units.forEach(it -> strategy.getMoveTargets().remove(it));
         requiredUnits = Math.max(requiredUnits, targetLocations.size());
@@ -77,14 +84,13 @@ public class GoalStrategy {
     }
 
     public void prepare() {
-        units.removeIf(BattleObject::isDead);
         if (prepareStrategy != null) {
             prepareStrategy.prepare();
         }
     }
 
     public boolean requiresMoreUnits() {
-        return units.size() < requiredUnits;
+        return units.size() < requiredUnits && !getTargetLocations().isEmpty();
     }
 
     public void strategizeUnit(BattleObject unit) {
@@ -110,12 +116,12 @@ public class GoalStrategy {
         return targetLocations.stream().mapToInt(it -> PlayerUtils.getUnits(player, it).size()).min().orElse(0);
     }
 
-    public List<Location> getTargetedGoalLocations() {
+    public Set<Location> getTargetedGoalLocations() {
         int lowestOccupation = getLowesOccupations();
-        return targetLocations.stream().filter(it -> PlayerUtils.getUnits(player, it).size() == lowestOccupation).collect(Collectors.toList());
+        return targetLocations.stream().filter(it -> PlayerUtils.getUnits(player, it).size() == lowestOccupation).collect(Collectors.toSet());
     }
 
-    public List<Location> getTargetLocations() {
+    public Set<Location> getTargetLocations() {
         return targetLocations;
     }
 
