@@ -1,5 +1,6 @@
 package com.broll.gainea.server.core.goals;
 
+import com.broll.gainea.server.core.bot.strategy.GoalStrategy;
 import com.broll.gainea.server.core.map.Area;
 import com.broll.gainea.server.core.map.AreaCollection;
 import com.broll.gainea.server.core.map.AreaID;
@@ -9,7 +10,6 @@ import com.broll.gainea.server.core.map.ExpansionType;
 import com.broll.gainea.server.core.map.IslandID;
 import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.map.MapContainer;
-import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.MapObject;
 
 import org.slf4j.Logger;
@@ -34,6 +34,12 @@ public abstract class OccupyGoal extends Goal {
 
     public OccupyGoal(GoalDifficulty difficulty, String text) {
         super(difficulty, text);
+    }
+
+    @Override
+    public void botStrategy(GoalStrategy strategy) {
+        strategy.setRequiredUnits(locations.size());
+        strategy.updateTargets(locations);
     }
 
     @Override

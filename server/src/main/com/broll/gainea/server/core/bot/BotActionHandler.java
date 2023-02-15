@@ -3,9 +3,9 @@ package com.broll.gainea.server.core.bot;
 import com.broll.gainea.misc.PackageLoader;
 import com.broll.gainea.net.NT_Action;
 import com.broll.gainea.net.NT_PlayerTurnActions;
-import com.broll.gainea.net.NT_PlayerTurnStart;
 import com.broll.gainea.net.NT_Reaction;
 import com.broll.gainea.server.core.GameContainer;
+import com.broll.gainea.server.core.bot.strategy.BotStrategy;
 import com.broll.gainea.server.core.player.Player;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -18,18 +18,20 @@ public class BotActionHandler {
     private final static String PACKAGE_PATH = "com.broll.gainea.server.core.bot.impl";
     private GameContainer game;
     private Player bot;
+    private BotStrategy strategy;
     private Map<Class<? extends NT_Action>, BotAction> actions = new HashMap<>();
     private BotDecision endTurnDecision = new EndTurnDecision();
 
-    public BotActionHandler(GameContainer game, Player bot) {
+    public BotActionHandler(GameContainer game, Player bot, BotStrategy strategy) {
         this.game = game;
         this.bot = bot;
-        endTurnDecision.init(game, bot);
+        this.strategy = strategy;
+        endTurnDecision.init(game, bot, strategy);
         new PackageLoader<BotAction>(BotAction.class, PACKAGE_PATH).instantiateAll().forEach(a -> initAction(a.getActionClass(), a));
     }
 
     private void initAction(Class<? extends NT_Action> actionClass, BotAction botAction) {
-        botAction.init(game, bot);
+        botAction.init(game, bot, strategy);
         actions.put(actionClass, botAction);
     }
 

@@ -102,7 +102,9 @@ project(":android") {
     configurations { natives }
 
     dependencies {
-        implementation project(":core")
+        implementation (project(":core")) {
+            exclude (group: "org.slf4j", module: "slf4j-reload4j")
+        }
         // https://mvnrepository.com/artifact/io.github.classgraph/classgraph
         api "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
         natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a"

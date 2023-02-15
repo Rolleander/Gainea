@@ -5,6 +5,7 @@ import com.broll.gainea.net.NT_Reaction;
 
 public abstract class BotAction<A extends NT_Action> extends BotDecision<A, NT_Reaction> {
 
+
     protected abstract void handleAction(A action, NT_Reaction reaction);
 
     @Override

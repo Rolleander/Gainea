@@ -1,17 +1,18 @@
 package com.broll.gainea.server.core.goals;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import com.broll.gainea.net.NT_Event_FinishedGoal;
 import com.broll.gainea.net.NT_Goal;
 import com.broll.gainea.net.NT_GoalProgression;
 import com.broll.gainea.server.core.GameContainer;
+import com.broll.gainea.server.core.bot.strategy.GoalStrategy;
 import com.broll.gainea.server.core.map.ExpansionType;
 import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.server.core.processing.GameUpdateReceiverAdapter;
 import com.broll.gainea.server.core.utils.GameUtils;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public abstract class Goal extends GameUpdateReceiverAdapter {
 
@@ -113,6 +114,8 @@ public abstract class Goal extends GameUpdateReceiverAdapter {
     public String getRestrictionInfo() {
         return restrictionInfo;
     }
+
+    public abstract void botStrategy(GoalStrategy strategy);
 
     @Override
     public String toString() {
