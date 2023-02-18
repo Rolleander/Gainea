@@ -2,7 +2,6 @@ package com.broll.gainea.server.core.bot.impl;
 
 import com.broll.gainea.misc.RandomUtils;
 import com.broll.gainea.net.NT_Action_SelectChoice;
-import com.broll.gainea.net.NT_PlayerTurnActions;
 import com.broll.gainea.net.NT_Reaction;
 import com.broll.gainea.server.core.bot.BotAction;
 
@@ -17,8 +16,9 @@ public class BotSelect extends BotAction<NT_Action_SelectChoice> {
         chooseOption.offer(option);
     }
 
+
     @Override
-    protected void handleAction(NT_Action_SelectChoice action, NT_Reaction reaction) {
+    protected void react(NT_Action_SelectChoice action, NT_Reaction reaction) {
         Integer option = chooseOption.poll();
         if (option != null) {
             reaction.option = option;
@@ -36,8 +36,4 @@ public class BotSelect extends BotAction<NT_Action_SelectChoice> {
         return NT_Action_SelectChoice.class;
     }
 
-    @Override
-    public float score(NT_Action_SelectChoice action, NT_PlayerTurnActions turn) {
-        return -1;
-    }
 }

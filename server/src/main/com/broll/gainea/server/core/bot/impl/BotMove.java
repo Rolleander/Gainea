@@ -1,10 +1,9 @@
 package com.broll.gainea.server.core.bot.impl;
 
 import com.broll.gainea.net.NT_Action_Move;
-import com.broll.gainea.net.NT_PlayerTurnActions;
 import com.broll.gainea.net.NT_Reaction;
 import com.broll.gainea.net.NT_Unit;
-import com.broll.gainea.server.core.bot.BotAction;
+import com.broll.gainea.server.core.bot.BotOptionalAction;
 import com.broll.gainea.server.core.bot.BotUtils;
 import com.broll.gainea.server.core.bot.strategy.GoalStrategy;
 import com.broll.gainea.server.core.map.Location;
@@ -23,44 +22,40 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-public class BotMove extends BotAction<NT_Action_Move> {
+public class BotMove extends BotOptionalAction<NT_Action_Move, BotMove.MoveOption> {
 
     private final static int MOVE_SCORE = 10;
-    private int[] moveUnits;
-    private int moveTo;
+
+
+    @Override
+    protected void react(NT_Action_Move action, NT_Reaction reaction) {
+        reaction.option = getSelectedOption().moveTo;
+        reaction.options = getSelectedOption().moveUnits;
+    }
+
+    @Override
+    public MoveOption score(NT_Action_Move action) {
+        List<Location> locations = BotUtils.getLocations(game, action.possibleLocations);
+        List<BattleObject> units = BotUtils.getObjects(game, action.units);
+        List<GoalStrategy> goalStrategies = units.stream().map(it -> strategy.getStrategy(it)).distinct().collect(Collectors.toList());
+        for (GoalStrategy goalStrategy : goalStrategies) {
+            List<BattleObject> goalUnits = units.stream().filter(it -> strategy.getStrategy(it) == goalStrategy).collect(Collectors.toList());
+            MoveOption move = chooseStep(goalStrategy, action.units, goalUnits, locations);
+            if (move != null) {
+                return move;
+            }
+        }
+        return null;
+    }
+
 
     @Override
     public Class<NT_Action_Move> getActionClass() {
         return NT_Action_Move.class;
     }
 
-    @Override
-    protected void handleAction(NT_Action_Move action, NT_Reaction reaction) {
-        reaction.option = moveTo;
-        reaction.options = moveUnits;
-    }
 
-    @Override
-    public float score(NT_Action_Move action, NT_PlayerTurnActions turn) {
-        List<Location> locations = BotUtils.getLocations(game, action.possibleLocations);
-        List<BattleObject> units = BotUtils.getObjects(game, action.units);
-        List<GoalStrategy> goalStrategies = units.stream().map(it -> strategy.getStrategy(it)).distinct().collect(Collectors.toList());
-        Location moveFrom = units.get(0).getLocation();
-        for (GoalStrategy goalStrategy : goalStrategies) {
-            List<BattleObject> goalUnits = units.stream().filter(it -> strategy.getStrategy(it) == goalStrategy).collect(Collectors.toList());
-            int occupyingUnits = goalUnits.size();
-            int moveUnits = occupyingUnits;
-            if (goalStrategy.getTargetLocations().contains(moveFrom)) {
-                moveUnits -= goalStrategy.getLowesOccupations();
-            }
-            if (moveUnits > 0) {
-                return chooseStep(goalStrategy, action.units, units.subList(0, moveUnits), locations);
-            }
-        }
-        return -1;
-    }
-
-    private int chooseStep(GoalStrategy goalStrategy, NT_Unit[] nt_units, List<BattleObject> units, List<Location> options) {
+    private MoveOption chooseStep(GoalStrategy goalStrategy, NT_Unit[] nt_units, List<BattleObject> units, List<Location> options) {
         List<Location> targets = getPathTargets(units, goalStrategy);
         Location option = null;
         int distance = Integer.MAX_VALUE;
@@ -68,7 +63,7 @@ public class BotMove extends BotAction<NT_Action_Move> {
         for (int i = 0; i < units.size(); i++) {
             BattleObject unit = units.get(i);
             Location target = targets.get(i);
-            if (target == null) {
+            if (target == null || target == unit.getLocation()) {
                 continue;
             }
             Pair<Location, Integer> path = BotUtils.getBestPath(bot, options, target);
@@ -82,12 +77,13 @@ public class BotMove extends BotAction<NT_Action_Move> {
             }
         }
         if (option == null) {
-            return -1;
+            return null;
         }
         int[] unitIds = Arrays.stream(nt_units).mapToInt(it -> it.id).toArray();
-        moveTo = options.indexOf(option);
-        moveUnits = moveTogether.stream().mapToInt(it -> ArrayUtils.indexOf(unitIds, it.getId())).toArray();
-        return Math.max(MOVE_SCORE - distance, 1);
+        MoveOption moveOption = new MoveOption(Math.max(MOVE_SCORE - distance, 1));
+        moveOption.moveTo = options.indexOf(option);
+        moveOption.moveUnits = moveTogether.stream().mapToInt(it -> ArrayUtils.indexOf(unitIds, it.getId())).toArray();
+        return moveOption;
     }
 
     private List<Location> getPathTargets(List<BattleObject> units, GoalStrategy goalStrategy) {
@@ -136,6 +132,15 @@ public class BotMove extends BotAction<NT_Action_Move> {
         //todo check if target is same as existing unit but closer,
         return BotUtils.getLowestScoreEntry(new ArrayList<>(targetCounts.entrySet()),
                 it -> it.getValue().get()).getKey();
+    }
+
+    public static class MoveOption extends BotOption {
+        private int[] moveUnits;
+        private int moveTo;
+
+        public MoveOption(float score) {
+            super(score);
+        }
     }
 
 }

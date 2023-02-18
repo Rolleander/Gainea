@@ -31,7 +31,7 @@ public class BotStrategy {
         this.game = game;
         this.player = player;
         this.constants = constants;
-        this.fallbackStrategy = FallbackStrategy.create(this,  player, game, constants);
+        this.fallbackStrategy = FallbackStrategy.create(this, player, game, constants);
     }
 
     public GoalStrategy getFallbackStrategy() {

@@ -79,6 +79,7 @@ public class PlaceUnitAction extends AbstractActionHandler<NT_Action_PlaceUnit, 
         actionHandlers.getReactionActions().requireAction(player, new RequiredActionContext<>(context, message));
         Log.trace("Wait for place unit reaction");
         processingBlock.waitFor();
+        UnitControl.spawn(game, context.unitToPlace, context.selectedLocation);
         return Pair.of(object, context.selectedLocation);
     }
 
@@ -86,10 +87,8 @@ public class PlaceUnitAction extends AbstractActionHandler<NT_Action_PlaceUnit, 
     public void handleReaction(Context context, NT_Action_PlaceUnit action, NT_Reaction reaction) {
         Log.trace("Handle place unit reaction");
         int nr = reaction.option;
-        BattleObject unit = context.unitToPlace;
         Location location = context.locations.get(nr);
         context.selectedLocation = location;
-        UnitControl.spawn(game, unit, location);
         processingBlock.resume();
     }
 

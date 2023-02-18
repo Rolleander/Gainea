@@ -1,6 +1,10 @@
 package com.broll.gainea.server.core.processing;
 
 import com.broll.gainea.server.core.GameContainer;
+import com.broll.gainea.server.init.LobbyData;
+import com.broll.gainea.server.init.PlayerData;
+import com.broll.networklib.server.impl.ServerLobby;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,11 +26,12 @@ public class ProcessingCore {
     private Runnable finishedProcessingListener;
     private Queue<RunnableWrapper> queue = new ConcurrentLinkedQueue<>();
 
-    public ProcessingCore(GameContainer game, Runnable finishedProcessingListener) {
+    public ProcessingCore(GameContainer game, Runnable finishedProcessingListener, ServerLobby<LobbyData, PlayerData> lobby) {
         this.game = game;
         this.finishedProcessingListener = finishedProcessingListener;
-        this.executor = Executors.newScheduledThreadPool(1);
-        this.parallelExecutor = Executors.newScheduledThreadPool(3);
+        int id = lobby.getId();
+        this.executor = Executors.newScheduledThreadPool(1, new ThreadFactoryBuilder().setNameFormat("gainea-" + id).build());
+        this.parallelExecutor = Executors.newScheduledThreadPool(3, new ThreadFactoryBuilder().setNameFormat("gainea-" + id + "-%d").build());
     }
 
     public void executeParallel(Runnable runnable) {
@@ -74,7 +79,6 @@ public class ProcessingCore {
             execute(wrapper);
         } else {
             //done with all
-            Log.trace(this + " is last wrapper, finished processing! ");
             finishedProcessingListener.run();
         }
     }
@@ -90,7 +94,6 @@ public class ProcessingCore {
         @Override
         public void run() {
             try {
-                Log.trace("execute wrapper " + this);
                 runnable.run();
             } catch (Exception e) {
                 Log.error("Processing exception:", e);

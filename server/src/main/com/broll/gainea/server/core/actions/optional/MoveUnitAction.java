@@ -1,16 +1,15 @@
 package com.broll.gainea.server.core.actions.optional;
 
-import com.broll.gainea.net.NT_Unit;
-import com.broll.gainea.server.core.actions.ActionContext;
-import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.net.NT_Action_Move;
 import com.broll.gainea.net.NT_Reaction;
+import com.broll.gainea.net.NT_Unit;
 import com.broll.gainea.server.core.actions.AbstractActionHandler;
+import com.broll.gainea.server.core.actions.ActionContext;
 import com.broll.gainea.server.core.map.Location;
+import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.MapObject;
 import com.broll.gainea.server.core.utils.LocationUtils;
 import com.broll.gainea.server.core.utils.UnitControl;
-import com.broll.networklib.server.impl.ConnectionSite;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

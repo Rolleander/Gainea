@@ -1,11 +1,17 @@
 package com.broll.gainea.server.core;
 
 import com.broll.gainea.net.NT_BoardEffect;
+import com.broll.gainea.net.NT_BoardObject;
+import com.broll.gainea.net.NT_BoardUpdate;
 import com.broll.gainea.net.NT_GameOver;
+import com.broll.gainea.net.NT_Player;
 import com.broll.gainea.net.NT_ReconnectGame;
 import com.broll.gainea.net.NT_StartGame;
 import com.broll.gainea.server.core.actions.ActionContext;
+import com.broll.gainea.server.core.actions.ActionHandlers;
 import com.broll.gainea.server.core.actions.ReactionActions;
+import com.broll.gainea.server.core.actions.ReactionHandler;
+import com.broll.gainea.server.core.actions.TurnBuilder;
 import com.broll.gainea.server.core.battle.BattleHandler;
 import com.broll.gainea.server.core.cards.CardStorage;
 import com.broll.gainea.server.core.goals.GoalStorage;
@@ -16,19 +22,13 @@ import com.broll.gainea.server.core.objects.MonsterFactory;
 import com.broll.gainea.server.core.objects.buffs.BuffProcessor;
 import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.server.core.player.PlayerFactory;
-import com.broll.gainea.net.NT_BoardObject;
-import com.broll.gainea.net.NT_BoardUpdate;
-import com.broll.gainea.net.NT_Player;
 import com.broll.gainea.server.core.processing.GameUpdateReceiverProxy;
 import com.broll.gainea.server.core.processing.ProcessingCore;
 import com.broll.gainea.server.core.stats.GameStatistic;
 import com.broll.gainea.server.init.LobbyData;
 import com.broll.gainea.server.init.PlayerData;
-import com.broll.gainea.server.core.actions.ActionHandlers;
-import com.broll.gainea.server.core.actions.ReactionHandler;
-import com.broll.gainea.server.core.actions.TurnBuilder;
-import com.broll.networklib.server.impl.ConnectionSite;
 import com.broll.networklib.server.impl.ServerLobby;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,7 +78,7 @@ public class GameContainer {
     public void initHandlers(ReactionActions reactionResult) {
         ActionHandlers actionHandlers = new ActionHandlers(this, reactionResult);
         this.reactionHandler = new ReactionHandler(this, actionHandlers);
-        this.processingCore = new ProcessingCore(this, reactionHandler::finishedProcessing);
+        this.processingCore = new ProcessingCore(this, reactionHandler::finishedProcessing, lobby);
         this.turnBuilder = new TurnBuilder(this, actionHandlers);
         this.battleHandler = new BattleHandler(this, reactionResult);
         this.goalStorage = new GoalStorage(this, actionHandlers, lobby.getData().getGoalTypes());
@@ -112,7 +112,7 @@ public class GameContainer {
         NT_StartGame startGame = new NT_StartGame();
         fillUpdate(startGame);
         startGame.expansionsSetting = map.getExpansionSetting().ordinal();
-        startGame.pointLimit =lobby.getData().getPointLimit();
+        startGame.pointLimit = lobby.getData().getPointLimit();
         return startGame;
     }
 
@@ -137,7 +137,7 @@ public class GameContainer {
         reconnectGame.expansionsSetting = map.getExpansionSetting().ordinal();
         reconnectGame.cards = player.getCardHandler().ntCards();
         reconnectGame.goals = player.getGoalHandler().ntGoals();
-        reconnectGame.pointLimit =lobby.getData().getPointLimit();
+        reconnectGame.pointLimit = lobby.getData().getPointLimit();
         return reconnectGame;
     }
 
@@ -232,5 +232,7 @@ public class GameContainer {
         return buffProcessor;
     }
 
-    public List<MapEffect> getEffects() { return effects;    }
+    public List<MapEffect> getEffects() {
+        return effects;
+    }
 }

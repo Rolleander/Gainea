@@ -1,6 +1,5 @@
 package com.broll.gainea.server.core.bot;
 
-import com.broll.gainea.net.NT_Action;
 import com.broll.gainea.net.NT_Battle_Reaction;
 import com.broll.gainea.net.NT_Battle_Start;
 import com.broll.gainea.net.NT_Battle_Update;
@@ -23,7 +22,6 @@ import com.broll.gainea.server.init.PlayerData;
 import com.broll.networklib.PackageReceiver;
 import com.broll.networklib.server.impl.BotSite;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -83,7 +81,7 @@ public class BotPlayerSite extends BotSite<PlayerData> {
     }
 
     @PackageReceiver
-    public void newGoal(NT_Event_FinishedGoal nt) {
+    public void finishedGoal(NT_Event_FinishedGoal nt) {
         if (nt.player == getBot().getId()) {
             strategy.synchronizeGoalStrategies();
         }
@@ -91,10 +89,7 @@ public class BotPlayerSite extends BotSite<PlayerData> {
 
     private void pickTurnAction(NT_PlayerTurnActions actions) {
         strategy.prepareTurn();
-        Pair<BotDecision, NT_Action> decision = botActionHandler.bestScore(actions);
-        NT_Action pickedAction = decision.getRight();
-        //perform turn action
-        sendServer(decision.getLeft().perform(pickedAction));
+        sendServer(botActionHandler.createBestReaction(actions));
     }
 
 }

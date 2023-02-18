@@ -9,7 +9,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.broll.gainea.Gainea;
 import com.broll.gainea.client.ui.utils.LabelUtils;
-import com.broll.networklib.server.impl.ConnectionSite;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,8 +44,8 @@ public class BattleRollRender {
     public void start(int[] attackRolls, int[] defenderRolls, IRollAnimationListener listener) {
         this.attacker = new Rolls(attackRolls);
         this.defender = new Rolls(defenderRolls);
-        Log.info("attacker rolls "+Arrays.stream(attackRolls).boxed().collect(Collectors.toList()));
-        Log.info("defender rolls "+Arrays.stream(defenderRolls).boxed().collect(Collectors.toList()));
+        Log.info("attacker rolls " + Arrays.stream(attackRolls).boxed().collect(Collectors.toList()));
+        Log.info("defender rolls " + Arrays.stream(defenderRolls).boxed().collect(Collectors.toList()));
         this.listener = listener;
         showRolls = 0;
         rollAnimation = 0;
@@ -131,8 +130,8 @@ public class BattleRollRender {
                 } else if (state[i] == 2) {
                     back = rolllose;
                 }
-                batch.setColor(1,1,1,parentAlpha);
-                batch.draw(back, x - 7, y - 10);
+                batch.setColor(1, 1, 1, parentAlpha);
+                batch.draw(back, x - 8, y - 10);
                 numberLabel.setText("" + roll);
                 numberLabel.setPosition(x, y);
                 numberLabel.draw(batch, parentAlpha);
