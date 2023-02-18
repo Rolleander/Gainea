@@ -4,6 +4,7 @@ import com.broll.gainea.net.NT_Event_OtherPlayerReceivedGoal;
 import com.broll.gainea.net.NT_Event_ReceivedGoal;
 import com.broll.gainea.net.NT_Event_ReceivedPoints;
 import com.broll.gainea.net.NT_Event_ReceivedStars;
+import com.broll.gainea.net.NT_Event_RemoveGoal;
 import com.broll.gainea.net.NT_Goal;
 import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.goals.Goal;
@@ -63,6 +64,9 @@ public class GoalHandler {
     public void removeGoal(Goal oldGoal) {
         goals.remove(oldGoal);
         game.getUpdateReceiver().unregister(oldGoal);
+        NT_Event_RemoveGoal nt = new NT_Event_RemoveGoal();
+        nt.goal = oldGoal.nt();
+        player.getServerPlayer().sendTCP(nt);
     }
 
     public void newGoal(Goal goal) {
