@@ -31,6 +31,8 @@ public class GoalStrategy {
     private float score = -1;
     private BotStrategy strategy;
 
+    private boolean spreadUnits = true;
+
     public GoalStrategy(BotStrategy strategy, Goal goal, Player player, GameContainer game, StrategyConstants constants) {
         this.strategy = strategy;
         this.goal = goal;
@@ -40,6 +42,14 @@ public class GoalStrategy {
         if (goal != null) {
             goal.botStrategy(this);
         }
+    }
+
+    public void setSpreadUnits(boolean spreadUnits) {
+        this.spreadUnits = spreadUnits;
+    }
+
+    public boolean isSpreadUnits() {
+        return spreadUnits;
     }
 
     public boolean allowFighting(BattleObject unit) {
@@ -98,7 +108,7 @@ public class GoalStrategy {
     }
 
     public int getClosestDistance(Location location) {
-        return BotUtils.getBestPath(location, getTargetLocations()).getValue();
+        return BotUtils.getBestPath(player, location, getTargetLocations()).getValue();
     }
 
     public void scoreLocations(Map<Location, MutablePair<GoalStrategy, Integer>> locationScores) {
@@ -116,11 +126,6 @@ public class GoalStrategy {
         return targetLocations.stream().mapToInt(it -> PlayerUtils.getUnits(player, it).size()).min().orElse(0);
     }
 
-    public Set<Location> getTargetedGoalLocations() {
-        int lowestOccupation = getLowesOccupations();
-        return targetLocations.stream().filter(it -> PlayerUtils.getUnits(player, it).size() == lowestOccupation).collect(Collectors.toSet());
-    }
-
     public Set<Location> getTargetLocations() {
         return targetLocations;
     }
@@ -129,4 +134,7 @@ public class GoalStrategy {
         return goal;
     }
 
+    public BotStrategy getBotStrategy() {
+        return strategy;
+    }
 }

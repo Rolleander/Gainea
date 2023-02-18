@@ -42,7 +42,7 @@ public class TurnBuilder {
         AttackAction attackHandler = actionHandlers.getHandler(AttackAction.class);
         MoveUnitAction moveHandler = actionHandlers.getHandler(MoveUnitAction.class);
         player.getControlledLocations().forEach(location -> {
-            List<Location> moveLocations = player.getFraction().getMoveLocations(location).stream().filter(Location::isTraversable).collect(Collectors.toList());
+            List<Location> moveLocations = player.getFraction().getMoveLocations(location);
             List<Location> attackLocations = moveLocations.stream().filter(
                     moveLocation -> !PlayerUtils.getHostileArmy(player, moveLocation).isEmpty()).collect(Collectors.toList());
             moveLocations.removeAll(attackLocations);

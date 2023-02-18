@@ -1,5 +1,6 @@
 package com.broll.gainea.server.core.goals.impl.all;
 
+import com.broll.gainea.server.core.bot.strategy.GoalStrategy;
 import com.broll.gainea.server.core.goals.CustomOccupyGoal;
 import com.broll.gainea.server.core.goals.GoalDifficulty;
 import com.broll.gainea.server.core.map.Location;
@@ -20,5 +21,10 @@ public class G_Spread extends CustomOccupyGoal {
         if (containers >= 5) {
             success();
         }
+    }
+
+    @Override
+    public void botStrategy(GoalStrategy strategy) {
+        //todo
     }
 }

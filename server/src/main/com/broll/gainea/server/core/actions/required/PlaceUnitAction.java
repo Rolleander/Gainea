@@ -1,30 +1,30 @@
 package com.broll.gainea.server.core.actions.required;
 
+import com.broll.gainea.net.NT_Action_PlaceUnit;
+import com.broll.gainea.net.NT_Reaction;
+import com.broll.gainea.server.core.actions.AbstractActionHandler;
 import com.broll.gainea.server.core.actions.ActionContext;
 import com.broll.gainea.server.core.actions.RequiredActionContext;
+import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.Commander;
 import com.broll.gainea.server.core.objects.Monster;
 import com.broll.gainea.server.core.objects.Soldier;
-import com.broll.gainea.net.NT_Action_PlaceUnit;
-import com.broll.gainea.net.NT_Reaction;
-import com.broll.gainea.server.core.actions.AbstractActionHandler;
-import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.server.core.utils.LocationUtils;
 import com.broll.gainea.server.core.utils.UnitControl;
-import com.broll.networklib.server.impl.ConnectionSite;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
 public class PlaceUnitAction extends AbstractActionHandler<NT_Action_PlaceUnit, PlaceUnitAction.Context> {
 
     private final static Logger Log = LoggerFactory.getLogger(PlaceUnitAction.class);
+
+    private BattleObject unitToPlace;
 
     class Context extends ActionContext<NT_Action_PlaceUnit> {
         BattleObject unitToPlace;
@@ -65,7 +65,7 @@ public class PlaceUnitAction extends AbstractActionHandler<NT_Action_PlaceUnit, 
     }
 
     public Pair<BattleObject, Location> placeUnit(Player player, BattleObject object, List<Location> locations, String message) {
-        if(locations.isEmpty()){
+        if (locations.isEmpty()) {
             throw new RuntimeException("Invalid place unit context: list of locations is empty");
         }
         Log.debug("Place unit action");
@@ -75,6 +75,7 @@ public class PlaceUnitAction extends AbstractActionHandler<NT_Action_PlaceUnit, 
         Context context = new Context(placeUnit);
         context.locations = locations;
         context.unitToPlace = object;
+        this.unitToPlace = context.unitToPlace;
         actionHandlers.getReactionActions().requireAction(player, new RequiredActionContext<>(context, message));
         Log.trace("Wait for place unit reaction");
         processingBlock.waitFor();
@@ -90,5 +91,9 @@ public class PlaceUnitAction extends AbstractActionHandler<NT_Action_PlaceUnit, 
         context.selectedLocation = location;
         UnitControl.spawn(game, unit, location);
         processingBlock.resume();
+    }
+
+    public BattleObject getUnitToPlace() {
+        return unitToPlace;
     }
 }

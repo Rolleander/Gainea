@@ -3,17 +3,17 @@ package com.broll.gainea.server.core.battle;
 import com.broll.gainea.net.NT_Battle_Damage;
 import com.broll.gainea.net.NT_Battle_Intention;
 import com.broll.gainea.net.NT_Battle_Reaction;
-import com.broll.gainea.server.core.fractions.Fraction;
-import com.broll.gainea.server.core.objects.BattleObject;
-import com.broll.gainea.server.core.objects.MapObject;
-import com.broll.gainea.server.core.objects.Monster;
-import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.net.NT_Battle_Start;
 import com.broll.gainea.net.NT_Battle_Update;
 import com.broll.gainea.net.NT_Unit;
 import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.actions.ReactionActions;
+import com.broll.gainea.server.core.fractions.Fraction;
 import com.broll.gainea.server.core.map.Location;
+import com.broll.gainea.server.core.objects.BattleObject;
+import com.broll.gainea.server.core.objects.MapObject;
+import com.broll.gainea.server.core.objects.Monster;
+import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.server.core.processing.GameUpdateReceiverProxy;
 import com.broll.gainea.server.core.utils.GameUtils;
 import com.broll.gainea.server.core.utils.PlayerUtils;
@@ -77,6 +77,8 @@ public class BattleHandler {
                 sendFightStart();
                 ProcessingUtils.pause(BATTLE_ANIMATION_DELAY);
                 fight();
+            } else {
+                Log.warn("Could not start battle because no alive attackers or defenders");
             }
         } else {
             Log.warn("Could not start battle because a battle is still going on");

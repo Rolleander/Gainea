@@ -1,5 +1,6 @@
 package com.broll.gainea.server.core.goals.impl.e1;
 
+import com.broll.gainea.server.core.bot.strategy.GoalStrategy;
 import com.broll.gainea.server.core.goals.CustomOccupyGoal;
 import com.broll.gainea.server.core.goals.GoalDifficulty;
 import com.broll.gainea.server.core.map.AreaType;
@@ -24,11 +25,16 @@ public class G_AreaTypes extends CustomOccupyGoal {
         int count = 0;
         List<Location> locations = LocationUtils.getControlledLocationsIn(player, ExpansionType.GAINEA);
         for (AreaType type : TYPES) {
-            count +=Math.min(2,  LocationUtils.filterByType(locations, type).count());
+            count += Math.min(2, LocationUtils.filterByType(locations, type).count());
         }
         updateProgression(count);
         if (count == TYPES.length * 2) {
             success();
         }
+    }
+
+    @Override
+    public void botStrategy(GoalStrategy strategy) {
+        //todo
     }
 }

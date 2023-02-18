@@ -13,6 +13,7 @@ import com.broll.gainea.net.NT_PlayerTurnActions;
 import com.broll.gainea.net.NT_StartGame;
 import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.battle.BattleHandler;
+import com.broll.gainea.server.core.bot.impl.BotAttack;
 import com.broll.gainea.server.core.bot.strategy.BotStrategy;
 import com.broll.gainea.server.core.bot.strategy.StrategyConstants;
 import com.broll.gainea.server.core.player.Player;
@@ -61,7 +62,7 @@ public class BotPlayerSite extends BotSite<PlayerData> {
     }
 
     @PackageReceiver
-    public void battleUpdate(NT_Battle_Start start) {
+    public void battleStart(NT_Battle_Start start) {
         allowRetreat = start.allowRetreat && start.attacker == getBot().getId();
     }
 
@@ -69,9 +70,9 @@ public class BotPlayerSite extends BotSite<PlayerData> {
     public void battleUpdate(NT_Battle_Update update) {
         ProcessingUtils.pause(BattleHandler.getAnimationDelay(update.attackerRolls.length, update.defenderRolls.length));
         if (allowRetreat) {
-            //never retreats
+            BotAttack attack = (BotAttack) botActionHandler.getActionHandler(BotAttack.class);
             NT_Battle_Reaction nt = new NT_Battle_Reaction();
-            nt.keepAttacking = true;
+            nt.keepAttacking = attack.keepAttacking(update);
             sendServer(nt);
         }
     }

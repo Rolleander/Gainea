@@ -1,23 +1,21 @@
 package com.broll.gainea.server.core.actions.optional;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.broll.gainea.server.core.actions.ActionContext;
-import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.net.NT_Action_Attack;
 import com.broll.gainea.net.NT_Reaction;
 import com.broll.gainea.net.NT_Unit;
 import com.broll.gainea.server.core.actions.AbstractActionHandler;
+import com.broll.gainea.server.core.actions.ActionContext;
 import com.broll.gainea.server.core.map.Location;
+import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.utils.LocationUtils;
 import com.broll.gainea.server.core.utils.PlayerUtils;
-import com.broll.networklib.server.impl.ConnectionSite;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public class AttackAction extends AbstractActionHandler<NT_Action_Attack, AttackAction.Context> {
     private final static Logger Log = LoggerFactory.getLogger(AttackAction.class);
@@ -55,8 +53,10 @@ public class AttackAction extends AbstractActionHandler<NT_Action_Attack, Attack
                 selectedAttackers.add(attacker);
             }
             context.attackers.removeAll(selectedAttackers);
-            selectedAttackers.forEach(BattleObject::attacked);
-            startFight(selectedAttackers, attackLocation);
+            if (!selectedAttackers.isEmpty()) {
+                selectedAttackers.forEach(BattleObject::attacked);
+                startFight(selectedAttackers, attackLocation);
+            }
         });
     }
 

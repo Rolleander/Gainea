@@ -2,14 +2,17 @@ package com.broll.gainea.server.core.goals.impl.all;
 
 import com.broll.gainea.misc.RandomUtils;
 import com.broll.gainea.server.core.GameContainer;
+import com.broll.gainea.server.core.bot.strategy.GoalStrategy;
 import com.broll.gainea.server.core.goals.GoalDifficulty;
 import com.broll.gainea.server.core.goals.RoundGoal;
 import com.broll.gainea.server.core.map.AreaCollection;
 import com.broll.gainea.server.core.map.Location;
+import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.MapObject;
 import com.broll.gainea.server.core.player.Player;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class G_OccupyRounds extends RoundGoal {
@@ -56,5 +59,10 @@ public class G_OccupyRounds extends RoundGoal {
         } else {
             resetRounds();
         }
+    }
+
+    @Override
+    public void botStrategy(GoalStrategy strategy) {
+        //todo
     }
 }

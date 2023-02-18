@@ -6,18 +6,18 @@ import com.broll.gainea.net.NT_LobbySettings;
 import com.broll.gainea.net.NT_PlayerChangeFraction;
 import com.broll.gainea.net.NT_PlayerReady;
 import com.broll.gainea.net.NT_UpdateLobbySettings;
-import com.broll.gainea.server.core.bot.RandomBot;
+import com.broll.gainea.server.core.bot.BotPlayerSite;
+import com.broll.gainea.server.core.fractions.FractionType;
+import com.broll.gainea.server.core.map.ExpansionType;
 import com.broll.gainea.server.init.ExpansionSetting;
 import com.broll.gainea.server.init.GoalTypes;
 import com.broll.gainea.server.init.LobbyData;
 import com.broll.gainea.server.init.LobbyFactory;
 import com.broll.gainea.server.init.PlayerData;
-import com.broll.gainea.server.core.fractions.FractionType;
-import com.broll.gainea.server.core.map.ExpansionType;
 import com.broll.networklib.PackageReceiver;
+import com.broll.networklib.server.ConnectionRestriction;
 import com.broll.networklib.server.LobbyGameServer;
 import com.broll.networklib.server.LobbyServerSite;
-import com.broll.networklib.server.ConnectionRestriction;
 import com.broll.networklib.server.RestrictionType;
 import com.broll.networklib.server.impl.ILobbyCreationRequest;
 import com.broll.networklib.server.impl.LobbyHandler;
@@ -116,7 +116,7 @@ public class GameLobbySite extends LobbyServerSite<LobbyData, PlayerData> {
             PlayerData data = new PlayerData();
             data.setReady(true);
             lobbyHandler.createBot(lobby, "bot_" + lobby.getPlayers().size(), data).ifPresent(bot -> {
-                bot.register(new RandomBot());
+                bot.register(new BotPlayerSite());
             });
         }
     }

@@ -30,6 +30,10 @@ public class BotActionHandler {
         new PackageLoader<BotAction>(BotAction.class, PACKAGE_PATH).instantiateAll().forEach(a -> initAction(a.getActionClass(), a));
     }
 
+    public BotAction getActionHandler(Class<? extends BotAction> clazz) {
+        return actions.values().stream().filter(it -> clazz.isInstance(it)).findFirst().orElse(null);
+    }
+
     private void initAction(Class<? extends NT_Action> actionClass, BotAction botAction) {
         botAction.init(game, bot, strategy);
         actions.put(actionClass, botAction);
@@ -44,8 +48,8 @@ public class BotActionHandler {
     }
 
     public Pair<BotDecision, NT_Action> bestScore(NT_PlayerTurnActions turn) {
-        BotDecision decision = null;
-        float score = Float.MIN_VALUE;
+        BotDecision decision = endTurnDecision;
+        float score = endTurnDecision.score(null, turn);
         NT_Action chosenAction = null;
         for (NT_Action action : turn.actions) {
             BotAction botAction = actions.get(action.getClass());
@@ -57,10 +61,6 @@ public class BotActionHandler {
                     chosenAction = action;
                 }
             }
-        }
-        float endTurnScore = endTurnDecision.score(null, turn);
-        if (endTurnScore > score) {
-            return Pair.of(endTurnDecision, null);
         }
         return Pair.of(decision, chosenAction);
     }

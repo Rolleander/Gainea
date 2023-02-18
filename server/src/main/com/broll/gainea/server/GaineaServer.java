@@ -2,11 +2,8 @@ package com.broll.gainea.server;
 
 import com.broll.gainea.NetworkSetup;
 import com.broll.gainea.server.core.GameContainer;
-import com.broll.gainea.server.core.bot.RandomBot;
 import com.broll.gainea.server.core.map.Location;
-import com.broll.gainea.server.init.ExpansionSetting;
 import com.broll.gainea.server.init.LobbyData;
-import com.broll.gainea.server.init.LobbyFactory;
 import com.broll.gainea.server.init.PlayerData;
 import com.broll.gainea.server.init.ServerSetup;
 import com.broll.networklib.server.LobbyGameServer;
@@ -32,17 +29,6 @@ public class GaineaServer {
         server.open();
     }
 
-    public void openTestLobby() {
-        ServerLobby<LobbyData, PlayerData> lobby = server.getLobbyHandler().openLobby("Testlobby");
-        LobbyFactory.initLobby(lobby, ExpansionSetting.BASIC_GAME);
-        lobby.setAutoClose(false);
-        PlayerData data = new PlayerData();
-        data.setReady(true);
-        lobby.createBot("bot_hans", data).ifPresent(bot -> {
-            bot.register(new RandomBot());
-        });
-    }
-
     public void appendCLI() {
         LobbyServerCLI.open(server, nextTurn(), gameInfo(), giveCard());
     }
@@ -58,8 +44,8 @@ public class GaineaServer {
             getGame(id).ifPresent(game -> {
                 game.getCardStorage().getAllCards().stream().filter(it -> it.getPicture() == picId)
                         .findFirst().ifPresent(card ->
-                    game.getPlayers().get(game.getCurrentPlayer()).getCardHandler().receiveCard(card)
-                );
+                                game.getPlayers().get(game.getCurrentPlayer()).getCardHandler().receiveCard(card)
+                        );
             });
         });
     }

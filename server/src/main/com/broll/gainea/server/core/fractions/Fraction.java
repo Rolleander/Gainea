@@ -86,7 +86,7 @@ public abstract class Fraction extends GameUpdateReceiverAdapter {
     }
 
     public List<Location> getMoveLocations(Location from) {
-        return from.getConnectedLocations().stream().filter(to -> canMove(from, to)).collect(Collectors.toList());
+        return from.getConnectedLocations().stream().filter(to -> to.isTraversable() && canMove(from, to)).collect(Collectors.toList());
     }
 
     protected boolean canMove(Location from, Location to) {

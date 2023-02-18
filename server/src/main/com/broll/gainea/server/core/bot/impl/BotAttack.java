@@ -1,6 +1,7 @@
 package com.broll.gainea.server.core.bot.impl;
 
 import com.broll.gainea.net.NT_Action_Attack;
+import com.broll.gainea.net.NT_Battle_Update;
 import com.broll.gainea.net.NT_PlayerTurnActions;
 import com.broll.gainea.net.NT_Reaction;
 import com.broll.gainea.net.NT_Unit;
@@ -27,11 +28,15 @@ public class BotAttack extends BotAction<NT_Action_Attack> {
     private final static int FIGHT_WILD = 2;
 
     private int[] attackUnits;
-    private int moveTo;
+    private int attackTo;
+
+    private int type;
+
+    private Location location;
 
     @Override
     protected void handleAction(NT_Action_Attack action, NT_Reaction reaction) {
-        reaction.option = moveTo;
+        reaction.option = attackTo;
         reaction.options = attackUnits;
     }
 
@@ -47,8 +52,10 @@ public class BotAttack extends BotAction<NT_Action_Attack> {
         List<Pair<Location, Integer>> options = orderByPriority(locations);
         int[] unitIds = Arrays.stream(action.units).mapToInt(it -> it.id).toArray();
         Optional<Location> singleTarget = hasExactlyOneTargetFight(options);
-        if (singleTarget.isPresent()) {
-            moveTo = locations.indexOf(singleTarget.get());
+        if (singleTarget.isPresent() && !usableUnits.isEmpty()) {
+            type = FIGHT_TARGET;
+            location = singleTarget.get();
+            attackTo = locations.indexOf(singleTarget.get());
             attackUnits = usableUnits.stream().mapToInt(it -> ArrayUtils.indexOf(unitIds, it.getId())).toArray();
             return 15;
         }
@@ -56,7 +63,9 @@ public class BotAttack extends BotAction<NT_Action_Attack> {
             float winChance = getRequiredWinChance(option.getValue());
             List<BattleObject> fighters = BattleSimulation.calculateRequiredFighters(option.getKey(), usableUnits, winChance);
             if (fighters != null) {
-                moveTo = locations.indexOf(option.getKey());
+                type = option.getValue();
+                location = option.getKey();
+                attackTo = locations.indexOf(option.getKey());
                 attackUnits = fighters.stream().mapToInt(it -> ArrayUtils.indexOf(unitIds, it.getId())).toArray();
                 return (3 - option.getValue()) * 5;
             }
@@ -64,8 +73,15 @@ public class BotAttack extends BotAction<NT_Action_Attack> {
         return -1;
     }
 
+    public boolean keepAttacking(NT_Battle_Update update) {
+        List<BattleObject> attackers = BotUtils.getObjects(game, update.attackers);
+        List<BattleObject> defenders = BotUtils.getObjects(game, update.defenders);
+        float winChance = getRequiredWinChance(type);
+        return BattleSimulation.calculateAttackerWinChance(location, attackers, defenders) >= winChance;
+    }
+
     private List<BattleObject> usableUnits(NT_Unit[] ntUnits) {
-        List<BattleObject> units = Arrays.stream(ntUnits).map(it -> BotUtils.getObject(game, it)).collect(Collectors.toList());
+        List<BattleObject> units = BotUtils.getObjects(game, ntUnits);
         return units.stream().filter(it -> strategy.getStrategy(it).allowFighting(it)).collect(Collectors.toList());
     }
 
@@ -106,4 +122,5 @@ public class BotAttack extends BotAction<NT_Action_Attack> {
     private boolean isTargetLocation(Location location) {
         return strategy.getGoalStrategies().stream().flatMap(it -> it.getTargetLocations().stream()).anyMatch(it -> it == location);
     }
+
 }

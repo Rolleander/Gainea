@@ -135,13 +135,23 @@ public final class LocationUtils {
     }
 
     public static int getWalkingDistance(Location from, Location to) {
+        return getWalkingDistance(null, from, to);
+    }
+
+    public static int getWalkingDistance(Player player, Location from, Location to) {
         List<Location> visited = new ArrayList<>();
         List<Location> remaining;
+        Function<Location, List<Location>> routes = location->{
+            if(player==null){
+                return location.getWalkableNeighbours();
+            }
+            return player.getFraction().getMoveLocations(location);
+        };
         int distance = 0;
         if (from == to) {
             return 0;
         }
-        remaining = from.getWalkableNeighbours();
+        remaining = routes.apply(from);
         do {
             distance++;
             for (Location area : remaining) {
@@ -150,7 +160,7 @@ public final class LocationUtils {
                 }
             }
             visited.addAll(remaining);
-            remaining = remaining.stream().flatMap(it->it.getWalkableNeighbours().stream()).collect(Collectors.toList());
+            remaining = remaining.stream().flatMap(it->routes.apply(it).stream()).collect(Collectors.toList());
             remaining.removeAll(visited);
         } while (!remaining.isEmpty());
         return -1;

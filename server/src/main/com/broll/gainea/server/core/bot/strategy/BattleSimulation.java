@@ -26,6 +26,16 @@ public class BattleSimulation {
         return null;
     }
 
+    public static float calculateAttackerWinChance(Location location, List<BattleObject> attackers, List<BattleObject> defenders) {
+        float wins = 0;
+        for (int i = 0; i < SIMULATIONS; i++) {
+            if (winsBattle(location, attackers, defenders)) {
+                wins++;
+            }
+        }
+        return wins / (float) SIMULATIONS;
+    }
+
     public static float calculateWinChance(Location location, List<BattleObject> units) {
         float wins = 0;
         for (int i = 0; i < SIMULATIONS; i++) {
@@ -38,13 +48,12 @@ public class BattleSimulation {
 
     private static boolean winsBattle(Location location, List<BattleObject> units) {
         Player owner = PlayerUtils.getOwner(units);
-        List<BattleObject> defenders = PlayerUtils.getHostileArmy(owner, location).stream().map(SimulationUnit::new).collect(Collectors.toList());
+        List<BattleObject> defenders = PlayerUtils.getHostileArmy(owner, location);
         do {
             Player defender = PlayerUtils.getOwner(defenders);
             List<BattleObject> defendingUnits = defenders.stream().filter(it -> it.getOwner() == defender).collect(Collectors.toList());
             defenders.removeAll(defendingUnits);
-            List<BattleObject> attackingUnits = units.stream().map(SimulationUnit::new).collect(Collectors.toList());
-            if (!winsBattle(location, attackingUnits, defendingUnits)) {
+            if (!winsBattle(location, units, defendingUnits)) {
                 return false;
             }
         } while (!defenders.isEmpty());
@@ -52,12 +61,16 @@ public class BattleSimulation {
     }
 
     private static boolean winsBattle(Location location, List<BattleObject> attackingUnits, List<BattleObject> defendingUnits) {
+        List<BattleObject> attackers = attackingUnits.stream().map(SimulationUnit::new).collect(Collectors.toList());
+        List<BattleObject> defenders = defendingUnits.stream().map(SimulationUnit::new).collect(Collectors.toList());
         do {
-            FightResult result = new Battle(location, PlayerUtils.getOwner(attackingUnits), attackingUnits, PlayerUtils.getOwner(defendingUnits), defendingUnits).fight();
-            attackingUnits.removeAll(result.getDeadAttackers());
-            defendingUnits.removeAll(result.getDeadDefenders());
-        } while (!defendingUnits.isEmpty() && !attackingUnits.isEmpty());
-        return !attackingUnits.isEmpty();
+            FightResult result = new Battle(location, PlayerUtils.getOwner(attackingUnits),
+                    attackers, PlayerUtils.getOwner(defendingUnits),
+                    defenders).fight();
+            attackers.removeAll(result.getDeadAttackers());
+            defenders.removeAll(result.getDeadDefenders());
+        } while (!attackers.isEmpty() && !defenders.isEmpty());
+        return !attackers.isEmpty();
     }
 
     private static class SimulationUnit extends BattleObject {

@@ -1,6 +1,7 @@
 package com.broll.gainea.server.core.goals.impl.all;
 
 import com.broll.gainea.server.core.battle.BattleResult;
+import com.broll.gainea.server.core.bot.strategy.GoalStrategy;
 import com.broll.gainea.server.core.goals.Goal;
 import com.broll.gainea.server.core.goals.GoalDifficulty;
 import com.broll.gainea.server.core.objects.BattleObject;
@@ -27,5 +28,10 @@ public class G_KillStrongMonster extends Goal {
     @Override
     public void check() {
 
+    }
+
+    @Override
+    public void botStrategy(GoalStrategy strategy) {
+        //todo
     }
 }

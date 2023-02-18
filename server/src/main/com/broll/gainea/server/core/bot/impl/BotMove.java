@@ -43,7 +43,7 @@ public class BotMove extends BotAction<NT_Action_Move> {
     @Override
     public float score(NT_Action_Move action, NT_PlayerTurnActions turn) {
         List<Location> locations = BotUtils.getLocations(game, action.possibleLocations);
-        List<BattleObject> units = Arrays.stream(action.units).map(it -> BotUtils.getObject(game, it)).collect(Collectors.toList());
+        List<BattleObject> units = BotUtils.getObjects(game, action.units);
         List<GoalStrategy> goalStrategies = units.stream().map(it -> strategy.getStrategy(it)).distinct().collect(Collectors.toList());
         Location moveFrom = units.get(0).getLocation();
         for (GoalStrategy goalStrategy : goalStrategies) {
@@ -71,7 +71,7 @@ public class BotMove extends BotAction<NT_Action_Move> {
             if (target == null) {
                 continue;
             }
-            Pair<Location, Integer> path = BotUtils.getBestPath(options, target);
+            Pair<Location, Integer> path = BotUtils.getBestPath(bot, options, target);
             if (option == null) {
                 option = path.getKey();
                 distance = path.getValue();
@@ -109,7 +109,7 @@ public class BotMove extends BotAction<NT_Action_Move> {
     }
 
     private Location provideNextTarget(Location from, GoalStrategy goalStrategy) {
-        Set<Location> targets = goalStrategy.getTargetedGoalLocations();
+        Set<Location> targets = goalStrategy.getTargetLocations();
         if (targets.size() == 1) {
             return targets.iterator().next();
         }
@@ -118,19 +118,21 @@ public class BotMove extends BotAction<NT_Action_Move> {
         }
         Map<Location, AtomicInteger> targetCounts = new HashMap<>();
         targets.forEach(it -> {
-            int distance = LocationUtils.getWalkingDistance(from, it);
+            int distance = LocationUtils.getWalkingDistance(bot, from, it);
             if (distance == -1) {
                 distance = 100;
             }
             targetCounts.put(it, new AtomicInteger(distance)
             );
         });
-        goalStrategy.getUnits().stream().map(it -> strategy.getMoveTargets().get(it)).forEach(target -> {
-            AtomicInteger count = targetCounts.get(target);
-            if (count != null) {
-                count.addAndGet(1000);
-            }
-        });
+        if (goalStrategy.isSpreadUnits()) {
+            goalStrategy.getUnits().stream().map(it -> strategy.getMoveTargets().get(it)).forEach(target -> {
+                AtomicInteger count = targetCounts.get(target);
+                if (count != null) {
+                    count.addAndGet(1000);
+                }
+            });
+        }
         //todo check if target is same as existing unit but closer,
         return BotUtils.getLowestScoreEntry(new ArrayList<>(targetCounts.entrySet()),
                 it -> it.getValue().get()).getKey();

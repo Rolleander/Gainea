@@ -11,6 +11,7 @@ import com.broll.gainea.server.core.utils.LocationUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -22,6 +23,10 @@ public class BotUtils {
 
     public static Location getLocation(GameContainer game, int id) {
         return game.getMap().getLocation(id);
+    }
+
+    public static List<BattleObject> getObjects(GameContainer game, NT_Unit[] units) {
+        return Arrays.stream(units).map(it -> BotUtils.getObject(game, it)).collect(Collectors.toList());
     }
 
     public static BattleObject getObject(GameContainer game, NT_Unit unit) {
@@ -70,37 +75,48 @@ public class BotUtils {
         return index;
     }
 
-    public static Pair<Location, Integer> getBestPath(Collection<Location> fromOptions, Location to) {
+    public static Pair<Location, Integer> getBestPath(Player player, Collection<Location> fromOptions, Location to) {
         int distance = Integer.MAX_VALUE;
+        int units = 0;
         Location location = fromOptions.iterator().next();
         for (Location from : fromOptions) {
-            int d = LocationUtils.getWalkingDistance(from, to);
+            int d = LocationUtils.getWalkingDistance(player, from, to);
+            int u = (int) LocationUtils.getUnits(from).stream().filter(it -> it.getOwner() == player).count();
             if (d != -1 && d < distance) {
-                d = Integer.MAX_VALUE;
+                distance = d;
+                location = from;
+                units = u;
+            } else if (d == distance && u > units) {
+                units = u;
                 location = from;
             }
         }
         return Pair.of(location, distance);
     }
 
-    public static Pair<Location, Integer> getBestPath(Location from, Collection<Location> toOptions) {
+    public static Pair<Location, Integer> getBestPath(Player player, Location from, Collection<Location> toOptions) {
         int distance = Integer.MAX_VALUE;
+        int units = 0;
         Location location = toOptions.iterator().next();
         for (Location to : toOptions) {
-            int d = LocationUtils.getWalkingDistance(from, to);
+            int d = LocationUtils.getWalkingDistance(player, from, to);
+            int u = (int) LocationUtils.getUnits(to).stream().filter(it -> it.getOwner() == player).count();
             if (d != -1 && d < distance) {
-                d = Integer.MAX_VALUE;
-                location = from;
+                distance = d;
+                location = to;
+            } else if (d == distance && u > units) {
+                units = u;
+                location = to;
             }
         }
         return Pair.of(location, distance);
     }
 
-    public static Set<Location> huntPlayersTargets(GameContainer game){
-        return game.getPlayers().stream().flatMap(it->it.getControlledLocations().stream()).collect(Collectors.toSet());
+    public static Set<Location> huntPlayersTargets(GameContainer game) {
+        return game.getPlayers().stream().flatMap(it -> it.getControlledLocations().stream()).collect(Collectors.toSet());
     }
 
-    public static Set<Location> huntPlayerTargets(Player player){
+    public static Set<Location> huntPlayerTargets(Player player) {
         return new HashSet<>(player.getControlledLocations());
     }
 
