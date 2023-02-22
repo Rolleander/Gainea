@@ -16,7 +16,8 @@ public class LabelUtils {
     }
 
     public static Label markup(Skin skin, String text) {
-        return new Label("[BLACK]"+text, skin, "markup");
+        Label label = new Label("[BLACK]" + text, skin, "markup");
+        return label;
     }
 
     public static Label title(Skin skin, String text) {
@@ -24,7 +25,7 @@ public class LabelUtils {
         return l;
     }
 
-    public static Label autoWrap(Label label, int width){
+    public static Label autoWrap(Label label, int width) {
         label.setWrap(true);
         label.setWidth(width);
         label.pack();

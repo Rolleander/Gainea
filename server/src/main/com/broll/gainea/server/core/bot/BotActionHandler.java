@@ -30,11 +30,11 @@ public class BotActionHandler {
     }
 
     public BotAction getActionHandler(Class<? extends BotAction> clazz) {
-        return actions.values().stream().filter(it -> clazz.isInstance(it)).findFirst().orElse(null);
+        return actions.values().stream().filter(clazz::isInstance).findFirst().orElse(null);
     }
 
     private void initAction(Class<? extends NT_Action> actionClass, BotAction botAction) {
-        botAction.init(game, bot, strategy);
+        botAction.init(game, bot, strategy, this);
         actions.put(actionClass, botAction);
     }
 

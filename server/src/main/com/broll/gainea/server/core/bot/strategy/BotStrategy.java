@@ -24,7 +24,6 @@ public class BotStrategy {
     private List<GoalStrategy> goalStrategies = new ArrayList<>();
     private Map<BattleObject, GoalStrategy> strategizedUnits = new HashMap<>();
     private Map<BattleObject, Location> moveTargets = new HashMap<>();
-
     private GoalStrategy fallbackStrategy;
 
     public BotStrategy(GameContainer game, Player player, StrategyConstants constants) {
@@ -137,4 +136,5 @@ public class BotStrategy {
         strategizeUnit(strategy, unit);
         return option;
     }
+
 }

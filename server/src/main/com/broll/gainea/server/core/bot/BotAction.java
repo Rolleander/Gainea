@@ -11,11 +11,13 @@ public abstract class BotAction<A extends NT_Action> {
     protected GameContainer game;
     protected Player bot;
     protected BotStrategy strategy;
+    protected BotActionHandler handler;
 
-    void init(GameContainer game, Player bot, BotStrategy strategy) {
+    void init(GameContainer game, Player bot, BotStrategy strategy, BotActionHandler handler) {
         this.game = game;
         this.bot = bot;
         this.strategy = strategy;
+        this.handler = handler;
     }
 
     protected abstract void react(A action, NT_Reaction reaction);

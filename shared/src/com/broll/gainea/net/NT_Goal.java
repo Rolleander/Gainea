@@ -11,14 +11,14 @@ public class NT_Goal {
     public int progression;
     public int progressionGoal = NO_PROGRESSION_GOAL;
 
+    public int id;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         NT_Goal nt_goal = (NT_Goal) o;
-        return points == nt_goal.points &&
-                Objects.equals(description, nt_goal.description) &&
-                Objects.equals(restriction, nt_goal.restriction);
+        return id == nt_goal.id;
     }
 
     @Override

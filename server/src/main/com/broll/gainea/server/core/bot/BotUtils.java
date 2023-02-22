@@ -1,7 +1,9 @@
 package com.broll.gainea.server.core.bot;
 
+import com.broll.gainea.net.NT_Goal;
 import com.broll.gainea.net.NT_Unit;
 import com.broll.gainea.server.core.GameContainer;
+import com.broll.gainea.server.core.goals.Goal;
 import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.MapObject;
@@ -49,6 +51,11 @@ public class BotUtils {
         return null;
     }
 
+    public static Goal getGoal(GameContainer game, NT_Goal nt) {
+        return game.getPlayers().stream().flatMap(p -> p.getGoalHandler().getGoals().stream())
+                .filter(goal -> goal.getId() == nt.id).findFirst().orElse(null);
+    }
+
     public static List<Location> getLocations(GameContainer game, short[] options) {
         List<Location> locations = new ArrayList<>();
         for (short id : options) {
@@ -57,9 +64,25 @@ public class BotUtils {
         return locations;
     }
 
+    public static <E> E getHighestScoreEntry(List<E> list, Function<E, Integer> scoring) {
+        return list.get(getHighestScoreIndex(list, scoring));
+    }
+
+    public static <E> int getHighestScoreIndex(List<E> list, Function<E, Integer> scoring) {
+        int score = Integer.MIN_VALUE;
+        int index = 0;
+        for (int i = 0; i < list.size(); i++) {
+            int s = scoring.apply(list.get(i));
+            if (s > score) {
+                score = s;
+                index = i;
+            }
+        }
+        return index;
+    }
+
     public static <E> E getLowestScoreEntry(List<E> list, Function<E, Integer> scoring) {
-        int index = getLowestScoreIndex(list, scoring);
-        return list.get(index);
+        return list.get(getLowestScoreIndex(list, scoring));
     }
 
     public static <E> int getLowestScoreIndex(List<E> list, Function<E, Integer> scoring) {

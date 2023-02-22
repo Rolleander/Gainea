@@ -6,7 +6,6 @@ import com.broll.gainea.Gainea;
 import com.broll.gainea.client.ui.utils.LabelUtils;
 import com.broll.gainea.client.ui.utils.TableUtils;
 import com.broll.gainea.net.NT_Goal;
-import com.broll.gainea.net.NT_GoalProgression;
 
 
 public class GoalWindow extends MenuWindow {
@@ -35,14 +34,14 @@ public class GoalWindow extends MenuWindow {
         Table table = new Table(skin);
         table.left();
         table.setBackground("menu-bg");
-        table.add(LabelUtils.label(skin, "" + goal.points)).left();
-        table.add(LabelUtils.label(skin, goal.restriction)).right().row();
+        table.add(LabelUtils.info(skin, "" + goal.points)).left();
+        table.add(LabelUtils.info(skin, goal.restriction)).right().row();
         int w = 650;
         String progression = "";
-        if(goal.progressionGoal != NT_Goal.NO_PROGRESSION_GOAL){
-          progression = "   [BLUE]("+goal.progression+ "/"+goal.progressionGoal+")[]";
+        if (goal.progressionGoal != NT_Goal.NO_PROGRESSION_GOAL) {
+            progression = "   [BLUE](" + goal.progression + "/" + goal.progressionGoal + ")[]";
         }
-        table.add(LabelUtils.autoWrap(LabelUtils.markup(skin, goal.description+progression), w)).width(w).left();
+        table.add(LabelUtils.autoWrap(LabelUtils.markup(skin, goal.description + progression), w)).width(w).left();
         return table;
     }
 }

@@ -1,29 +1,27 @@
 package com.broll.gainea.client.ui.ingame;
 
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.broll.gainea.Gainea;
 import com.broll.gainea.client.AudioPlayer;
 import com.broll.gainea.client.game.PlayerPerformAction;
 import com.broll.gainea.client.game.PlayerPerformOptionalAction;
+import com.broll.gainea.client.ui.components.Popup;
 import com.broll.gainea.client.ui.components.RoundInformation;
+import com.broll.gainea.client.ui.ingame.actions.AttackAndMoveActionHandler;
 import com.broll.gainea.client.ui.ingame.actions.EndTurnButton;
+import com.broll.gainea.client.ui.ingame.actions.RequiredActionHandler;
+import com.broll.gainea.client.ui.ingame.battle.BattleHandler;
+import com.broll.gainea.client.ui.ingame.map.MapObjectRender;
 import com.broll.gainea.client.ui.ingame.windows.LogWindow;
 import com.broll.gainea.client.ui.ingame.windows.MenuWindows;
 import com.broll.gainea.client.ui.ingame.windows.UnitSelectionWindow;
 import com.broll.gainea.client.ui.screens.ScoreScreen;
 import com.broll.gainea.client.ui.utils.LabelUtils;
-import com.broll.gainea.client.ui.components.Popup;
-import com.broll.gainea.client.ui.ingame.map.MapObjectRender;
 import com.broll.gainea.client.ui.utils.TableUtils;
-import com.broll.gainea.client.ui.ingame.actions.AttackAndMoveActionHandler;
-import com.broll.gainea.client.ui.ingame.battle.BattleHandler;
-import com.broll.gainea.client.ui.ingame.actions.RequiredActionHandler;
 import com.broll.gainea.net.NT_Action;
 import com.broll.gainea.net.NT_Action_Attack;
 import com.broll.gainea.net.NT_Action_Card;
@@ -75,7 +73,7 @@ public class InGameUI {
         buttonBar.add(TableUtils.textButton(skin, "Ziele", () -> windows.showGoalWindow()));
         buttonBar.add(TableUtils.textButton(skin, "Karten", () -> windows.showCardWindow()));
         buttonBar.add(TableUtils.textButton(skin, "Chat", () -> windows.showChatWindow()));
-        buttonBar.add(TableUtils.textButton(skin, "Log", () -> windows.showLogWindow()));
+        //  buttonBar.add(TableUtils.textButton(skin, "Log", () -> windows.showLogWindow()));
         bottomBar.add(buttonBar).right().expandX().padRight(10);
         endTurnButton = new EndTurnButton(skin);
         topBar.add(endTurnButton).left().space(15).padTop(10);
@@ -153,7 +151,7 @@ public class InGameUI {
 
     public void startBattle(List<NT_Unit> attackers, List<NT_Unit> defenders, Location location, boolean allowRetreat) {
         clearSelection();
-        showCenter(battleHandler.startBattle(attackers, defenders, location,allowRetreat));
+        showCenter(battleHandler.startBattle(attackers, defenders, location, allowRetreat));
     }
 
     public void updateBattle(int[] attackRolls, int[] defenderRolls, Stack<NT_Battle_Damage> damage, int state) {
@@ -166,9 +164,10 @@ public class InGameUI {
 
     public void hideWindows() {
         //dont hide for now, todo: rethink when to hide windows
-       // windows.hideWindows();
+        // windows.hideWindows();
     }
-    public LogWindow getLogWindow(){
+
+    public LogWindow getLogWindow() {
         return windows.getLogWindow();
     }
 

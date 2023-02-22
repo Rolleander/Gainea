@@ -19,6 +19,7 @@ public abstract class Goal extends GameUpdateReceiverAdapter {
     protected String text;
     protected GoalDifficulty difficulty;
     private String restrictionInfo;
+    private int id;
     private int progression;
     private int progressionGoal = NT_Goal.NO_PROGRESSION_GOAL;
     private ExpansionType[] requiredExpansions;
@@ -34,6 +35,7 @@ public abstract class Goal extends GameUpdateReceiverAdapter {
     public boolean init(GameContainer game, Player player) {
         this.game = game;
         this.player = player;
+        this.id = game.newObjectId();
         return validForGame();
     }
 
@@ -99,12 +101,17 @@ public abstract class Goal extends GameUpdateReceiverAdapter {
 
     public NT_Goal nt() {
         NT_Goal goal = new NT_Goal();
+        goal.id = id;
         goal.description = text;
         goal.points = difficulty.getPoints();
         goal.restriction = restrictionInfo;
         goal.progression = progression;
         goal.progressionGoal = progressionGoal;
         return goal;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getText() {
