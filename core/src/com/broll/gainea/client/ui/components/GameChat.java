@@ -8,9 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.broll.gainea.client.ui.utils.LabelUtils;
 import com.broll.gainea.client.ui.utils.TableUtils;
 import com.broll.networklib.client.impl.GameLobby;
@@ -30,21 +28,23 @@ public class GameChat extends Table {
         this.skin = skin;
         this.lobby = lobby;
         this.setSkin(skin);
-        lobby.setChatMessageListener(new IChatMessageListener() {
-            @Override
-            public void fromPlayer(String msg, LobbyPlayer from) {
-                addChatMessage(from, msg);
-            }
+        if (lobby != null) {
+            lobby.setChatMessageListener(new IChatMessageListener() {
+                @Override
+                public void fromPlayer(String msg, LobbyPlayer from) {
+                    addChatMessage(from, msg);
+                }
 
-            @Override
-            public void fromGame(String msg) {
-                addChatMessage(null, msg);
-            }
-        });
+                @Override
+                public void fromGame(String msg) {
+                    addChatMessage(null, msg);
+                }
+            });
+        }
         init();
     }
 
-    private void init(){
+    private void init() {
         chatTable = new Table(skin);
         chatTable.top();
         chatTable.setBackground("menu-bg");
@@ -70,7 +70,7 @@ public class GameChat extends Table {
             }
 
         });
-        Button sendChat = TableUtils.textButton(skin,"Send",()->{
+        Button sendChat = TableUtils.textButton(skin, "Send", () -> {
             if (!StringUtils.isEmpty(chatText.getText())) {
                 sendChatMessage(chatText.getText());
                 chatText.setText("");
@@ -87,7 +87,7 @@ public class GameChat extends Table {
         if (from != null) {
             chat.add(LabelUtils.color(LabelUtils.info(skin, from.getName()), Color.BLUE)).padRight(10);
         }
-        chat.add(LabelUtils.info(skin,message));
+        chat.add(LabelUtils.info(skin, message));
         chatTable.add(chat).expandX().fillX().row();
         chatScrollPane.invalidate();
         chatScrollPane.layout();
@@ -98,7 +98,6 @@ public class GameChat extends Table {
         lobby.sendChat(text);
         addChatMessage(lobby.getMyPlayer(), text);
     }
-
 
 
 }

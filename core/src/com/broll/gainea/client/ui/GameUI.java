@@ -6,12 +6,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.broll.gainea.Gainea;
 import com.broll.gainea.client.Assets;
 import com.broll.gainea.client.network.IClientListener;
-import com.broll.gainea.client.ui.ingame.map.MapScrollControl;
-import com.broll.gainea.client.ui.ingame.map.MapScrollGestureHandler;
-import com.broll.gainea.client.ui.ingame.map.MapScrollHandler;
 import com.broll.gainea.client.ui.components.ConnectionCircle;
 import com.broll.gainea.client.ui.components.NetworkProblemDialog;
 import com.broll.gainea.client.ui.ingame.InGameUI;
+import com.broll.gainea.client.ui.ingame.map.MapScrollControl;
+import com.broll.gainea.client.ui.ingame.map.MapScrollGestureHandler;
+import com.broll.gainea.client.ui.ingame.map.MapScrollHandler;
 import com.broll.gainea.client.ui.screens.LobbyScreen;
 import com.broll.gainea.client.ui.screens.StartScreen;
 import com.broll.networklib.client.impl.GameLobby;
@@ -41,7 +41,7 @@ public class GameUI implements IClientListener {
 
     public void assetsLoaded() {
         this.skin = game.assets.get("ui/cloud-form-ui.json", Skin.class);
-        skin.getFont("font").getData().markupEnabled = true;
+        skin.getFont("markup").getData().markupEnabled = true;
         connectionCircle = new ConnectionCircle(game.assets);
         connectionCircle.toFront();
         if (reconnectCheck) {
@@ -52,13 +52,12 @@ public class GameUI implements IClientListener {
     public void initInGameUi() {
         game.gameStage.clear();
         inGameUI = new InGameUI(game, skin);
-        if(Gdx.app.getType() != Application.ApplicationType.Desktop){
+        if (Gdx.app.getType() != Application.ApplicationType.Desktop) {
             Log.info("Setup MapScrollGestureHandler");
             MapScrollGestureHandler handler = new MapScrollGestureHandler(game);
             this.mapScrollControl = handler.getMapScrollControl();
             game.gameStage.addListener(handler);
-        }
-        else{
+        } else {
             Log.info("Setup MapScrollHandler");
             MapScrollHandler handler = new MapScrollHandler(game);
             this.mapScrollControl = handler.getMapScrollControl();

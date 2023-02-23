@@ -5,29 +5,28 @@ import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.broll.gainea.client.AudioPlayer;
 import com.broll.gainea.client.game.GameUtils;
-import com.broll.gainea.client.ui.ingame.map.MapScrollUtils;
 import com.broll.gainea.client.ui.components.Popup;
+import com.broll.gainea.client.ui.ingame.map.MapObjectRender;
+import com.broll.gainea.client.ui.ingame.map.MapScrollUtils;
+import com.broll.gainea.client.ui.ingame.windows.CardWindow;
+import com.broll.gainea.client.ui.ingame.windows.GoalOverlay;
 import com.broll.gainea.client.ui.ingame.windows.LogWindow;
 import com.broll.gainea.client.ui.utils.LabelUtils;
 import com.broll.gainea.client.ui.utils.MessageUtils;
 import com.broll.gainea.client.ui.utils.TableUtils;
-import com.broll.gainea.client.ui.ingame.windows.CardWindow;
-import com.broll.gainea.client.ui.ingame.windows.GoalWindow;
-import com.broll.gainea.client.ui.ingame.map.MapObjectRender;
-import com.broll.gainea.net.NT_BoardEffect;
-import com.broll.gainea.net.NT_Event;
 import com.broll.gainea.net.NT_BoardObject;
+import com.broll.gainea.net.NT_Event;
 import com.broll.gainea.net.NT_Event_BoardEffect;
 import com.broll.gainea.net.NT_Event_FinishedGoal;
-import com.broll.gainea.net.NT_Event_FocusObjects;
-import com.broll.gainea.net.NT_Event_OtherPlayerReceivedCard;
-import com.broll.gainea.net.NT_Event_OtherPlayerReceivedGoal;
-import com.broll.gainea.net.NT_Event_ReceivedCard;
 import com.broll.gainea.net.NT_Event_FocusLocation;
 import com.broll.gainea.net.NT_Event_FocusObject;
+import com.broll.gainea.net.NT_Event_FocusObjects;
 import com.broll.gainea.net.NT_Event_MovedObject;
+import com.broll.gainea.net.NT_Event_OtherPlayerReceivedCard;
+import com.broll.gainea.net.NT_Event_OtherPlayerReceivedGoal;
 import com.broll.gainea.net.NT_Event_PlacedObject;
 import com.broll.gainea.net.NT_Event_PlayedCard;
+import com.broll.gainea.net.NT_Event_ReceivedCard;
 import com.broll.gainea.net.NT_Event_ReceivedGoal;
 import com.broll.gainea.net.NT_Event_ReceivedPoints;
 import com.broll.gainea.net.NT_Event_ReceivedStars;
@@ -43,14 +42,12 @@ import com.broll.networklib.PackageReceiver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
-
 public class GameEventSite extends AbstractGameSite {
 
     private final static Logger Log = LoggerFactory.getLogger(GameEventSite.class);
 
-    private LogWindow logWindow(){
-        return  this.game.ui.inGameUI.getLogWindow();
+    private LogWindow logWindow() {
+        return this.game.ui.inGameUI.getLogWindow();
     }
 
     @Override
@@ -84,7 +81,7 @@ public class GameEventSite extends AbstractGameSite {
         game.ui.inGameUI.showCenterOverlay(new Popup(game.ui.skin, table, 3f));
         game.state.getCards().add(card.card);
         game.ui.inGameUI.updateWindows();
-        logWindow().logCardEvent("Du hast [VIOLET]"+card.card.title+"[] erhalten!");
+        logWindow().logCardEvent("Du hast [VIOLET]" + card.card.title + "[] erhalten!");
     }
 
     @PackageReceiver
@@ -154,9 +151,9 @@ public class GameEventSite extends AbstractGameSite {
     public void received(NT_Event_PlayedCard card) {
         game.state.updateIdleState(false);
         game.ui.inGameUI.hideWindows();
-        game.ui.inGameUI.showCenterOverlay(TableUtils.removeAfter(CardWindow.renderCard(game, card.card), (float)CardAction.PLAY_CARD_DELAY / 1000f));
+        game.ui.inGameUI.showCenterOverlay(TableUtils.removeAfter(CardWindow.renderCard(game, card.card), (float) CardAction.PLAY_CARD_DELAY / 1000f));
         NT_Player owner = game.state.getPlayer(card.player);
-        if(owner!=null){
+        if (owner != null) {
             owner.cards--;
         }
         if (card.player == getPlayer().getId()) {
@@ -175,7 +172,7 @@ public class GameEventSite extends AbstractGameSite {
     public void received(NT_Event_ReceivedGoal goal) {
         game.ui.inGameUI.hideWindows();
         Log.info("received goal");
-        game.ui.inGameUI.showCenterOverlay(TableUtils.removeAfter(GoalWindow.renderGoal(game.ui.skin, goal.goal), 3));
+        game.ui.inGameUI.showCenterOverlay(TableUtils.removeAfter(GoalOverlay.renderGoal(game, goal.goal), 3));
         game.state.getGoals().add(goal.goal);
         game.ui.inGameUI.updateWindows();
     }
@@ -241,7 +238,7 @@ public class GameEventSite extends AbstractGameSite {
         message.pad(20, 10, 20, 10);
         message.defaults().space(50);
         message.add(LabelUtils.label(game.ui.skin, text)).center().row();
-        message.add(GoalWindow.renderGoal(game.ui.skin, goal.goal));
+        message.add(GoalOverlay.renderGoal(game, goal.goal));
         game.ui.inGameUI.showCenterOverlay(TableUtils.removeAfter(message, 3));
     }
 

@@ -5,6 +5,9 @@ com.badlogic.gdx.graphics.g2d.BitmapFont: {
 	}
 	title: {
 		file: title.fnt
+	},
+	markup: {
+		file: markup.fnt
 	}
 }
 com.badlogic.gdx.graphics.Color: {
@@ -66,7 +69,16 @@ com.badlogic.gdx.scenes.scene2d.ui.Skin$TintedDrawable: {
 			b: 0.9411765
 			a: 1
 		}
-	}
+	},
+	goal-bg: {
+		name: white
+		color: {
+			r: 0.9411765
+			g: 0.9411765
+			b: 0.9411765
+			a: 0.65
+		}
+	},
 	card-bg: {
 		name: white
 		color: {
@@ -145,7 +157,7 @@ com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
 		fontColor: black
 	}
 	markup: {
-		font: font
+		font: markup
 	}
 	title: {
 		font: title

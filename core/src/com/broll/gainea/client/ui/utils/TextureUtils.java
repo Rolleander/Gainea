@@ -9,7 +9,7 @@ public class TextureUtils {
     public final static int UNIT_SIZE = 82;
     public final static int ICON_SIZE = 16;
     public final static int CARD_HEIGHT = 164;
-    public final static int CARD_WIDTH = CARD_HEIGHT*2;
+    public final static int CARD_WIDTH = CARD_HEIGHT * 2;
 
     public final static int BATTLE_HEIGHT = 800;
 
@@ -18,15 +18,15 @@ public class TextureUtils {
     }
 
     public static TextureRegion cardPicture(Gainea game, int picture) {
-        return new TextureRegion(game.assets.get("textures/cards/cards_"+picture / 5+".png", Texture.class), 0, (picture % 5) * CARD_HEIGHT, CARD_WIDTH, CARD_HEIGHT);
+        return new TextureRegion(game.assets.get("textures/cards/cards_" + picture / 5 + ".png", Texture.class), 0, (picture % 5) * CARD_HEIGHT, CARD_WIDTH, CARD_HEIGHT);
     }
 
     public static TextureRegion battleBackground(Gainea game, int nr) {
-        return new TextureRegion(game.assets.get("textures/battles/battle_"+nr+".jpg", Texture.class), 0,  0, 1000, BATTLE_HEIGHT);
+        return new TextureRegion(game.assets.get("textures/battles/battle_" + nr + ".jpg", Texture.class), 0, 0, 1000, BATTLE_HEIGHT);
     }
 
     public static TextureRegion icon(Gainea game, int icon) {
-        return new TextureRegion(game.assets.get("textures/icons.png", Texture.class), (icon % 10) * ICON_SIZE, (icon / 10) * ICON_SIZE, ICON_SIZE, ICON_SIZE);
+        return new TextureRegion(game.assets.get("textures/icons.png", Texture.class), (icon % 20) * ICON_SIZE, (icon / 20) * ICON_SIZE, ICON_SIZE, ICON_SIZE);
     }
 
     public static TextureRegion[] split(Texture texture, int width, int height) {

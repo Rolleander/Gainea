@@ -5,13 +5,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.broll.gainea.Gainea;
 import com.broll.gainea.client.game.PlayerPerformAction;
-import com.broll.gainea.client.ui.ingame.windows.PlaceUnitWindow;
-import com.broll.gainea.client.ui.utils.LabelUtils;
-import com.broll.gainea.client.ui.ingame.map.MapAction;
 import com.broll.gainea.client.ui.components.Popup;
+import com.broll.gainea.client.ui.ingame.map.MapAction;
 import com.broll.gainea.client.ui.ingame.map.MapObjectRender;
 import com.broll.gainea.client.ui.ingame.windows.CardWindow;
-import com.broll.gainea.client.ui.ingame.windows.GoalWindow;
+import com.broll.gainea.client.ui.ingame.windows.GoalOverlay;
+import com.broll.gainea.client.ui.ingame.windows.PlaceUnitWindow;
+import com.broll.gainea.client.ui.utils.LabelUtils;
 import com.broll.gainea.net.NT_Action;
 import com.broll.gainea.net.NT_Action_PlaceUnit;
 import com.broll.gainea.net.NT_Action_SelectChoice;
@@ -60,7 +60,7 @@ public class RequiredActionHandler {
                 PlaceUnitWindow.showLocationMapActions(game, Arrays.stream(action.objectChoices).mapToInt(choice -> (Integer) choice).toArray(), action, container);
                 return;
             } else if (objectChoice instanceof NT_Goal) {
-                options = Arrays.stream(action.objectChoices).map(choice -> GoalWindow.renderGoal(game.ui.skin, (NT_Goal) choice)).collect(Collectors.toList());
+                options = Arrays.stream(action.objectChoices).map(choice -> GoalOverlay.renderGoal(game, (NT_Goal) choice)).collect(Collectors.toList());
             } else if (objectChoice instanceof NT_Card) {
                 options = Arrays.stream(action.objectChoices).map(choice -> CardWindow.renderCard(game, (NT_Card) choice)).collect(Collectors.toList());
             } else if (objectChoice instanceof NT_Unit) {

@@ -16,6 +16,7 @@ import com.broll.gainea.client.ui.ingame.actions.EndTurnButton;
 import com.broll.gainea.client.ui.ingame.actions.RequiredActionHandler;
 import com.broll.gainea.client.ui.ingame.battle.BattleHandler;
 import com.broll.gainea.client.ui.ingame.map.MapObjectRender;
+import com.broll.gainea.client.ui.ingame.windows.GoalOverlay;
 import com.broll.gainea.client.ui.ingame.windows.LogWindow;
 import com.broll.gainea.client.ui.ingame.windows.MenuWindows;
 import com.broll.gainea.client.ui.ingame.windows.UnitSelectionWindow;
@@ -53,6 +54,8 @@ public class InGameUI {
     private RoundInformation roundInformation;
     private EndTurnButton endTurnButton;
 
+    private GoalOverlay goalOverlay;
+
     public InGameUI(Gainea game, Skin skin) {
         this.attackAndMoveHandler = new AttackAndMoveActionHandler(game);
         this.requiredActionHandler = new RequiredActionHandler(game, skin);
@@ -61,6 +64,7 @@ public class InGameUI {
         this.skin = skin;
         this.windows = new MenuWindows(game, skin);
         this.roundInformation = new RoundInformation(game, skin);
+        this.goalOverlay = new GoalOverlay(game);
         topBar = new Table(skin);
         bottomBar = new Table(skin);
         centerOverlay = new Table(skin);
@@ -70,7 +74,6 @@ public class InGameUI {
         buttonBar.defaults().spaceRight(20).center();
         buttonBar.add(TableUtils.textButton(skin, "Fraktionen", () -> windows.showFractionWindow()));
         buttonBar.add(TableUtils.textButton(skin, "Spieler", () -> windows.showPlayerWindow()));
-        buttonBar.add(TableUtils.textButton(skin, "Ziele", () -> windows.showGoalWindow()));
         buttonBar.add(TableUtils.textButton(skin, "Karten", () -> windows.showCardWindow()));
         buttonBar.add(TableUtils.textButton(skin, "Chat", () -> windows.showChatWindow()));
         //  buttonBar.add(TableUtils.textButton(skin, "Log", () -> windows.showLogWindow()));
@@ -110,6 +113,7 @@ public class InGameUI {
         overlay3.add(centerOverlay).expand().fill().row();
         overlay3.add(bottomBar).bottom().expandX().fillX().height(40);
         game.uiStage.addActor(overlay3);
+        game.uiStage.addActor(goalOverlay);
     }
 
     public void selectStack(Location location, Collection<MapObjectRender> stack) {
@@ -160,6 +164,7 @@ public class InGameUI {
 
     public void updateWindows() {
         windows.updateWindows();
+        goalOverlay.update();
     }
 
     public void hideWindows() {

@@ -17,7 +17,6 @@ public class MenuWindows {
         this.game = game;
         addWindow(new FractionWindow(game, skin));
         addWindow(new PlayerWindow(game, skin));
-        addWindow(new GoalWindow(game, skin));
         addWindow(new CardWindow(game, skin));
         addWindow(new ChatWindow(game, skin));
         addWindow(new LogWindow(game, skin));
@@ -29,10 +28,6 @@ public class MenuWindows {
 
     public void showPlayerWindow() {
         toggle(PlayerWindow.class);
-    }
-
-    public void showGoalWindow() {
-        toggle(GoalWindow.class);
     }
 
     public void showCardWindow() {
