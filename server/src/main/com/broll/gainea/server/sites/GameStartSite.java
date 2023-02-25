@@ -1,12 +1,15 @@
 package com.broll.gainea.server.sites;
 
-import java.util.HashMap;
-import java.util.List;
-
 import com.broll.gainea.net.NT_LoadedGame;
+import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.ReactionResultHandler;
+import com.broll.gainea.server.core.actions.ActionHandlers;
 import com.broll.gainea.server.core.actions.required.PlaceUnitAction;
-import com.broll.gainea.server.core.cards.impl.play.C_Fire;
+import com.broll.gainea.server.core.cards.Card;
+import com.broll.gainea.server.core.cards.impl.play.C_PickCard;
+import com.broll.gainea.server.core.cards.impl.play.C_ReplaceGoal;
+import com.broll.gainea.server.core.map.Area;
+import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.server.core.utils.LocationUtils;
@@ -14,26 +17,25 @@ import com.broll.gainea.server.core.utils.ProcessingUtils;
 import com.broll.gainea.server.core.utils.UnitControl;
 import com.broll.gainea.server.init.LobbyData;
 import com.broll.gainea.server.init.PlayerData;
-import com.broll.gainea.server.core.GameContainer;
-import com.broll.gainea.server.core.actions.ActionHandlers;
-import com.broll.gainea.server.core.map.Area;
-import com.broll.gainea.server.core.map.Location;
 import com.broll.networklib.PackageReceiver;
 import com.broll.networklib.server.Autoshared;
 import com.broll.networklib.server.ShareLevel;
 import com.broll.networklib.server.impl.ServerLobby;
+import com.google.common.collect.Lists;
 
-import org.checkerframework.checker.units.qual.C;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.apache.commons.lang3.tuple.Pair;
-
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 public class GameStartSite extends GameSite {
     private final static Logger Log = LoggerFactory.getLogger(GameStartSite.class);
+
+    private final static List<Class<? extends Card>> STARTING_CARDS = Lists.newArrayList(C_ReplaceGoal.class, C_PickCard.class);
 
     private class GameStartData {
         boolean loading = true;
@@ -59,9 +61,22 @@ public class GameStartSite extends GameSite {
         gameStart.loading = true;
         gameStart.startUnitsPlaced = 0;
         gameStart.playerData = new HashMap<>();
-        lobby.getPlayers().forEach(p -> gameStart.playerData.put(p.getData().getGamePlayer(), new PlayerStartData()));
+        lobby.getPlayers().forEach(p -> {
+            Player player = p.getData().getGamePlayer();
+            gameStart.playerData.put(player, new PlayerStartData());
+            drawStartingCards(game, player);
+        });
         lobby.sendToAllTCP(game.start());
         Log.info("Started game in lobby " + lobby.getName());
+    }
+
+    private void drawStartingCards(GameContainer game, Player player) {
+        STARTING_CARDS.forEach(cardClass -> {
+                    Card card = game.getCardStorage().getCard(cardClass);
+                    card.init(game, player, game.newObjectId());
+                    player.getCardHandler().getCards().add(card);
+                }
+        );
     }
 
     private void gameLoaded() {

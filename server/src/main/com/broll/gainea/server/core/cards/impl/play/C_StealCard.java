@@ -23,7 +23,7 @@ public class C_StealCard extends Card {
         Player player = selectHandler.selectOtherPlayer(owner, "Welchen Spieler bekehren?");
         List<Card> cards = player.getCardHandler().getCards();
         if (!cards.isEmpty()) {
-            Card card = cards.get(selectHandler.selection("Wählt eine Karte", cards.stream().map(Card::getTitle).collect(Collectors.toList())));
+            Card card = cards.get(selectHandler.selectObject("Wählt eine Karte", cards.stream().map(Card::nt).collect(Collectors.toList())));
             player.getCardHandler().discardCard(card);
             owner.getCardHandler().receiveCard(card);
             //update stolen player to remove his card

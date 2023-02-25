@@ -7,11 +7,10 @@ import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.actions.optional.CardAction;
 import com.broll.gainea.server.core.cards.Card;
 import com.broll.gainea.server.core.cards.DirectlyPlayedCard;
-import com.broll.gainea.server.core.cards.impl.play.C_Fire;
 import com.broll.gainea.server.core.utils.GameUtils;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 public class CardHandler {
 
@@ -58,4 +57,5 @@ public class CardHandler {
     public NT_Card[] ntCards() {
         return cards.stream().map(Card::nt).toArray(NT_Card[]::new);
     }
+
 }

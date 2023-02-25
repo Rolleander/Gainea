@@ -1,10 +1,11 @@
 
 general:
+- have a few cards at the start (new goal, teleport etc)
+- finish goal animation
 
 cards:
-- choose your army and a field next to it , the inhabitants attack your army
-
-- swap place with enemy army
+- swap place with enemy army ?
+- teleport to random field of selected continent
 
 karten:
 
@@ -13,6 +14,6 @@ karten:
 >27 buch
 >53 pfeilhagel
 >68 seeschlacht
-
+> 77 tunnel
 
 

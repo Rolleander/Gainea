@@ -6,6 +6,8 @@ import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.actions.ActionHandlers;
 import com.broll.gainea.server.core.player.Player;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class CardStorage {
@@ -53,7 +55,27 @@ public class CardStorage {
         }
     }
 
+    public List<Card> getPlayableCards(int count) {
+        ArrayList<Class<? extends Card>> classes = new ArrayList<>(loader.getClasses());
+        Collections.shuffle(classes);
+        List<Card> cards = new ArrayList<>();
+        for (int i = 0; i < classes.size(); i++) {
+            Card card = loader.instantiate(classes.get(i));
+            if (!(card instanceof DirectlyPlayedCard)) {
+                cards.add(card);
+                if (cards.size() == count) {
+                    break;
+                }
+            }
+        }
+        return cards;
+    }
+
     public List<Card> getAllCards() {
         return loader.instantiateAll();
+    }
+
+    public Card getCard(Class<? extends Card> cardClass) {
+        return loader.instantiate(cardClass);
     }
 }

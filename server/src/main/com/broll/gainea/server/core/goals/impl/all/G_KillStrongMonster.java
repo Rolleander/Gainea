@@ -17,6 +17,7 @@ public class G_KillStrongMonster extends Goal {
     public void killed(BattleObject unit, BattleResult throughBattle) {
         if (unit instanceof Monster) {
             Monster monster = (Monster) unit;
+            //todo muss auch funktionieren wenn ich verteidige
             if (monster.getOwner() == null && monster.getStars() >= 4 && throughBattle != null
                     && throughBattle.getAttackingPlayer() == player && throughBattle.getAttackers().size() == 1) {
                 success();
