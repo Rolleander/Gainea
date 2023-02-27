@@ -1,5 +1,6 @@
 package com.broll.gainea.server.core.goals;
 
+import com.broll.gainea.net.NT_Goal;
 import com.broll.gainea.server.core.bot.strategy.GoalStrategy;
 import com.broll.gainea.server.core.map.Area;
 import com.broll.gainea.server.core.map.AreaCollection;
@@ -216,6 +217,13 @@ public abstract class OccupyGoal extends Goal {
         if (success) {
             success();
         }
+    }
+
+    @Override
+    public NT_Goal nt() {
+        NT_Goal nt = super.nt();
+        nt.locations = locations.stream().mapToInt(Location::getNumber).toArray();
+        return nt;
     }
 
     @Override

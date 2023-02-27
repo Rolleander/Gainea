@@ -3,6 +3,7 @@ package com.broll.gainea.client.ui.screens;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.broll.gainea.client.ui.Screen;
+import com.broll.gainea.misc.RandomUtils;
 import com.broll.gainea.net.NT_Goal;
 import com.broll.gainea.server.init.ExpansionSetting;
 
@@ -24,6 +25,10 @@ public class TestMapScreen extends Screen {
             goal.description = "Erobere zweitausend wasauchimmer scahen und dir fehlt noch ziemlich viel";
             goal.progression = i;
             goal.progressionGoal = 5 * i;
+            goal.locations = new int[10];
+            for (int h = 0; h < 10; h++) {
+                goal.locations[h] = RandomUtils.random(0, 30);
+            }
             game.state.getGoals().add(goal);
         }
         game.ui.initInGameUi();

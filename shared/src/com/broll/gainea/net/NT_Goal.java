@@ -11,6 +11,8 @@ public class NT_Goal {
     public int progression;
     public int progressionGoal = NO_PROGRESSION_GOAL;
 
+    public int[] locations;
+
     public int id;
 
     @Override

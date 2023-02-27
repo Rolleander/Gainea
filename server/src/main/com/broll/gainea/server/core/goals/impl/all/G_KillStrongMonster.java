@@ -7,6 +7,8 @@ import com.broll.gainea.server.core.goals.GoalDifficulty;
 import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.Monster;
 
+import java.util.List;
+
 public class G_KillStrongMonster extends Goal {
 
     public G_KillStrongMonster() {
@@ -17,10 +19,14 @@ public class G_KillStrongMonster extends Goal {
     public void killed(BattleObject unit, BattleResult throughBattle) {
         if (unit instanceof Monster) {
             Monster monster = (Monster) unit;
-            //todo muss auch funktionieren wenn ich verteidige
-            if (monster.getOwner() == null && monster.getStars() >= 4 && throughBattle != null
-                    && throughBattle.getAttackingPlayer() == player && throughBattle.getAttackers().size() == 1) {
-                success();
+            if (monster.getOwner() == null && monster.getStars() >= 4 && throughBattle != null) {
+                List<BattleObject> killers = throughBattle.getAttackers();
+                if (throughBattle.getAttackers().contains(monster)) {
+                    killers = throughBattle.getDefenders();
+                }
+                if (killers.size() == 1) {
+                    success();
+                }
             }
         }
     }
