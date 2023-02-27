@@ -56,6 +56,7 @@ public class IcelandMap extends ExpansionFactory {
     public String getTexture() {
         return "expansion_1.png";
     }
+
     @Override
     protected void init() {
         teron();
@@ -175,8 +176,9 @@ public class IcelandMap extends ExpansionFactory {
     protected void connectWithExpansion(ExpansionFactory expansion) {
         if (expansion instanceof GaineaMap) {
             ships(GRASSUMPF, GaineaMap.Areas.UFERLAND, new float[]{84.2f, 92.1f}, new float[]{45.1f, 48.2f});
+            ships(FREILAND, GaineaMap.Areas.GROSSEWUESTE, new float[]{76f, 83f, 91f, 100f}, new float[]{79f, 79.5f, 81f, 83f});
         }
-        if(expansion instanceof BoglandMap){
+        if (expansion instanceof BoglandMap) {
             ships(EISLAND, BoglandMap.Areas.SCHRECKENHORN, new float[]{89.4f, 92.3f, 95.5f}, new float[]{29.9f, 24.9f, 20f});
         }
     }
