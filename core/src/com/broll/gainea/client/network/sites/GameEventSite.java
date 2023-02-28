@@ -5,6 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.broll.gainea.client.AudioPlayer;
 import com.broll.gainea.client.game.GameUtils;
+import com.broll.gainea.client.ui.components.FinishedGoalDisplay;
 import com.broll.gainea.client.ui.components.Popup;
 import com.broll.gainea.client.ui.ingame.map.MapObjectRender;
 import com.broll.gainea.client.ui.ingame.map.MapScrollUtils;
@@ -200,7 +201,7 @@ public class GameEventSite extends AbstractGameSite {
         owner.cards++;
         String info = owner.name + " hat eine Karte erhalten!";
         game.ui.inGameUI.updateWindows();
-        MessageUtils.showActionMessage(game, info);
+        MessageUtils.showCenterMessage(game, info);
     }
 
     @PackageReceiver
@@ -208,7 +209,7 @@ public class GameEventSite extends AbstractGameSite {
         game.ui.inGameUI.hideWindows();
         NT_Player owner = game.state.getPlayer(goal.player);
         String info = owner.name + " hat ein neues Ziel erhalten!";
-        MessageUtils.showActionMessage(game, info);
+        MessageUtils.showCenterMessage(game, info);
     }
 
     @PackageReceiver
@@ -226,19 +227,11 @@ public class GameEventSite extends AbstractGameSite {
     @PackageReceiver
     public void received(NT_Event_FinishedGoal goal) {
         game.ui.inGameUI.hideWindows();
-        String text = "";
-        if (goal.player == getPlayer().getId()) {
-            text = "Du hast ein Ziel erreicht!";
+        boolean myGoal = goal.player == getPlayer().getId();
+        if (myGoal) {
             game.state.getGoals().remove(goal.goal);
-        } else {
-            text = game.state.getPlayer(goal.player).name + " hat ein Ziel erreicht!";
         }
-        Table message = new Table(game.ui.skin);
-        message.setBackground("highlight");
-        message.pad(20, 10, 20, 10);
-        message.defaults().space(50);
-        message.add(LabelUtils.label(game.ui.skin, text)).center().row();
-        message.add(GoalOverlay.renderGoal(game, goal.goal));
+        FinishedGoalDisplay message = new FinishedGoalDisplay(game, goal, myGoal);
         game.ui.inGameUI.showCenterOverlay(TableUtils.removeAfter(message, 3));
     }
 

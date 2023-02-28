@@ -9,6 +9,7 @@ import com.broll.gainea.server.core.map.ExpansionType;
 import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.server.core.processing.GameUpdateReceiverAdapter;
 import com.broll.gainea.server.core.utils.GameUtils;
+import com.broll.gainea.server.core.utils.ProcessingUtils;
 
 import java.util.Arrays;
 import java.util.List;
@@ -74,6 +75,7 @@ public abstract class Goal extends GameUpdateReceiverAdapter {
             nt.player = player.getServerPlayer().getId();
             nt.goal = this.nt();
             GameUtils.sendUpdate(game, nt);
+            ProcessingUtils.pause(3000);
             player.getGoalHandler().addPoints(difficulty.getPoints());
             finished = true;
             if (!game.isGameOver()) {

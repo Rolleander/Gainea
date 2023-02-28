@@ -16,7 +16,6 @@ public class MenuWindows {
     public MenuWindows(Gainea game, Skin skin) {
         this.game = game;
         addWindow(new FractionWindow(game, skin));
-        addWindow(new PlayerWindow(game, skin));
         addWindow(new CardWindow(game, skin));
         addWindow(new ChatWindow(game, skin));
         addWindow(new LogWindow(game, skin));
@@ -25,11 +24,7 @@ public class MenuWindows {
     public void showFractionWindow() {
         toggle(FractionWindow.class);
     }
-
-    public void showPlayerWindow() {
-        toggle(PlayerWindow.class);
-    }
-
+    
     public void showCardWindow() {
         toggle(CardWindow.class);
     }
