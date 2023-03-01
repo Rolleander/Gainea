@@ -10,7 +10,7 @@ public class C_BuffSpeed extends Card {
 
 
     public C_BuffSpeed() {
-        super(28, "Reiter", "Verleiht einer eurer Einheiten eine zusätzliche Bewegungsaktion pro Zug");
+        super(28, "Reittier", "Verleiht einer eurer Einheiten eine zusätzliche Bewegungsaktion pro Zug");
     }
 
     @Override

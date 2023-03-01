@@ -232,7 +232,7 @@ public class GameEventSite extends AbstractGameSite {
             game.state.getGoals().remove(goal.goal);
         }
         FinishedGoalDisplay message = new FinishedGoalDisplay(game, goal, myGoal);
-        game.ui.inGameUI.showCenterOverlay(TableUtils.removeAfter(message, 3));
+        game.ui.inGameUI.showCenterOverlay(TableUtils.removeAfter(message, 4));
     }
 
     @PackageReceiver

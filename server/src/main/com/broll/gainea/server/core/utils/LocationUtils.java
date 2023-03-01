@@ -14,21 +14,17 @@ import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.map.MapContainer;
 import com.broll.gainea.server.core.map.Ship;
 import com.broll.gainea.server.core.objects.BattleObject;
-import com.broll.gainea.server.core.objects.GodDragon;
 import com.broll.gainea.server.core.objects.MapObject;
 import com.broll.gainea.server.core.objects.Monster;
 import com.broll.gainea.server.core.player.Player;
 
-import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.ArrayUtils;
-import org.checkerframework.checker.units.qual.A;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -134,19 +130,19 @@ public final class LocationUtils {
         return areas.stream().filter(it -> it.getInhabitants().isEmpty()).limit(amount).collect(Collectors.toList());
     }
 
-    public static int getWalkingDistance(Location from, Location to) {
-        return getWalkingDistance(null, from, to);
+    private static Function<Location, List<Location>> routes(Player player) {
+        return location -> {
+            if (player == null) {
+                return location.getWalkableNeighbours();
+            }
+            return player.getFraction().getMoveLocations(location);
+        };
     }
 
     public static int getWalkingDistance(Player player, Location from, Location to) {
         List<Location> visited = new ArrayList<>();
         List<Location> remaining;
-        Function<Location, List<Location>> routes = location->{
-            if(player==null){
-                return location.getWalkableNeighbours();
-            }
-            return player.getFraction().getMoveLocations(location);
-        };
+        Function<Location, List<Location>> routes = routes(player);
         int distance = 0;
         if (from == to) {
             return 0;
@@ -160,10 +156,27 @@ public final class LocationUtils {
                 }
             }
             visited.addAll(remaining);
-            remaining = remaining.stream().flatMap(it->routes.apply(it).stream()).collect(Collectors.toList());
+            remaining = remaining.stream().flatMap(it -> routes.apply(it).stream()).collect(Collectors.toList());
             remaining.removeAll(visited);
         } while (!remaining.isEmpty());
         return -1;
+    }
+
+    public static List<Location> getWalkableLocations(Player player, Location from, int maxSteps) {
+        List<Location> visited = new ArrayList<>();
+        List<Location> remaining;
+        Function<Location, List<Location>> routes = routes(player);
+        int distance = 0;
+        remaining = routes.apply(from);
+        while (!remaining.isEmpty() && distance < maxSteps) {
+            distance++;
+            visited.addAll(remaining);
+            remaining = remaining.stream().flatMap(it -> routes.apply(it).stream()).collect(Collectors.toList());
+            remaining.removeAll(visited);
+        }
+        visited.addAll(remaining);
+        visited.remove(from);
+        return visited;
     }
 
 }

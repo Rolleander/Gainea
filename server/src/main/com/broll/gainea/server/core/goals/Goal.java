@@ -75,7 +75,7 @@ public abstract class Goal extends GameUpdateReceiverAdapter {
             nt.player = player.getServerPlayer().getId();
             nt.goal = this.nt();
             GameUtils.sendUpdate(game, nt);
-            ProcessingUtils.pause(3000);
+            ProcessingUtils.pause(4000);
             player.getGoalHandler().addPoints(difficulty.getPoints());
             finished = true;
             if (!game.isGameOver()) {
