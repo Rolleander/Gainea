@@ -8,16 +8,25 @@
 ## Installation
 
 1. Checkout project
-2. Install the network library: [Installation instructions](https://github.com/Rolleander/GameServerControl#installation) 
+2. Install the network
+   library: [Installation instructions](https://github.com/Rolleander/GameServerControl#installation)
 
 ## Run Server
 
 ```
-gradlew startServer
+gradlew runServer
 ```
 
 ## Run Client
 
+Desktop:
+
 ```
-gradlew run
+gradlew runDesktop
+```
+
+Android:
+
+```
+gradlew runAndroid
 ```

@@ -1,13 +1,13 @@
 apply plugin: "java"
 
 sourceCompatibility = 1.8
-sourceSets.main.java.srcDirs = [ "src/" ]
+sourceSets.main.java.srcDirs = ["src/"]
 sourceSets.main.resources.srcDirs = ["../core/assets"]
 
 project.ext.mainClassName = "com.broll.gainea.desktop.DesktopLauncher"
 project.ext.assetsDir = new File("../core/assets")
 
-task runClient(dependsOn: classes, type: JavaExec) {
+task runDesktop(dependsOn: classes, type: JavaExec) {
     group = "Execution"
     main = project.mainClassName
     classpath = sourceSets.main.runtimeClasspath
@@ -16,7 +16,7 @@ task runClient(dependsOn: classes, type: JavaExec) {
     ignoreExitValue = true
 }
 
-task testClient(dependsOn: classes, type: JavaExec) {
+task testDesktop(dependsOn: classes, type: JavaExec) {
     group = "Execution"
     main = project.mainClassName
     classpath = sourceSets.main.runtimeClasspath
