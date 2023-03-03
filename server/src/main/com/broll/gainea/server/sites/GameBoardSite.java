@@ -2,12 +2,14 @@ package com.broll.gainea.server.sites;
 
 import com.broll.gainea.net.NT_Battle_Reaction;
 import com.broll.gainea.net.NT_EndTurn;
+import com.broll.gainea.net.NT_Event_TextInfo;
 import com.broll.gainea.net.NT_Reaction;
+import com.broll.gainea.net.NT_Surrender;
 import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.actions.ActionContext;
+import com.broll.gainea.server.core.actions.ReactionHandler;
 import com.broll.gainea.server.core.battle.BattleHandler;
 import com.broll.gainea.server.core.player.Player;
-import com.broll.gainea.server.core.actions.ReactionHandler;
 import com.broll.networklib.PackageReceiver;
 import com.broll.networklib.server.ConnectionRestriction;
 import com.broll.networklib.server.RestrictionType;
@@ -57,7 +59,7 @@ public class GameBoardSite extends GameSite {
 
     @PackageReceiver
     @ConnectionRestriction(RestrictionType.LOBBY_LOCKED)
-    public void reaction(NT_EndTurn endTurn) {
+    public void endTurn(NT_EndTurn nt) {
         //only react to if its players turn and no action is running right now
         if (!getGame().isGameOver() && playersTurn() && !getGame().getProcessingCore().isBusy()) {
             //dont allow next turn if there are required actions for the player remaining
@@ -71,4 +73,16 @@ public class GameBoardSite extends GameSite {
         }
     }
 
+    @PackageReceiver
+    @ConnectionRestriction(RestrictionType.LOBBY_LOCKED)
+    public void surrender(NT_Surrender nt) {
+        if (getGamePlayer().hasSurrendered()) {
+            return;
+        }
+        getGamePlayer().surrender();
+        NT_Event_TextInfo info = new NT_Event_TextInfo();
+        info.text = getPlayer().getName() + " hat aufgegeben!";
+        getLobby().sendToAllTCP(info);
+        endTurn(null);
+    }
 }

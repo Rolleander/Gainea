@@ -4,7 +4,6 @@ import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.server.core.processing.GameUpdateReceiverAdapter;
-import com.broll.gainea.server.core.processing.IGameUpdateReceiver;
 import com.broll.gainea.server.core.utils.UnitControl;
 
 import org.apache.commons.collections4.map.MultiValueMap;
@@ -55,7 +54,7 @@ public class BuffProcessor extends GameUpdateReceiverAdapter {
     }
 
     public void timeoutBuff(Buff buff, int turns) {
-        int timeoutTurn = currentTurnCount + game.getPlayers().size() * Math.max(1, turns);
+        int timeoutTurn = currentTurnCount + game.getAllPlayers().size() * Math.max(1, turns);
         timedBuffs.put(timeoutTurn, buff);
     }
 

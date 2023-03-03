@@ -1,12 +1,13 @@
 package com.broll.gainea.server.core.player;
 
-import com.broll.gainea.server.core.GameContainer;
-import com.broll.gainea.server.core.fractions.Fraction;
-import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.net.NT_Player;
 import com.broll.gainea.net.NT_Unit;
-import com.broll.gainea.server.init.PlayerData;
+import com.broll.gainea.server.core.GameContainer;
+import com.broll.gainea.server.core.fractions.Fraction;
 import com.broll.gainea.server.core.map.Location;
+import com.broll.gainea.server.core.objects.BattleObject;
+import com.broll.gainea.server.init.PlayerData;
+import com.broll.networklib.server.impl.LobbyPlayer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,20 +16,34 @@ import java.util.stream.Collectors;
 public class Player {
 
     private Fraction fraction;
-    private com.broll.networklib.server.impl.Player<PlayerData> serverPlayer;
+    private LobbyPlayer<PlayerData> serverPlayer;
     private List<BattleObject> units = new ArrayList<>();
     private GoalHandler goalHandler;
     private CardHandler cardHandler;
     private int skipRounds;
     private int color;
-  
 
-    public Player(GameContainer game, Fraction fraction, com.broll.networklib.server.impl.Player<PlayerData> serverPlayer) {
+    private boolean surrendered = false;
+
+
+    public Player(GameContainer game, Fraction fraction, LobbyPlayer<PlayerData> serverPlayer) {
         this.fraction = fraction;
         this.serverPlayer = serverPlayer;
         this.goalHandler = new GoalHandler(game, this);
         this.cardHandler = new CardHandler(game, this);
         serverPlayer.getData().joinedGame(this);
+    }
+
+    public boolean isActive() {
+        return !surrendered && !serverPlayer.hasLeftLobby();
+    }
+
+    public void surrender() {
+        surrendered = true;
+    }
+
+    public boolean hasSurrendered() {
+        return surrendered;
     }
 
     public void setColor(int color) {
@@ -45,14 +60,13 @@ public class Player {
 
     public void consumeSkippedRound() {
         skipRounds--;
+        if (skipRounds < 0) {
+            skipRounds = 0;
+        }
     }
 
     public List<Location> getControlledLocations() {
         return units.stream().map(BattleObject::getLocation).distinct().collect(Collectors.toList());
-    }
-
-    private boolean onlyController(Location location){
-        return !location.getInhabitants().stream().anyMatch(it-> it.getOwner() != this);
     }
 
     public NT_Player nt() {
@@ -68,7 +82,7 @@ public class Player {
         return player;
     }
 
-    public com.broll.networklib.server.impl.Player<PlayerData> getServerPlayer() {
+    public LobbyPlayer<PlayerData> getServerPlayer() {
         return serverPlayer;
     }
 
@@ -92,4 +106,5 @@ public class Player {
     public String toString() {
         return serverPlayer.toString();
     }
+
 }

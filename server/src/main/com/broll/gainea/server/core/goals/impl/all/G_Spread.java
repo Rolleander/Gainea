@@ -10,15 +10,15 @@ public class G_Spread extends CustomOccupyGoal {
 
 
     public G_Spread() {
-        super(GoalDifficulty.MEDIUM, "Kontrolliere Einheiten auf 5 verschiedenen Landmassen");
-        setProgressionGoal(5);
+        super(GoalDifficulty.MEDIUM, "Kontrolliere Einheiten auf 6 verschiedenen Landmassen");
+        setProgressionGoal(6);
     }
 
     @Override
     public void check() {
         int containers = (int) player.getControlledLocations().stream().filter(it -> !(it instanceof Ship)).map(Location::getContainer).distinct().count();
         updateProgression(containers);
-        if (containers >= 5) {
+        if (containers >= 6) {
             success();
         }
     }

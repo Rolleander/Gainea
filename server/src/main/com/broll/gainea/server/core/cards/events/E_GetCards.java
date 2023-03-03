@@ -9,7 +9,7 @@ public class E_GetCards extends EventCard {
 
     @Override
     protected void play() {
-        game.getPlayers().forEach(player -> {
+        game.getActivePlayers().forEach(player -> {
             player.getCardHandler().receiveCard(game.getCardStorage().getRandomPlayableCard());
         });
     }

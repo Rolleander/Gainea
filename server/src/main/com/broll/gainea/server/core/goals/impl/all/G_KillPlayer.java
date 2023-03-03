@@ -6,16 +6,13 @@ import static com.broll.gainea.server.core.goals.GoalDifficulty.MEDIUM;
 import com.broll.gainea.misc.RandomUtils;
 import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.battle.BattleResult;
+import com.broll.gainea.server.core.bot.BotUtils;
 import com.broll.gainea.server.core.bot.strategy.GoalStrategy;
 import com.broll.gainea.server.core.goals.Goal;
 import com.broll.gainea.server.core.goals.GoalDifficulty;
-import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.objects.BattleObject;
-import com.broll.gainea.server.core.objects.MapObject;
-import com.broll.gainea.server.core.objects.Monster;
 import com.broll.gainea.server.core.player.Player;
 
-import java.util.Set;
 import java.util.stream.Collectors;
 
 public class G_KillPlayer extends Goal {
@@ -28,26 +25,26 @@ public class G_KillPlayer extends Goal {
 
     @Override
     public boolean init(GameContainer game, Player player) {
-        target =  RandomUtils.pickRandom(game.getPlayers().stream().filter(it->
+        target = RandomUtils.pickRandom(game.getActivePlayers().stream().filter(it ->
                 it != player && !it.getUnits().isEmpty()).collect(Collectors.toList()));
-        if(target==null){
+        if (target == null) {
             return false;
         }
-        this.text = target.getServerPlayer().getName()+" darf keine Einheiten mehr besitzen";
+        this.text = target.getServerPlayer().getName() + " darf keine Einheiten mehr besitzen";
         this.difficulty = target.getUnits().size() >= 8 ? HARD : MEDIUM;
         return super.init(game, player);
     }
 
     @Override
     public void killed(BattleObject unit, BattleResult throughBattle) {
-        if(unit.getOwner() == target){
+        if (unit.getOwner() == target) {
             check();
         }
     }
 
     @Override
     public void check() {
-        if(target.getUnits().isEmpty()){
+        if (target.getUnits().isEmpty()) {
             success();
         }
     }
@@ -55,10 +52,9 @@ public class G_KillPlayer extends Goal {
     @Override
     public void botStrategy(GoalStrategy strategy) {
         strategy.setSpreadUnits(false);
-        strategy.setPrepareStrategy(()->{
-            Set<Location> locations = target.getUnits().stream().map(BattleObject::getLocation).collect(Collectors.toSet());
-            strategy.updateTargets(locations);
-            strategy.setRequiredUnits(target.getUnits().size()+1);
+        strategy.setPrepareStrategy(() -> {
+            strategy.updateTargets(BotUtils.huntPlayerTargets(target));
+            strategy.setRequiredUnits(target.getUnits().size() + 1);
         });
     }
 }

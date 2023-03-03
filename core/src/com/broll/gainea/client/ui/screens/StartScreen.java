@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -13,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
+import com.broll.gainea.Gainea;
 import com.broll.gainea.client.AudioPlayer;
 import com.broll.gainea.client.ui.Screen;
 import com.broll.gainea.client.ui.utils.LabelUtils;
@@ -30,9 +30,9 @@ public class StartScreen extends Screen {
     private boolean connecting = false;
     private Label loadingInfo;
 
-    public static String PLAYER_NAME = //"tester";
+    public static String PLAYER_NAME =
             "";
-    public static String SERVER = //"localhost";
+    public static String SERVER =
             "gainea.de";
 
     public StartScreen() {
@@ -134,6 +134,7 @@ public class StartScreen extends Screen {
        table.add(discover).colspan(2).align(Align.left); */
         vg.add(new Image(game.assets.get("textures/logo.png", Texture.class))).padTop(-300);
         vg.row();
+        vg.add(LabelUtils.markup(skin, "[WHITE]Version: " + Gainea.VERSION + "[]")).right().row();
         vg.add(table);
         vg.row();
         return vg;

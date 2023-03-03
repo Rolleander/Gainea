@@ -1,7 +1,14 @@
 
+
+version check server / client
+
+- select turn goal instead of point limit
+
 cards:
 - swap place with enemy army ?
 - teleport to random field of selected continent
+- alle einheiten auf einen platz
+
 
 karten:
 

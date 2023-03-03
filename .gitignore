@@ -130,3 +130,5 @@ Thumbs.db
 /ios-moe/xcode/native/
 *.log
 /old
+/server/src/resources/version.txt
+/core/assets/version.txt

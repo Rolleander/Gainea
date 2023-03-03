@@ -22,9 +22,11 @@ public class GaineaServer {
 
     private LobbyGameServer<LobbyData, PlayerData> server;
 
-    public GaineaServer() {
+    public GaineaServer(String version) {
         com.esotericsoftware.minlog.Log.INFO();
+        Log.info("Start Gainea Server " + version);
         server = new LobbyGameServer<>("GaineaServer", NetworkSetup::registerNetwork);
+        server.setVersion(version);
         ServerSetup.setup(server);
         server.open();
     }
@@ -44,7 +46,7 @@ public class GaineaServer {
             getGame(id).ifPresent(game -> {
                 game.getCardStorage().getAllCards().stream().filter(it -> it.getPicture() == picId)
                         .findFirst().ifPresent(card ->
-                                game.getPlayers().get(game.getCurrentPlayer()).getCardHandler().receiveCard(card)
+                                game.getCurrentPlayer().getCardHandler().receiveCard(card)
                         );
             });
         });
@@ -76,11 +78,11 @@ public class GaineaServer {
                 LobbyData settings = game.getGameSettings();
                 print("> Game Settings: Map:" + settings.getExpansionSetting().getName() + " Goals:" + settings.getGoalTypes().getName() + " PointLimit:" + settings.getPointLimit() + " MonsterCount:" + settings.getMonsterCount()
                         + " StartGoals:" + settings.getStartGoals() + " StartLocations:" + settings.getStartLocations());
-                print("> Round:" + game.getRounds() + " Turn:" + (game.getCurrentPlayer() + 1) + "/" + game.getPlayers().size() + " Player:" + (game.getCurrentPlayer() >= 0 ? game.getPlayers().get(game.getCurrentPlayer()) : "None"));
+                print("> Round:" + game.getRounds() + " Turn:" + (game.getCurrentTurn() + 1) + "/" + game.getAllPlayers().size() + " Player:" + (game.getCurrentTurn() >= 0 ? game.getCurrentPlayer().getServerPlayer().getName() : "None"));
                 print("> State: ProcessingCore.Busy=" + game.getProcessingCore().isBusy() + " BattleHandler.Active=" + game.getBattleHandler().isBattleActive());
                 print("> Game Objects [" + game.getObjects().size() + "]:");
                 game.getObjects().forEach(object -> print(">> " + object.toString()));
-                game.getPlayers().forEach(player -> {
+                game.getAllPlayers().forEach(player -> {
                     print("> Player [" + player.toString() + " Points:" + player.getGoalHandler().getScore()
                             + " Stars:" + player.getGoalHandler().getStars() + " Online=" + player.getServerPlayer().isOnline() + "]:");
                     print(">> Goals (" + player.getGoalHandler().getGoals().size() + "):" + player.getGoalHandler().getGoals().stream().map(Object::toString).collect(Collectors.joining(",")));

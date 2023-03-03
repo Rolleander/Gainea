@@ -1,8 +1,9 @@
 package com.broll.gainea.server.core.player;
 
+import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.fractions.Fraction;
 import com.broll.gainea.server.init.PlayerData;
-import com.broll.gainea.server.core.GameContainer;
+import com.broll.networklib.server.impl.LobbyPlayer;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -11,10 +12,10 @@ import java.util.List;
 
 public class PlayerFactory {
 
-    public static List<Player> create(GameContainer game, Collection<com.broll.networklib.server.impl.Player<PlayerData>> serverPlayers) {
+    public static List<Player> create(GameContainer game, Collection<LobbyPlayer<PlayerData>> serverPlayers) {
         List<Player> players = new ArrayList<>();
         int color = 0;
-        Iterator<com.broll.networklib.server.impl.Player<PlayerData>> iterator = serverPlayers.iterator();
+        Iterator<LobbyPlayer<PlayerData>> iterator = serverPlayers.iterator();
         while (iterator.hasNext()) {
             Player player = create(game, iterator.next());
             player.setColor(color);
@@ -25,7 +26,7 @@ public class PlayerFactory {
         return players;
     }
 
-    public static Player create(GameContainer game, com.broll.networklib.server.impl.Player<PlayerData> serverPlayer) {
+    public static Player create(GameContainer game, LobbyPlayer<PlayerData> serverPlayer) {
         PlayerData data = serverPlayer.getData();
         Fraction fraction = data.getFraction().create();
         Player player = new Player(game, fraction, serverPlayer);

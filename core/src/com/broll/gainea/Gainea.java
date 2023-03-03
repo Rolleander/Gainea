@@ -9,10 +9,10 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.broll.gainea.client.Assets;
-import com.broll.gainea.client.network.ClientHandler;
 import com.broll.gainea.client.game.GameState;
-import com.broll.gainea.client.ui.Screen;
+import com.broll.gainea.client.network.ClientHandler;
 import com.broll.gainea.client.ui.GameUI;
+import com.broll.gainea.client.ui.Screen;
 import com.broll.gainea.client.ui.screens.LoadingScreen;
 import com.broll.gainea.client.ui.screens.StartScreen;
 
@@ -30,6 +30,8 @@ public class Gainea extends ApplicationAdapter {
     private Screen startScreen;
     private boolean reconnectCheck;
 
+    public static String VERSION;
+
     public Gainea() {
         this(new StartScreen(), true);
     }
@@ -39,14 +41,14 @@ public class Gainea extends ApplicationAdapter {
         this.reconnectCheck = reconnectCheck;
     }
 
-    private Stage createStage(){
+    private Stage createStage() {
         ScreenViewport viewport = new ScreenViewport();
         float screenScale = 1;
         float minHeight = 850;
-        if(Gdx.app.getType() != Application.ApplicationType.Desktop && Gdx.graphics.getHeight() > minHeight){
-            screenScale = Math.min(1.5f, (float)Gdx.graphics.getHeight() / minHeight);
+        if (Gdx.app.getType() != Application.ApplicationType.Desktop && Gdx.graphics.getHeight() > minHeight) {
+            screenScale = Math.min(1.5f, (float) Gdx.graphics.getHeight() / minHeight);
         }
-        viewport.setUnitsPerPixel(1/screenScale);
+        viewport.setUnitsPerPixel(1 / screenScale);
         return new Stage(viewport);
     }
 
@@ -79,7 +81,7 @@ public class Gainea extends ApplicationAdapter {
         gameShapeRenderer.setProjectionMatrix(gameStage.getViewport().getCamera().combined);
         gameStage.act(delta);
         uiStage.act(delta);
-        if(ui.mapScrollControl!=null){
+        if (ui.mapScrollControl != null) {
             ui.mapScrollControl.update(delta);
         }
         gameStage.draw();

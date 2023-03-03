@@ -1,11 +1,14 @@
 package com.broll.gainea.client;
 
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.broll.gainea.client.misc.TextAsset;
+import com.broll.gainea.client.misc.TextAssetLoader;
 
 import java.util.Arrays;
 
@@ -17,6 +20,8 @@ public class Assets {
     private final static String MUSIC = "music/";
 
     public Assets() {
+        manager.setLoader(TextAsset.class, new TextAssetLoader(new InternalFileHandleResolver()));
+        manager.load("version.txt", TextAsset.class);
         loadTextures();
         loadSounds();
         loadMusic();
@@ -100,4 +105,5 @@ public class Assets {
         }
         return manager.get(name, type);
     }
+
 }

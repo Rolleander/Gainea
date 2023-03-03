@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.broll.gainea.Gainea;
 import com.broll.gainea.client.Assets;
+import com.broll.gainea.client.misc.TextAsset;
 import com.broll.gainea.client.network.IClientListener;
 import com.broll.gainea.client.ui.components.ConnectionCircle;
 import com.broll.gainea.client.ui.components.NetworkProblemDialog;
@@ -41,9 +42,11 @@ public class GameUI implements IClientListener {
 
     public void assetsLoaded() {
         this.skin = game.assets.get("ui/cloud-form-ui.json", Skin.class);
+        Gainea.VERSION = game.assets.get("version.txt", TextAsset.class).getContent();
         skin.getFont("markup").getData().markupEnabled = true;
         connectionCircle = new ConnectionCircle(game.assets);
         connectionCircle.toFront();
+        game.client.getClient().setVersion(Gainea.VERSION);
         if (reconnectCheck) {
             game.client.reconnectCheck();
         }

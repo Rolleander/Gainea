@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class GameContainer {
 
@@ -46,7 +47,7 @@ public class GameContainer {
     private List<MapEffect> effects = new ArrayList<>();
     private Map<Integer, ActionContext> actions = new HashMap<>();
     private int rounds = 1;
-    private int currentPlayer = -1;
+    private int currentTurn = -1;
     private int actionCounter = 0;
     private int boardObjectCounter = 0;
     private ReactionHandler reactionHandler;
@@ -156,32 +157,40 @@ public class GameContainer {
 
     public synchronized Player nextTurn() {
         actions.clear();
-        currentPlayer++;
-        if (currentPlayer >= players.size()) {
-            currentPlayer = 0;
+        currentTurn++;
+        if (currentTurn >= players.size()) {
+            currentTurn = 0;
             rounds++;
         }
-        return players.get(currentPlayer);
+        return players.get(currentTurn);
     }
 
     public MapContainer getMap() {
         return map;
     }
 
-    public int getCurrentPlayer() {
-        return currentPlayer;
+    public int getCurrentTurn() {
+        return currentTurn;
     }
 
     public int getRounds() {
         return rounds;
     }
 
-    public List<Player> getPlayers() {
+    public List<Player> getActivePlayers() {
+        return players.stream().filter(Player::isActive).collect(Collectors.toList());
+    }
+
+    public Player getCurrentPlayer() {
+        return players.get(currentTurn);
+    }
+
+    public List<Player> getAllPlayers() {
         return players;
     }
 
     public boolean isPlayersTurn(Player player) {
-        return players.indexOf(player) == currentPlayer;
+        return players.indexOf(player) == currentTurn;
     }
 
     public ReactionHandler getReactionHandler() {

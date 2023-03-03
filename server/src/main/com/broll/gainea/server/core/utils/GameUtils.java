@@ -20,7 +20,7 @@ public final class GameUtils {
     }
 
     public static void sendUpdateExceptFor(GameContainer game, Object update, Player exceptPlayer) {
-        game.getPlayers().stream().filter(p -> p != exceptPlayer).forEach(p -> p.getServerPlayer().sendTCP(update));
+        game.getActivePlayers().stream().filter(p -> p != exceptPlayer).forEach(p -> p.getServerPlayer().sendTCP(update));
     }
 
     public static void sendUpdate(GameContainer game, Object update) {
@@ -36,11 +36,11 @@ public final class GameUtils {
         object.getLocation().getInhabitants().remove(object);
         boolean removed;
         if (owner == null) {
-            removed= game.getObjects().remove(object);
+            removed = game.getObjects().remove(object);
         } else {
-            removed= owner.getUnits().remove(object);
+            removed = owner.getUnits().remove(object);
         }
-        if(removed){
+        if (removed) {
             game.getUpdateReceiver().unregister(object);
         }
         return removed;

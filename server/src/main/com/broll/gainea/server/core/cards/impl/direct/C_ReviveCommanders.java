@@ -19,7 +19,7 @@ public class C_ReviveCommanders extends DirectlyPlayedCard {
 
     @Override
     protected void play() {
-        game.getPlayers().stream().filter(it -> !PlayerUtils.isCommanderAlive(it)).forEach(player -> {
+        game.getActivePlayers().stream().filter(it -> !PlayerUtils.isCommanderAlive(it)).forEach(player -> {
             List<Location> locations = player.getControlledLocations();
             Location location = RandomUtils.pickRandom(locations);
             if (location == null) {

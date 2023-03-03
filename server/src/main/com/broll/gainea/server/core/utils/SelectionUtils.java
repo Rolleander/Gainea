@@ -45,8 +45,8 @@ public final class SelectionUtils {
     public static BattleObject selectEnemyUnit(GameContainer game, Player player, String text) {
         Set<Location> locations = new HashSet<>();
         PlayerUtils.getOtherPlayers(game, player).forEach(otherPlayer -> locations.addAll(otherPlayer.getControlledLocations()));
-        locations.addAll(game.getObjects().stream().filter(it-> it instanceof Monster).map(MapObject::getLocation).collect(Collectors.toList()));
-        return selectUnitFromLocations(game, new ArrayList<>(locations), it -> it.getOwner() != player , text);
+        locations.addAll(game.getObjects().stream().filter(it -> it instanceof Monster).map(MapObject::getLocation).collect(Collectors.toList()));
+        return selectUnitFromLocations(game, new ArrayList<>(locations), it -> it.getOwner() != player, text);
     }
 
     public static BattleObject selectAnyUnit(GameContainer game, String text) {
@@ -56,7 +56,7 @@ public final class SelectionUtils {
     public static BattleObject selectAnyUnit(GameContainer game, String text, Predicate<BattleObject> predicate) {
         Set<Location> locations = new HashSet<>();
         locations.addAll(game.getObjects().stream().map(MapObject::getLocation).collect(Collectors.toList()));
-        game.getPlayers().forEach(player -> locations.addAll(player.getControlledLocations()));
+        game.getAllPlayers().forEach(player -> locations.addAll(player.getControlledLocations()));
         return selectUnitFromLocations(game, new ArrayList<>(locations), predicate, text);
     }
 
@@ -65,17 +65,17 @@ public final class SelectionUtils {
     }
 
     public static Monster selectWildMonster(GameContainer game, String text, Predicate<BattleObject> predicate) {
-        return (Monster) selectUnitFromLocations(game, game.getObjects().stream().filter(it->it instanceof Monster).map(MapObject::getLocation).distinct().collect(Collectors.toList()),
+        return (Monster) selectUnitFromLocations(game, game.getObjects().stream().filter(it -> it instanceof Monster).map(MapObject::getLocation).distinct().collect(Collectors.toList()),
                 it -> it.getOwner() == null && it instanceof Monster && predicate.test(it), text);
     }
 
     public static BattleObject selectUnitFromLocations(GameContainer game, List<Location> locations, Predicate<BattleObject> predicate, String text) {
-        Player selectingPlayer = game.getPlayers().get(game.getCurrentPlayer());
+        Player selectingPlayer = game.getCurrentPlayer();
         return (BattleObject) selectFromLocations(game, selectingPlayer, locations, it -> it instanceof BattleObject && predicate.test((BattleObject) it), text);
     }
 
     public static BattleObject selectUnitFromLocations(GameContainer game, Player selectingPlayer, List<Location> locations, Predicate<BattleObject> predicate, String text) {
-        return (BattleObject) selectFromLocations(game,selectingPlayer, locations, it -> it instanceof BattleObject && predicate.test((BattleObject) it), text);
+        return (BattleObject) selectFromLocations(game, selectingPlayer, locations, it -> it instanceof BattleObject && predicate.test((BattleObject) it), text);
     }
 
     public static MapObject selectFromLocations(GameContainer game, Player selectingPlayer, List<Location> locations, Predicate<MapObject> predicate, String text) {

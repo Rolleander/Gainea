@@ -37,11 +37,11 @@ public class G_KillCommander extends Goal {
     @Override
     public void botStrategy(GoalStrategy strategy) {
         strategy.setSpreadUnits(false);
-        strategy.setPrepareStrategy(()->{
-            Set<Location> locations = game.getPlayers().stream().filter(it -> it != player).flatMap(it -> it.getUnits().stream())
+        strategy.setPrepareStrategy(() -> {
+            Set<Location> locations = game.getAllPlayers().stream().filter(it -> it != player).flatMap(it -> it.getUnits().stream())
                     .filter(it -> it instanceof Commander).map(MapObject::getLocation).collect(Collectors.toSet());
-           strategy.updateTargets(locations);
-           strategy.setRequiredUnits(5);
+            strategy.updateTargets(locations);
+            strategy.setRequiredUnits(5);
         });
     }
 }

@@ -16,8 +16,8 @@ public class C_HolyJustice extends DirectlyPlayedCard {
 
     @Override
     protected void play() {
-        int avg = (int) Math.ceil((float) game.getPlayers().stream().mapToInt(it -> it.getUnits().size()).sum()
-                / game.getPlayers().size());
+        int avg = (int) Math.ceil((float) game.getActivePlayers().stream().mapToInt(it -> it.getUnits().size()).sum()
+                / game.getActivePlayers().size());
         PlayerUtils.iteratePlayers(game, 0, player -> {
             int below = avg - player.getUnits().size();
             for (int i = 0; i < below; i++) {

@@ -2,21 +2,17 @@ package com.broll.gainea.server.core.actions;
 
 import com.broll.gainea.net.NT_Action;
 import com.broll.gainea.net.NT_EndTurn;
-import com.broll.gainea.net.NT_PlayerAction;
 import com.broll.gainea.net.NT_PlayerTurnActions;
 import com.broll.gainea.net.NT_Reaction;
 import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.player.Player;
-import com.broll.networklib.server.impl.ConnectionSite;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.List;
 
 public class ReactionHandler {
 
@@ -49,12 +45,22 @@ public class ReactionHandler {
 
     private void tryContinueTurn() {
         if (requiredActions.isEmpty() && !game.isGameOver()) {
-            continueTurn();
+            if (game.getCurrentPlayer().isActive()) {
+                continueTurn();
+            } else {
+                if (game.getActivePlayers().stream().allMatch(it -> it.getServerPlayer().isBot())) {
+                    //only bots remaining, end game
+                    game.end();
+                } else {
+                    //end inactive players turn
+                    actionHandlers.getReactionActions().endTurn();
+                }
+            }
         }
     }
 
     private void continueTurn() {
-        Player activePlayer = game.getPlayers().get(game.getCurrentPlayer());
+        Player activePlayer = game.getCurrentPlayer();
         NT_PlayerTurnActions turn = game.getTurnBuilder().build(activePlayer);
         Log.trace("Continue " + activePlayer + " turn [" + turn.actions.length + " optional actions]");
         if (turn.actions.length == 0) {
@@ -72,13 +78,13 @@ public class ReactionHandler {
             player.getServerPlayer().sendTCP(requiredAction.context.nt());
         });
         if (game.isPlayersTurn(player) && !game.getProcessingCore().isBusy() && !game.getBattleHandler().isBattleActive()) {
-            //re send remaining optional actions
+            //resend remaining optional actions
             tryContinueTurn();
         }
     }
 
     public synchronized boolean hasRequiredActionFor(Player player) {
-        return requiredActions.values().stream().filter(ra -> ra.player == player).findFirst().isPresent();
+        return requiredActions.values().stream().anyMatch(ra -> ra.player == player);
     }
 
     public void handle(Player gamePlayer, ActionContext actionContext, NT_Reaction reaction) {

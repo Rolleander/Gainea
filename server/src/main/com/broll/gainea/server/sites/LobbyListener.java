@@ -1,20 +1,23 @@
 package com.broll.gainea.server.sites;
 
+import com.broll.gainea.misc.RandomUtils;
 import com.broll.gainea.net.NT_Battle_Reaction;
 import com.broll.gainea.server.core.GameContainer;
+import com.broll.gainea.server.core.fractions.FractionType;
 import com.broll.gainea.server.core.utils.MessageUtils;
 import com.broll.gainea.server.core.utils.ProcessingUtils;
 import com.broll.gainea.server.init.LobbyData;
 import com.broll.gainea.server.init.PlayerData;
-import com.broll.gainea.server.core.fractions.FractionType;
 import com.broll.networklib.server.impl.IServerLobbyListener;
+import com.broll.networklib.server.impl.LobbyPlayer;
 import com.broll.networklib.server.impl.Player;
 import com.broll.networklib.server.impl.ServerLobby;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.collections4.ListUtils;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class LobbyListener implements IServerLobbyListener<LobbyData, PlayerData> {
@@ -30,13 +33,15 @@ public class LobbyListener implements IServerLobbyListener<LobbyData, PlayerData
     }
 
     private FractionType findOpenFraction(ServerLobby<LobbyData, PlayerData> lobby) {
-        List<FractionType> fractions = lobby.getPlayers().stream().map(Player::getData).map(PlayerData::getFraction).filter(fraction -> fraction != null).collect(Collectors.toList());
-        for (FractionType fractionType : FractionType.values()) {
-            if (!fractions.contains(fractionType)) {
-                return fractionType;
-            }
+        List<FractionType> takenFractions = lobby.getPlayers().stream().map(LobbyPlayer::getData)
+                .map(PlayerData::getFraction).filter(Objects::nonNull).collect(Collectors.toList());
+        List<FractionType> allFractions = Arrays.asList(FractionType.values());
+        List<FractionType> remainingFractions = ListUtils.subtract(allFractions, takenFractions);
+        FractionType fraction = RandomUtils.pickRandom(remainingFractions);
+        if (fraction == null) {
+            fraction = RandomUtils.pickRandom(allFractions);
         }
-        return FractionType.values()[0];
+        return fraction;
     }
 
     @Override

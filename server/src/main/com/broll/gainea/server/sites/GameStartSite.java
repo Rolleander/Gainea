@@ -65,6 +65,7 @@ public class GameStartSite extends GameSite {
             Player player = p.getData().getGamePlayer();
             gameStart.playerData.put(player, new PlayerStartData());
             drawStartingCards(game, player);
+            //todo client doenst know cards:(
         });
         lobby.sendToAllTCP(game.start());
         Log.info("Started game in lobby " + lobby.getName());
@@ -100,7 +101,7 @@ public class GameStartSite extends GameSite {
         GameContainer game = getGame();
         int startGoalsCount = getLobby().getData().getStartGoals();
         for (int i = 0; i < startGoalsCount; i++) {
-            game.getPlayers().forEach(player -> {
+            game.getAllPlayers().forEach(player -> {
                 Log.debug("Add goal to " + player);
                 game.getGoalStorage().assignNewRandomGoal(player);
                 ProcessingUtils.pause(DELAY);
@@ -112,9 +113,9 @@ public class GameStartSite extends GameSite {
         Log.info("Draw start locations");
         GameContainer game = getGame();
         int startLocationsCount = getLobby().getData().getStartLocations();
-        int playerCount = game.getPlayers().size();
+        int playerCount = game.getAllPlayers().size();
         List<Area> startLocations = LocationUtils.pickRandomEmpty(game.getMap(), playerCount * startLocationsCount);
-        for (Player player : game.getPlayers()) {
+        for (Player player : game.getAllPlayers()) {
             List<Location> playerStartLocations = startLocations.stream().limit(startLocationsCount).collect(Collectors.toList());
             startLocations.removeAll(playerStartLocations);
             gameStart.playerData.get(player).startLocations = playerStartLocations;
@@ -149,7 +150,7 @@ public class GameStartSite extends GameSite {
         //remove selected location from start locations
         gameStart.playerData.get(player).startLocations.remove(location);
         gameStart.startUnitsPlaced++;
-        if (gameStart.startUnitsPlaced < game.getPlayers().size() * startLocationsCount) {
+        if (gameStart.startUnitsPlaced < game.getAllPlayers().size() * startLocationsCount) {
             //next player places unit
             placeUnit();
         } else {
@@ -160,7 +161,7 @@ public class GameStartSite extends GameSite {
 
     private Player getPlacingPlayer() {
         int playerNr = gameStart.startUnitsPlaced % getPlayersCount();
-        return getGame().getPlayers().get(playerNr);
+        return getGame().getAllPlayers().get(playerNr);
     }
 
     @PackageReceiver

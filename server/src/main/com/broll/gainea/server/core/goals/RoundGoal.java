@@ -16,9 +16,9 @@ public abstract class RoundGoal extends Goal {
 
     @Override
     public void turnStarted(Player player) {
-        if (game.getCurrentPlayer() > 0 || game.getRounds() > 1) {
+        if (game.getCurrentTurn() > 0 || game.getRounds() > 1) {
             turns++;
-            if (turns > game.getPlayers().size()) {
+            if (turns > game.getAllPlayers().size()) {
                 check();
             }
         }

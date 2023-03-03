@@ -32,7 +32,7 @@ public class GameStatistic extends GameUpdateReceiverAdapter {
 
     private TurnStatistic calcTurnStatistic() {
         TurnStatistic statistic = new TurnStatistic();
-        statistic.players = game.getPlayers().stream().map(this::calcPlayerStatistic).toArray(PlayerStatistic[]::new);
+        statistic.players = game.getAllPlayers().stream().map(this::calcPlayerStatistic).toArray(PlayerStatistic[]::new);
         return statistic;
     }
 

@@ -7,7 +7,7 @@ import com.broll.gainea.server.core.actions.ActionContext;
 import com.broll.gainea.server.core.actions.RequiredActionContext;
 import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.player.Player;
-import com.broll.networklib.server.impl.ConnectionSite;
+import com.broll.networklib.server.impl.LobbyPlayer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +29,7 @@ public class SelectChoiceAction extends AbstractActionHandler<NT_Action_SelectCh
     }
 
     public int selection(String message, List<String> choices) {
-        return selection(game.getPlayers().get(game.getCurrentPlayer()), message, choices);
+        return selection(game.getCurrentPlayer(), message, choices);
     }
 
     public int selection(Player player, String message, List<String> choices) {
@@ -37,12 +37,12 @@ public class SelectChoiceAction extends AbstractActionHandler<NT_Action_SelectCh
         Context context = build(choices);
         actionHandlers.getReactionActions().requireAction(player, new RequiredActionContext<>(context, message));
         Log.trace("Wait for select choice reaction");
-        processingBlock.waitFor();
+        processingBlock.waitFor(player);
         return context.selectedOption;
     }
 
     public int selectObject(String message, List<? extends Object> choices) {
-        return selectObject(game.getPlayers().get(game.getCurrentPlayer()), message, choices);
+        return selectObject(game.getCurrentPlayer(), message, choices);
     }
 
     public int selectObject(Player player, String message, List<? extends Object> choices) {
@@ -53,12 +53,12 @@ public class SelectChoiceAction extends AbstractActionHandler<NT_Action_SelectCh
         Context context = new Context(action);
         actionHandlers.getReactionActions().requireAction(player, new RequiredActionContext<>(context, message));
         Log.trace("Wait for select choice reaction");
-        processingBlock.waitFor();
+        processingBlock.waitFor(player);
         return context.selectedOption;
     }
 
     public Location selectLocation(String message, List<? extends Location> choices) {
-        return selectLocation(game.getPlayers().get(game.getCurrentPlayer()), message, choices);
+        return selectLocation(game.getCurrentPlayer(), message, choices);
     }
 
     public Location selectLocation(Player player, String message, List<? extends Location> choices) {
@@ -69,19 +69,19 @@ public class SelectChoiceAction extends AbstractActionHandler<NT_Action_SelectCh
         Context context = new Context(action);
         actionHandlers.getReactionActions().requireAction(player, new RequiredActionContext<>(context, message));
         Log.trace("Wait for select choice reaction");
-        processingBlock.waitFor();
+        processingBlock.waitFor(player);
         return choices.get(context.selectedOption);
     }
 
     public Player selectOtherPlayer(Player player, String message) {
         Log.debug("Select other player action");
-        List<Player> players = game.getPlayers();
-        Context context = build(players.stream().filter(it -> it != player).map(Player::getServerPlayer).map(com.broll.networklib.server.impl.Player::getName).collect(Collectors.toList()));
+        List<Player> players = game.getActivePlayers();
+        Context context = build(players.stream().filter(it -> it != player).map(Player::getServerPlayer).map(LobbyPlayer::getName).collect(Collectors.toList()));
         context.selectingPlayer = player;
         int selectingIndex = players.indexOf(context.selectingPlayer);
         actionHandlers.getReactionActions().requireAction(player, new RequiredActionContext<>(context, message));
         Log.trace("Wait for select choice reaction");
-        processingBlock.waitFor();
+        processingBlock.waitFor(player);
         int selectedOption = context.selectedOption;
         if (selectedOption >= selectingIndex) {
             selectedOption++; //skip selecting player

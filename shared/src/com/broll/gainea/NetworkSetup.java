@@ -55,24 +55,23 @@ import com.broll.gainea.net.NT_Reaction;
 import com.broll.gainea.net.NT_ReconnectGame;
 import com.broll.gainea.net.NT_RoundStatistic;
 import com.broll.gainea.net.NT_StartGame;
+import com.broll.gainea.net.NT_Surrender;
 import com.broll.gainea.net.NT_Unit;
 import com.broll.gainea.net.NT_UpdateLobbySettings;
 import com.broll.networklib.NetworkRegister;
 import com.google.common.collect.Lists;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class NetworkSetup {
 
-    public final static List<Class> NETWORK_PACKAGES = new ArrayList<>();
 
     public static void registerNetwork(NetworkRegister register) {
         List<Class> classes = Lists.newArrayList(
                 NT_Action.class, NT_Action_Attack.class, NT_Action_Card.class,
                 NT_Action_Move.class, NT_Action_PlaceUnit.class, NT_Action_SelectChoice.class,
                 NT_AddBot.class, NT_Battle_Intention.class, NT_Battle_Reaction.class,
-                NT_Battle_Damage.class,
+                NT_Battle_Damage.class, NT_Surrender.class,
                 NT_Battle_Start.class, NT_Battle_Update.class, NT_BoardEffect.class,
                 NT_BoardObject.class, NT_BoardUpdate.class, NT_Card.class,
                 NT_EndTurn.class, NT_Event.class, NT_Event_BoardEffect.class,

@@ -44,7 +44,7 @@ public class G_WinBattles extends Goal {
     public void botStrategy(GoalStrategy strategy) {
         strategy.setSpreadUnits(false);
         strategy.setPrepareStrategy(() -> {
-            Set<Location> locations = game.getPlayers().stream().filter(it -> it != player)
+            Set<Location> locations = game.getAllPlayers().stream().filter(it -> it != player)
                     .flatMap(it -> it.getUnits().stream()).map(BattleObject::getLocation).collect(Collectors.toSet());
             strategy.updateTargets(locations);
             strategy.setRequiredUnits((winTarget - wins) * 3);

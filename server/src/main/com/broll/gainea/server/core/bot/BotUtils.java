@@ -39,7 +39,7 @@ public class BotUtils {
                 }
             }
         }
-        for (Player player : game.getPlayers()) {
+        for (Player player : game.getAllPlayers()) {
             if (player.getServerPlayer().getId() == unit.owner) {
                 for (BattleObject object : player.getUnits()) {
                     if (object.getId() == unit.id) {
@@ -52,7 +52,7 @@ public class BotUtils {
     }
 
     public static Goal getGoal(GameContainer game, NT_Goal nt) {
-        return game.getPlayers().stream().flatMap(p -> p.getGoalHandler().getGoals().stream())
+        return game.getAllPlayers().stream().flatMap(p -> p.getGoalHandler().getGoals().stream())
                 .filter(goal -> goal.getId() == nt.id).findFirst().orElse(null);
     }
 
@@ -135,8 +135,8 @@ public class BotUtils {
         return Pair.of(location, distance);
     }
 
-    public static Set<Location> huntPlayersTargets(GameContainer game) {
-        return game.getPlayers().stream().flatMap(it -> it.getControlledLocations().stream()).collect(Collectors.toSet());
+    public static Set<Location> huntOtherPlayersTargets(Player owner, GameContainer game) {
+        return game.getAllPlayers().stream().filter(it -> it != owner).flatMap(it -> it.getControlledLocations().stream()).collect(Collectors.toSet());
     }
 
     public static Set<Location> huntPlayerTargets(Player player) {

@@ -33,8 +33,8 @@ public class G_Fight extends RoundGoal {
 
     @Override
     public void botStrategy(GoalStrategy strategy) {
-        strategy.setPrepareStrategy(()->{
-            strategy.updateTargets(BotUtils.huntPlayersTargets(game));
+        strategy.setPrepareStrategy(() -> {
+            strategy.updateTargets(BotUtils.huntOtherPlayersTargets(player, game));
             strategy.setRequiredUnits(5);
         });
     }

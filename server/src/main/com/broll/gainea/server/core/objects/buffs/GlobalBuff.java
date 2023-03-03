@@ -26,7 +26,7 @@ public class GlobalBuff {
     }
 
     public static void createForAllPlayers(GameContainer game, Buff buff, Consumer<BattleObject> applier, int effect) {
-        register(game, new GlobalBuff(new ArrayList<>(game.getPlayers()), buff, applier), effect);
+        register(game, new GlobalBuff(new ArrayList<>(game.getAllPlayers()), buff, applier), effect);
     }
 
     public static void createForPlayers(GameContainer game, List<Player> targets, Buff buff, Consumer<BattleObject> applier, int effect) {
@@ -39,7 +39,7 @@ public class GlobalBuff {
 
     public static void createForAll(GameContainer game, Buff buff, Consumer<BattleObject> applier, int effect) {
         List<Player> targets = new ArrayList<>();
-        targets.addAll(game.getPlayers());
+        targets.addAll(game.getAllPlayers());
         targets.add(null);
         register(game, new GlobalBuff(targets, buff, applier), effect);
     }

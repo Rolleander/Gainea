@@ -75,10 +75,11 @@ public class PlaceUnitAction extends AbstractActionHandler<NT_Action_PlaceUnit, 
         Context context = new Context(placeUnit);
         context.locations = locations;
         context.unitToPlace = object;
+        context.selectedLocation = locations.get(0);
         this.unitToPlace = context.unitToPlace;
         actionHandlers.getReactionActions().requireAction(player, new RequiredActionContext<>(context, message));
         Log.trace("Wait for place unit reaction");
-        processingBlock.waitFor();
+        processingBlock.waitFor(player);
         UnitControl.spawn(game, context.unitToPlace, context.selectedLocation);
         return Pair.of(object, context.selectedLocation);
     }
