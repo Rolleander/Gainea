@@ -5,9 +5,8 @@ import com.broll.networklib.server.impl.ServerLobby;
 
 public class LobbyFactory {
 
-    public static void initLobby(ServerLobby<LobbyData, PlayerData> lobby, ExpansionSetting expansionSetting) {
+    public static void initLobby(ServerLobby<LobbyData, PlayerData> lobby) {
         LobbyData data = new LobbyData();
-        data.setExpansionSetting(expansionSetting);
         lobby.setData(data);
         lobby.setListener(new LobbyListener());
         lobby.setPlayerLimit(9);

@@ -2,24 +2,21 @@ package com.broll.gainea.client.network;
 
 import com.badlogic.gdx.Gdx;
 import com.broll.gainea.Gainea;
-import com.broll.gainea.client.game.GameState;
+import com.broll.gainea.NetworkSetup;
 import com.broll.gainea.client.network.sites.GameActionSite;
 import com.broll.gainea.client.network.sites.GameBattleSite;
 import com.broll.gainea.client.network.sites.GameBoardSite;
 import com.broll.gainea.client.network.sites.GameEventSite;
 import com.broll.gainea.client.network.sites.GameStateSite;
 import com.broll.gainea.client.network.sites.GameTurnSite;
-import com.broll.gainea.net.NT_LobbySettings;
-import com.broll.gainea.NetworkSetup;
 import com.broll.networklib.client.ClientSite;
 import com.broll.networklib.client.LobbyGameClient;
 import com.broll.networklib.client.impl.GameLobby;
 import com.broll.networklib.site.SiteReceiver;
+import com.google.common.collect.Lists;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.common.collect.Lists;
 
 import java.lang.reflect.Method;
 import java.util.concurrent.Callable;
@@ -71,8 +68,8 @@ public class ClientHandler {
         clientExecute(() -> client.joinLobby(lobby, playerName), this::connectedLobby, "Unable to join lobby");
     }
 
-    public void createLobby(String playerName){
-        clientExecute(()-> client.createLobby(playerName, new NT_LobbySettings()), this::connectedLobby, "Unable to create lobby");
+    public void createLobby(String playerName) {
+        clientExecute(() -> client.createLobby(playerName, null), this::connectedLobby, "Unable to create lobby");
     }
 
     private void connectedLobby(GameLobby lobby) {
