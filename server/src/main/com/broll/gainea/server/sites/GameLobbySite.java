@@ -10,7 +10,6 @@ import com.broll.gainea.server.core.fractions.FractionType;
 import com.broll.gainea.server.init.ExpansionSetting;
 import com.broll.gainea.server.init.GoalTypes;
 import com.broll.gainea.server.init.LobbyData;
-import com.broll.gainea.server.init.LobbyFactory;
 import com.broll.gainea.server.init.PlayerData;
 import com.broll.networklib.PackageReceiver;
 import com.broll.networklib.server.ConnectionRestriction;
@@ -30,8 +29,9 @@ public class GameLobbySite extends LobbyServerSite<LobbyData, PlayerData> {
     public void init(LobbyGameServer<LobbyData, PlayerData> server, LobbyHandler<LobbyData, PlayerData> lobbyHandler) {
         super.init(server, lobbyHandler);
         this.lobbyHandler.setLobbyCreationRequestHandler((requester, lobbyName, settings) -> {
-            ServerLobby<LobbyData, PlayerData> lobby = lobbyHandler.openLobby(lobbyName);
-            LobbyFactory.initLobby(lobby);
+            ServerLobby<LobbyData, PlayerData> lobby = lobbyHandler.openLobby(lobbyName, new LobbyData());
+            lobby.addListener(new LobbyListener());
+            lobby.setPlayerLimit(9);
             return lobby;
         });
     }
