@@ -88,7 +88,8 @@ public class ProcessingCore {
     }
 
     public void shutdown() {
-        executor.shutdown();
+        executor.shutdownNow();
+        parallelExecutor.shutdownNow();
     }
 
     private class RunnableWrapper implements Runnable {

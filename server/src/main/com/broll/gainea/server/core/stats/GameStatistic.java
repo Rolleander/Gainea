@@ -5,6 +5,7 @@ import com.broll.gainea.net.NT_RoundStatistic;
 import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.server.core.processing.GameUpdateReceiverAdapter;
+import com.broll.gainea.server.core.utils.GameUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +28,7 @@ public class GameStatistic extends GameUpdateReceiverAdapter {
         calcTurnStatistic();
         NT_GameStatistic nt = new NT_GameStatistic();
         nt.rounds = turnStatistics.stream().map(TurnStatistic::get).toArray(NT_RoundStatistic[]::new);
-        game.getReactionHandler().getActionHandlers().getReactionActions().sendGameUpdate(nt);
+        GameUtils.sendUpdate(game, nt);
     }
 
     private TurnStatistic calcTurnStatistic() {

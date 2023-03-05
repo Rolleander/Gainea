@@ -2,11 +2,15 @@ package com.broll.gainea.server.core.actions;
 
 import com.broll.gainea.net.NT_Action;
 import com.broll.gainea.net.NT_EndTurn;
+import com.broll.gainea.net.NT_GameOver;
 import com.broll.gainea.net.NT_PlayerTurnActions;
 import com.broll.gainea.net.NT_Reaction;
 import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.server.core.utils.GameUtils;
+import com.broll.gainea.server.init.LobbyData;
+import com.broll.gainea.server.init.PlayerData;
+import com.broll.networklib.server.impl.ServerLobby;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,11 +49,11 @@ public class ReactionHandler {
     }
 
     private void tryContinueTurn() {
-        if (requiredActions.isEmpty() && !game.isGameOver()) {
-            if (GameUtils.noActivePlayersRemaining(game)) {
-                game.end();
-                return;
-            }
+        if (GameUtils.noActivePlayersRemaining(game) || game.isGameOver()) {
+            stopGame();
+            return;
+        }
+        if (requiredActions.isEmpty()) {
             if (game.getCurrentPlayer().isActive()) {
                 continueTurn();
             } else {
@@ -57,6 +61,20 @@ public class ReactionHandler {
                 actionHandlers.getReactionActions().endTurn();
             }
         }
+    }
+
+    private void stopGame() {
+        game.getProcessingCore().shutdown();
+        Log.trace("Process gameend");
+        NT_GameOver gameOver = new NT_GameOver();
+        game.fillUpdate(gameOver);
+        GameUtils.sendUpdate(game, gameOver);
+        game.getStatistic().sendStatistic();
+        ServerLobby<LobbyData, PlayerData> lobby = game.getLobby();
+        lobby.getData().setGame(null);
+        lobby.unlock();
+        lobby.getRealPlayers().forEach(p -> p.getData().setReady(false));
+        lobby.sendLobbyUpdate();
     }
 
     private void continueTurn() {

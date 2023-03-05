@@ -1,6 +1,5 @@
 package com.broll.gainea.server.core;
 
-import com.broll.gainea.net.NT_Event_TextInfo;
 import com.broll.gainea.net.NT_PlayerTurnActions;
 import com.broll.gainea.net.NT_PlayerTurnStart;
 import com.broll.gainea.net.NT_PlayerWait;
@@ -12,6 +11,7 @@ import com.broll.gainea.server.core.fractions.Fraction;
 import com.broll.gainea.server.core.objects.MapObject;
 import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.server.core.utils.GameUtils;
+import com.broll.gainea.server.core.utils.MessageUtils;
 import com.broll.gainea.server.core.utils.ProcessingUtils;
 import com.broll.gainea.server.init.LobbyData;
 import com.broll.gainea.server.init.PlayerData;
@@ -67,9 +67,7 @@ public class ReactionResultHandler implements ReactionActions {
             int delay = 0;
             if (player.isActive()) {
                 //send aussetzen info to all players
-                NT_Event_TextInfo info = new NT_Event_TextInfo();
-                info.text = player.getServerPlayer().getName() + " muss aussetzen!";
-                lobby.sendToAllTCP(info);
+                MessageUtils.displayMessage(game, player.getServerPlayer().getName() + " muss aussetzen!");
                 delay = 3000;
             }
             //auto start next round after delay

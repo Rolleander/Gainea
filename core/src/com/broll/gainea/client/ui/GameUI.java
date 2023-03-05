@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.broll.gainea.Gainea;
 import com.broll.gainea.client.Assets;
+import com.broll.gainea.client.AudioPlayer;
 import com.broll.gainea.client.misc.TextAsset;
 import com.broll.gainea.client.network.IClientListener;
 import com.broll.gainea.client.ui.components.ConnectionCircle;
@@ -33,10 +34,18 @@ public class GameUI implements IClientListener {
     private Screen currentScreen;
     private boolean reconnectCheck = false;
 
+    private Screen startScreen;
+
     public GameUI(Gainea game, Screen startScreen, boolean reconnectCheck) {
         this.game = game;
         this.reconnectCheck = reconnectCheck;
         game.assets = new Assets();
+        this.startScreen = startScreen;
+        showStartScreen();
+    }
+
+    public void showStartScreen() {
+        AudioPlayer.stopMusic();
         showScreen(startScreen);
     }
 

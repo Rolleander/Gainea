@@ -13,6 +13,7 @@ import com.broll.gainea.client.ui.components.IconLabel;
 import com.broll.gainea.client.ui.components.StatisticGraph;
 import com.broll.gainea.client.ui.components.TabbedPane;
 import com.broll.gainea.client.ui.utils.LabelUtils;
+import com.broll.gainea.client.ui.utils.TableUtils;
 import com.broll.gainea.net.NT_GameOver;
 import com.broll.gainea.net.NT_GameStatistic;
 import com.broll.gainea.net.NT_Player;
@@ -146,6 +147,8 @@ public class ScoreScreen extends Screen {
         window.row();
         List<Pair<String, Actor>> tabs = Lists.newArrayList(Pair.of("Lobby", lobbyTable()), Pair.of("Statistik", statisticTable()));
         window.add(new TabbedPane(skin, tabs)).fill().expand().colspan(2).row();
+        window.add(TableUtils.textButton(skin, "Verlassen",
+                () -> game.ui.showScreen(new LobbyScreen(game.state.getPlayer().getLobby()))));
         vg.add(window).expand().fill();
         return vg;
     }

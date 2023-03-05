@@ -3,7 +3,6 @@ package com.broll.gainea.server.core;
 import com.broll.gainea.net.NT_BoardEffect;
 import com.broll.gainea.net.NT_BoardObject;
 import com.broll.gainea.net.NT_BoardUpdate;
-import com.broll.gainea.net.NT_GameOver;
 import com.broll.gainea.net.NT_Player;
 import com.broll.gainea.net.NT_ReconnectGame;
 import com.broll.gainea.net.NT_StartGame;
@@ -123,16 +122,6 @@ public class GameContainer {
     public void end() {
         Log.trace("Gamend called");
         gameOver = true;
-        processingCore.ensureExecute(() -> {
-            processingCore.shutdown();
-            Log.trace("Process gameend");
-            NT_GameOver gameOver = new NT_GameOver();
-            fillUpdate(gameOver);
-            reactionHandler.getActionHandlers().getReactionActions().sendGameUpdate(gameOver);
-            statistic.sendStatistic();
-            lobby.unlock();
-            lobby.getData().setGame(null);
-        }, 2000);
     }
 
     public NT_ReconnectGame reconnect(Player player) {
@@ -146,7 +135,7 @@ public class GameContainer {
         return nt;
     }
 
-    private void fillUpdate(NT_BoardUpdate update) {
+    public void fillUpdate(NT_BoardUpdate update) {
         update.round = (short) rounds;
         update.turn = (short) getCurrentTurn();
         update.players = players.stream().map(Player::nt).toArray(NT_Player[]::new);
@@ -254,5 +243,13 @@ public class GameContainer {
 
     public List<MapEffect> getEffects() {
         return effects;
+    }
+
+    public GameStatistic getStatistic() {
+        return statistic;
+    }
+
+    public ServerLobby<LobbyData, PlayerData> getLobby() {
+        return lobby;
     }
 }

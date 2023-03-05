@@ -61,6 +61,11 @@ public class LobbyScreen extends Screen {
         }
     }
 
+    private void leaveLobby() {
+        lobby.leave();
+        game.ui.showStartScreen();
+    }
+
     public void updateLobby() {
         updatesRunning = true;
         NT_LobbySettings lobbySettings = (NT_LobbySettings) lobby.getSettings();
@@ -210,8 +215,10 @@ public class LobbyScreen extends Screen {
         return numbers;
     }
 
+
     @Override
     public Actor build() {
+        AudioPlayer.stopMusic();
         ready = playerReady();
         fratcionBox = fractionSelectBox();
         expansions = lobbySettingsBox(NT_UpdateLobbySettings.SETTING_EXPANSIONS, i -> i, Arrays.stream(ExpansionSetting.values()).map(ExpansionSetting::getName).toArray(String[]::new));
@@ -231,7 +238,10 @@ public class LobbyScreen extends Screen {
         window.defaults().space(15);
         window.setBackground("window");
         window.top();
-        window.add(title(lobby.getServerIp() + ": " + lobby.getName())).left();
+        Table title = new Table();
+        title.add(title(lobby.getServerIp() + ": " + lobby.getName()));
+        title.add(TableUtils.textButton(skin, "Verlassen", this::leaveLobby)).padLeft(30);
+        window.add(title).left();
         window.add(addFractionWindowButton()).right().row();
         Table settings = new Table(skin);
         settings.defaults().padRight(20).left();

@@ -1,7 +1,5 @@
 package com.broll.gainea.server.core.utils;
 
-import com.broll.networklib.server.impl.ConnectionSite;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,7 +17,7 @@ public final class ProcessingUtils {
             try {
                 Thread.sleep(ms);
             } catch (InterruptedException e) {
-                Log.error("Failed to sleep", e);
+                throw new RuntimeException("shutdown");
             }
         }
     }

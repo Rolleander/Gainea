@@ -21,12 +21,17 @@ public final class AudioPlayer {
     public static void playSong(String song) {
         if (current != null) {
             current.stop();
-            current.dispose();
         }
         current = assets.get(song, Music.class);
         current.setLooping(true);
         current.setVolume(musicVolume);
         current.play();
+    }
+
+    public static void stopMusic() {
+        if (current != null) {
+            current.stop();
+        }
     }
 
     public static void playSound(String sound) {
@@ -54,4 +59,5 @@ public final class AudioPlayer {
     public static float getSoundVolume() {
         return soundVolume;
     }
+
 }
