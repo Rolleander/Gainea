@@ -132,3 +132,4 @@ Thumbs.db
 /old
 /server/src/resources/version.txt
 /core/assets/version.txt
+/server/stats.json

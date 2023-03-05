@@ -57,6 +57,7 @@ public class GameStartSite extends GameSite {
         ServerLobby<LobbyData, PlayerData> lobby = getLobby();
         lobby.chat(null, "Starte Spiel...");
         GameContainer game = new GameContainer(lobby);
+        lobby.getData().getGameStartListener().gameStarted();
         game.initHandlers(new ReactionResultHandler(game, lobby));
         gameStart.loading = true;
         gameStart.startUnitsPlaced = 0;

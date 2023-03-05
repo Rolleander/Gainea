@@ -32,6 +32,8 @@ public class LobbyData implements ILobbyData {
 
     private GameContainer game;
 
+    private IGameStartListener gameStartListener;
+
     public void setGame(GameContainer game) {
         this.game = game;
     }
@@ -42,6 +44,14 @@ public class LobbyData implements ILobbyData {
 
     public void setExpansionSetting(ExpansionSetting expansionSetting) {
         this.expansionSetting = expansionSetting;
+    }
+
+    public void setGameStartListener(IGameStartListener gameStartListener) {
+        this.gameStartListener = gameStartListener;
+    }
+
+    public IGameStartListener getGameStartListener() {
+        return gameStartListener;
     }
 
     public ExpansionSetting getExpansionSetting() {

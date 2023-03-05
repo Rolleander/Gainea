@@ -8,7 +8,7 @@ public class LobbyFactory {
     public static void initLobby(ServerLobby<LobbyData, PlayerData> lobby) {
         LobbyData data = new LobbyData();
         lobby.setData(data);
-        lobby.setListener(new LobbyListener());
+        lobby.addListener(new LobbyListener());
         lobby.setPlayerLimit(9);
     }
 

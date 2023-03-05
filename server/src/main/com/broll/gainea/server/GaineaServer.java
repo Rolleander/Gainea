@@ -29,6 +29,7 @@ public class GaineaServer {
         server.setVersion(version);
         ServerSetup.setup(server);
         server.open();
+        server.addListener(new ServerStatistic(server));
     }
 
     public void appendCLI() {
