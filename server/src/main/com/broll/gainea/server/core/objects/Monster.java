@@ -43,7 +43,7 @@ public class Monster extends BattleObject {
 
     @Override
     public void roundStarted() {
-        if (actionTimer != NT_Monster.NO_ACTION_TIMER && isAlive() && isBehaviorActive()) {
+        if (actionTimer != NT_Monster.NO_ACTION_TIMER && isAlive() && isBehaviorActive() && game.getRounds() > 1) {
             progressBehavior();
         }
     }

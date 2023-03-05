@@ -7,7 +7,6 @@ import com.broll.gainea.server.core.actions.AbstractActionHandler;
 import com.broll.gainea.server.core.actions.ActionContext;
 import com.broll.gainea.server.core.cards.Card;
 import com.broll.gainea.server.core.player.Player;
-import com.broll.gainea.server.core.utils.MessageUtils;
 import com.broll.gainea.server.core.utils.ProcessingUtils;
 
 import org.slf4j.Logger;
@@ -49,7 +48,6 @@ public class CardAction extends AbstractActionHandler<NT_Action_Card, CardAction
         playedCard.player = player.getServerPlayer().getId();
         playedCard.card = card.nt();
         reactionResult.sendGameUpdate(playedCard);
-        MessageUtils.gameLog(game, "Karte " + card.getTitle() + " ausgespielt");
         player.getCardHandler().discardCard(card);
         ProcessingUtils.pause(PLAY_CARD_DELAY);
         card.play(actionHandlers);

@@ -17,12 +17,17 @@ import com.broll.networklib.client.impl.LobbyPlayer;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.function.IntConsumer;
+
 public class GameChat extends Table {
 
     private Skin skin;
     private Table chatTable;
     private ScrollPane chatScrollPane;
     private GameLobby lobby;
+    private int newMessages;
+
+    private IntConsumer newMessageListener;
 
     public GameChat(Skin skin, GameLobby lobby) {
         this.skin = skin;
@@ -32,16 +37,22 @@ public class GameChat extends Table {
             lobby.setChatMessageListener(new IChatMessageListener() {
                 @Override
                 public void fromPlayer(String msg, LobbyPlayer from) {
+                    receivedNewMessage();
                     addChatMessage(from, msg);
                 }
 
                 @Override
                 public void fromGame(String msg) {
+                    receivedNewMessage();
                     addChatMessage(null, msg);
                 }
             });
         }
         init();
+    }
+
+    public void setNewMessageListener(IntConsumer newMessageListener) {
+        this.newMessageListener = newMessageListener;
     }
 
     private void init() {
@@ -78,6 +89,17 @@ public class GameChat extends Table {
         });
         add(chatText).expandX().fillX();
         add(sendChat).row();
+    }
+
+    private void receivedNewMessage() {
+        newMessages++;
+        if (newMessageListener != null) {
+            newMessageListener.accept(newMessages);
+        }
+    }
+
+    public void resetNewMessages() {
+        newMessages = 0;
     }
 
     private void addChatMessage(LobbyPlayer from, String message) {

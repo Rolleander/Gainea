@@ -39,19 +39,19 @@ public class ReactionResultHandler implements ReactionActions {
     @Override
     public void endTurn() {
         game.getProcessingCore().execute(() -> {
-            int turn = game.getRounds();
             Player player = game.nextTurn();
+            boolean newRound = game.getCurrentTurn() == 0;
             if (player == null) {
                 //no more turns
                 game.end();
                 return;
             }
-            boolean newRound = game.getRounds() > turn;
             sendBoardUpdate();
             if (newRound) {
+                MessageUtils.gameLog(game, "-- Runde " + game.getRounds() + " --");
                 game.getUpdateReceiver().roundStarted();
             }
-            Log.info("Start next turn: " + player + " [Round " + turn + " Turn " + (game.getCurrentTurn() + 1) + " / " + game.getAllPlayers().size() + "]");
+            Log.info("Start next turn: " + player + " [Round " + game.getRounds() + " Turn " + (game.getCurrentTurn() + 1) + " / " + game.getAllPlayers().size() + "]");
             game.getUpdateReceiver().turnStarted(player);
             if (!checkPlayerSkipped(player)) {
                 doPlayerTurn(player);

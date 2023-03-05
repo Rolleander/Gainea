@@ -31,7 +31,7 @@ public class MenuActions extends Table {
 
     private SettingsWindow settingsWindow;
 
-    private RoundImageButton cardButton;
+    private RoundImageButton cardButton, chatButton;
 
     private RoundInformation roundInformation;
 
@@ -39,13 +39,14 @@ public class MenuActions extends Table {
     public MenuActions(Gainea game) {
         this.game = game;
         this.endTurnButton = new EndTurnButton(game);
-        this.chatWindow = new ChatWindow(game);
+        this.chatWindow = new ChatWindow(game, this::newChatMessages);
         this.cardWindow = new CardWindow(game);
         this.fractionWindow = new FractionWindow(game);
         this.logWindow = new LogWindow(game);
         this.settingsWindow = new SettingsWindow(game);
-        this.cardButton = windowButton(1, cardWindow);
         this.roundInformation = new RoundInformation(game);
+        this.cardButton = windowButton(1, cardWindow);
+        this.chatButton = windowButton(2, chatWindow);
         setFillParent(true);
         top();
         left();
@@ -54,7 +55,8 @@ public class MenuActions extends Table {
         content.add(endTurnButton).spaceBottom(30).row();
         content.add(cardButton).row();
         content.add(windowButton(4, fractionWindow)).row();
-        content.add(windowButton(2, chatWindow)).row();
+        content.add(windowButton(3, logWindow)).row();
+        content.add(chatButton).row();
         content.add(windowButton(0, settingsWindow)).row();
         add(content).padTop(Math.max(250, game.state.getGoals().size() * 30));
         game.state.addListener(endTurnButton);
@@ -67,6 +69,7 @@ public class MenuActions extends Table {
         game.uiStage.addActor(cardWindow);
         game.uiStage.addActor(fractionWindow);
         game.uiStage.addActor(settingsWindow);
+        game.uiStage.addActor(logWindow);
     }
 
 
@@ -94,6 +97,14 @@ public class MenuActions extends Table {
             cardButton.setText(cards + "");
         } else {
             cardButton.setText(null);
+        }
+    }
+
+    private void newChatMessages(int count) {
+        if (count == 0) {
+            chatButton.setText(null);
+        } else {
+            chatButton.setText("" + count);
         }
     }
 

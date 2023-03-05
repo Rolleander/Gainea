@@ -1,10 +1,11 @@
 package com.broll.gainea.client.ui.ingame.windows;
 
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.broll.gainea.Gainea;
-import com.broll.gainea.client.ui.components.IconLabel;
 import com.broll.gainea.client.ui.utils.LabelUtils;
+import com.broll.gainea.client.ui.utils.TextureUtils;
 
 public class LogWindow extends MenuWindow {
 
@@ -24,7 +25,6 @@ public class LogWindow extends MenuWindow {
         logScrollPane.setFadeScrollBars(false);
         add(logScrollPane).fillX().expandX().fillY().expandY();
         center(800, 500);
-        log("hallo [RED]player[] wie gehts dir denn?");
     }
 
     public void log(String message) {
@@ -35,6 +35,10 @@ public class LogWindow extends MenuWindow {
         addLog(iconLog(7, message));
     }
 
+    public void logGoalEvent(String message) {
+        addLog(iconLog(6, message));
+    }
+
     private Table basicLog(String message) {
         Table log = new Table(skin);
         log.add(LabelUtils.markup(skin, message));
@@ -43,7 +47,8 @@ public class LogWindow extends MenuWindow {
 
     private Table iconLog(int icon, String message) {
         Table log = new Table(skin);
-        log.add(new IconLabel(game, icon, message));
+        log.add(new Image(TextureUtils.icon(game, icon))).padRight(10);
+        log.add(LabelUtils.markup(skin, message));
         return log;
     }
 

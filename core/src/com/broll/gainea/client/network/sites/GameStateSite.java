@@ -33,9 +33,8 @@ public class GameStateSite extends AbstractGameSite {
             e.printStackTrace();
         }
         start(reconnectGame);
-        //add goals and cards
+        //add goals
         game.state.getGoals().addAll(Arrays.asList(reconnectGame.goals));
-        game.state.getCards().addAll(Arrays.asList(reconnectGame.cards));
         game.ui.inGameUI.updateWindows();
     }
 

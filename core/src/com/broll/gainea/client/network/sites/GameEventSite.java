@@ -65,10 +65,9 @@ public class GameEventSite extends AbstractGameSite {
 
     @PackageReceiver
     public void received(NT_Event_TextInfo text) {
+        logWindow().log(text.text);
         if (text.type == NT_Event_TextInfo.TYPE_MESSAGE_DISPLAY) {
             MessageUtils.showCenterMessage(game, text.text);
-        } else {
-            logWindow().log(text.text);
         }
     }
 
@@ -160,6 +159,9 @@ public class GameEventSite extends AbstractGameSite {
             }
             if (card.player == getPlayer().getId()) {
                 game.state.getCards().remove(card.card);
+                logWindow().logCardEvent("Du hast [VIOLET]" + card.card.title + "[] ausgespielt!");
+            } else if (owner != null) {
+                logWindow().logCardEvent(owner.name + " hat [VIOLET]" + card.card.title + "[] ausgespielt!");
             }
         }
         game.ui.inGameUI.updateWindows();
@@ -178,6 +180,7 @@ public class GameEventSite extends AbstractGameSite {
         game.ui.inGameUI.showCenterOverlay(TableUtils.removeAfter(GoalOverlay.renderGoal(game, goal.goal), 3));
         game.state.getGoals().add(goal.goal);
         game.ui.inGameUI.updateWindows();
+        logWindow().logGoalEvent("Neues Ziel erhalten: [BROWN]" + goal.goal.description + "[]");
     }
 
     @PackageReceiver
@@ -204,6 +207,7 @@ public class GameEventSite extends AbstractGameSite {
         String info = owner.name + " hat eine Karte erhalten!";
         game.ui.inGameUI.updateWindows();
         MessageUtils.showCenterMessage(game, info);
+        logWindow().logCardEvent(owner.name + " hat eine Karte erhalten!");
     }
 
     @PackageReceiver
@@ -212,6 +216,7 @@ public class GameEventSite extends AbstractGameSite {
         NT_Player owner = game.state.getPlayer(goal.player);
         String info = owner.name + " hat ein neues Ziel erhalten!";
         MessageUtils.showCenterMessage(game, info);
+        logWindow().logGoalEvent(owner.name + " hat ein neues Ziel erhalten!");
     }
 
     @PackageReceiver
@@ -232,6 +237,10 @@ public class GameEventSite extends AbstractGameSite {
         boolean myGoal = goal.player == getPlayer().getId();
         if (myGoal) {
             game.state.getGoals().remove(goal.goal);
+            logWindow().logGoalEvent("Du hast hat dein Ziel erreicht: [BROWN]" + goal.goal.description + "[] (+" + goal.goal.points + " Punkte)");
+        } else {
+            NT_Player owner = game.state.getPlayer(goal.player);
+            logWindow().logGoalEvent(owner.name + " hat ein Ziel erreicht: [BROWN]" + goal.goal.description + "[] (+" + goal.goal.points + " Punkte)");
         }
         FinishedGoalDisplay message = new FinishedGoalDisplay(game, goal, myGoal);
         game.ui.inGameUI.showCenterOverlay(TableUtils.removeAfter(message, 4));
