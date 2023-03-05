@@ -14,9 +14,10 @@ public class ServerLauncher {
     public static void main(String[] args) throws IOException {
         System.setProperty("log4j.configuration", "log4j_server.properties");
         Logger Log = LoggerFactory.getLogger(ServerLauncher.class);
-        String version =
-                new BufferedReader(
-                        new InputStreamReader(ServerLauncher.class.getResourceAsStream("/version.txt"), StandardCharsets.UTF_8)).readLine();
+        BufferedReader reader = new BufferedReader(
+                new InputStreamReader(ServerLauncher.class.getResourceAsStream("/version.txt"), StandardCharsets.UTF_8));
+        String version = reader.readLine();
+        reader.close();
         try {
             GaineaServer server = new GaineaServer(version);
             server.appendCLI();

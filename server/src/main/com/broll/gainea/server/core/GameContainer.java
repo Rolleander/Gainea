@@ -25,6 +25,7 @@ import com.broll.gainea.server.core.player.PlayerFactory;
 import com.broll.gainea.server.core.processing.GameUpdateReceiverProxy;
 import com.broll.gainea.server.core.processing.ProcessingCore;
 import com.broll.gainea.server.core.stats.GameStatistic;
+import com.broll.gainea.server.core.utils.GameUtils;
 import com.broll.gainea.server.init.LobbyData;
 import com.broll.gainea.server.init.PlayerData;
 import com.broll.networklib.server.impl.ServerLobby;
@@ -114,6 +115,7 @@ public class GameContainer {
         fillUpdate(startGame);
         startGame.expansionsSetting = map.getExpansionSetting().ordinal();
         startGame.pointLimit = lobby.getData().getPointLimit();
+        startGame.roundLimit = lobby.getData().getRoundLimit();
         return startGame;
     }
 
@@ -139,11 +141,13 @@ public class GameContainer {
         reconnectGame.cards = player.getCardHandler().ntCards();
         reconnectGame.goals = player.getGoalHandler().ntGoals();
         reconnectGame.pointLimit = lobby.getData().getPointLimit();
+        reconnectGame.roundLimit = lobby.getData().getRoundLimit();
         return reconnectGame;
     }
 
     private void fillUpdate(NT_BoardUpdate update) {
-        update.turns = (short) rounds;
+        update.round = (short) rounds;
+        update.turn = (short) getCurrentTurn();
         update.players = players.stream().map(Player::nt).toArray(NT_Player[]::new);
         update.objects = objects.stream().map(MapObject::nt).toArray(NT_BoardObject[]::new);
         update.effects = effects.stream().map(MapEffect::nt).toArray(NT_BoardEffect[]::new);
@@ -161,6 +165,10 @@ public class GameContainer {
         if (currentTurn >= players.size()) {
             currentTurn = 0;
             rounds++;
+            GameUtils.checkGameEnd(this);
+            if (isGameOver()) {
+                return null;
+            }
         }
         return players.get(currentTurn);
     }

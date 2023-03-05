@@ -16,9 +16,9 @@ import com.broll.gainea.client.AudioPlayer;
 import com.broll.gainea.client.ui.Screen;
 import com.broll.gainea.client.ui.components.GameChat;
 import com.broll.gainea.client.ui.components.IconLabel;
+import com.broll.gainea.client.ui.ingame.windows.FractionWindow;
 import com.broll.gainea.client.ui.utils.TableUtils;
 import com.broll.gainea.client.ui.utils.TextureUtils;
-import com.broll.gainea.client.ui.ingame.windows.FractionWindow;
 import com.broll.gainea.net.NT_AddBot;
 import com.broll.gainea.net.NT_LobbySettings;
 import com.broll.gainea.net.NT_PlayerChangeFraction;
@@ -33,12 +33,12 @@ import com.broll.networklib.client.impl.GameLobby;
 import com.broll.networklib.client.impl.LobbyPlayer;
 import com.broll.networklib.network.nt.NT_LobbyKick;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.apache.commons.lang3.ArrayUtils;
-
 import java.util.Arrays;
+import java.util.function.IntFunction;
 
 public class LobbyScreen extends Screen {
     private final static Logger Log = LoggerFactory.getLogger(LobbyScreen.class);
@@ -46,9 +46,10 @@ public class LobbyScreen extends Screen {
     private GameLobby lobby;
     private Table lobbyTable;
     private CheckBox ready;
-    private SelectBox fratcionBox, expansions, goals, points, startGoals, startLocations, monsters;
+    private SelectBox fratcionBox, expansions, goals, points, rounds, startGoals, startLocations, monsters;
     private Fraction playerFraction;
     private boolean updatesRunning = false;
+    private int[] roundOptions = new int[]{0, 15, 20, 25, 30, 35, 40, 50, 60};
 
     public LobbyScreen(GameLobby lobby) {
         this.lobby = lobby;
@@ -65,10 +66,11 @@ public class LobbyScreen extends Screen {
         NT_LobbySettings lobbySettings = (NT_LobbySettings) lobby.getSettings();
         updateSelection(expansions, lobbySettings.expansionSetting);
         updateSelection(goals, lobbySettings.goalTypes);
-        updateSelection(points, lobbySettings.pointLimit - 1);
+        updateSelection(points, lobbySettings.pointLimit);
         updateSelection(startGoals, lobbySettings.startGoals - 1);
         updateSelection(startLocations, lobbySettings.startLocations - 1);
         updateSelection(monsters, lobbySettings.monsters);
+        updateSelection(rounds, ArrayUtils.indexOf(roundOptions, lobbySettings.roundLimit));
         lobbyTable.clear();
         lobby.getPlayers().forEach(player -> {
             NT_PlayerSettings settings = (NT_PlayerSettings) player.getSettings();
@@ -125,7 +127,7 @@ public class LobbyScreen extends Screen {
         ready.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                if(updatesRunning) return;
+                if (updatesRunning) return;
                 AudioPlayer.playSound("button.ogg");
                 NT_PlayerReady nt = new NT_PlayerReady();
                 nt.ready = ready.isChecked();
@@ -142,7 +144,7 @@ public class LobbyScreen extends Screen {
         selectBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                if(updatesRunning) return;
+                if (updatesRunning) return;
                 AudioPlayer.playSound("button.ogg");
                 if (ArrayUtils.contains(takenFractions, selectBox.getSelectedIndex())) {
                     //fraction taken, reset selection
@@ -157,18 +159,18 @@ public class LobbyScreen extends Screen {
         return selectBox;
     }
 
-    private SelectBox lobbySettingsBox(int setting, int indexDelta, String[] values) {
+    private SelectBox lobbySettingsBox(int setting, IntFunction<Integer> mapping, String[] values) {
         SelectBox selectBox = new SelectBox(skin);
         selectBox.setItems((Object[]) values);
         if (lobby.getOwner() == lobby.getMyPlayer()) {
             selectBox.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    if(updatesRunning) return;
+                    if (updatesRunning) return;
                     AudioPlayer.playSound("button.ogg");
                     NT_UpdateLobbySettings nt = new NT_UpdateLobbySettings();
                     nt.setting = setting;
-                    nt.value = selectBox.getSelectedIndex() + indexDelta;
+                    nt.value = mapping.apply(selectBox.getSelectedIndex());
                     lobby.sendTCP(nt);
                 }
             });
@@ -179,7 +181,7 @@ public class LobbyScreen extends Screen {
     }
 
     private Button addFractionWindowButton() {
-        FractionWindow fractionWindow = new FractionWindow(game, skin);
+        FractionWindow fractionWindow = new FractionWindow(game);
         Button showFractions = TableUtils.textButton(skin, "Fraktionen", () -> {
             fractionWindow.toFront();
             fractionWindow.setVisible(!fractionWindow.isVisible());
@@ -200,16 +202,25 @@ public class LobbyScreen extends Screen {
         return numbers;
     }
 
+    private String[] zeroNumbers(int to) {
+        String[] numbers = new String[to + 1];
+        for (int i = 0; i <= to; i++) {
+            numbers[i] = "" + i;
+        }
+        return numbers;
+    }
+
     @Override
     public Actor build() {
         ready = playerReady();
         fratcionBox = fractionSelectBox();
-        expansions = lobbySettingsBox(NT_UpdateLobbySettings.SETTING_EXPANSIONS, 0, Arrays.stream(ExpansionSetting.values()).map(ExpansionSetting::getName).toArray(String[]::new));
-        goals = lobbySettingsBox(NT_UpdateLobbySettings.SETTING_GOAL_TYPES, 0, Arrays.stream(GoalTypes.values()).map(GoalTypes::getName).toArray(String[]::new));
-        points = lobbySettingsBox(NT_UpdateLobbySettings.SETTING_POINT_LIMIT, 1, numbers(20));
-        startGoals = lobbySettingsBox(NT_UpdateLobbySettings.SETTING_START_GOALS, 1, numbers(6));
-        startLocations = lobbySettingsBox(NT_UpdateLobbySettings.SETTING_START_LOCATIONS, 1, numbers(10));
-        monsters = lobbySettingsBox(NT_UpdateLobbySettings.SETTING_MONSTERS, 0, ArrayUtils.add(numbers(20), 0, "0"));
+        expansions = lobbySettingsBox(NT_UpdateLobbySettings.SETTING_EXPANSIONS, i -> i, Arrays.stream(ExpansionSetting.values()).map(ExpansionSetting::getName).toArray(String[]::new));
+        goals = lobbySettingsBox(NT_UpdateLobbySettings.SETTING_GOAL_TYPES, i -> i, Arrays.stream(GoalTypes.values()).map(GoalTypes::getName).toArray(String[]::new));
+        points = lobbySettingsBox(NT_UpdateLobbySettings.SETTING_POINT_LIMIT, i -> i, zeroNumbers(20));
+        startGoals = lobbySettingsBox(NT_UpdateLobbySettings.SETTING_START_GOALS, i -> i + 1, numbers(6));
+        startLocations = lobbySettingsBox(NT_UpdateLobbySettings.SETTING_START_LOCATIONS, i -> i + 1, numbers(10));
+        monsters = lobbySettingsBox(NT_UpdateLobbySettings.SETTING_MONSTERS, i -> i, zeroNumbers(20));
+        rounds = lobbySettingsBox(NT_UpdateLobbySettings.SETTING_ROUND_LIMIT, i -> roundOptions[i], Arrays.stream(roundOptions).mapToObj(Integer::toString).toArray(String[]::new));
         Table vg = new Table();
         vg.setFillParent(true);
         vg.center();
@@ -228,8 +239,10 @@ public class LobbyScreen extends Screen {
         settings.add(expansions);
         settings.add(info("Zielarten:"));
         settings.add(goals);
-        settings.add(info("Punktelimit:"));
+        settings.add(info("Zielpunkte:"));
         settings.add(points);
+        settings.add(info("Rundenziel:"));
+        settings.add(rounds);
         window.add(settings).left().spaceTop(2).padTop(2).spaceBottom(2).spaceBottom(2).row();
         settings = new Table(skin);
         settings.defaults().padRight(20).left();

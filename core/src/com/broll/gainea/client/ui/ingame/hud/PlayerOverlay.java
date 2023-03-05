@@ -1,4 +1,4 @@
-package com.broll.gainea.client.ui.ingame.windows;
+package com.broll.gainea.client.ui.ingame.hud;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -22,10 +22,10 @@ public class PlayerOverlay extends Table {
         setFillParent(true);
         bottom();
         left();
-        add(content).padBottom(40).spaceBottom(40);
+        add(content);
         content.setSkin(game.ui.skin);
         content.pad(10);
-        content.setBackground("goal-bg");
+        content.setBackground("info-bg");
         content.defaults().space(10);
         update();
     }

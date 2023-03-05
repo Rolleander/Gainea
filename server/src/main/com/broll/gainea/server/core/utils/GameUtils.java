@@ -14,6 +14,23 @@ public final class GameUtils {
 
     }
 
+    public static void checkGameEnd(GameContainer game) {
+        int maxScore = game.getAllPlayers().stream().mapToInt(it -> it.getGoalHandler().getScore()).max().getAsInt();
+        int round = game.getRounds();
+        int roundLimit = game.getGameSettings().getRoundLimit();
+        int scoreLimit = game.getGameSettings().getPointLimit();
+        boolean end = false;
+        if (scoreLimit > 0) {
+            end = maxScore >= scoreLimit;
+        }
+        if (roundLimit > 0) {
+            end = end && round > roundLimit;
+        }
+        if (end) {
+            game.end();
+        }
+    }
+
     public static void sendUpdate(GameContainer game, Player player, Object update, Object updateForOtherPlayers) {
         player.getServerPlayer().sendTCP(update);
         sendUpdateExceptFor(game, updateForOtherPlayers, player);

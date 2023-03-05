@@ -31,6 +31,7 @@ public class ClosableWindow extends Window {
             }
         });
         bar.add(button);
+        setVisible(false);
     }
 
     @Override

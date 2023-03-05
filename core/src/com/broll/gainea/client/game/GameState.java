@@ -12,7 +12,6 @@ import com.broll.gainea.net.NT_Player;
 import com.broll.gainea.net.NT_Unit;
 import com.broll.gainea.server.init.ExpansionSetting;
 import com.broll.networklib.client.impl.LobbyPlayer;
-
 import com.google.common.collect.Lists;
 import com.google.common.collect.Streams;
 
@@ -25,7 +24,11 @@ public class GameState {
 
     private Gainea game;
     //game data:
-    private int turnNumber;
+    private int round;
+    private int turn;
+
+    private int pointLimit;
+    private int roundLimit;
     private List<NT_BoardObject> objects;
     private List<NT_BoardEffect> effects;
     private List<NT_Player> players;
@@ -45,8 +48,10 @@ public class GameState {
         this.game = game;
     }
 
-    public void init(ExpansionSetting setting, LobbyPlayer player) {
+    public void init(ExpansionSetting setting, int pointLimit, int roundLimit, LobbyPlayer player) {
         this.player = player;
+        this.pointLimit = pointLimit;
+        this.roundLimit = roundLimit;
         mapContainer = new ClientMapContainer(game, setting);
         mapObjectsContainer = new MapObjectContainer(this);
         mapEffectContainer = new MapEffectContainer(game);
@@ -96,12 +101,12 @@ public class GameState {
     }
 
     public void update(NT_BoardUpdate update) {
-        this.turnNumber = update.turns;
+        this.round = update.round;
+        this.turn = update.turn;
         this.objects = Lists.newArrayList(update.objects);
         this.players = Arrays.asList(update.players);
         this.effects = Lists.newArrayList(update.effects);
         updateMapObjects();
-        game.ui.inGameUI.getRoundInformation().updateRound(update.turns);
     }
 
     public void updateMapObjects() {
@@ -139,10 +144,6 @@ public class GameState {
         return players;
     }
 
-    public int getTurnNumber() {
-        return turnNumber;
-    }
-
     public ClientMapContainer getMap() {
         return mapContainer;
     }
@@ -173,5 +174,21 @@ public class GameState {
 
     public NT_GameStatistic getStatistic() {
         return statistic;
+    }
+
+    public int getRound() {
+        return round;
+    }
+
+    public int getTurn() {
+        return turn;
+    }
+
+    public int getPointLimit() {
+        return pointLimit;
+    }
+
+    public int getRoundLimit() {
+        return roundLimit;
     }
 }

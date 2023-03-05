@@ -1,21 +1,18 @@
 package com.broll.gainea.client.ui.ingame.windows;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.broll.gainea.Gainea;
 import com.broll.gainea.client.ui.components.IconLabel;
 import com.broll.gainea.client.ui.utils.LabelUtils;
 
-public class LogWindow extends MenuWindow{
+public class LogWindow extends MenuWindow {
 
     private Table logTable;
     private ScrollPane logScrollPane;
 
-    public LogWindow(Gainea game, Skin skin) {
-        super(game, "Log", skin);
+    public LogWindow(Gainea game) {
+        super(game, "Log", game.ui.skin);
         logTable = new Table(skin);
         logTable.top();
         logTable.setBackground("menu-bg");
@@ -30,7 +27,7 @@ public class LogWindow extends MenuWindow{
         log("hallo [RED]player[] wie gehts dir denn?");
     }
 
-    public void log(String message){
+    public void log(String message) {
         addLog(basicLog(message));
     }
 
@@ -38,19 +35,19 @@ public class LogWindow extends MenuWindow{
         addLog(iconLog(7, message));
     }
 
-    private Table basicLog(String message){
+    private Table basicLog(String message) {
         Table log = new Table(skin);
         log.add(LabelUtils.markup(skin, message));
         return log;
     }
 
-    private Table iconLog(int icon, String message){
+    private Table iconLog(int icon, String message) {
         Table log = new Table(skin);
         log.add(new IconLabel(game, icon, message));
         return log;
     }
 
-    private void addLog(Table log){
+    private void addLog(Table log) {
         log.left();
         log.top();
         logTable.add(log).expandX().fillX().row();

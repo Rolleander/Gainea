@@ -10,16 +10,14 @@ import com.broll.gainea.client.AudioPlayer;
 import com.broll.gainea.client.game.PlayerPerformAction;
 import com.broll.gainea.client.game.PlayerPerformOptionalAction;
 import com.broll.gainea.client.ui.components.Popup;
-import com.broll.gainea.client.ui.components.RoundInformation;
 import com.broll.gainea.client.ui.ingame.actions.AttackAndMoveActionHandler;
-import com.broll.gainea.client.ui.ingame.actions.EndTurnButton;
 import com.broll.gainea.client.ui.ingame.actions.RequiredActionHandler;
 import com.broll.gainea.client.ui.ingame.battle.BattleHandler;
+import com.broll.gainea.client.ui.ingame.hud.GoalOverlay;
+import com.broll.gainea.client.ui.ingame.hud.MenuActions;
+import com.broll.gainea.client.ui.ingame.hud.PlayerOverlay;
 import com.broll.gainea.client.ui.ingame.map.MapObjectRender;
-import com.broll.gainea.client.ui.ingame.windows.GoalOverlay;
 import com.broll.gainea.client.ui.ingame.windows.LogWindow;
-import com.broll.gainea.client.ui.ingame.windows.MenuWindows;
-import com.broll.gainea.client.ui.ingame.windows.PlayerOverlay;
 import com.broll.gainea.client.ui.ingame.windows.UnitSelectionWindow;
 import com.broll.gainea.client.ui.screens.ScoreScreen;
 import com.broll.gainea.client.ui.utils.LabelUtils;
@@ -43,21 +41,18 @@ public class InGameUI {
 
     private Gainea game;
     private Skin skin;
-    private Table topBar;
-    private Table bottomBar;
     private Table centerOverlay;
     private Table center = new Table();
     private Table centerContent = new Table();
     private AttackAndMoveActionHandler attackAndMoveHandler;
     private RequiredActionHandler requiredActionHandler;
     private BattleHandler battleHandler;
-    private MenuWindows windows;
-    private RoundInformation roundInformation;
-    private EndTurnButton endTurnButton;
 
     private GoalOverlay goalOverlay;
 
     private PlayerOverlay playerOverlay;
+
+    private MenuActions menuActions;
 
     public InGameUI(Gainea game, Skin skin) {
         this.attackAndMoveHandler = new AttackAndMoveActionHandler(game);
@@ -65,25 +60,10 @@ public class InGameUI {
         this.battleHandler = new BattleHandler(game, skin);
         this.game = game;
         this.skin = skin;
-        this.windows = new MenuWindows(game, skin);
-        this.roundInformation = new RoundInformation(game, skin);
         this.goalOverlay = new GoalOverlay(game);
         this.playerOverlay = new PlayerOverlay(game);
-        topBar = new Table(skin);
-        bottomBar = new Table(skin);
+        this.menuActions = new MenuActions(game);
         centerOverlay = new Table(skin);
-        bottomBar.setBackground("menu-bg");
-        bottomBar.add(roundInformation).left().padLeft(10);
-        Table buttonBar = new Table(skin);
-        buttonBar.defaults().spaceRight(20).center();
-        buttonBar.add(TableUtils.textButton(skin, "Fraktionen", () -> windows.showFractionWindow()));
-        buttonBar.add(TableUtils.textButton(skin, "Karten", () -> windows.showCardWindow()));
-        buttonBar.add(TableUtils.textButton(skin, "Chat", () -> windows.showChatWindow()));
-        //  buttonBar.add(TableUtils.textButton(skin, "Log", () -> windows.showLogWindow()));
-        bottomBar.add(buttonBar).right().expandX().padRight(10);
-        endTurnButton = new EndTurnButton(skin);
-        topBar.add(endTurnButton).left().space(15).padTop(10);
-        game.state.addListener(endTurnButton);
     }
 
     public Cell<Actor> showCenter(Actor actor) {
@@ -112,12 +92,11 @@ public class InGameUI {
         game.uiStage.addActor(overlay2);
         Table overlay3 = new Table();
         overlay3.setFillParent(true);
-        overlay3.add(topBar).top().expandX().fillX().height(40).row();
         overlay3.add(centerOverlay).expand().fill().row();
-        overlay3.add(bottomBar).bottom().expandX().fillX().height(40);
         game.uiStage.addActor(overlay3);
         game.uiStage.addActor(playerOverlay);
         game.uiStage.addActor(goalOverlay);
+        menuActions.show();
     }
 
     public void selectStack(Location location, Collection<MapObjectRender> stack) {
@@ -144,11 +123,11 @@ public class InGameUI {
         List<NT_Action_Attack> attacks = actions.stream().filter(it -> it instanceof NT_Action_Attack).map(it -> (NT_Action_Attack) it).collect(Collectors.toList());
         activeCards(actions.stream().filter(it -> it instanceof NT_Action_Card).map(it -> (NT_Action_Card) it).collect(Collectors.toList()), playerPerformAction);
         attackAndMoveHandler.update(moves, attacks, playerPerformAction);
-        endTurnButton.update(playerPerformAction);
+        menuActions.updateOptionalActions(playerPerformAction);
     }
 
     private void activeCards(List<NT_Action_Card> cards, PlayerPerformOptionalAction playerPerformAction) {
-        windows.getCardWindow().updatePlayableCards(cards, playerPerformAction);
+        menuActions.updatePlayableCards(cards, playerPerformAction);
     }
 
     //required ui action
@@ -167,7 +146,7 @@ public class InGameUI {
     }
 
     public void updateWindows() {
-        windows.updateWindows();
+        menuActions.update();
         goalOverlay.update();
         playerOverlay.update();
     }
@@ -178,7 +157,7 @@ public class InGameUI {
     }
 
     public LogWindow getLogWindow() {
-        return windows.getLogWindow();
+        return menuActions.getLogWindow();
     }
 
     public void gameOver(NT_GameOver end) {
@@ -193,8 +172,5 @@ public class InGameUI {
         return battleHandler;
     }
 
-    public RoundInformation getRoundInformation() {
-        return roundInformation;
-    }
 
 }

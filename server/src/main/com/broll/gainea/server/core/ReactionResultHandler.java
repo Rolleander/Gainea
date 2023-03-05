@@ -41,6 +41,10 @@ public class ReactionResultHandler implements ReactionActions {
         game.getProcessingCore().execute(() -> {
             int turn = game.getRounds();
             Player player = game.nextTurn();
+            if (player == null) {
+                //game ended
+                return;
+            }
             boolean newRound = game.getRounds() > turn;
             sendBoardUpdate();
             if (newRound) {

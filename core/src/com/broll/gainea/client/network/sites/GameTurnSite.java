@@ -4,8 +4,8 @@ import com.broll.gainea.client.game.PlayerPerformOptionalAction;
 import com.broll.gainea.client.ui.utils.MessageUtils;
 import com.broll.gainea.net.NT_Action;
 import com.broll.gainea.net.NT_EndTurn;
-import com.broll.gainea.net.NT_PlayerTurnStart;
 import com.broll.gainea.net.NT_PlayerTurnActions;
+import com.broll.gainea.net.NT_PlayerTurnStart;
 import com.broll.gainea.net.NT_PlayerWait;
 import com.broll.networklib.PackageReceiver;
 import com.broll.networklib.client.impl.LobbyPlayer;
@@ -39,7 +39,6 @@ public class GameTurnSite extends AbstractGameSite {
     @PackageReceiver
     public void received(NT_PlayerTurnStart turnStart) {
         game.state.playerTurnStart();
-        game.ui.inGameUI.getRoundInformation().setPlayer(getPlayer().getName());
         turnStartMessage(getPlayer());
     }
 
@@ -47,7 +46,6 @@ public class GameTurnSite extends AbstractGameSite {
     public void received(NT_PlayerTurnActions turnContinue) {
         actions.clear();
         game.state.turnIdle();
-        game.ui.inGameUI.getRoundInformation().setPlayer(getPlayer().getName());
         actions.addAll(Arrays.asList(turnContinue.actions));
         playerPickAction();
         game.ui.inGameUI.getBattleHandler().clearBattleScreen();
@@ -68,7 +66,6 @@ public class GameTurnSite extends AbstractGameSite {
         LobbyPlayer otherPlayer = getLobby().getPlayer(wait.playersTurn);
         if (otherPlayer != null) {
             game.state.playerTurnEnded();
-            game.ui.inGameUI.getRoundInformation().setPlayer(otherPlayer.getName());
             turnStartMessage(otherPlayer);
         }
         actions.clear();

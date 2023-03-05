@@ -9,6 +9,8 @@ public class NT_UpdateLobbySettings {
     public final static int SETTING_GOAL_TYPES = 4;
     public final static int SETTING_MONSTERS = 5;
 
+    public final static int SETTING_ROUND_LIMIT = 6;
+
     public int setting;
     public int value;
 }

@@ -54,7 +54,7 @@ public class GameStateSite extends AbstractGameSite {
 
     private void start(NT_StartGame start) {
         ExpansionSetting setting = ExpansionSetting.values()[start.expansionsSetting];
-        game.state.init(setting, getPlayer());
+        game.state.init(setting, start.pointLimit, start.roundLimit, getPlayer());
         //switch to game screen
         game.ui.showScreen(new GameScreen());
         game.state.update(start);

@@ -34,9 +34,7 @@ public class GoalHandler {
         nt.points = points;
         GameUtils.sendUpdate(game, nt);
         ProcessingUtils.pause(500);
-        if (this.score >= game.getGameSettings().getPointLimit()) {
-            game.end();
-        }
+        GameUtils.checkGameEnd(game);
     }
 
     public void addStars(int stars) {

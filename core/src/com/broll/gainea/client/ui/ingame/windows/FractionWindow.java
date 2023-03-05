@@ -2,13 +2,12 @@ package com.broll.gainea.client.ui.ingame.windows;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.broll.gainea.Gainea;
 import com.broll.gainea.client.ui.components.IconLabel;
-import com.broll.gainea.client.ui.utils.LabelUtils;
 import com.broll.gainea.client.ui.ingame.unit.MenuUnit;
+import com.broll.gainea.client.ui.utils.LabelUtils;
 import com.broll.gainea.client.ui.utils.TableUtils;
 import com.broll.gainea.server.core.fractions.Fraction;
 import com.broll.gainea.server.core.fractions.FractionDescription;
@@ -20,8 +19,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class FractionWindow extends MenuWindow {
-    public FractionWindow(Gainea game, Skin skin) {
-        super(game, "Fraktionen", skin);
+    public FractionWindow(Gainea game) {
+        super(game, "Fraktionen", game.ui.skin);
         TableUtils.consumeClicks(this);
         Table list = new Table(skin);
         add(list).left().top().space(10).padTop(5);
@@ -61,8 +60,8 @@ public class FractionWindow extends MenuWindow {
         FractionDescription description = fraction.getDescription();
         int w = 450;
         table.add(LabelUtils.autoWrap(LabelUtils.info(skin, description.getGeneral()), w)).left().spaceTop(20).padBottom(20).width(w).row();
-        description.getPlus().forEach(text -> table.add(new IconLabel(game,  4, text)).left().spaceTop(10).row());
-        description.getContra().forEach(text -> table.add(new IconLabel(game,  5, text)).left().spaceTop(10).row());
+        description.getPlus().forEach(text -> table.add(new IconLabel(game, 4, text)).left().spaceTop(10).row());
+        description.getContra().forEach(text -> table.add(new IconLabel(game, 5, text)).left().spaceTop(10).row());
         return table;
     }
 

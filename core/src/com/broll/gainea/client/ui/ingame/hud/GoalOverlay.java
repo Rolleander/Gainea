@@ -1,4 +1,4 @@
-package com.broll.gainea.client.ui.ingame.windows;
+package com.broll.gainea.client.ui.ingame.hud;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -68,7 +68,7 @@ public class GoalOverlay extends Table {
                     }
                     content.getChildren().forEach(child -> {
                         Table table = (Table) child;
-                        table.setBackground("goal-bg");
+                        table.setBackground("info-bg");
                     });
                     if (selectedGoal != goal) {
                         selectedGoal = goal;
@@ -88,7 +88,7 @@ public class GoalOverlay extends Table {
         Table table = new Table(skin);
         int w = 500;
         table.left();
-        table.setBackground("goal-bg");
+        table.setBackground("info-bg");
         table.add(new Image(TextureUtils.icon(game, 8 + goal.points)));
         String info = "";
         if (goal.progressionGoal != NT_Goal.NO_PROGRESSION_GOAL) {

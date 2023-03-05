@@ -2,7 +2,7 @@ package com.broll.gainea.client.ui.components;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.broll.gainea.Gainea;
-import com.broll.gainea.client.ui.ingame.windows.GoalOverlay;
+import com.broll.gainea.client.ui.ingame.hud.GoalOverlay;
 import com.broll.gainea.client.ui.utils.LabelUtils;
 import com.broll.gainea.net.NT_Event_FinishedGoal;
 

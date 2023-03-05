@@ -85,6 +85,8 @@ public class Assets {
         manager.load("textures/gate.png", Texture.class);
         manager.load("textures/water.jpg", Texture.class);
         manager.load("textures/indicator.png", Texture.class);
+        manager.load("textures/menu.png", Texture.class);
+        manager.load("textures/endturn.png", Texture.class);
     }
 
     private void loadUi() {

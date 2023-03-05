@@ -23,7 +23,7 @@ public class TestMapScreen extends Screen {
     @Override
     public Actor build() {
 //        ClientMapContainer.RENDER_DEBUG = true;
-        game.state.init(ExpansionSetting.PLUS_ICELANDS, null);
+        game.state.init(ExpansionSetting.PLUS_ICELANDS, 0, 30, null);
         NT_Goal goal = null;
 
         for (int i = 0; i < 3; i++) {
@@ -55,7 +55,7 @@ public class TestMapScreen extends Screen {
         }
         nt.objects = new NT_BoardObject[0];
         nt.effects = new NT_BoardEffect[0];
-        nt.turns = 0;
+        nt.round = 0;
         game.ui.initInGameUi();
         game.state.update(nt);
         game.ui.inGameUI.show();

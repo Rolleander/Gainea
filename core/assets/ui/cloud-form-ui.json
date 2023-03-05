@@ -70,13 +70,13 @@ com.badlogic.gdx.scenes.scene2d.ui.Skin$TintedDrawable: {
 			a: 1
 		}
 	},
-	goal-bg: {
+	info-bg: {
 		name: white
 		color: {
 			r: 0.9411765
 			g: 0.9411765
 			b: 0.9411765
-			a: 0.65
+			a: 0.75
 		}
 	},
 	card-bg: {

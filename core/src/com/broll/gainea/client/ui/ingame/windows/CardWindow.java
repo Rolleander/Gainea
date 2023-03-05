@@ -23,8 +23,8 @@ public class CardWindow extends MenuWindow {
     private PlayerPerformOptionalAction playerPerformAction;
     private boolean cardsPlayable = false;
 
-    public CardWindow(Gainea game, Skin skin) {
-        super(game, "Karten", skin);
+    public CardWindow(Gainea game) {
+        super(game, "Karten", game.ui.skin);
         content = new Table();
         ScrollPane scrollPane = new ScrollPane(content, skin);
         scrollPane.setScrollBarPositions(false, true);

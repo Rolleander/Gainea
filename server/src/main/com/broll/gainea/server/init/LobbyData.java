@@ -1,7 +1,7 @@
 package com.broll.gainea.server.init;
 
-import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.net.NT_LobbySettings;
+import com.broll.gainea.server.core.GameContainer;
 import com.broll.networklib.server.impl.ILobbyData;
 
 public class LobbyData implements ILobbyData {
@@ -10,7 +10,9 @@ public class LobbyData implements ILobbyData {
 
     private final static int START_GOALS_DEFAULT = 3;
 
-    private final static int POINT_LIMIT_DEFAULT = 5;
+    private final static int POINT_LIMIT_DEFAULT = 0;
+
+    private final static int ROUND_LIMIT_DEFAULT = 30;
 
     private final static int MONSTERS_PER_MAP = 10;
 
@@ -25,6 +27,8 @@ public class LobbyData implements ILobbyData {
     private int pointLimit = POINT_LIMIT_DEFAULT;
 
     private int monsterCount = MONSTERS_PER_MAP;
+
+    private int roundLimit = ROUND_LIMIT_DEFAULT;
 
     private GameContainer game;
 
@@ -84,6 +88,14 @@ public class LobbyData implements ILobbyData {
         return monsterCount;
     }
 
+    public void setRoundLimit(int roundLimit) {
+        this.roundLimit = roundLimit;
+    }
+
+    public int getRoundLimit() {
+        return roundLimit;
+    }
+
     @Override
     public NT_LobbySettings nt() {
         NT_LobbySettings settings = new NT_LobbySettings();
@@ -93,6 +105,7 @@ public class LobbyData implements ILobbyData {
         settings.pointLimit = pointLimit;
         settings.goalTypes = goalTypes.ordinal();
         settings.monsters = monsterCount;
+        settings.roundLimit = roundLimit;
         return settings;
     }
 }

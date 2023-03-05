@@ -72,7 +72,7 @@ public class GameLobbySite extends LobbyServerSite<LobbyData, PlayerData> {
                 }
                 break;
             case NT_UpdateLobbySettings.SETTING_POINT_LIMIT:
-                if (value > 0) {
+                if (value >= 0) {
                     data.setPointLimit(value);
                 }
                 break;
@@ -89,6 +89,11 @@ public class GameLobbySite extends LobbyServerSite<LobbyData, PlayerData> {
             case NT_UpdateLobbySettings.SETTING_MONSTERS:
                 if (value >= 0) {
                     data.setMonsterCount(value);
+                }
+                break;
+            case NT_UpdateLobbySettings.SETTING_ROUND_LIMIT:
+                if (value >= 0) {
+                    data.setRoundLimit(value);
                 }
                 break;
         }
