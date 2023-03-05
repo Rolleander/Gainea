@@ -10,6 +10,7 @@ import com.broll.gainea.client.ui.ingame.windows.ChatWindow;
 import com.broll.gainea.client.ui.ingame.windows.FractionWindow;
 import com.broll.gainea.client.ui.ingame.windows.LogWindow;
 import com.broll.gainea.client.ui.ingame.windows.MenuWindow;
+import com.broll.gainea.client.ui.ingame.windows.SettingsWindow;
 import com.broll.gainea.net.NT_Action_Card;
 
 import java.util.List;
@@ -28,6 +29,8 @@ public class MenuActions extends Table {
 
     private LogWindow logWindow;
 
+    private SettingsWindow settingsWindow;
+
     private RoundImageButton cardButton;
 
     private RoundInformation roundInformation;
@@ -40,6 +43,7 @@ public class MenuActions extends Table {
         this.cardWindow = new CardWindow(game);
         this.fractionWindow = new FractionWindow(game);
         this.logWindow = new LogWindow(game);
+        this.settingsWindow = new SettingsWindow(game);
         this.cardButton = windowButton(1, cardWindow);
         this.roundInformation = new RoundInformation(game);
         setFillParent(true);
@@ -51,6 +55,7 @@ public class MenuActions extends Table {
         content.add(cardButton).row();
         content.add(windowButton(4, fractionWindow)).row();
         content.add(windowButton(2, chatWindow)).row();
+        content.add(windowButton(0, settingsWindow)).row();
         add(content).padTop(Math.max(250, game.state.getGoals().size() * 30));
         game.state.addListener(endTurnButton);
     }
@@ -61,6 +66,7 @@ public class MenuActions extends Table {
         game.uiStage.addActor(chatWindow);
         game.uiStage.addActor(cardWindow);
         game.uiStage.addActor(fractionWindow);
+        game.uiStage.addActor(settingsWindow);
     }
 
 

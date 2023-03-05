@@ -61,7 +61,9 @@ public class GameBoardSite extends GameSite {
     @ConnectionRestriction(RestrictionType.LOBBY_LOCKED)
     public void endTurn(NT_EndTurn nt) {
         //only react to if its players turn and no action is running right now
-        if (!getGame().isGameOver() && playersTurn() && !getGame().getProcessingCore().isBusy()) {
+        if (getLobby().getData().isGameRoundsStarted() &&
+                !getGame().isGameOver() && playersTurn() &&
+                !getGame().getProcessingCore().isBusy()) {
             //dont allow next turn if there are required actions for the player remaining
             if (!getGame().getReactionHandler().hasRequiredActionFor(getGamePlayer())) {
                 nextTurn();
@@ -79,6 +81,7 @@ public class GameBoardSite extends GameSite {
         if (getGamePlayer().hasSurrendered()) {
             return;
         }
+        Log.info(getPlayer().getName() + " surrendered!");
         getGamePlayer().surrender();
         NT_Event_TextInfo info = new NT_Event_TextInfo();
         info.text = getPlayer().getName() + " hat aufgegeben!";

@@ -110,18 +110,20 @@ public class GameContainer {
         actions.clear();
     }
 
-    public NT_StartGame start() {
-        NT_StartGame startGame = new NT_StartGame();
-        fillUpdate(startGame);
-        startGame.expansionsSetting = map.getExpansionSetting().ordinal();
-        startGame.pointLimit = lobby.getData().getPointLimit();
-        startGame.roundLimit = lobby.getData().getRoundLimit();
-        return startGame;
+    public NT_StartGame start(Player player) {
+        NT_StartGame nt = new NT_StartGame();
+        fillUpdate(nt);
+        nt.expansionsSetting = map.getExpansionSetting().ordinal();
+        nt.pointLimit = lobby.getData().getPointLimit();
+        nt.roundLimit = lobby.getData().getRoundLimit();
+        nt.cards = player.getCardHandler().ntCards();
+        return nt;
     }
 
     public void end() {
         Log.trace("Gamend called");
-        processingCore.execute(() -> {
+        gameOver = true;
+        processingCore.ensureExecute(() -> {
             processingCore.shutdown();
             Log.trace("Process gameend");
             NT_GameOver gameOver = new NT_GameOver();
@@ -131,18 +133,17 @@ public class GameContainer {
             lobby.unlock();
             lobby.getData().setGame(null);
         }, 2000);
-        gameOver = true;
     }
 
     public NT_ReconnectGame reconnect(Player player) {
-        NT_ReconnectGame reconnectGame = new NT_ReconnectGame();
-        fillUpdate(reconnectGame);
-        reconnectGame.expansionsSetting = map.getExpansionSetting().ordinal();
-        reconnectGame.cards = player.getCardHandler().ntCards();
-        reconnectGame.goals = player.getGoalHandler().ntGoals();
-        reconnectGame.pointLimit = lobby.getData().getPointLimit();
-        reconnectGame.roundLimit = lobby.getData().getRoundLimit();
-        return reconnectGame;
+        NT_ReconnectGame nt = new NT_ReconnectGame();
+        fillUpdate(nt);
+        nt.expansionsSetting = map.getExpansionSetting().ordinal();
+        nt.cards = player.getCardHandler().ntCards();
+        nt.goals = player.getGoalHandler().ntGoals();
+        nt.pointLimit = lobby.getData().getPointLimit();
+        nt.roundLimit = lobby.getData().getRoundLimit();
+        return nt;
     }
 
     private void fillUpdate(NT_BoardUpdate update) {
@@ -162,11 +163,13 @@ public class GameContainer {
     public synchronized Player nextTurn() {
         actions.clear();
         currentTurn++;
+        if (GameUtils.noActivePlayersRemaining(this)) {
+            return null;
+        }
         if (currentTurn >= players.size()) {
             currentTurn = 0;
             rounds++;
-            GameUtils.checkGameEnd(this);
-            if (isGameOver()) {
+            if (GameUtils.isGameEnd(this)) {
                 return null;
             }
         }

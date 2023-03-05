@@ -48,16 +48,20 @@ public class ProcessingCore {
 
     public synchronized void execute(Runnable runnable, int afterDelay) {
         if (!game.isGameOver()) {
-            RunnableWrapper wrapper = new RunnableWrapper();
-            wrapper.runnable = runnable;
-            wrapper.delay = afterDelay;
-            if (isBusy()) {
-                //add to queue
-                this.queue.add(wrapper);
-            } else {
-                //execute directly
-                execute(wrapper);
-            }
+            ensureExecute(runnable, afterDelay);
+        }
+    }
+
+    public synchronized void ensureExecute(Runnable runnable, int afterDelay) {
+        RunnableWrapper wrapper = new RunnableWrapper();
+        wrapper.runnable = runnable;
+        wrapper.delay = afterDelay;
+        if (isBusy()) {
+            //add to queue
+            this.queue.add(wrapper);
+        } else {
+            //execute directly
+            execute(wrapper);
         }
     }
 

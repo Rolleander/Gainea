@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -37,7 +38,7 @@ public class BotMove extends BotOptionalAction<NT_Action_Move, BotMove.MoveOptio
     public MoveOption score(NT_Action_Move action) {
         List<Location> locations = BotUtils.getLocations(game, action.possibleLocations);
         List<BattleObject> units = BotUtils.getObjects(game, action.units);
-        List<GoalStrategy> goalStrategies = units.stream().map(it -> strategy.getStrategy(it)).distinct().collect(Collectors.toList());
+        List<GoalStrategy> goalStrategies = units.stream().map(it -> strategy.getStrategy(it)).filter(Objects::nonNull).distinct().collect(Collectors.toList());
         for (GoalStrategy goalStrategy : goalStrategies) {
             List<BattleObject> goalUnits = units.stream().filter(it -> strategy.getStrategy(it) == goalStrategy).collect(Collectors.toList());
             MoveOption move = chooseStep(goalStrategy, action.units, goalUnits, locations);

@@ -65,7 +65,7 @@ public class ScoreScreen extends Screen {
     private Table statisticTable() {
         NT_GameStatistic statistic = game.state.getStatistic();
         int rounds = statistic.rounds.length;
-        int players = statistic.rounds[0].total.length;
+        int players = game.state.getPlayers().size();
         int[][] total = new int[players][rounds];
         int[][] power = new int[players][rounds];
         int[][] locations = new int[players][rounds];

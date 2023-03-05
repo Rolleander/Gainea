@@ -66,9 +66,8 @@ public class GameStartSite extends GameSite {
             Player player = p.getData().getGamePlayer();
             gameStart.playerData.put(player, new PlayerStartData());
             drawStartingCards(game, player);
-            //todo client doenst know cards:(
+            p.sendTCP(game.start(player));
         });
-        lobby.sendToAllTCP(game.start());
         Log.info("Started game in lobby " + lobby.getName());
     }
 
@@ -157,6 +156,7 @@ public class GameStartSite extends GameSite {
         } else {
             //all start units placed, start first turn
             nextTurn();
+            getLobby().getData().setGameRoundsStarted(true);
         }
     }
 

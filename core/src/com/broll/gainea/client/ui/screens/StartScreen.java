@@ -90,7 +90,6 @@ public class StartScreen extends Screen {
 
     @Override
     public Actor build() {
-        AudioPlayer.playSong("celtic.mp3");
         loadingInfo = info("");
         loadingInfo.setAlignment(Align.center);
         loadingInfo.setVisible(false);

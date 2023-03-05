@@ -38,7 +38,7 @@ public class ServerStatistic implements ILobbyServerListener<LobbyData, PlayerDa
             int games = 0;
             while (iterator.hasNext()) {
                 ServerLobby<LobbyData, PlayerData> lobby = iterator.next();
-                players += lobby.getPlayerCount();
+                players += lobby.getRealPlayers().size();
                 if (lobby.getData().getGame() != null) {
                     games++;
                 }
@@ -70,12 +70,12 @@ public class ServerStatistic implements ILobbyServerListener<LobbyData, PlayerDa
 
     @Override
     public void playerDisconnected(ServerLobby<LobbyData, PlayerData> lobby, Player<PlayerData> player) {
-
+        writeStatistic();
     }
 
     @Override
     public void playerReconnected(ServerLobby<LobbyData, PlayerData> lobby, Player<PlayerData> player) {
-
+        writeStatistic();
     }
 
     @Override

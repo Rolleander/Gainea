@@ -9,7 +9,8 @@ public final class AudioPlayer {
 
     }
 
-    private static float volume = 0.5f;
+    private static float soundVolume = 0.5f;
+    private static float musicVolume = 0.5f;
     private static Assets assets;
     private static Music current;
 
@@ -24,12 +25,33 @@ public final class AudioPlayer {
         }
         current = assets.get(song, Music.class);
         current.setLooping(true);
-        current.setVolume(volume);
+        current.setVolume(musicVolume);
         current.play();
     }
 
     public static void playSound(String sound) {
-        assets.get(sound, Sound.class).play(volume);
+        assets.get(sound, Sound.class).play(soundVolume);
     }
 
+    public static void changeMusicVolume(double volume) {
+        musicVolume = (float) volume;
+        if (current != null) {
+            current.setVolume(musicVolume);
+        }
+    }
+
+    public static void changeSoundVolume(double volume) {
+        soundVolume = (float) volume;
+        if (current != null) {
+            current.setVolume(musicVolume);
+        }
+    }
+
+    public static float getMusicVolume() {
+        return musicVolume;
+    }
+
+    public static float getSoundVolume() {
+        return soundVolume;
+    }
 }

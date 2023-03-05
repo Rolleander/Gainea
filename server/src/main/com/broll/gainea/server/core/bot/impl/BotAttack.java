@@ -7,6 +7,7 @@ import com.broll.gainea.net.NT_Unit;
 import com.broll.gainea.server.core.bot.BotOptionalAction;
 import com.broll.gainea.server.core.bot.BotUtils;
 import com.broll.gainea.server.core.bot.strategy.BattleSimulation;
+import com.broll.gainea.server.core.bot.strategy.GoalStrategy;
 import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.utils.LocationUtils;
@@ -54,8 +55,7 @@ public class BotAttack extends BotOptionalAction<NT_Action_Attack, BotAttack.Att
 
     private Optional<AttackOption> hasSingleTargetFight(List<Pair<Location, Integer>> options, List<BattleObject> usableUnits, List<Location> locations, int[] unitIds) {
         Optional<Location> singleTarget = hasExactlyOneTargetFight(options);
-        if (singleTarget.isPresent() && !usableUnits.isEmpty() &&
-                BattleSimulation.calculateWinChance(singleTarget.get(), usableUnits) >= strategy.getConstants().getWinchanceForTargetConquer()) {
+        if (singleTarget.isPresent() && !usableUnits.isEmpty() && BattleSimulation.calculateWinChance(singleTarget.get(), usableUnits) >= strategy.getConstants().getWinchanceForTargetConquer()) {
             AttackOption option = new AttackOption(15);
             option.type = FIGHT_TARGET;
             option.location = singleTarget.get();
@@ -88,7 +88,13 @@ public class BotAttack extends BotOptionalAction<NT_Action_Attack, BotAttack.Att
 
     private List<BattleObject> usableUnits(NT_Unit[] ntUnits) {
         List<BattleObject> units = BotUtils.getObjects(game, ntUnits);
-        return units.stream().filter(it -> strategy.getStrategy(it).allowFighting(it)).collect(Collectors.toList());
+        return units.stream().filter(it -> {
+            GoalStrategy goalStrategy = strategy.getStrategy(it);
+            if (goalStrategy == null) {
+                return true;
+            }
+            return goalStrategy.allowFighting(it);
+        }).collect(Collectors.toList());
     }
 
 

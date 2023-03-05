@@ -1,6 +1,5 @@
 package com.broll.gainea.client.ui.ingame.battle;
 
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -8,6 +7,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.broll.gainea.Gainea;
+import com.broll.gainea.client.AudioPlayer;
 import com.broll.gainea.client.ui.utils.LabelUtils;
 
 import org.slf4j.Logger;
@@ -29,7 +29,7 @@ public class BattleRollRender {
     private final static float SHOW_NUMBER_TIME = 0.8f;
     private TextureRegion rollback, rollwin, rolllose;
     private IRollAnimationListener listener;
-    private Sound rollSound;
+
 
     public BattleRollRender(Gainea game, Skin skin) {
         int rs = 20;
@@ -38,7 +38,6 @@ public class BattleRollRender {
         rollwin = new TextureRegion(rolls, 1 * rs, 0, rs, rs);
         rolllose = new TextureRegion(rolls, 2 * rs, 0, rs, rs);
         numberLabel = LabelUtils.info(skin, "");
-        rollSound = game.assets.get("roll.ogg", Sound.class);
     }
 
     public void start(int[] attackRolls, int[] defenderRolls, IRollAnimationListener listener) {
@@ -50,7 +49,7 @@ public class BattleRollRender {
         showRolls = 0;
         rollAnimation = 0;
         showAnimation = 0;
-        rollSound.play();
+        AudioPlayer.playSound("roll.ogg");
     }
 
     public void update(float delta) {
@@ -73,7 +72,7 @@ public class BattleRollRender {
                         showRolls = Integer.MAX_VALUE;
                         listener.rollingDone();
                     } else {
-                        rollSound.play();
+                        AudioPlayer.playSound("roll.ogg");
                         listener.diceSet(attackerWon);
                     }
                 }

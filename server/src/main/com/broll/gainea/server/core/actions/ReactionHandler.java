@@ -6,6 +6,7 @@ import com.broll.gainea.net.NT_PlayerTurnActions;
 import com.broll.gainea.net.NT_Reaction;
 import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.player.Player;
+import com.broll.gainea.server.core.utils.GameUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,16 +46,15 @@ public class ReactionHandler {
 
     private void tryContinueTurn() {
         if (requiredActions.isEmpty() && !game.isGameOver()) {
+            if (GameUtils.noActivePlayersRemaining(game)) {
+                game.end();
+                return;
+            }
             if (game.getCurrentPlayer().isActive()) {
                 continueTurn();
             } else {
-                if (game.getActivePlayers().stream().allMatch(it -> it.getServerPlayer().isBot())) {
-                    //only bots remaining, end game
-                    game.end();
-                } else {
-                    //end inactive players turn
-                    actionHandlers.getReactionActions().endTurn();
-                }
+                //end inactive players turn
+                actionHandlers.getReactionActions().endTurn();
             }
         }
     }

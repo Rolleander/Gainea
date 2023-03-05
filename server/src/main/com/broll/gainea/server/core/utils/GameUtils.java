@@ -14,7 +14,7 @@ public final class GameUtils {
 
     }
 
-    public static void checkGameEnd(GameContainer game) {
+    public static boolean isGameEnd(GameContainer game) {
         int maxScore = game.getAllPlayers().stream().mapToInt(it -> it.getGoalHandler().getScore()).max().getAsInt();
         int round = game.getRounds();
         int roundLimit = game.getGameSettings().getRoundLimit();
@@ -26,9 +26,15 @@ public final class GameUtils {
         if (roundLimit > 0) {
             end = end && round > roundLimit;
         }
-        if (end) {
-            game.end();
+        if (noActivePlayersRemaining(game)) {
+            end = true;
         }
+        return end;
+    }
+
+    public static boolean noActivePlayersRemaining(GameContainer game) {
+        return game.getActivePlayers().isEmpty() ||
+                game.getActivePlayers().stream().allMatch(it -> it.getServerPlayer().isBot());
     }
 
     public static void sendUpdate(GameContainer game, Player player, Object update, Object updateForOtherPlayers) {

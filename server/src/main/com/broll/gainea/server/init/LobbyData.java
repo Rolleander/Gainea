@@ -34,6 +34,8 @@ public class LobbyData implements ILobbyData {
 
     private IGameStartListener gameStartListener;
 
+    private boolean gameRoundsStarted = false;
+
     public void setGame(GameContainer game) {
         this.game = game;
     }
@@ -104,6 +106,14 @@ public class LobbyData implements ILobbyData {
 
     public int getRoundLimit() {
         return roundLimit;
+    }
+
+    public boolean isGameRoundsStarted() {
+        return gameRoundsStarted;
+    }
+
+    public void setGameRoundsStarted(boolean gameRoundsStarted) {
+        this.gameRoundsStarted = gameRoundsStarted;
     }
 
     @Override
