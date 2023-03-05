@@ -6,7 +6,9 @@ public class NT_Card {
 
     public short id;
     public short picture;
-    public String title,text;
+    public String title, text;
+
+    public boolean playable = true;
 
     @Override
     public boolean equals(Object o) {

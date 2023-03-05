@@ -2,6 +2,7 @@ package com.broll.gainea.server.core.objects.buffs;
 
 import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.objects.BattleObject;
+import com.broll.gainea.server.core.objects.MapObject;
 import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.server.core.processing.GameUpdateReceiverAdapter;
 import com.broll.gainea.server.core.utils.UnitControl;
@@ -43,14 +44,18 @@ public class BuffProcessor extends GameUpdateReceiverAdapter {
         buff.remove();
         gloabalBuffs.remove(buff);
         //check if any unit died because of removal of buffs
+        List<MapObject> update = new ArrayList<>();
         for (Object object : affectedObjects) {
             if (object instanceof BattleObject) {
                 BattleObject unit = (BattleObject) object;
                 if (unit.isDead()) {
                     UnitControl.kill(game, unit);
+                } else {
+                    update.add(unit);
                 }
             }
         }
+        UnitControl.update(game, update);
     }
 
     public void timeoutBuff(Buff buff, int turns) {

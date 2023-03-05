@@ -153,12 +153,14 @@ public class GameEventSite extends AbstractGameSite {
         game.state.updateIdleState(false);
         game.ui.inGameUI.hideWindows();
         game.ui.inGameUI.showCenterOverlay(TableUtils.removeAfter(CardWindow.renderCard(game, card.card), (float) CardAction.PLAY_CARD_DELAY / 1000f));
-        NT_Player owner = game.state.getPlayer(card.player);
-        if (owner != null) {
-            owner.cards--;
-        }
-        if (card.player == getPlayer().getId()) {
-            game.state.getCards().remove(card.card);
+        if (card.card.playable) {
+            NT_Player owner = game.state.getPlayer(card.player);
+            if (owner != null) {
+                owner.cards--;
+            }
+            if (card.player == getPlayer().getId()) {
+                game.state.getCards().remove(card.card);
+            }
         }
         game.ui.inGameUI.updateWindows();
     }

@@ -1,6 +1,1 @@
 
-- "am zug" bei reconnect leer
-
-- tier debuff nicht geupdatet an client oder zu früh weg bei einem?
-
-- bei event karte -1
