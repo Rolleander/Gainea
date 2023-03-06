@@ -1,14 +1,13 @@
 package com.broll.gainea.server.core.fractions;
 
-import com.broll.gainea.server.core.battle.FightingPower;
-import com.broll.gainea.server.core.map.Area;
-import com.broll.gainea.server.core.map.Ship;
-import com.broll.gainea.server.core.objects.BattleObject;
-import com.broll.gainea.server.core.objects.Commander;
 import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.actions.ActionHandlers;
 import com.broll.gainea.server.core.actions.required.PlaceUnitAction;
+import com.broll.gainea.server.core.battle.FightingPower;
+import com.broll.gainea.server.core.map.Area;
 import com.broll.gainea.server.core.map.Location;
+import com.broll.gainea.server.core.objects.BattleObject;
+import com.broll.gainea.server.core.objects.Commander;
 import com.broll.gainea.server.core.objects.Monster;
 import com.broll.gainea.server.core.objects.Soldier;
 import com.broll.gainea.server.core.player.Player;
@@ -16,14 +15,13 @@ import com.broll.gainea.server.core.processing.GameUpdateReceiverAdapter;
 import com.broll.gainea.server.core.utils.LocationUtils;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public abstract class Fraction extends GameUpdateReceiverAdapter {
 
-    private final static int SOLDIER_HEALTH = 1;
-    private final static int SOLDIER_POWER = 1;
-    private final static int COMMANDER_HEALTH = 3;
-    private final static int COMMANDER_POWER = 3;
+    protected final static int SOLDIER_HEALTH = 1;
+    protected final static int SOLDIER_POWER = 1;
+    protected final static int COMMANDER_HEALTH = 3;
+    protected final static int COMMANDER_POWER = 3;
 
     private FractionType type;
     private FractionDescription description;
@@ -85,24 +83,6 @@ public abstract class Fraction extends GameUpdateReceiverAdapter {
     protected void powerMutatorArea(FightingPower power, Area area) {
     }
 
-    public List<Location> getMoveLocations(Location from) {
-        return from.getConnectedLocations().stream().filter(to -> to.isTraversable() && canMove(from, to)).collect(Collectors.toList());
-    }
-
-    protected boolean canMove(Location from, Location to) {
-        if (to instanceof Ship) {
-            if (!((Ship) to).passable(from)) {
-                return false;
-            }
-        }
-        if (from instanceof Ship) {
-            if (((Ship) from).getTo() != to) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     public boolean isHostile(BattleObject battleObject) {
         return battleObject.getOwner() != owner;
     }
@@ -111,14 +91,14 @@ public abstract class Fraction extends GameUpdateReceiverAdapter {
 
     protected abstract void initCommander(Commander commander);
 
-    public final Soldier createSoldier() {
+    public Soldier createSoldier() {
         Soldier soldier = new Soldier(owner);
         soldier.setStats(SOLDIER_POWER, SOLDIER_HEALTH);
         initSoldier(soldier);
         return soldier;
     }
 
-    public final Commander createCommander() {
+    public Commander createCommander() {
         Commander commander = new Commander(owner);
         commander.setStats(COMMANDER_POWER, COMMANDER_HEALTH);
         initCommander(commander);

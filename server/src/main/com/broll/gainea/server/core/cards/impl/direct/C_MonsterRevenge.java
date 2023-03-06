@@ -11,11 +11,11 @@ import java.util.stream.Collectors;
 
 public class C_MonsterRevenge extends DirectlyPlayedCard {
 
-    private final static int TURNS = 3;
+    private final static int ROUNDS = 3;
     private final static int BUFF = 3;
 
     public C_MonsterRevenge() {
-        super(33, "Gesetz des Stärkeren", "Für " + TURNS + " Runden erhalten alle wilden Monster +" + BUFF + "/+" + BUFF);
+        super(33, "Gesetz des Stärkeren", "Für " + ROUNDS + " Runden erhalten alle wilden Monster +" + BUFF + "/+" + BUFF);
         setDrawChance(0.6f);
     }
 
@@ -23,12 +23,12 @@ public class C_MonsterRevenge extends DirectlyPlayedCard {
     protected void play() {
         IntBuff buff = new IntBuff(BuffType.ADD, BUFF);
         List<Monster> monsters = game.getObjects().stream().filter(it -> it instanceof Monster).map(it -> (Monster) it).collect(Collectors.toList());
-        monsters.forEach(monster->{
+        monsters.forEach(monster -> {
             monster.addHealthBuff(buff);
             monster.getPower().addBuff(buff);
         });
         UnitControl.update(game, monsters);
-        game.getBuffProcessor().timeoutBuff(buff, TURNS);
+        game.getBuffProcessor().timeoutBuff(buff, ROUNDS);
     }
 
 }

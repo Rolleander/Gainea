@@ -4,7 +4,6 @@ import com.broll.gainea.server.core.battle.FightingPower;
 import com.broll.gainea.server.core.fractions.Fraction;
 import com.broll.gainea.server.core.fractions.FractionDescription;
 import com.broll.gainea.server.core.fractions.FractionType;
-import com.broll.gainea.server.core.map.Area;
 import com.broll.gainea.server.core.map.AreaType;
 import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.map.Ship;
@@ -36,30 +35,61 @@ public class VikingFraction extends Fraction {
         if (location instanceof Ship || LocationUtils.isAreaType(location, AreaType.SNOW)) {
             power.changeNumberPlus(1);
         }
-        if(LocationUtils.isAreaType(location, AreaType.DESERT)){
+        if (LocationUtils.isAreaType(location, AreaType.DESERT)) {
             power.changeNumberPlus(-2);
         }
         return power;
     }
 
+    @Override
+    public Commander createCommander() {
+        return new VikingCommander();
+    }
 
     @Override
-    protected boolean canMove(Location from, Location to) {
-        //can walk ships in both ways
-        return true;
+    public Soldier createSoldier() {
+        return new VikingSolider();
     }
 
     @Override
     protected void initSoldier(Soldier soldier) {
-        soldier.setName("Wikinger");
-        soldier.setIcon(106);
     }
 
     @Override
     protected void initCommander(Commander commander) {
-        commander.setName("Jarl Olaf");
-        commander.setIcon(104);
     }
 
+    private boolean canVikingMove(Location to) {
+        return to.isTraversable();
+    }
 
+    private class VikingSolider extends Soldier {
+
+        public VikingSolider() {
+            super(VikingFraction.this.owner);
+            setStats(SOLDIER_POWER, SOLDIER_HEALTH);
+            setName("Wikinger");
+            setIcon(106);
+        }
+
+        @Override
+        public boolean canMoveTo(Location to) {
+            return canVikingMove(to);
+        }
+    }
+
+    private class VikingCommander extends Commander {
+
+        public VikingCommander() {
+            super(VikingFraction.this.owner);
+            setStats(COMMANDER_POWER, COMMANDER_HEALTH);
+            setName("Jarl Olaf");
+            setIcon(104);
+        }
+
+        @Override
+        public boolean canMoveTo(Location to) {
+            return canVikingMove(to);
+        }
+    }
 }

@@ -98,12 +98,12 @@ public class BotUtils {
         return index;
     }
 
-    public static Pair<Location, Integer> getBestPath(Player player, Collection<Location> fromOptions, Location to) {
+    public static Pair<Location, Integer> getBestPath(Player player, BattleObject object, Collection<Location> fromOptions, Location to) {
         int distance = Integer.MAX_VALUE;
         int units = 0;
         Location location = fromOptions.iterator().next();
         for (Location from : fromOptions) {
-            int d = LocationUtils.getWalkingDistance(player, from, to);
+            int d = LocationUtils.getWalkingDistance(object, from, to);
             int u = (int) LocationUtils.getUnits(from).stream().filter(it -> it.getOwner() == player).count();
             if (d != -1 && d < distance) {
                 distance = d;
@@ -117,12 +117,12 @@ public class BotUtils {
         return Pair.of(location, distance);
     }
 
-    public static Pair<Location, Integer> getBestPath(Player player, Location from, Collection<Location> toOptions) {
+    public static Pair<Location, Integer> getBestPath(Player player, BattleObject object, Location from, Collection<Location> toOptions) {
         int distance = Integer.MAX_VALUE;
         int units = 0;
         Location location = toOptions.iterator().next();
         for (Location to : toOptions) {
-            int d = LocationUtils.getWalkingDistance(player, from, to);
+            int d = LocationUtils.getWalkingDistance(object, from, to);
             int u = (int) LocationUtils.getUnits(to).stream().filter(it -> it.getOwner() == player).count();
             if (d != -1 && d < distance) {
                 distance = d;

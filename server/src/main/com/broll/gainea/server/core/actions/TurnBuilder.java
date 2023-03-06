@@ -7,10 +7,12 @@ import com.broll.gainea.server.core.actions.optional.AttackAction;
 import com.broll.gainea.server.core.actions.optional.CardAction;
 import com.broll.gainea.server.core.actions.optional.MoveUnitAction;
 import com.broll.gainea.server.core.cards.Card;
+import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.player.Player;
-import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.utils.PlayerUtils;
+
+import org.apache.commons.collections4.map.MultiValueMap;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,20 +43,21 @@ public class TurnBuilder {
         List<ActionContext> actions = new ArrayList<>();
         AttackAction attackHandler = actionHandlers.getHandler(AttackAction.class);
         MoveUnitAction moveHandler = actionHandlers.getHandler(MoveUnitAction.class);
-        player.getControlledLocations().forEach(location -> {
-            List<Location> moveLocations = player.getFraction().getMoveLocations(location);
-            List<Location> attackLocations = moveLocations.stream().filter(
-                    moveLocation -> !PlayerUtils.getHostileArmy(player, moveLocation).isEmpty()).collect(Collectors.toList());
-            moveLocations.removeAll(attackLocations);
-            List<BattleObject> moveableUnits = player.getUnits().stream().filter(it -> location == it.getLocation() && it.canMove() && it.isControllable()).collect(Collectors.toList());
-            List<BattleObject> attackingUnits = player.getUnits().stream().filter(it -> location == it.getLocation() && it.canAttack() && it.isControllable()).collect(Collectors.toList());
-            if (!attackLocations.isEmpty() && !attackingUnits.isEmpty()) {
-                actions.add(attackHandler.attack(attackingUnits, attackLocations));
+        MultiValueMap<Location, BattleObject> moveableTo = new MultiValueMap<>();
+        MultiValueMap<Location, BattleObject> attackableTo = new MultiValueMap<>();
+        player.getUnits().stream().filter(BattleObject::isControllable).forEach(unit -> {
+            List<Location> walkableLocations = unit.getLocation().getConnectedLocations().stream().filter(unit::canMoveTo).collect(Collectors.toList());
+            if (unit.hasRemainingAttack()) {
+                List<Location> attackableLocations = walkableLocations.stream().filter(it -> PlayerUtils.hasHostileArmy(player, it)).collect(Collectors.toList());
+                walkableLocations.removeAll(attackableLocations);
+                attackableLocations.forEach(it -> attackableTo.put(it, unit));
             }
-            if (!moveLocations.isEmpty() && !moveableUnits.isEmpty()) {
-                actions.add(moveHandler.move(moveableUnits, moveLocations));
+            if (unit.hasRemainingMove()) {
+                walkableLocations.forEach(it -> moveableTo.put(it, unit));
             }
         });
+        moveableTo.keySet().forEach(moveTo -> actions.add(moveHandler.move((List<BattleObject>) moveableTo.getCollection(moveTo), moveTo)));
+        attackableTo.keySet().forEach(attackTo -> actions.add(attackHandler.attack((List<BattleObject>) attackableTo.getCollection(attackTo), attackTo)));
         return actions;
     }
 

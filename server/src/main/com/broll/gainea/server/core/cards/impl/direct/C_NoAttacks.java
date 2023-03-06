@@ -8,17 +8,17 @@ import com.broll.gainea.server.core.objects.buffs.IntBuff;
 
 public class C_NoAttacks extends DirectlyPlayedCard {
 
-    private final static int DURATION = 1;
+    private final static int ROUNDS = 1;
 
     public C_NoAttacks() {
-        super(26, "Nachtruhe", "Für " + DURATION + " Runde kann niemand angreifen");
+        super(26, "Nachtruhe", "Für " + ROUNDS + " Runde kann niemand angreifen");
     }
 
     @Override
     protected void play() {
         IntBuff buff = new IntBuff(BuffType.SET, 0);
         GlobalBuff.createForAllPlayers(game, buff, unit -> unit.getAttacksPerTurn().addBuff(buff), NT_Event.EFFECT_DEBUFF);
-        game.getBuffProcessor().timeoutBuff(buff, DURATION);
+        game.getBuffProcessor().timeoutBuff(buff, ROUNDS);
     }
 
 }

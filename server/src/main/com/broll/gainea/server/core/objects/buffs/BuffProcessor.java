@@ -58,8 +58,8 @@ public class BuffProcessor extends GameUpdateReceiverAdapter {
         UnitControl.update(game, update);
     }
 
-    public void timeoutBuff(Buff buff, int turns) {
-        int timeoutTurn = currentTurnCount + game.getAllPlayers().size() * Math.max(1, turns);
+    public void timeoutBuff(Buff buff, int rounds) {
+        int timeoutTurn = currentTurnCount + game.getAllPlayers().size() * Math.max(1, rounds);
         timedBuffs.put(timeoutTurn, buff);
     }
 

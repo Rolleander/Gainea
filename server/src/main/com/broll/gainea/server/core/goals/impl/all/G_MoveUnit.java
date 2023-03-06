@@ -15,7 +15,6 @@ import com.google.common.collect.Sets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 public class G_MoveUnit extends CustomOccupyGoal {
@@ -80,7 +79,7 @@ public class G_MoveUnit extends CustomOccupyGoal {
             success();
         } else {
             //todo: stimmt noch nicht bei mehreren einheiten?
-            int closestDistance = walkingUnits.stream().map(it -> LocationUtils.getWalkingDistance(player, it.getLocation(), to)).reduce(distance, Math::min);
+            int closestDistance = walkingUnits.stream().map(it -> LocationUtils.getWalkingDistance(it, it.getLocation(), to)).reduce(distance, Math::min);
             updateProgression(distance - closestDistance);
         }
     }
@@ -91,8 +90,8 @@ public class G_MoveUnit extends CustomOccupyGoal {
         strategy.setRequiredUnits(1);
         strategy.setSpreadUnits(false);
         strategy.updateTargets(Sets.newHashSet(from));
-        strategy.setPrepareStrategy(()->{
-            strategy.getUnits().stream().filter(it -> walkingUnits.contains(it)).forEach(unit->{
+        strategy.setPrepareStrategy(() -> {
+            strategy.getUnits().stream().filter(it -> walkingUnits.contains(it)).forEach(unit -> {
                 strategy.getBotStrategy().getMoveTargets().put(unit, to);
             });
         });

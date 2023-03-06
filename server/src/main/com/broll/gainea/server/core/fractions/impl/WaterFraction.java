@@ -1,6 +1,5 @@
 package com.broll.gainea.server.core.fractions.impl;
 
-import com.broll.gainea.misc.RandomUtils;
 import com.broll.gainea.server.core.actions.ActionHandlers;
 import com.broll.gainea.server.core.battle.BattleResult;
 import com.broll.gainea.server.core.battle.FightingPower;
@@ -9,16 +8,12 @@ import com.broll.gainea.server.core.fractions.FractionDescription;
 import com.broll.gainea.server.core.fractions.FractionType;
 import com.broll.gainea.server.core.map.Area;
 import com.broll.gainea.server.core.map.AreaType;
-import com.broll.gainea.server.core.map.Location;
-import com.broll.gainea.server.core.map.LocationPicker;
 import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.Commander;
 import com.broll.gainea.server.core.objects.Monster;
 import com.broll.gainea.server.core.objects.Soldier;
 import com.broll.gainea.server.core.objects.buffs.BuffType;
-import com.broll.gainea.server.core.objects.buffs.GlobalBuff;
 import com.broll.gainea.server.core.objects.buffs.IntBuff;
-import com.broll.gainea.server.core.utils.LocationUtils;
 import com.broll.gainea.server.core.utils.UnitControl;
 
 import java.util.ArrayList;
@@ -26,7 +21,7 @@ import java.util.List;
 
 public class WaterFraction extends Fraction {
 
-    private final static int FROZEN_TURNS = 2;
+    private final static int FROZEN_ROUNDS = 2;
 
     private List<BattleObject> spawns = new ArrayList<>();
 
@@ -37,9 +32,9 @@ public class WaterFraction extends Fraction {
     @Override
     protected FractionDescription description() {
         FractionDescription desc = new FractionDescription("");
-        desc.plus("Fällt Arn wird er im nächsten Zug als Eiskoloss (2/4) wiederbelebt\n" +
-                "Der Eiskoloss kann für " + FROZEN_TURNS + " Runden nicht angreifen oder sich bewegen\n" +
-                "Fällt der Eiskoloss kehrt Arn im nächsten Zug zurück");
+        desc.plus("Fällt Arn wird er in eurem nächsten Zug als Eiskoloss (2/4) wiederbelebt\n" +
+                "Der Eiskoloss kann für " + FROZEN_ROUNDS + " Runden nicht angreifen oder sich bewegen\n" +
+                "Fällt der Eiskoloss kehrt Arn in eruem nächsten Zug zurück");
         desc.plus("Auf Seen +1 Würfel");
         desc.contra("Auf Wüsten -1 Zahl");
         return desc;
@@ -97,7 +92,7 @@ public class WaterFraction extends Fraction {
             IntBuff debuff = new IntBuff(BuffType.SET, 0);
             getMovesPerTurn().addBuff(debuff);
             getAttacksPerTurn().addBuff(debuff);
-            WaterFraction.this.game.getBuffProcessor().timeoutBuff(debuff, FROZEN_TURNS);
+            WaterFraction.this.game.getBuffProcessor().timeoutBuff(debuff, FROZEN_ROUNDS);
         }
     }
 

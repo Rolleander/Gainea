@@ -13,10 +13,10 @@ import java.util.stream.Collectors;
 
 public class C_Blockade extends Card {
 
-    private final static int TURNS = 7;
+    private final static int ROUNDS = 7;
 
     public C_Blockade() {
-        super(54, "Burgfried", "Platziert eine neutrale Befestigung (3/10) auf ein beliebiges freies Feld. Sie zerfällt nach " + TURNS + " Runden.");
+        super(54, "Burgfried", "Platziert eine neutrale Befestigung (3/10) auf ein beliebiges freies Feld. Sie zerfällt nach " + ROUNDS + " Runden.");
         setDrawChance(0.4f);
     }
 
@@ -33,7 +33,7 @@ public class C_Blockade extends Card {
         List<Area> locations = game.getMap().getAllAreas().stream().filter(Location::isFree).collect(Collectors.toList());
         Location location = selectHandler.selectLocation("Wo soll die Befestigung errichtet werden?", locations);
         UnitControl.spawn(game, soldier, location);
-        game.getBuffProcessor().timeoutBuff(buff, TURNS);
+        game.getBuffProcessor().timeoutBuff(buff, ROUNDS);
     }
 
     private class Blockade extends BattleObject {

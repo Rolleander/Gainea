@@ -67,7 +67,7 @@ public class BotMove extends BotOptionalAction<NT_Action_Move, BotMove.MoveOptio
             if (target == null || target == unit.getLocation()) {
                 continue;
             }
-            Pair<Location, Integer> path = BotUtils.getBestPath(bot, options, target);
+            Pair<Location, Integer> path = BotUtils.getBestPath(bot, unit, options, target);
             if (option == null) {
                 option = path.getKey();
                 distance = path.getValue();
@@ -98,14 +98,14 @@ public class BotMove extends BotOptionalAction<NT_Action_Move, BotMove.MoveOptio
     }
 
     private Location createPath(BattleObject unit, GoalStrategy goalStrategy) {
-        Location target = provideNextTarget(unit.getLocation(), goalStrategy);
+        Location target = provideNextTarget(unit, goalStrategy);
         if (target != null) {
             strategy.getMoveTargets().put(unit, target);
         }
         return target;
     }
 
-    private Location provideNextTarget(Location from, GoalStrategy goalStrategy) {
+    private Location provideNextTarget(BattleObject unit, GoalStrategy goalStrategy) {
         Set<Location> targets = goalStrategy.getTargetLocations();
         if (targets.size() == 1) {
             return targets.iterator().next();
@@ -115,7 +115,7 @@ public class BotMove extends BotOptionalAction<NT_Action_Move, BotMove.MoveOptio
         }
         Map<Location, AtomicInteger> targetCounts = new HashMap<>();
         targets.forEach(it -> {
-            int distance = LocationUtils.getWalkingDistance(bot, from, it);
+            int distance = LocationUtils.getWalkingDistance(unit, unit.getLocation(), it);
             if (distance == -1) {
                 distance = 100;
             }

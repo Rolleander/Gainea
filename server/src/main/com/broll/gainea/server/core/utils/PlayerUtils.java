@@ -4,6 +4,7 @@ import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.Commander;
+import com.broll.gainea.server.core.objects.MapObject;
 import com.broll.gainea.server.core.player.Player;
 
 import java.util.ArrayList;
@@ -44,14 +45,20 @@ public final class PlayerUtils {
     }
 
     public static List<BattleObject> getHostileArmy(Player player, Location location) {
-        return location.getInhabitants().stream().filter(inhabitant -> {
-            if (inhabitant instanceof BattleObject) {
-                return player.getFraction().isHostile((BattleObject) inhabitant);
-            }
-            return false;
-        }).map(o -> (BattleObject) o).collect(Collectors.toList());
+        return location.getInhabitants().stream().filter(inhabitant -> isHostile(player, inhabitant))
+                .map(o -> (BattleObject) o).collect(Collectors.toList());
     }
 
+    private static boolean isHostile(Player player, MapObject object) {
+        if (object instanceof BattleObject) {
+            return player.getFraction().isHostile((BattleObject) object);
+        }
+        return false;
+    }
+
+    public static boolean hasHostileArmy(Player player, Location location) {
+        return location.getInhabitants().stream().anyMatch(inhabitant -> isHostile(player, inhabitant));
+    }
 
     public static Set<Location> getHostileLocations(GameContainer game, Player player) {
         Set<Location> locations = new HashSet<>();
@@ -63,4 +70,6 @@ public final class PlayerUtils {
     public static Player getOwner(List<BattleObject> units) {
         return units.stream().map(it -> it.getOwner()).filter(it -> it != null).findFirst().orElse(null);
     }
+
+
 }

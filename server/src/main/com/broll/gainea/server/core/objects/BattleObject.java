@@ -52,14 +52,14 @@ public abstract class BattleObject extends MapObject {
     }
 
     @Override
-    public boolean canMove() {
+    public boolean hasRemainingMove() {
         if (moveOrAttackRestriction && attacked) {
             return false;
         }
-        return super.canMove();
+        return super.hasRemainingMove();
     }
 
-    public boolean canAttack() {
+    public boolean hasRemainingAttack() {
         if (moveOrAttackRestriction && moved) {
             return false;
         }

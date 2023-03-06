@@ -65,7 +65,7 @@ public class BotStrategy {
         List<GoalStrategy> goals = goalStrategies.stream().filter(GoalStrategy::requiresMoreUnits).collect(Collectors.toList());
         if (!goals.isEmpty()) {
             GoalStrategy goal = goals.get(BotUtils.getLowestScoreIndex(goals,
-                    it -> it.getClosestDistance(unit.getLocation())));
+                    it -> it.getClosestDistance(unit, unit.getLocation())));
             strategizeUnit(goal, unit);
             return;
         }
@@ -129,7 +129,7 @@ public class BotStrategy {
         }
         Map<Location, MutablePair<GoalStrategy, Integer>> scores = new HashMap<>();
         locations.forEach(it -> scores.put(it, MutablePair.of(null, Integer.MAX_VALUE)));
-        goals.forEach(it -> it.scoreLocations(scores));
+        goals.forEach(it -> it.scoreLocations(unit, scores));
         Map.Entry<Location, MutablePair<GoalStrategy, Integer>> entry = BotUtils.getLowestScoreEntry(new ArrayList<>(scores.entrySet()), it -> it.getValue().getRight());
         int option = locations.indexOf(entry.getKey());
         GoalStrategy strategy = entry.getValue().getKey();

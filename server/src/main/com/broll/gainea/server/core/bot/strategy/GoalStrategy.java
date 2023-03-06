@@ -107,14 +107,14 @@ public class GoalStrategy {
         this.units.add(unit);
     }
 
-    public int getClosestDistance(Location location) {
-        return BotUtils.getBestPath(player, location, getTargetLocations()).getValue();
+    public int getClosestDistance(BattleObject unit, Location location) {
+        return BotUtils.getBestPath(player, unit, location, getTargetLocations()).getValue();
     }
 
-    public void scoreLocations(Map<Location, MutablePair<GoalStrategy, Integer>> locationScores) {
+    public void scoreLocations(BattleObject unit, Map<Location, MutablePair<GoalStrategy, Integer>> locationScores) {
         for (Location location : locationScores.keySet()) {
             MutablePair<GoalStrategy, Integer> entry = locationScores.get(location);
-            int score = getClosestDistance(location);
+            int score = getClosestDistance(unit, location);
             if (score < entry.getValue()) {
                 entry.setLeft(this);
                 entry.setRight(score);

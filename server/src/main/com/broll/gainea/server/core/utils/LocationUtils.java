@@ -130,19 +130,14 @@ public final class LocationUtils {
         return areas.stream().filter(it -> it.getInhabitants().isEmpty()).limit(amount).collect(Collectors.toList());
     }
 
-    private static Function<Location, List<Location>> routes(Player player) {
-        return location -> {
-            if (player == null) {
-                return location.getWalkableNeighbours();
-            }
-            return player.getFraction().getMoveLocations(location);
-        };
+    private static Function<Location, List<Location>> routes(MapObject object) {
+        return location -> location.getConnectedLocations().stream().filter(object::canMoveTo).collect(Collectors.toList());
     }
 
-    public static int getWalkingDistance(Player player, Location from, Location to) {
+    public static int getWalkingDistance(MapObject object, Location from, Location to) {
         List<Location> visited = new ArrayList<>();
         List<Location> remaining;
-        Function<Location, List<Location>> routes = routes(player);
+        Function<Location, List<Location>> routes = routes(object);
         int distance = 0;
         if (from == to) {
             return 0;
@@ -162,10 +157,10 @@ public final class LocationUtils {
         return -1;
     }
 
-    public static List<Location> getWalkableLocations(Player player, Location from, int maxSteps) {
+    public static List<Location> getWalkableLocations(MapObject object, Location from, int maxSteps) {
         List<Location> visited = new ArrayList<>();
         List<Location> remaining;
-        Function<Location, List<Location>> routes = routes(player);
+        Function<Location, List<Location>> routes = routes(object);
         int distance = 0;
         remaining = routes.apply(from);
         while (!remaining.isEmpty() && distance < maxSteps) {

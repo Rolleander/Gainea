@@ -7,14 +7,12 @@ import com.broll.gainea.server.core.actions.AbstractActionHandler;
 import com.broll.gainea.server.core.actions.ActionContext;
 import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.objects.BattleObject;
-import com.broll.gainea.server.core.utils.LocationUtils;
 import com.broll.gainea.server.core.utils.PlayerUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 public class AttackAction extends AbstractActionHandler<NT_Action_Attack, AttackAction.Context> {
@@ -22,22 +20,20 @@ public class AttackAction extends AbstractActionHandler<NT_Action_Attack, Attack
 
     class Context extends ActionContext<NT_Action_Attack> {
         List<BattleObject> attackers;
-        List<Location> attackLocations;
-        Location armyLocation;
+        Location location;
 
         public Context(NT_Action_Attack action) {
             super(action);
         }
     }
 
-    public Context attack(List<BattleObject> attackers, Collection<Location> attackLocations) {
+    public Context attack(List<BattleObject> attackers, Location attackLocation) {
         NT_Action_Attack action = new NT_Action_Attack();
         action.units = attackers.stream().map(BattleObject::nt).toArray(NT_Unit[]::new);
-        action.attackLocations = LocationUtils.getLocationNumbers(attackLocations);
+        action.location = (short) attackLocation.getNumber();
         Context context = new Context(action);
         context.attackers = attackers;
-        context.armyLocation = attackers.get(0).getLocation();
-        context.attackLocations = new ArrayList<>(attackLocations);
+        context.location = attackLocation;
         return context;
     }
 
@@ -45,8 +41,6 @@ public class AttackAction extends AbstractActionHandler<NT_Action_Attack, Attack
     public void handleReaction(Context context, NT_Action_Attack action, NT_Reaction reaction) {
         game.getProcessingCore().execute(() -> {
             Log.trace("Handle attack reaction");
-            Location attackLocation = context.attackLocations.get(reaction.option);
-            context.attackLocations.remove(attackLocation);
             List<BattleObject> selectedAttackers = new ArrayList<>();
             for (int selection : reaction.options) {
                 BattleObject attacker = context.attackers.get(selection);
@@ -55,7 +49,7 @@ public class AttackAction extends AbstractActionHandler<NT_Action_Attack, Attack
             context.attackers.removeAll(selectedAttackers);
             if (!selectedAttackers.isEmpty()) {
                 selectedAttackers.forEach(BattleObject::attacked);
-                startFight(selectedAttackers, attackLocation);
+                startFight(selectedAttackers, context.location);
             }
         });
     }
