@@ -2,7 +2,6 @@ package com.broll.gainea.server.core.map;
 
 import com.broll.gainea.server.core.objects.MapObject;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -56,16 +55,17 @@ public abstract class Location {
         return container;
     }
 
-    public boolean isFree(){
+    public boolean isFree() {
         return inhabitants.isEmpty() && isTraversable();
     }
 
-    public List<Location> getWalkableNeighbours(){
-        return getConnectedLocations().stream().filter(Location::isTraversable).filter(it-> {
-            if(it instanceof Ship){
-                return ((Ship)it).passable(this);
+    public List<Location> getWalkableNeighbours() {
+        return getConnectedLocations().stream().filter(Location::isTraversable).filter(it -> {
+            if (it instanceof Ship) {
+                return ((Ship) it).passable(this);
             }
             return true;
         }).collect(Collectors.toList());
     }
+
 }

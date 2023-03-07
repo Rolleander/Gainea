@@ -1,11 +1,8 @@
 package com.broll.gainea.server.core.cards.events;
 
-import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.cards.EventCard;
-import com.broll.gainea.server.core.objects.Monster;
 import com.broll.gainea.server.core.utils.UnitControl;
 
-import java.awt.Event;
 
 public class E_SpawnMonster extends EventCard {
     public E_SpawnMonster() {
@@ -17,13 +14,4 @@ public class E_SpawnMonster extends EventCard {
         UnitControl.spawnMonsters(game, 1);
     }
 
-    public static int getTotalStartMonsters(GameContainer game) {
-        int expansions = game.getMap().getExpansions().size();
-        int monstersPerExpansion = game.getGameSettings().getMonsterCount();
-        return expansions * monstersPerExpansion;
-    }
-
-    public static int getCurrentMonsters(GameContainer game) {
-        return (int) game.getObjects().stream().filter(it -> it instanceof Monster).count();
-    }
 }

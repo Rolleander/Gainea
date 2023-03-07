@@ -43,8 +43,14 @@ public class MoveUnitAction extends AbstractActionHandler<NT_Action_Move, MoveUn
         game.getProcessingCore().execute(() -> {
             Log.trace("Handle move reaction");
             List<MapObject> selectedUnits = new ArrayList<>();
+            Location from = null;
             for (int selection : reaction.options) {
                 BattleObject unit = context.unitsToMove.get(selection);
+                if (from == null) {
+                    from = unit.getLocation();
+                } else if (unit.getLocation() != from) {
+                    continue;
+                }
                 selectedUnits.add(unit);
             }
             context.unitsToMove.removeAll(selectedUnits);

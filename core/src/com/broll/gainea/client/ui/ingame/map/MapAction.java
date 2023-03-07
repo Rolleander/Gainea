@@ -9,7 +9,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.broll.gainea.Gainea;
 import com.broll.gainea.client.ui.utils.ActionListener;
+import com.broll.gainea.net.NT_Unit;
 
+import java.util.List;
 import java.util.Objects;
 
 public class MapAction extends Image {
@@ -22,6 +24,12 @@ public class MapAction extends Image {
     private int type;
     private Object action;
 
+    private List<NT_Unit> units;
+
+    public final static int TYPE_MOVE = 0;
+    public final static int TYPE_ATTACK = 1;
+    public final static int TYPE_PLACE = 2;
+    
     public MapAction(Gainea game, int type, int locationId, ActionListener clicked) {
         setVisible(false);
         this.type = type;
@@ -31,7 +39,7 @@ public class MapAction extends Image {
         setDrawable(new TextureRegionDrawable(region));
         setSize(SIZE, SIZE);
         setOrigin(Align.center);
-        if(clicked!=null){
+        if (clicked != null) {
             addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
@@ -43,6 +51,14 @@ public class MapAction extends Image {
                 }
             });
         }
+    }
+
+    public void setUnits(List<NT_Unit> units) {
+        this.units = units;
+    }
+
+    public List<NT_Unit> getUnits() {
+        return units;
     }
 
     @Override
@@ -82,9 +98,9 @@ public class MapAction extends Image {
 
     @Override
     public boolean remove() {
-         if(trail!=null){
-             trail.remove();
-         }
+        if (trail != null) {
+            trail.remove();
+        }
         return super.remove();
     }
 

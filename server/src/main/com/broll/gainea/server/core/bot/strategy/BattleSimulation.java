@@ -26,7 +26,7 @@ public class BattleSimulation {
         return null;
     }
 
-    public static float calculateAttackerWinChance(Location location, List<BattleObject> attackers, List<BattleObject> defenders) {
+    public static float calculateCurrentWinChance(Location location, List<BattleObject> attackers, List<BattleObject> defenders) {
         float wins = 0;
         for (int i = 0; i < SIMULATIONS; i++) {
             if (winsBattle(location, attackers, defenders)) {
@@ -48,12 +48,13 @@ public class BattleSimulation {
 
     private static boolean winsBattle(Location location, List<BattleObject> units) {
         Player owner = PlayerUtils.getOwner(units);
-        List<BattleObject> defenders = PlayerUtils.getHostileArmy(owner, location);
+        List<BattleObject> attackers = units.stream().map(SimulationUnit::new).collect(Collectors.toList());
+        List<BattleObject> defenders = PlayerUtils.getHostileArmy(owner, location).stream().map(SimulationUnit::new).collect(Collectors.toList());
         do {
             Player defender = PlayerUtils.getOwner(defenders);
             List<BattleObject> defendingUnits = defenders.stream().filter(it -> it.getOwner() == defender).collect(Collectors.toList());
             defenders.removeAll(defendingUnits);
-            if (!winsBattle(location, units, defendingUnits)) {
+            if (!winsFight(location, attackers, defendingUnits)) {
                 return false;
             }
         } while (!defenders.isEmpty());
@@ -63,9 +64,13 @@ public class BattleSimulation {
     private static boolean winsBattle(Location location, List<BattleObject> attackingUnits, List<BattleObject> defendingUnits) {
         List<BattleObject> attackers = attackingUnits.stream().map(SimulationUnit::new).collect(Collectors.toList());
         List<BattleObject> defenders = defendingUnits.stream().map(SimulationUnit::new).collect(Collectors.toList());
+        return winsFight(location, attackers, defenders);
+    }
+
+    private static boolean winsFight(Location location, List<BattleObject> attackers, List<BattleObject> defenders) {
         do {
-            FightResult result = new Battle(location, PlayerUtils.getOwner(attackingUnits),
-                    attackers, PlayerUtils.getOwner(defendingUnits),
+            FightResult result = new Battle(location, PlayerUtils.getOwner(attackers),
+                    attackers, PlayerUtils.getOwner(defenders),
                     defenders).fight();
             attackers.removeAll(result.getDeadAttackers());
             defenders.removeAll(result.getDeadDefenders());

@@ -133,6 +133,9 @@ public class BotStrategy {
         Map.Entry<Location, MutablePair<GoalStrategy, Integer>> entry = BotUtils.getLowestScoreEntry(new ArrayList<>(scores.entrySet()), it -> it.getValue().getRight());
         int option = locations.indexOf(entry.getKey());
         GoalStrategy strategy = entry.getValue().getKey();
+        if (strategy == null) {
+            strategy = getFallbackStrategy();
+        }
         strategizeUnit(strategy, unit);
         return option;
     }

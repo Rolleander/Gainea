@@ -6,6 +6,7 @@ import com.broll.gainea.server.core.cards.events.E_GetCards;
 import com.broll.gainea.server.core.cards.events.E_SpawnGoddrake;
 import com.broll.gainea.server.core.cards.events.E_SpawnMonster;
 import com.broll.gainea.server.core.processing.GameUpdateReceiverAdapter;
+import com.broll.gainea.server.core.utils.GameUtils;
 
 public class TurnEvents extends GameUpdateReceiverAdapter {
 
@@ -42,8 +43,8 @@ public class TurnEvents extends GameUpdateReceiverAdapter {
                 }
             }
             if (turn % SPAWN_MONSTER_TURNS == 0) {
-                int totalAtStart = E_SpawnMonster.getTotalStartMonsters(game);
-                int currentMonsters = E_SpawnMonster.getCurrentMonsters(game);
+                int totalAtStart = GameUtils.getTotalStartMonsters(game);
+                int currentMonsters = GameUtils.getCurrentMonsters(game);
                 int missing = totalAtStart - currentMonsters;
                 if (missing > 0) {
                     turnEvent(E_SpawnMonster.class);

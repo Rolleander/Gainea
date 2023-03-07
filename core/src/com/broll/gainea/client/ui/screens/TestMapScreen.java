@@ -3,6 +3,7 @@ package com.broll.gainea.client.ui.screens;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.broll.gainea.client.AudioPlayer;
+import com.broll.gainea.client.game.ClientMapContainer;
 import com.broll.gainea.client.ui.Screen;
 import com.broll.gainea.client.ui.components.FinishedGoalDisplay;
 import com.broll.gainea.misc.RandomUtils;
@@ -24,7 +25,7 @@ public class TestMapScreen extends Screen {
     @Override
     public Actor build() {
         AudioPlayer.playSong("celtic.mp3");
-//        ClientMapContainer.RENDER_DEBUG = true;
+        ClientMapContainer.RENDER_DEBUG = true;
         game.state.init(ExpansionSetting.PLUS_ICELANDS, 0, 30, null);
         NT_Goal goal = null;
 

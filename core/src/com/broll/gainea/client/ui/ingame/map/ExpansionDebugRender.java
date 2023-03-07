@@ -10,9 +10,7 @@ import com.broll.gainea.server.core.map.Expansion;
 import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.map.Ship;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 public class ExpansionDebugRender extends Actor {
 
@@ -57,10 +55,7 @@ public class ExpansionDebugRender extends Actor {
         shape.setColor(Color.BROWN);
         shape.circle(x, y, r);
         shape.end();
-        List<Location> cons = new ArrayList<>();
-        cons.add(location.getFrom());
-        cons.add(location.getTo());
-        renderConnections(location, cons, shape);
+        renderConnections(location, location.getConnectedLocations(), shape);
     }
 
     private void renderConnections(Location location, Collection<Location> connections, ShapeRenderer shape) {

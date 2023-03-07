@@ -108,7 +108,7 @@ public class GoalStrategy {
     }
 
     public int getClosestDistance(BattleObject unit, Location location) {
-        return BotUtils.getBestPath(player, unit, location, getTargetLocations()).getValue();
+        return BotUtils.getBestPath(unit, location, getTargetLocations()).getValue();
     }
 
     public void scoreLocations(BattleObject unit, Map<Location, MutablePair<GoalStrategy, Integer>> locationScores) {

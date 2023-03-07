@@ -42,8 +42,14 @@ public class AttackAction extends AbstractActionHandler<NT_Action_Attack, Attack
         game.getProcessingCore().execute(() -> {
             Log.trace("Handle attack reaction");
             List<BattleObject> selectedAttackers = new ArrayList<>();
+            Location from = null;
             for (int selection : reaction.options) {
                 BattleObject attacker = context.attackers.get(selection);
+                if (from == null) {
+                    from = attacker.getLocation();
+                } else if (attacker.getLocation() != from) {
+                    continue;
+                }
                 selectedAttackers.add(attacker);
             }
             context.attackers.removeAll(selectedAttackers);

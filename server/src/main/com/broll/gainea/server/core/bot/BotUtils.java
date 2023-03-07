@@ -117,13 +117,13 @@ public class BotUtils {
         return Pair.of(location, distance);
     }
 
-    public static Pair<Location, Integer> getBestPath(Player player, BattleObject object, Location from, Collection<Location> toOptions) {
+    public static Pair<Location, Integer> getBestPath(BattleObject object, Location from, Collection<Location> toOptions) {
         int distance = Integer.MAX_VALUE;
         int units = 0;
         Location location = toOptions.iterator().next();
         for (Location to : toOptions) {
             int d = LocationUtils.getWalkingDistance(object, from, to);
-            int u = (int) LocationUtils.getUnits(to).stream().filter(it -> it.getOwner() == player).count();
+            int u = (int) LocationUtils.getUnits(to).stream().filter(it -> it.getOwner() == object.getOwner()).count();
             if (d != -1 && d < distance) {
                 distance = d;
                 location = to;

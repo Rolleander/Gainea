@@ -4,21 +4,23 @@ import com.badlogic.gdx.math.MathUtils;
 import com.broll.gainea.Gainea;
 import com.broll.gainea.client.game.ClientMapContainer;
 import com.broll.gainea.client.game.PlayerPerformOptionalAction;
-import com.broll.gainea.client.ui.utils.ActionListener;
 import com.broll.gainea.client.ui.ingame.map.ActionTrail;
 import com.broll.gainea.client.ui.ingame.map.MapAction;
-import com.broll.gainea.client.ui.utils.ArrayConversionUtils;
+import com.broll.gainea.client.ui.utils.ActionListener;
+import com.broll.gainea.net.NT_Action;
 import com.broll.gainea.net.NT_Action_Attack;
 import com.broll.gainea.net.NT_Action_Move;
 import com.broll.gainea.net.NT_Unit;
 import com.broll.gainea.server.core.map.Coordinates;
 import com.broll.gainea.server.core.map.Location;
 
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.map.MultiValueMap;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
 
 public class AttackAndMoveActionHandler {
 
@@ -33,37 +35,34 @@ public class AttackAndMoveActionHandler {
     public void update(List<NT_Action_Move> moves, List<NT_Action_Attack> attacks, PlayerPerformOptionalAction playerPerformAction) {
         clear();
         ClientMapContainer map = game.state.getMap();
-        moves.forEach(move -> Arrays.stream(ArrayConversionUtils.toInt(move.possibleLocations)).forEach(target -> {
-            Location from = map.getLocation(move.units[0].location);
-            Location to = map.getLocation(target);
-            createMove(from, to, move, playerPerformAction);
-        }));
-        attacks.forEach(attack -> Arrays.stream(ArrayConversionUtils.toInt(attack.attackLocations)).forEach(target -> {
-            Location from = map.getLocation(attack.units[0].location);
-            Location to = map.getLocation(target);
-            createAttack(from, to, attack, playerPerformAction);
-        }));
-    }
-
-    private void createMove(Location from, Location to, NT_Action_Move move, PlayerPerformOptionalAction playerPerformAction) {
-        createMapAction(from, to, move, 0, from.getNumber(), () -> {
-            int option = getSelectedLocation(to, ArrayConversionUtils.toInt(move.possibleLocations));
-            int options[] = getSelectedUnits(selectedUnits, move.units);
-            playerPerformAction.perform(move, option, options);
+        moves.forEach(move -> {
+            Location to = map.getLocation(move.location);
+            createDistinctMapActions(to, move, it -> it.units, MapAction.TYPE_MOVE, playerPerformAction);
+        });
+        attacks.forEach(attack -> {
+            Location to = map.getLocation(attack.location);
+            createDistinctMapActions(to, attack, it -> it.units, MapAction.TYPE_ATTACK, playerPerformAction);
         });
     }
 
-    private void createAttack(Location from, Location to, NT_Action_Attack attack, PlayerPerformOptionalAction playerPerformAction) {
-        createMapAction(from, to, attack, 1, from.getNumber(), () -> {
-            int option = getSelectedLocation(to, ArrayConversionUtils.toInt(attack.attackLocations));
-            int options[] = getSelectedUnits(selectedUnits, attack.units);
-            playerPerformAction.perform(attack, option, options);
+    private <A extends NT_Action> void createDistinctMapActions(Location to, A action, Function<A, NT_Unit[]> getUnits, int type, PlayerPerformOptionalAction playerPerformAction) {
+        MultiValueMap<Location, NT_Unit> paths = new MultiValueMap<>();
+        for (NT_Unit unit : getUnits.apply(action)) {
+            paths.put(game.state.getMap().getLocation(unit.location), unit);
+        }
+        paths.keySet().forEach(from -> {
+            List<NT_Unit> pathUnits = (List<NT_Unit>) paths.getCollection(from);
+            createMapAction(from, to, action, pathUnits, type, () -> {
+                int[] options = getSelectedUnits(selectedUnits, getUnits.apply(action));
+                playerPerformAction.perform(action, 0, options);
+            });
         });
     }
 
-    private void createMapAction(Location from, Location to, Object nt_action, int type, int unitId, ActionListener listener) {
-        MapAction action = new MapAction(game, type, unitId, listener);
+    private void createMapAction(Location from, Location to, Object nt_action, List<NT_Unit> units, int type, ActionListener listener) {
+        MapAction action = new MapAction(game, type, to.getNumber(), listener);
         action.setAction(nt_action);
+        action.setUnits(units);
         mapActions.add(action);
         Coordinates toC = to.getCoordinates();
         Coordinates fromC = from.getCoordinates();
@@ -88,17 +87,7 @@ public class AttackAndMoveActionHandler {
             it.setVisible(false);
             it.toFront();
         });
-        int[] locations = units.stream().mapToInt(it -> it.location).distinct().toArray();
-        mapActions.stream().filter(it -> ArrayUtils.contains(locations, it.getLocationId())).filter(it -> isActionForUnits(it.getAction(), units)).forEach(it -> it.setVisible(true));
-    }
-
-    private int getSelectedLocation(Location location, int[] selection) {
-        for (int i = 0; i < selection.length; i++) {
-            if (location.getNumber() == selection[i]) {
-                return i;
-            }
-        }
-        return 0;
+        mapActions.stream().filter(it -> CollectionUtils.containsAny(it.getUnits(), units)).forEach(it -> it.setVisible(true));
     }
 
     private int[] getSelectedUnits(List<NT_Unit> selectedUnits, NT_Unit[] units) {
@@ -110,24 +99,6 @@ public class AttackAndMoveActionHandler {
             }
         }
         return selection.stream().mapToInt(i -> i).toArray();
-    }
-
-    private boolean isActionForUnits(Object nt_action, List<NT_Unit> units) {
-        int[] unitIds = units.stream().mapToInt(it -> it.id).toArray();
-        NT_Unit[] actionUnits = null;
-        if (nt_action instanceof NT_Action_Move) {
-            actionUnits = ((NT_Action_Move) nt_action).units;
-        } else if (nt_action instanceof NT_Action_Attack) {
-            actionUnits = ((NT_Action_Attack) nt_action).units;
-        } else {
-            return false;
-        }
-        for (int id : Arrays.stream(actionUnits).mapToInt(it -> it.id).toArray()) {
-            if (ArrayUtils.contains(unitIds, id)) {
-                return true;
-            }
-        }
-        return false;
     }
 
 }

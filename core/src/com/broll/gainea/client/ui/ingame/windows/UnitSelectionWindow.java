@@ -8,11 +8,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.broll.gainea.Gainea;
-import com.broll.gainea.client.ui.ingame.map.MapObjectRender;
-import com.broll.gainea.client.ui.utils.ActionListener;
 import com.broll.gainea.client.ui.components.IconLabel;
-import com.broll.gainea.client.ui.utils.LabelUtils;
+import com.broll.gainea.client.ui.ingame.map.MapObjectRender;
 import com.broll.gainea.client.ui.ingame.unit.MenuUnit;
+import com.broll.gainea.client.ui.utils.ActionListener;
+import com.broll.gainea.client.ui.utils.LabelUtils;
 import com.broll.gainea.client.ui.utils.TableUtils;
 import com.broll.gainea.net.NT_Unit;
 import com.broll.gainea.server.core.map.Area;
@@ -24,6 +24,7 @@ import com.broll.gainea.server.core.map.Location;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
@@ -31,7 +32,7 @@ import java.util.stream.Collectors;
 public class UnitSelectionWindow {
 
     public static Table create(Gainea game, Skin skin, Location location, Collection<MapObjectRender> stack) {
-        List<NT_Unit> units = stack.stream().sorted((a, b) -> Integer.compare(a.getRank(), b.getRank())).
+        List<NT_Unit> units = stack.stream().sorted(Comparator.comparingInt(MapObjectRender::getRank)).
                 map(MapObjectRender::getObject).filter(it -> it instanceof NT_Unit).map(it -> (NT_Unit) it).collect(Collectors.toList());
         Table window = new Table(skin);
         window.pad(10);
@@ -42,21 +43,21 @@ public class UnitSelectionWindow {
             AreaCollection container = location.getContainer();
             String name = container.getName();
             if (container instanceof Island) {
-                name = "Insel: "+name;
+                name = "Insel: " + name;
             } else if (container instanceof Continent) {
-                name = "Kontinent: "+name;
+                name = "Kontinent: " + name;
             }
             window.add(LabelUtils.info(skin, name)).padTop(0).padBottom(10).row();
         }
         window.row();
         int count = units.size();
         if (count > 1) {
-            int power = units.stream().map(u -> (int)u.power).reduce(0, Integer::sum).intValue();
-            int health = units.stream().map(u -> (int)u.health).reduce(0, Integer::sum).intValue();
-            int maxHealth = units.stream().map(u -> (int)u.maxHealth).reduce(0, Integer::sum).intValue();
+            int power = units.stream().map(u -> (int) u.power).reduce(0, Integer::sum);
+            int health = units.stream().map(u -> (int) u.health).reduce(0, Integer::sum);
+            int maxHealth = units.stream().map(u -> (int) u.maxHealth).reduce(0, Integer::sum);
             window.add(new Label("Einheiten: " + count, skin)).left().padLeft(5).row();
-            window.add(IconLabel.attack(game,  power)).left().padLeft(5).row();
-            window.add(IconLabel.health(game,  health, maxHealth)).left().padLeft(5).row();
+            window.add(IconLabel.attack(game, power)).left().padLeft(5).row();
+            window.add(IconLabel.health(game, health, maxHealth)).left().padLeft(5).row();
         }
         Table unitsTable = new Table(skin);
         List<MenuUnit> menuUnits = new ArrayList<>();

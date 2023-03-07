@@ -4,6 +4,7 @@ import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.MapObject;
+import com.broll.gainea.server.core.objects.Monster;
 import com.broll.gainea.server.core.player.Player;
 
 import java.util.List;
@@ -76,5 +77,15 @@ public final class GameUtils {
         }
         object.setLocation(location);
         location.getInhabitants().add(object);
+    }
+
+    public static int getTotalStartMonsters(GameContainer game) {
+        int expansions = game.getMap().getExpansions().size();
+        int monstersPerExpansion = game.getGameSettings().getMonsterCount();
+        return expansions * monstersPerExpansion;
+    }
+
+    public static int getCurrentMonsters(GameContainer game) {
+        return (int) game.getObjects().stream().filter(it -> it instanceof Monster).count();
     }
 }
