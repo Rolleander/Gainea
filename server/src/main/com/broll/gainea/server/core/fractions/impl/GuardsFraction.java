@@ -4,13 +4,10 @@ import com.broll.gainea.server.core.battle.FightingPower;
 import com.broll.gainea.server.core.fractions.Fraction;
 import com.broll.gainea.server.core.fractions.FractionDescription;
 import com.broll.gainea.server.core.fractions.FractionType;
-import com.broll.gainea.server.core.map.AreaType;
 import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.Commander;
-import com.broll.gainea.server.core.objects.Monster;
 import com.broll.gainea.server.core.objects.Soldier;
-import com.broll.gainea.server.core.utils.LocationUtils;
 
 import java.util.List;
 
@@ -40,15 +37,22 @@ public class GuardsFraction extends Fraction {
     }
 
     @Override
-    protected void initSoldier(Soldier soldier) {
+    public Soldier createSoldier() {
+        Soldier soldier = new Soldier(owner);
+        soldier.setStats(SOLDIER_POWER, SOLDIER_HEALTH);
         soldier.setName("Gardistenwache");
         soldier.setIcon(19);
+        return soldier;
     }
 
+
     @Override
-    protected void initCommander(Commander commander) {
+    public Commander createCommander() {
+        Commander commander = new Commander(owner);
+        commander.setStats(COMMANDER_POWER, COMMANDER_HEALTH);
         commander.setName("Elitegardist");
         commander.setIcon(15);
+        return commander;
     }
 
 

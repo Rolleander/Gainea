@@ -4,13 +4,11 @@ import com.broll.gainea.server.core.battle.FightingPower;
 import com.broll.gainea.server.core.fractions.Fraction;
 import com.broll.gainea.server.core.fractions.FractionDescription;
 import com.broll.gainea.server.core.fractions.FractionType;
-import com.broll.gainea.server.core.map.Area;
 import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.Commander;
 import com.broll.gainea.server.core.objects.Monster;
 import com.broll.gainea.server.core.objects.Soldier;
-import com.broll.gainea.server.core.utils.LocationUtils;
 import com.broll.gainea.server.core.utils.PlayerUtils;
 import com.broll.gainea.server.core.utils.UnitControl;
 
@@ -50,19 +48,24 @@ public class PoacherFraction extends Fraction {
             UnitControl.spawn(game, recruited, recruited.getLocation());
         }
     }
-
+    
     @Override
-    protected void initSoldier(Soldier soldier) {
+    public Soldier createSoldier() {
+        Soldier soldier = new Soldier(owner);
+        soldier.setStats(SOLDIER_POWER, SOLDIER_HEALTH);
         soldier.setName("Wilderer");
         soldier.setIcon(42);
+        return soldier;
     }
 
+
     @Override
-    protected void initCommander(Commander commander) {
+    public Commander createCommander() {
+        Commander commander = new Commander(owner);
         commander.setName("Monsterzähmer");
         commander.setIcon(44);
         commander.setStats(1, 5);
+        return commander;
     }
-
 
 }

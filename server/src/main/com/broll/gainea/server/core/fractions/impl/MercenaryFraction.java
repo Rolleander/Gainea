@@ -52,15 +52,22 @@ public class MercenaryFraction extends Fraction {
     }
 
     @Override
-    protected void initSoldier(Soldier soldier) {
+    public Soldier createSoldier() {
+        Soldier soldier = new Soldier(owner);
+        soldier.setStats(SOLDIER_POWER, SOLDIER_HEALTH);
         soldier.setName("Söldner");
-        soldier.setIcon(ICONS[RandomUtils.random(ICONS.length-1)]);
+        soldier.setIcon(ICONS[RandomUtils.random(ICONS.length - 1)]);
+        return soldier;
     }
 
+
     @Override
-    protected void initCommander(Commander commander) {
+    public Commander createCommander() {
+        Commander commander = new Commander(owner);
+        commander.setStats(COMMANDER_POWER, COMMANDER_HEALTH);
         commander.setName("Söldnerkommandant");
         commander.setIcon(5);
+        return commander;
     }
 
 

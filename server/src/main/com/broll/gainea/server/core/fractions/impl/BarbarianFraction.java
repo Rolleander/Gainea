@@ -8,7 +8,6 @@ import com.broll.gainea.server.core.fractions.FractionDescription;
 import com.broll.gainea.server.core.fractions.FractionType;
 import com.broll.gainea.server.core.map.Area;
 import com.broll.gainea.server.core.map.AreaType;
-import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.Commander;
 import com.broll.gainea.server.core.objects.Soldier;
 import com.broll.gainea.server.core.player.Player;
@@ -16,7 +15,7 @@ import com.broll.gainea.server.core.utils.PlayerUtils;
 import com.broll.gainea.server.core.utils.UnitControl;
 
 public class BarbarianFraction extends Fraction {
-    private static int SUMMON_TURN = 3;
+    private static final int SUMMON_TURN = 3;
     private int turns;
     private BarbarianBrother brother;
 
@@ -27,28 +26,35 @@ public class BarbarianFraction extends Fraction {
     @Override
     protected FractionDescription description() {
         FractionDescription desc = new FractionDescription("");
-        desc.plus("Nach "+SUMMON_TURN+" Runden ruft der Kommandant seine zweite Hand (2/3) herbei");
+        desc.plus("Nach " + SUMMON_TURN + " Runden ruft der Kommandant seine zweite Hand (2/3) herbei");
         desc.contra("Im Sumpf -1 Würfel");
         return desc;
     }
 
     @Override
     protected void powerMutatorArea(FightingPower power, Area area) {
-        if(area.getType()== AreaType.BOG){
+        if (area.getType() == AreaType.BOG) {
             power.changeDiceNumber(-1);
         }
     }
 
     @Override
-    protected void initSoldier(Soldier soldier) {
+    public Soldier createSoldier() {
+        Soldier soldier = new Soldier(owner);
+        soldier.setStats(SOLDIER_POWER, SOLDIER_HEALTH);
         soldier.setName("Barbarenrkieger");
         soldier.setIcon(103);
+        return soldier;
     }
 
+
     @Override
-    protected void initCommander(Commander commander) {
+    public Commander createCommander() {
+        Commander commander = new Commander(owner);
+        commander.setStats(COMMANDER_POWER, COMMANDER_HEALTH);
         commander.setName("Barbarenanführer");
         commander.setIcon(45);
+        return commander;
     }
 
     @Override
@@ -60,13 +66,6 @@ public class BarbarianFraction extends Fraction {
             }
         } else {
             turns++;
-        }
-    }
-
-    @Override
-    public void killed(BattleObject unit, BattleResult throughBattle) {
-        if(unit == brother){
-            turns =0;
         }
     }
 
@@ -86,5 +85,9 @@ public class BarbarianFraction extends Fraction {
             setIcon(49);
         }
 
+        @Override
+        public void onDeath(BattleResult throughBattle) {
+            turns = 0;
+        }
     }
 }

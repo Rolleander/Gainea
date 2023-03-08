@@ -1,6 +1,7 @@
 package com.broll.gainea.test.battle;
 
 import com.broll.gainea.server.core.battle.Battle;
+import com.broll.gainea.server.core.battle.BattleContext;
 import com.broll.gainea.server.core.battle.FightResult;
 import com.broll.gainea.server.core.map.Area;
 import com.broll.gainea.server.core.map.AreaType;
@@ -58,7 +59,8 @@ public class BattleTest {
     private FightResult battle(List<BattleObject> attackers, List<BattleObject> defenders) {
         Area area = new Area(GaineaMap.Areas.DUNKLESMEER);
         area.setType(AreaType.LAKE);
-        Battle battle = new Battle(area, null, attackers, null, defenders);
+        BattleContext context = new BattleContext(area, attackers, defenders);
+        Battle battle = new Battle(context, attackers, defenders);
         return battle.fight();
     }
 

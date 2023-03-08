@@ -1,6 +1,7 @@
 package com.broll.gainea.server.core.bot.strategy;
 
 import com.broll.gainea.server.core.battle.Battle;
+import com.broll.gainea.server.core.battle.BattleContext;
 import com.broll.gainea.server.core.battle.FightResult;
 import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.objects.BattleObject;
@@ -13,7 +14,7 @@ import java.util.stream.Collectors;
 
 public class BattleSimulation {
 
-    private static int SIMULATIONS = 10;
+    private static final int SIMULATIONS = 10;
 
     public static List<BattleObject> calculateRequiredFighters(Location location, List<BattleObject> units, float winChance) {
         List<BattleObject> fighters = new ArrayList<>();
@@ -26,10 +27,10 @@ public class BattleSimulation {
         return null;
     }
 
-    public static float calculateCurrentWinChance(Location location, List<BattleObject> attackers, List<BattleObject> defenders) {
+    public static float calculateCurrentWinChance(List<BattleObject> attackers, List<BattleObject> defenders) {
         float wins = 0;
         for (int i = 0; i < SIMULATIONS; i++) {
-            if (winsBattle(location, attackers, defenders)) {
+            if (winsBattle(attackers, defenders)) {
                 wins++;
             }
         }
@@ -48,30 +49,19 @@ public class BattleSimulation {
 
     private static boolean winsBattle(Location location, List<BattleObject> units) {
         Player owner = PlayerUtils.getOwner(units);
-        List<BattleObject> attackers = units.stream().map(SimulationUnit::new).collect(Collectors.toList());
-        List<BattleObject> defenders = PlayerUtils.getHostileArmy(owner, location).stream().map(SimulationUnit::new).collect(Collectors.toList());
-        do {
-            Player defender = PlayerUtils.getOwner(defenders);
-            List<BattleObject> defendingUnits = defenders.stream().filter(it -> it.getOwner() == defender).collect(Collectors.toList());
-            defenders.removeAll(defendingUnits);
-            if (!winsFight(location, attackers, defendingUnits)) {
-                return false;
-            }
-        } while (!defenders.isEmpty());
-        return true;
+        return winsBattle(units, PlayerUtils.getHostileArmy(owner, location));
     }
 
-    private static boolean winsBattle(Location location, List<BattleObject> attackingUnits, List<BattleObject> defendingUnits) {
+    private static boolean winsBattle(List<BattleObject> attackingUnits, List<BattleObject> defendingUnits) {
         List<BattleObject> attackers = attackingUnits.stream().map(SimulationUnit::new).collect(Collectors.toList());
         List<BattleObject> defenders = defendingUnits.stream().map(SimulationUnit::new).collect(Collectors.toList());
-        return winsFight(location, attackers, defenders);
+        return isWinningBattle(attackers, defenders);
     }
 
-    private static boolean winsFight(Location location, List<BattleObject> attackers, List<BattleObject> defenders) {
+    private static boolean isWinningBattle(List<BattleObject> attackers, List<BattleObject> defenders) {
         do {
-            FightResult result = new Battle(location, PlayerUtils.getOwner(attackers),
-                    attackers, PlayerUtils.getOwner(defenders),
-                    defenders).fight();
+            BattleContext context = new BattleContext(attackers, defenders);
+            FightResult result = new Battle(context, attackers, defenders).fight();
             attackers.removeAll(result.getDeadAttackers());
             defenders.removeAll(result.getDeadDefenders());
         } while (!attackers.isEmpty() && !defenders.isEmpty());

@@ -39,19 +39,26 @@ public class ShadowFraction extends Fraction {
     }
 
     @Override
-    protected void initSoldier(Soldier soldier) {
+    public Soldier createSoldier() {
+        Soldier soldier = new Soldier(owner);
+        soldier.setStats(SOLDIER_POWER, SOLDIER_HEALTH);
         soldier.setName("Schatten");
         soldier.setIcon(12);
+        return soldier;
     }
+
 
     @Override
-    protected void initCommander(Commander commander) {
+    public Commander createCommander() {
+        Commander commander = new Commander(owner);
+        commander.setStats(COMMANDER_POWER, COMMANDER_HEALTH);
         commander.setName("Erznekromant Bal");
         commander.setIcon(21);
+        return commander;
     }
 
-    private void afterAttack(List<BattleObject> enemies, Location location) {
-        enemies.stream().filter(BattleObject::isDead).forEach(it -> {
+    private void afterAttack(List<BattleObject> killedEnemies, Location location) {
+        killedEnemies.forEach(it -> {
             if (RandomUtils.randomBoolean(SUMMON_CHANCE)) {
                 summon(location);
             }
@@ -67,8 +74,8 @@ public class ShadowFraction extends Fraction {
 
     @Override
     public void battleResult(BattleResult result) {
-        if (result.getWinnerPlayer() == ShadowFraction.this.owner) {
-            afterAttack(result.getLoserUnits(), result.getLocation());
+        if (result.isWinner(ShadowFraction.this.owner)) {
+            afterAttack(result.getLoserDeadUnits(), result.getLocation());
         }
     }
 

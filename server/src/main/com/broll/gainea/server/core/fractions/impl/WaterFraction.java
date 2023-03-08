@@ -55,32 +55,32 @@ public class WaterFraction extends Fraction {
         spawns.clear();
     }
 
-    @Override
-    public void killed(BattleObject unit, BattleResult throughBattle) {
-        if (unit.getOwner() == owner) {
-            if (unit instanceof IceSummon) {
-                BattleObject commander = createCommander();
-                commander.setLocation(unit.getLocation());
-                spawns.add(commander);
-            } else if (unit instanceof Commander) {
-                BattleObject summon = new IceSummon();
-                summon.setOwner(owner);
-                summon.setLocation(unit.getLocation());
-                spawns.add(summon);
-            }
-        }
-    }
 
     @Override
-    protected void initSoldier(Soldier soldier) {
+    public Soldier createSoldier() {
+        Soldier soldier = new Soldier(owner);
+        soldier.setStats(SOLDIER_POWER, SOLDIER_HEALTH);
         soldier.setName("Wassermagier");
         soldier.setIcon(46);
+        return soldier;
     }
 
+
     @Override
-    protected void initCommander(Commander commander) {
+    public Commander createCommander() {
+        Commander commander = new Commander(owner) {
+            @Override
+            public void onDeath(BattleResult throughBattle) {
+                BattleObject summon = new IceSummon();
+                summon.setOwner(owner);
+                summon.setLocation(getLocation());
+                spawns.add(summon);
+            }
+        };
+        commander.setStats(COMMANDER_POWER, COMMANDER_HEALTH);
         commander.setName("Frostbeschwörer Arn");
         commander.setIcon(116);
+        return commander;
     }
 
     private class IceSummon extends Monster {
@@ -93,6 +93,13 @@ public class WaterFraction extends Fraction {
             getMovesPerTurn().addBuff(debuff);
             getAttacksPerTurn().addBuff(debuff);
             WaterFraction.this.game.getBuffProcessor().timeoutBuff(debuff, FROZEN_ROUNDS);
+        }
+
+        @Override
+        public void onDeath(BattleResult throughBattle) {
+            BattleObject commander = createCommander();
+            commander.setLocation(getLocation());
+            spawns.add(commander);
         }
     }
 

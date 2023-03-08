@@ -1,7 +1,9 @@
 package com.broll.gainea.server.core.objects;
 
 import com.broll.gainea.net.NT_Unit;
+import com.broll.gainea.server.core.battle.BattleContext;
 import com.broll.gainea.server.core.battle.BattleResult;
+import com.broll.gainea.server.core.battle.FightingPower;
 import com.broll.gainea.server.core.objects.buffs.BuffableInt;
 import com.broll.gainea.server.core.objects.buffs.IntBuff;
 import com.broll.gainea.server.core.player.Player;
@@ -68,6 +70,10 @@ public abstract class BattleObject extends MapObject {
 
     public void onDeath(BattleResult throughBattle) {
 
+    }
+
+    public FightingPower calcFightingPower(BattleContext context) {
+        return new FightingPower(this);
     }
 
     @Override

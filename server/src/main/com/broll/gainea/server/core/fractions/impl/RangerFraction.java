@@ -49,17 +49,24 @@ public class RangerFraction extends Fraction {
     }
 
     @Override
-    protected void initSoldier(Soldier soldier) {
+    public Soldier createSoldier() {
+        Soldier soldier = new Soldier(owner);
+        soldier.setStats(SOLDIER_POWER, SOLDIER_HEALTH);
         soldier.setName("Waldläuferin");
         soldier.setType(NT_Unit.TYPE_FEMALE);
         soldier.setIcon(114);
+        return soldier;
     }
 
+
     @Override
-    protected void initCommander(Commander commander) {
+    public Commander createCommander() {
+        Commander commander = new Commander(owner);
+        commander.setStats(COMMANDER_POWER, COMMANDER_HEALTH);
         commander.setName("Elfenschützin");
         commander.setType(NT_Unit.TYPE_FEMALE);
         commander.setIcon(115);
+        return commander;
     }
 
 }

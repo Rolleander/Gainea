@@ -23,10 +23,10 @@ public class G_KillUnits extends Goal {
 
     @Override
     public void battleResult(BattleResult result) {
-        if (result.getAttackingPlayer() == player) {
+        if (result.isAttacker(player)) {
             kills += result.getKilledDefenders().stream().filter(it -> it instanceof Soldier).count();
             check();
-        } else if (result.getDefendingPlayer() == player) {
+        } else if (result.isDefender(player)) {
             kills += result.getKilledAttackers().stream().filter(it -> it instanceof Soldier).count();
             check();
         }

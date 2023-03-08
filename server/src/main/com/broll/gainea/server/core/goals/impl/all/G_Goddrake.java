@@ -1,7 +1,6 @@
 package com.broll.gainea.server.core.goals.impl.all;
 
 import com.broll.gainea.server.core.battle.BattleResult;
-import com.broll.gainea.server.core.bot.BotUtils;
 import com.broll.gainea.server.core.bot.strategy.GoalStrategy;
 import com.broll.gainea.server.core.goals.Goal;
 import com.broll.gainea.server.core.goals.GoalDifficulty;
@@ -20,7 +19,7 @@ public class G_Goddrake extends Goal {
 
     @Override
     public void battleResult(BattleResult result) {
-        if (result.getWinnerPlayer() == player) {
+        if (result.isWinner(player)) {
             if (result.getLoserUnits().stream().anyMatch(it -> it instanceof GodDragon && it.isDead())) {
                 success();
             }
@@ -34,12 +33,11 @@ public class G_Goddrake extends Goal {
 
     @Override
     public void botStrategy(GoalStrategy strategy) {
-        strategy.setPrepareStrategy(()->{
-            Location dragonLocation= game.getObjects().stream().filter(it-> it instanceof GodDragon).map(MapObject::getLocation).findFirst().orElse(null);
-            if(dragonLocation==null){
+        strategy.setPrepareStrategy(() -> {
+            Location dragonLocation = game.getObjects().stream().filter(it -> it instanceof GodDragon).map(MapObject::getLocation).findFirst().orElse(null);
+            if (dragonLocation == null) {
                 strategy.updateTargets(new HashSet<>());
-            }
-            else{
+            } else {
                 strategy.updateTargets(Sets.newHashSet(dragonLocation));
                 strategy.setRequiredUnits(5);
             }

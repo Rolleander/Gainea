@@ -21,9 +21,9 @@ public class G_KillCommander extends Goal {
     @Override
     public void killed(BattleObject unit, BattleResult throughBattle) {
         if (throughBattle != null) {
-            if (throughBattle.getAttackingPlayer() == player && throughBattle.getDefenders().stream().anyMatch(it -> it instanceof Commander && it.isDead())) {
+            if (throughBattle.isAttacker(player) && throughBattle.getDefenders().stream().anyMatch(it -> it instanceof Commander && it.isDead())) {
                 success();
-            } else if (throughBattle.getDefendingPlayer() == player && throughBattle.getAttackers().stream().anyMatch(it -> it instanceof Commander && it.isDead())) {
+            } else if (throughBattle.isDefender(player) && throughBattle.getAttackers().stream().anyMatch(it -> it instanceof Commander && it.isDead())) {
                 success();
             }
         }

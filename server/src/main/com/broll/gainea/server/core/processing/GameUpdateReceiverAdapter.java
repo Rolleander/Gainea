@@ -1,6 +1,8 @@
 package com.broll.gainea.server.core.processing;
 
+import com.broll.gainea.server.core.battle.BattleContext;
 import com.broll.gainea.server.core.battle.BattleResult;
+import com.broll.gainea.server.core.battle.RollManipulator;
 import com.broll.gainea.server.core.cards.Card;
 import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.objects.BattleObject;
@@ -10,6 +12,12 @@ import com.broll.gainea.server.core.player.Player;
 import java.util.List;
 
 public abstract class GameUpdateReceiverAdapter implements IGameUpdateReceiver {
+
+    @Override
+    public void battleBegin(BattleContext context, RollManipulator rollManipulator) {
+
+    }
+
     @Override
     public void battleResult(BattleResult result) {
 

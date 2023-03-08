@@ -16,7 +16,7 @@ public class G_Fight extends RoundGoal {
 
     @Override
     public void battleResult(BattleResult result) {
-        if (result.getAttackingPlayer() == player || result.getDefendingPlayer() == player) {
+        if (result.isParticipating(player)) {
             fighting = true;
         }
     }

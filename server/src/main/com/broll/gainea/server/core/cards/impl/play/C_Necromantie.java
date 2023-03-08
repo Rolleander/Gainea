@@ -23,8 +23,8 @@ public class C_Necromantie extends Card {
         TimedEffect.forCurrentTurn(game, new TimedEffect() {
             @Override
             public void battleResult(BattleResult result) {
-                if (result.getAttackingPlayer() == owner) {
-                    Location summonLocation = result.attackersWon() ? result.getLocation() : result.getAttackerSourceLocation();
+                if (result.isAttacker(owner)) {
+                    Location summonLocation = result.getAttackerEndLocation();
                     result.getKilledAttackers().forEach(it -> summonSkeleton(summonLocation));
                 }
             }

@@ -40,56 +40,40 @@ public class VikingFraction extends Fraction {
         }
         return power;
     }
+    
+    @Override
+    public Soldier createSoldier() {
+        Soldier soldier = new Soldier(owner) {
+            @Override
+            public boolean canMoveTo(Location to) {
+                return canVikingMove(to);
+            }
+        };
+        soldier.setStats(SOLDIER_POWER, SOLDIER_HEALTH);
+        soldier.setName("Wikinger");
+        soldier.setIcon(106);
+        return soldier;
+    }
+
 
     @Override
     public Commander createCommander() {
-        return new VikingCommander();
+        Commander commander = new Commander(owner) {
+            @Override
+            public boolean canMoveTo(Location to) {
+                return canVikingMove(to);
+            }
+        };
+        commander.setStats(COMMANDER_POWER, COMMANDER_HEALTH);
+        commander.setName("Jarl Olaf");
+        commander.setIcon(104);
+        return commander;
     }
 
-    @Override
-    public Soldier createSoldier() {
-        return new VikingSolider();
-    }
-
-    @Override
-    protected void initSoldier(Soldier soldier) {
-    }
-
-    @Override
-    protected void initCommander(Commander commander) {
-    }
 
     private boolean canVikingMove(Location to) {
         return to.isTraversable();
     }
 
-    private class VikingSolider extends Soldier {
 
-        public VikingSolider() {
-            super(VikingFraction.this.owner);
-            setStats(SOLDIER_POWER, SOLDIER_HEALTH);
-            setName("Wikinger");
-            setIcon(106);
-        }
-
-        @Override
-        public boolean canMoveTo(Location to) {
-            return canVikingMove(to);
-        }
-    }
-
-    private class VikingCommander extends Commander {
-
-        public VikingCommander() {
-            super(VikingFraction.this.owner);
-            setStats(COMMANDER_POWER, COMMANDER_HEALTH);
-            setName("Jarl Olaf");
-            setIcon(104);
-        }
-
-        @Override
-        public boolean canMoveTo(Location to) {
-            return canVikingMove(to);
-        }
-    }
 }

@@ -41,26 +41,30 @@ public class LizardFraction extends Fraction {
 
     @Override
     protected void powerMutatorArea(FightingPower power, Area area) {
-        if(LocationUtils.isAreaType(area, AreaType.SNOW)){
+        if (LocationUtils.isAreaType(area, AreaType.SNOW)) {
             power.changeDiceNumber(-1);
         }
     }
 
     @Override
-    protected void initSoldier(Soldier soldier) {
+    public Soldier createSoldier() {
+        Soldier soldier = new Soldier(owner);
+        soldier.setStats(2, 2);
         soldier.setName("Echsenkrieger");
-        soldier.setPower(2);
-        soldier.setHealth(2);
         soldier.setIcon(122);
         soldier.setMoveOrAttackRestriction(false);
+        return soldier;
     }
 
+
     @Override
-    protected void initCommander(Commander commander) {
+    public Commander createCommander() {
+        Commander commander = new Commander(owner);
+        commander.setStats(3, 5);
         commander.setName("Grash der Vernichter");
-        commander.setHealth(5);
         commander.setIcon(123);
         commander.setMoveOrAttackRestriction(false);
+        return commander;
     }
 
 }

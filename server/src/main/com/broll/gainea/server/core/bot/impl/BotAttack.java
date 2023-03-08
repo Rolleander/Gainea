@@ -63,7 +63,7 @@ public class BotAttack extends BotOptionalAction<NT_Action_Attack, BotAttack.Att
         List<BattleObject> attackers = BotUtils.getObjects(game, update.attackers);
         List<BattleObject> defenders = BotUtils.getObjects(game, update.defenders);
         float winChance = getRequiredWinChance(getSelectedOption().type);
-        return BattleSimulation.calculateCurrentWinChance(getSelectedOption().location, attackers, defenders) >= winChance;
+        return BattleSimulation.calculateCurrentWinChance(attackers, defenders) >= winChance;
     }
 
     private List<BattleObject> usableUnits(NT_Unit[] ntUnits) {

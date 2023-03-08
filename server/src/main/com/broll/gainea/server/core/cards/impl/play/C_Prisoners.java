@@ -20,9 +20,9 @@ public class C_Prisoners extends Card {
 
     @Override
     protected void play() {
-        TimedEffect.forCurrentTurn(game , new TimedEffect(){
+        TimedEffect.forCurrentTurn(game, new TimedEffect() {
             public void battleResult(BattleResult result) {
-                if (result.getAttackingPlayer() == owner && result.attackersWon()) {
+                if (result.isAttacker(owner) && result.attackersWon()) {
                     if (result.getDefenders().stream().anyMatch(it -> it instanceof Soldier)) {
                         for (int i = 0; i < COUNT; i++) {
                             placeUnitHandler.placeSoldier(owner);

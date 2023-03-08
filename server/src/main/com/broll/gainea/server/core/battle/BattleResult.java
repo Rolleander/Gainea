@@ -3,92 +3,80 @@ package com.broll.gainea.server.core.battle;
 import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.player.Player;
+import com.google.common.collect.Lists;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class BattleResult {
+public class BattleResult extends BattleContext {
 
     private boolean retreated;
-    private List<BattleObject> attackers;
-    private List<BattleObject> defenders;
-    private List<BattleObject> killedAttackers;
-    private List<BattleObject> killedDefenders;
-    private Location location;
-    private Location attackerSourceLocation;
 
-    public BattleResult(boolean retreated, List<BattleObject> attackers, List<BattleObject> defenders, List<BattleObject> killedAttackers, List<BattleObject> killedDefenders, Location location) {
+    public BattleResult(boolean retreated, BattleContext context) {
+        super(context.attackers, context.defenders);
         this.retreated = retreated;
-        this.attackers = attackers;
-        this.defenders = defenders;
-        this.killedAttackers = killedAttackers;
-        this.killedDefenders = killedDefenders;
-        this.location = location;
-        this.attackerSourceLocation = this.attackers.get(0).getLocation();
     }
 
-    public Location getLocation() {
-        return location;
+    public List<Player> getWinningPlayers() {
+        return getNonNeutralOwners(getWinnerOwners());
     }
 
-    public Location getAttackerSourceLocation() {
-        return attackerSourceLocation;
+    public List<Player> getLosingPlayers() {
+        return getNonNeutralOwners(getLoserOwners());
     }
 
-    public Player getAttackingPlayer() {
-        return attackers.get(0).getOwner();
+    public boolean isWinner(Player player) {
+        return getWinnerOwners().contains(player);
     }
 
-    public Player getDefendingPlayer() {
-        return defenders.get(0).getOwner();
+    public boolean isLoser(Player player) {
+        return getLoserOwners().contains(player);
+    }
+
+    public boolean isNeutralWinner() {
+        return isNeutralOwner(getWinnerOwners());
+    }
+
+    public boolean isNeutralLoser() {
+        return isNeutralOwner(getLoserOwners());
+    }
+
+    public Location getAttackerEndLocation() {
+        return attackersWon() ? getLocation() : getSourceLocation();
     }
 
     public boolean attackersWon() {
-        return defenders.stream().map(BattleObject::isDead).reduce(true, Boolean::logicalAnd) && attackers.stream().map(BattleObject::isAlive).reduce(false, Boolean::logicalOr);
+        return !retreated && hasSurvivingAttackers() && !hasSurvivingDefenders();
     }
 
     public boolean defendersWon() {
-        return retreated || attackers.stream().map(BattleObject::isDead).reduce(true, Boolean::logicalAnd) && defenders.stream().map(BattleObject::isAlive).reduce(false, Boolean::logicalOr);
+        return retreated || (hasSurvivingDefenders() && !hasSurvivingAttackers());
     }
 
-    public Player getWinnerPlayer() {
+    private List<Player> getWinnerOwners() {
         if (attackersWon()) {
-            return getAttackingPlayer();
+            return Lists.newArrayList(attackingPlayer);
         } else if (defendersWon()) {
-            return getDefendingPlayer();
+            return defendingPlayers;
         }
-        return null;
+        return new ArrayList<>();
     }
 
-    public Player getLoserPlayer() {
+    private List<Player> getLoserOwners() {
         if (attackersWon()) {
-            return getDefendingPlayer();
+            return defendingPlayers;
         } else if (defendersWon()) {
-            return getAttackingPlayer();
+            return Lists.newArrayList(attackingPlayer);
         }
-        return null;
+        return new ArrayList<>();
     }
 
-    public boolean retreated() {return retreated;}
+    public boolean attackerRetreated() {
+        return retreated;
+    }
 
-    public boolean draw() {
+    public boolean isDraw() {
         return !attackersWon() && !defendersWon();
-    }
-
-    public List<BattleObject> getAttackers() {
-        return attackers;
-    }
-
-    public List<BattleObject> getDefenders() {
-        return defenders;
-    }
-
-    public List<BattleObject> getKilledAttackers() {
-        return killedAttackers;
-    }
-
-    public List<BattleObject> getKilledDefenders() {
-        return killedDefenders;
     }
 
     public List<BattleObject> getWinnerUnits() {
@@ -109,4 +97,39 @@ public class BattleResult {
         return new ArrayList<>();
     }
 
+    public List<BattleObject> getWinnerSurvivingUnits() {
+        if (attackersWon()) {
+            return getAliveAttackers();
+        } else if (defendersWon()) {
+            return getAliveDefenders();
+        }
+        return new ArrayList<>();
+    }
+
+    public List<BattleObject> getLoserSurvivingUnits() {
+        if (attackersWon()) {
+            return getAliveDefenders();
+        } else if (defendersWon()) {
+            return getAliveAttackers();
+        }
+        return new ArrayList<>();
+    }
+
+    public List<BattleObject> getWinnerDeadUnits() {
+        if (attackersWon()) {
+            return getKilledAttackers();
+        } else if (defendersWon()) {
+            return getKilledDefenders();
+        }
+        return new ArrayList<>();
+    }
+
+    public List<BattleObject> getLoserDeadUnits() {
+        if (attackersWon()) {
+            return getKilledDefenders();
+        } else if (defendersWon()) {
+            return getKilledAttackers();
+        }
+        return new ArrayList<>();
+    }
 }

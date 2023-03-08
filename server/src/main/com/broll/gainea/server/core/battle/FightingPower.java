@@ -2,6 +2,7 @@ package com.broll.gainea.server.core.battle;
 
 
 import com.broll.gainea.misc.RandomUtils;
+import com.broll.gainea.server.core.objects.BattleObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,46 +15,58 @@ public class FightingPower {
     private int highestNumber = 6;
     private int numberPlus = 0;
 
-    public FightingPower() {
-
+    public FightingPower(BattleObject unit) {
+        this(unit.getPower().getValue());
     }
 
-    public void changeDiceNumber(int count) {
+    public FightingPower(int diceCount) {
+        this.diceCount = diceCount;
+    }
+
+    public FightingPower changeDiceNumber(int count) {
         diceCount += count;
         if (diceCount < 1) {
             diceCount = 1;
         }
+        return this;
     }
 
-    public void changeHighestNumber(int delta) {
+    public FightingPower changeHighestNumber(int delta) {
         this.highestNumber += delta;
+        return this;
     }
 
-    public void changeLowestNumber(int delta) {
+    public FightingPower changeLowestNumber(int delta) {
         this.lowestNumber += delta;
+        return this;
     }
 
-    public void changeNumberPlus(int delta) {
+    public FightingPower changeNumberPlus(int delta) {
         this.numberPlus += delta;
+        return this;
     }
 
-    public void setDiceCount(int diceCount) {
+    public FightingPower setDiceCount(int diceCount) {
         this.diceCount = diceCount;
         if (diceCount < 1) {
             diceCount = 1;
         }
+        return this;
     }
 
-    public void setHighestNumber(int highestNumber) {
+    public FightingPower setHighestNumber(int highestNumber) {
         this.highestNumber = highestNumber;
+        return this;
     }
 
-    public void setLowestNumber(int lowestNumber) {
+    public FightingPower setLowestNumber(int lowestNumber) {
         this.lowestNumber = lowestNumber;
+        return this;
     }
 
-    public void setNumberPlus(int numberPlus) {
+    public FightingPower setNumberPlus(int numberPlus) {
         this.numberPlus = numberPlus;
+        return this;
     }
 
     public int getDiceCount() {

@@ -1,6 +1,8 @@
 package com.broll.gainea.server.core.processing;
 
+import com.broll.gainea.server.core.battle.BattleContext;
 import com.broll.gainea.server.core.battle.BattleResult;
+import com.broll.gainea.server.core.battle.RollManipulator;
 import com.broll.gainea.server.core.cards.Card;
 import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.objects.BattleObject;
@@ -10,6 +12,8 @@ import com.broll.gainea.server.core.player.Player;
 import java.util.List;
 
 public interface IGameUpdateReceiver {
+
+    void battleBegin(BattleContext context, RollManipulator rollManipulator);
 
     void battleResult(BattleResult result);
 
@@ -28,4 +32,5 @@ public interface IGameUpdateReceiver {
     void turnStarted(Player player);
 
     void roundStarted();
+
 }

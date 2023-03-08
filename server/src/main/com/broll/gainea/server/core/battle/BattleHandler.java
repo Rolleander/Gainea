@@ -9,14 +9,12 @@ import com.broll.gainea.net.NT_Unit;
 import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.actions.ReactionActions;
 import com.broll.gainea.server.core.fractions.Fraction;
-import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.MapObject;
 import com.broll.gainea.server.core.objects.Monster;
 import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.server.core.processing.GameUpdateReceiverProxy;
 import com.broll.gainea.server.core.utils.GameUtils;
-import com.broll.gainea.server.core.utils.PlayerUtils;
 import com.broll.gainea.server.core.utils.ProcessingUtils;
 import com.broll.gainea.server.core.utils.UnitControl;
 
@@ -24,7 +22,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -34,20 +31,13 @@ import java.util.stream.Collectors;
 public class BattleHandler {
 
     private final static Logger Log = LoggerFactory.getLogger(BattleHandler.class);
-    private GameContainer game;
+    private final GameContainer game;
     private boolean battleActive = false;
     public final static int BATTLE_ANIMATION_DELAY = 2000;
-    private ReactionActions reactionResult;
-    private List<BattleObject> attackers;
-    private List<BattleObject> defenders;
-    private List<BattleObject> aliveAttackers;
-    private List<BattleObject> aliveDefenders;
-    private Player attackerOwner, defenderOwner;
-    private List<BattleObject> killedAttackers = new ArrayList<>();
-    private List<BattleObject> killedDefenders = new ArrayList<>();
+    private final ReactionActions reactionResult;
     private CompletableFuture<Boolean> keepAttacking;
-    private List<BattleObject> defendingArmy;
-    private Location battleLocation;
+    private RollManipulator rollManipulator;
+    private BattleContext context;
     private boolean allowRetreat = true;
 
     public BattleHandler(GameContainer gameContainer, ReactionActions reactionResult) {
@@ -64,19 +54,12 @@ public class BattleHandler {
     }
 
     public void startBattle(List<? extends BattleObject> attackers, List<? extends BattleObject> defenders, boolean allowRetreat) {
-        if (battleActive == false) {
+        if (!battleActive) {
             this.allowRetreat = allowRetreat;
-            this.attackers = new ArrayList<>(attackers);
-            this.defenders = new ArrayList<>(defenders);
-            if (this.attackers.stream().anyMatch(BattleObject::isAlive) && this.defenders.stream().anyMatch(BattleObject::isAlive)) {
-                killedDefenders.clear();
-                killedAttackers.clear();
-                battleActive = true;
+            this.context = new BattleContext(new ArrayList<>(attackers), new ArrayList<>(defenders));
+            this.rollManipulator = new RollManipulator();
+            if (context.hasSurvivingAttackers() && context.hasSurvivingDefenders()) {
                 prepareFight();
-                sendFightIntention();
-                sendFightStart();
-                ProcessingUtils.pause(BATTLE_ANIMATION_DELAY);
-                fight();
             } else {
                 Log.warn("Could not start battle because no alive attackers or defenders");
             }
@@ -85,37 +68,49 @@ public class BattleHandler {
         }
     }
 
+    private void prepareFight() {
+        Log.trace("Prepare fight");
+        battleActive = true;
+        //attackers are always of one owner
+        if (context.isNeutralAttacker()) {
+            //wild monsters are attackers, will always keep attacking
+            allowRetreat = false;
+        }
+        sendFightIntention();
+        sendFightStart();
+        ProcessingUtils.pause(BATTLE_ANIMATION_DELAY);
+        fightRound();
+    }
+
+    private void sendFightIntention() {
+        NT_Battle_Intention intention = new NT_Battle_Intention();
+        intention.fromLocation = context.getSourceLocation().getNumber();
+        intention.toLocation = context.getLocation().getNumber();
+        reactionResult.sendGameUpdate(intention);
+        ProcessingUtils.pause(BATTLE_ANIMATION_DELAY);
+    }
+
     private void sendFightStart() {
         Log.trace("Start fight");
         NT_Battle_Start start = new NT_Battle_Start();
-        start.attackers = aliveAttackers.stream().sorted(sortById()).map(BattleObject::nt).toArray(NT_Unit[]::new);
-        start.defenders = defendingArmy.stream().sorted(sortById()).map(BattleObject::nt).toArray(NT_Unit[]::new);
+        start.attackers = context.getAttackers().stream().sorted(sortById()).map(BattleObject::nt).toArray(NT_Unit[]::new);
+        start.defenders = context.getDefenders().stream().sorted(sortById()).map(BattleObject::nt).toArray(NT_Unit[]::new);
         start.allowRetreat = allowRetreat;
-        start.location = battleLocation.getNumber();
-        if (attackerOwner != null) {
-            start.attacker = attackerOwner.getServerPlayer().getId();
+        start.location = context.getLocation().getNumber();
+        game.getUpdateReceiver().battleBegin(context, rollManipulator);
+        if (!context.isNeutralAttacker()) {
+            start.attacker = context.getAttackingPlayer().getServerPlayer().getId();
         }
         reactionResult.sendGameUpdate(start);
     }
 
-    private void sendFightIntention() {
-        Location attackerSource = aliveAttackers.get(0).getLocation();
-        NT_Battle_Intention intention = new NT_Battle_Intention();
-        if (attackerOwner != null) {
-            intention.attacker = attackerOwner.getServerPlayer().getId();
-        }
-        intention.fromLocation = attackerSource.getNumber();
-        intention.toLocation = battleLocation.getNumber();
-        reactionResult.sendGameUpdate(intention);
-        ProcessingUtils.pause(BATTLE_ANIMATION_DELAY);
-    }
 
     private Comparator<BattleObject> sortById() {
         return Comparator.comparingInt(MapObject::getId);
     }
 
     public void playerReaction(Player player, NT_Battle_Reaction battle_reaction) {
-        if (attackerOwner == player && keepAttacking != null) {
+        if (context.isAttacker(player) && keepAttacking != null) {
             Log.trace("Handle battle reaction");
             keepAttacking.complete(battle_reaction.keepAttacking);
         } else {
@@ -123,46 +118,30 @@ public class BattleHandler {
         }
     }
 
-    private void prepareFight() {
-        Log.trace("Prepare fight");
-        this.aliveAttackers = attackers.stream().filter(BattleObject::isAlive).collect(Collectors.toList());
-        this.aliveDefenders = defenders.stream().filter(BattleObject::isAlive).collect(Collectors.toList());
-        //attackers are always of one owner
-        attackerOwner = PlayerUtils.getOwner(aliveAttackers);
-        if (attackerOwner == null) {
-            //wild monsters are attackers, will always keep attacking
-            allowRetreat = false;
-        }
-        //there can be defenders of multiple owners, so attack the army of a random owner first
-        Collections.shuffle(aliveDefenders);
-        defenderOwner = PlayerUtils.getOwner(aliveDefenders);
-        battleLocation = aliveDefenders.get(0).getLocation();
-        defendingArmy = aliveDefenders.stream().filter(defender -> defender.getOwner() == defenderOwner).collect(Collectors.toList());
+    private FightResult rollFight() {
+        RollResult attackerRolls = new RollResult(context, context.getAliveAttackers());
+        RollResult defenderRolls = new RollResult(context, context.getAliveDefenders());
+        rollManipulator.roundStarts(context, attackerRolls, defenderRolls);
+        return new Battle(context.getAliveAttackers(), context.getAliveDefenders(), attackerRolls, defenderRolls).fight();
     }
 
-    private void fight() {
-        Battle battle;
-        Log.info("Fight!  Attackers: (" + aliveAttackers.stream().map(it -> it.getId() + "| " + it.getName() + " " + it.getPower().getValue() + " " + it.getHealth().getValue()).collect(Collectors.joining(", ")) + ")   Defenders: (" + defendingArmy.stream().map(it -> it.getId() + "| " + it.getName() + " " + it.getPower().getValue() + " " + it.getHealth().getValue()).collect(Collectors.joining(", ")) + ")");
-        battle = new Battle(battleLocation, attackerOwner, aliveAttackers, defenderOwner, defendingArmy);
-        FightResult result = battle.fight();
+    private void logContext(String prefix) {
+        Log.info(prefix + " Attackers: (" + context.getAliveAttackers().stream().map(it -> it.getId() + "| " + it.getName() + " " + it.getPower().getValue() + " " + it.getHealth().getValue()).collect(Collectors.joining(", "))
+                + ")   Defenders: (" + context.getAliveDefenders().stream().map(it -> it.getId() + "| " + it.getName() + " " + it.getPower().getValue() + " " + it.getHealth().getValue()).collect(Collectors.joining(", ")) + ")");
+    }
+
+    private void fightRound() {
+        logContext("Fight round begin:");
+        FightResult result = rollFight();
         NT_Battle_Update update = new NT_Battle_Update();
         update.attackerRolls = result.getAttackRolls().stream().mapToInt(i -> i).toArray();
         update.defenderRolls = result.getDefenderRolls().stream().mapToInt(i -> i).toArray();
-        update.attackers = aliveAttackers.stream().sorted(sortById()).map(BattleObject::nt).toArray(NT_Unit[]::new);
-        update.defenders = defendingArmy.stream().sorted(sortById()).map(BattleObject::nt).toArray(NT_Unit[]::new);
-        Log.info("Fight result:  Attackers: (" + aliveAttackers.stream().map(it -> it.getId() + "| " + it.getName() + " " + it.getPower().getValue() + " " + it.getHealth().getValue()).collect(Collectors.joining(", ")) + ")   Defenders: (" + defendingArmy.stream().map(it -> it.getId() + "| " + it.getName() + " " + it.getPower().getValue() + " " + it.getHealth().getValue()).collect(Collectors.joining(", ")) + ")");
-        result.getDeadAttackers().forEach(unit -> {
-            aliveAttackers.remove(unit);
-            killedAttackers.add(unit);
-        });
-        result.getDeadDefenders().forEach(unit -> {
-            aliveDefenders.remove(unit);
-            defendingArmy.remove(unit);
-            killedDefenders.add(unit);
-        });
+        update.attackers = context.getAliveAttackers().stream().sorted(sortById()).map(BattleObject::nt).toArray(NT_Unit[]::new);
+        update.defenders = context.getAliveDefenders().stream().sorted(sortById()).map(BattleObject::nt).toArray(NT_Unit[]::new);
+        logContext("Fight round result:");
         int state = NT_Battle_Update.STATE_FIGHTING;
-        boolean attackersDead = aliveAttackers.isEmpty();
-        boolean defendersDead = aliveDefenders.isEmpty();
+        boolean attackersDead = context.getAliveAttackers().isEmpty();
+        boolean defendersDead = context.getAliveDefenders().isEmpty();
         if (attackersDead && defendersDead) {
             state = NT_Battle_Update.STATE_DRAW;
         } else if (attackersDead) {
@@ -193,25 +172,13 @@ public class BattleHandler {
         return BATTLE_ANIMATION_DELAY / 2 + 800 * Math.min(atkRolls, defRolls);
     }
 
-    private void fightRound() {
-        Player previousEnemy = defenderOwner;
-        prepareFight();
-        if (defenderOwner != previousEnemy) {
-            //next round is against other owner, send new battle start to clients before this round
-            sendFightStart();
-            //start next round after wait
-            ProcessingUtils.pause(BATTLE_ANIMATION_DELAY);
-        }
-        fight();
-    }
-
     private void prepareNextRound() {
         //wait for player if he wants to keep attacking
         boolean startNextRound = true;
         if (allowRetreat) {
             //disconnect check
-            if (attackerOwner != null) {
-                if (!attackerOwner.getServerPlayer().isOnline()) {
+            if (context.getAttackingPlayer() != null) {
+                if (!context.getAttackingPlayer().getServerPlayer().isOnline()) {
                     //retreat cause offline
                     Log.info("Retreat from battle because attacking player is offline");
                     battleFinished(true);
@@ -219,7 +186,7 @@ public class BattleHandler {
             }
             try {
                 Log.trace("Wait for battle reaction");
-                startNextRound = keepAttacking.get().booleanValue();
+                startNextRound = keepAttacking.get();
             } catch (InterruptedException | ExecutionException e) {
                 Log.error("Failed getting future", e);
             }
@@ -235,28 +202,28 @@ public class BattleHandler {
     }
 
     private void battleFinished(boolean retreated) {
-        BattleResult result = new BattleResult(retreated, attackers, defenders, killedAttackers, killedDefenders, battleLocation);
-        Log.info("Battle over! Surviving Attackers: (" + aliveAttackers.stream().map(it -> it.getId() + "| " + it.getName() + " " + it.getPower() + " " + it.getHealth()).collect(Collectors.joining(", ")) + ")" +
+        BattleResult result = new BattleResult(retreated, context);
+        Log.info("Battle over! Surviving Attackers: (" + result.getAliveAttackers().stream().map(it -> it.getId() + "| " + it.getName() + " " + it.getPower() + " " + it.getHealth()).collect(Collectors.joining(", ")) + ")" +
                 " Killed Attackers: (" + result.getKilledAttackers().stream().map(it -> it.getId() + "| " + it.getName() + " " + it.getPower() + " " + it.getHealth()).collect(Collectors.joining(", ")) + ")" +
-                " Surviving Defenders: (" + aliveDefenders.stream().map(it -> it.getId() + "| " + it.getName() + " " + it.getPower() + " " + it.getHealth()).collect(Collectors.joining(", ")) + ")" +
+                " Surviving Defenders: (" + result.getAliveDefenders().stream().map(it -> it.getId() + "| " + it.getName() + " " + it.getPower() + " " + it.getHealth()).collect(Collectors.joining(", ")) + ")" +
                 " Killed Defenders: (" + result.getKilledDefenders().stream().map(it -> it.getId() + "| " + it.getName() + " " + it.getPower() + " " + it.getHealth()).collect(Collectors.joining(", ")) + ")");
         battleActive = false;
         GameUpdateReceiverProxy updateReceiver = game.getUpdateReceiver();
         List<BattleObject> fallenUnits = new ArrayList<>();
-        fallenUnits.addAll(killedAttackers);
-        fallenUnits.addAll(killedDefenders);
+        fallenUnits.addAll(result.getKilledAttackers());
+        fallenUnits.addAll(result.getKilledDefenders());
         fallenUnits.forEach(unit -> GameUtils.remove(game, unit));
         fallenUnits.forEach(unit -> unit.onDeath(result));
         fallenUnits.forEach(unit -> updateReceiver.killed(unit, result));
         updateReceiver.battleResult(result);
         //if defenders lost, move surviving attackers to location
         if (result.attackersWon()) {
-            UnitControl.move(game, attackers.stream().filter(BattleObject::isAlive).collect(Collectors.toList()), battleLocation);
+            UnitControl.move(game, result.getAliveAttackers(), result.getLocation());
         }
         GameUtils.sendUpdate(game, game.nt());
         //find dead monsters to give killing player rewards
-        rewardKilledMonsters(attackerOwner, killedDefenders);
-        rewardKilledMonsters(defenderOwner, killedAttackers);
+        rewardKilledMonsters(result.getAttackingPlayer(), result.getKilledDefenders());
+        result.getDefendingPlayers().forEach(defendingPlayer -> rewardKilledMonsters(defendingPlayer, result.getKilledDefenders()));
     }
 
     private void rewardKilledMonsters(Player killer, List<BattleObject> units) {

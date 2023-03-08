@@ -1,14 +1,11 @@
 package com.broll.gainea.server.core.fractions.impl;
 
 import com.broll.gainea.server.core.actions.ActionHandlers;
-import com.broll.gainea.server.core.battle.FightingPower;
 import com.broll.gainea.server.core.cards.Card;
 import com.broll.gainea.server.core.fractions.Fraction;
 import com.broll.gainea.server.core.fractions.FractionDescription;
 import com.broll.gainea.server.core.fractions.FractionType;
-import com.broll.gainea.server.core.map.Area;
 import com.broll.gainea.server.core.map.AreaType;
-import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.Commander;
 import com.broll.gainea.server.core.objects.Monster;
@@ -16,8 +13,6 @@ import com.broll.gainea.server.core.objects.Soldier;
 import com.broll.gainea.server.core.utils.LocationUtils;
 import com.broll.gainea.server.core.utils.SelectionUtils;
 import com.broll.gainea.server.core.utils.UnitControl;
-
-import java.util.List;
 
 public class FireFraction extends Fraction {
 
@@ -46,15 +41,22 @@ public class FireFraction extends Fraction {
     }
 
     @Override
-    protected void initSoldier(Soldier soldier) {
+    public Soldier createSoldier() {
+        Soldier soldier = new Soldier(owner);
+        soldier.setStats(SOLDIER_POWER, SOLDIER_HEALTH);
         soldier.setName("Feuermagier");
         soldier.setIcon(23);
+        return soldier;
     }
 
+
     @Override
-    protected void initCommander(Commander commander) {
+    public Commander createCommander() {
+        Commander commander = new Commander(owner);
+        commander.setStats(COMMANDER_POWER, COMMANDER_HEALTH);
         commander.setName("Flammenschürer Duras");
         commander.setIcon(48);
+        return commander;
     }
 
     @Override
@@ -81,7 +83,7 @@ public class FireFraction extends Fraction {
         protected void play() {
             BattleObject unit = SelectionUtils.selectEnemyUnit(game, owner, "Welcher Einheit soll Schaden zugeführt werden?");
             if (unit != null) {
-                UnitControl.damage(game, unit,1);
+                UnitControl.damage(game, unit, 1);
             }
         }
     }

@@ -2,7 +2,6 @@ package com.broll.gainea.server.core.fractions.impl;
 
 import com.broll.gainea.misc.RandomUtils;
 import com.broll.gainea.net.NT_Unit;
-import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.battle.BattleResult;
 import com.broll.gainea.server.core.battle.FightingPower;
 import com.broll.gainea.server.core.fractions.Fraction;
@@ -14,7 +13,6 @@ import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.Commander;
 import com.broll.gainea.server.core.objects.Soldier;
 import com.broll.gainea.server.core.player.Player;
-import com.broll.gainea.server.core.processing.GameUpdateReceiverAdapter;
 import com.broll.gainea.server.core.utils.UnitControl;
 
 import java.util.List;
@@ -36,42 +34,43 @@ public class DruidsFraction extends Fraction {
     }
 
     @Override
-    public void init(GameContainer game, Player owner) {
-        super.init(game, owner);
-        game.getUpdateReceiver().register(new GameUpdateReceiverAdapter() {
-            @Override
-            public void killed(BattleObject unit, BattleResult throughBattle) {
-                if(unit.getOwner()==owner){
-                    druidDied(unit);
-                }
-            }
-        });
+    public void killed(BattleObject unit, BattleResult throughBattle) {
+        if (unit.getOwner() == owner) {
+            druidDied(unit);
+        }
     }
 
     private void druidDied(BattleObject unit) {
-        if (unit instanceof Tree == false && RandomUtils.randomBoolean(SPAWN_CHANCE)) {
+        if (!(unit instanceof Tree) && RandomUtils.randomBoolean(SPAWN_CHANCE)) {
             Tree tree = new Tree(owner);
             UnitControl.spawn(game, tree, unit.getLocation());
         }
     }
 
     @Override
-    protected void initSoldier(Soldier soldier) {
+    public Soldier createSoldier() {
+        Soldier soldier = new Soldier(owner);
+        soldier.setStats(SOLDIER_POWER, SOLDIER_HEALTH);
         soldier.setName("Druidin");
-        soldier.setType(NT_Unit.TYPE_FEMALE);
         soldier.setIcon(110);
+        soldier.setType(NT_Unit.TYPE_FEMALE);
+        return soldier;
     }
 
+
     @Override
-    protected void initCommander(Commander commander) {
+    public Commander createCommander() {
+        Commander commander = new Commander(owner);
+        commander.setStats(COMMANDER_POWER, COMMANDER_HEALTH);
         commander.setName("Druidenhaupt Zerus");
         commander.setIcon(102);
+        return commander;
     }
 
     @Override
     public FightingPower calcPower(Location location, List<BattleObject> fighters, List<BattleObject> enemies, boolean isAttacker) {
-        FightingPower power= super.calcPower(location, fighters, enemies, isAttacker);
-        if(location instanceof Ship){
+        FightingPower power = super.calcPower(location, fighters, enemies, isAttacker);
+        if (location instanceof Ship) {
             power.changeNumberPlus(-1);
         }
         return power;

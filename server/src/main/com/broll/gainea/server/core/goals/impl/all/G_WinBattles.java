@@ -26,7 +26,7 @@ public class G_WinBattles extends Goal {
 
     @Override
     public void battleResult(BattleResult result) {
-        if (result.getWinnerPlayer() == player && result.getLoserPlayer() != null) {
+        if (result.isWinner(player) && !result.isNeutralLoser()) {
             wins++;
             check();
         }

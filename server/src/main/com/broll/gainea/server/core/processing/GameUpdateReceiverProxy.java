@@ -1,6 +1,8 @@
 package com.broll.gainea.server.core.processing;
 
+import com.broll.gainea.server.core.battle.BattleContext;
 import com.broll.gainea.server.core.battle.BattleResult;
+import com.broll.gainea.server.core.battle.RollManipulator;
 import com.broll.gainea.server.core.cards.Card;
 import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.objects.BattleObject;
@@ -52,6 +54,11 @@ public class GameUpdateReceiverProxy implements IGameUpdateReceiver {
 
     private boolean isNotRemoved(IGameUpdateReceiver receiver) {
         return !removed.contains(receiver);
+    }
+
+    @Override
+    public void battleBegin(BattleContext context, RollManipulator rollManipulator) {
+        run(receiver -> receiver.battleBegin(context, rollManipulator));
     }
 
     @Override
