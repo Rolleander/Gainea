@@ -18,7 +18,8 @@ public class GuardsFraction extends Fraction {
     protected FractionDescription description() {
         FractionDescription desc = new FractionDescription("");
         desc.plus("Als Verteidiger ist die niedrigste Würfelzahl 3");
-        desc.contra("Als Angreifer höchste Würfelzahl 5");
+        desc.contra("Als Angreifer Zahl -1");
+        //todo buff
         return desc;
     }
 
@@ -26,7 +27,7 @@ public class GuardsFraction extends Fraction {
     public FightingPower calcFightingPower(Soldier soldier, BattleContext context) {
         FightingPower power = super.calcFightingPower(soldier, context);
         if (context.isAttacking(soldier)) {
-            power.withHighestNumber(5);
+            power.changeNumberPlus(-1);
         } else {
             power.withLowestNumber(3);
         }

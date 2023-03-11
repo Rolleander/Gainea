@@ -230,7 +230,7 @@ public abstract class Unit extends MapObject {
 
     @Override
     public String toString() {
-        return "BattleObject{" +
+        return "Unit{" +
                 "id=" + getId() +
                 ", name='" + getName() +
                 ", " + getPower() + "/" + getHealth() +

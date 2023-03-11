@@ -2,18 +2,16 @@ package com.broll.gainea.server.core.fractions.impl;
 
 import com.broll.gainea.misc.RandomUtils;
 import com.broll.gainea.server.core.actions.ActionHandlers;
+import com.broll.gainea.server.core.battle.BattleContext;
 import com.broll.gainea.server.core.battle.FightingPower;
 import com.broll.gainea.server.core.fractions.Fraction;
 import com.broll.gainea.server.core.fractions.FractionDescription;
 import com.broll.gainea.server.core.fractions.FractionType;
-import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.objects.Commander;
 import com.broll.gainea.server.core.objects.Soldier;
 import com.broll.gainea.server.core.objects.Unit;
 import com.broll.gainea.server.core.objects.monster.Monster;
 import com.broll.gainea.server.core.utils.UnitControl;
-
-import java.util.List;
 
 public class MonkFraction extends Fraction {
     public MonkFraction() {
@@ -24,15 +22,15 @@ public class MonkFraction extends Fraction {
     protected FractionDescription description() {
         FractionDescription desc = new FractionDescription("");
         desc.plus("Jede Runde erhält eine Einheit +1 Leben");
-        desc.contra("Gegen wilde Monster -2 Würfel");
+        desc.contra("Gegen Monster -1 Zahl");
         return desc;
     }
 
     @Override
-    public FightingPower calcPower(Location location, List<Unit> fighters, List<Unit> enemies, boolean isAttacker) {
-        FightingPower power = super.calcPower(location, fighters, enemies, isAttacker);
-        if (enemies.stream().map(it -> it instanceof Monster).reduce(true, Boolean::logicalAnd)) {
-            power.changeDiceNumber(-2);
+    public FightingPower calcFightingPower(Soldier soldier, BattleContext context) {
+        FightingPower power = super.calcFightingPower(soldier, context);
+        if (context.getOpposingFightingArmy(soldier).stream().anyMatch(it -> it instanceof Monster)) {
+            power.changeNumberPlus(-1);
         }
         return power;
     }

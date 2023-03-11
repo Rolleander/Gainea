@@ -1,23 +1,26 @@
 package com.broll.gainea.server.core.fractions.impl;
 
 import com.broll.gainea.misc.RandomUtils;
+import com.broll.gainea.server.core.battle.BattleContext;
 import com.broll.gainea.server.core.battle.BattleResult;
 import com.broll.gainea.server.core.battle.FightingPower;
 import com.broll.gainea.server.core.fractions.Fraction;
 import com.broll.gainea.server.core.fractions.FractionDescription;
 import com.broll.gainea.server.core.fractions.FractionType;
-import com.broll.gainea.server.core.map.Area;
 import com.broll.gainea.server.core.map.AreaType;
 import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.objects.Commander;
 import com.broll.gainea.server.core.objects.Soldier;
 import com.broll.gainea.server.core.objects.Unit;
+import com.broll.gainea.server.core.objects.monster.Monster;
+import com.broll.gainea.server.core.utils.LocationUtils;
 import com.broll.gainea.server.core.utils.UnitControl;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ShadowFraction extends Fraction {
-    private static float SUMMON_CHANCE = 0.45f;
+    private static float SUMMON_CHANCE = 0.35f;
 
     public ShadowFraction() {
         super(FractionType.SHADOW);
@@ -26,17 +29,18 @@ public class ShadowFraction extends Fraction {
     @Override
     protected FractionDescription description() {
         FractionDescription desc = new FractionDescription("");
-        desc.plus("Bei siegreichen Kämpfen können gefallene Feinde zu Skeletten (1/1) werden");
-        desc.plus("In Sümpfen +1 Würfel");
-        desc.contra("Auf Su");
+        desc.plus("Bei Kämpfen können gefallene Feinde zu Skeletten (1/1) werden");
+        desc.contra("Erhält keine Belohnung für besiegte Monster auf Steppen");
+        desc.contra("Skelette haben -1 Zahl");
         return desc;
     }
 
     @Override
-    protected void powerMutatorArea(FightingPower power, Area area) {
-        if (area.getType() == AreaType.PLAINS) {
-            power.changeDiceNumber(-2);
+    public void killedMonster(Monster monster) {
+        if (LocationUtils.isAreaType(monster.getLocation(), AreaType.PLAINS)) {
+            return;
         }
+        super.killedMonster(monster);
     }
 
     @Override
@@ -58,7 +62,7 @@ public class ShadowFraction extends Fraction {
         return commander;
     }
 
-    private void afterAttack(List<Unit> killedEnemies, Location location) {
+    private void summonSkeletons(List<Unit> killedEnemies, Location location) {
         killedEnemies.forEach(it -> {
             if (RandomUtils.randomBoolean(SUMMON_CHANCE)) {
                 summon(location);
@@ -67,7 +71,13 @@ public class ShadowFraction extends Fraction {
     }
 
     private void summon(Location location) {
-        Soldier skeleton = createSoldier();
+        Soldier skeleton = new Soldier(owner) {
+            @Override
+            public FightingPower calcFightingPower(BattleContext context) {
+                return super.calcFightingPower(context).changeNumberPlus(-1);
+            }
+        };
+        skeleton.setStats(SOLDIER_POWER, SOLDIER_HEALTH);
         skeleton.setIcon(94);
         skeleton.setName("Skelett");
         UnitControl.spawn(game, skeleton, location);
@@ -75,8 +85,13 @@ public class ShadowFraction extends Fraction {
 
     @Override
     public void battleResult(BattleResult result) {
-        if (result.isWinner(ShadowFraction.this.owner)) {
-            afterAttack(result.getLoserDeadUnits(), result.getLocation());
+        if (result.isParticipating(owner)) {
+            Location spawnLocation = result.getLocation();
+            if (result.isAttacker(owner) && result.isLoser(owner)) {
+                spawnLocation = result.getSourceLocation();
+            }
+            List<Unit> killedEnemies = result.getOpposingUnits(owner).stream().filter(Unit::isDead).collect(Collectors.toList());
+            summonSkeletons(killedEnemies, spawnLocation);
         }
     }
 

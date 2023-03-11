@@ -27,7 +27,7 @@ public class PoacherFraction extends Fraction {
     @Override
     public FightingPower calcFightingPower(Soldier soldier, BattleContext context) {
         FightingPower power = super.calcFightingPower(soldier, context);
-        if (!context.isNeutralParticipant()) {
+        if (context.getOpposingFightingArmy(soldier).stream().noneMatch(it -> it instanceof Monster)) {
             power.changeNumberPlus(-1);
         }
         return power;

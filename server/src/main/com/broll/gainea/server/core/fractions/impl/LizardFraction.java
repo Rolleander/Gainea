@@ -25,7 +25,7 @@ public class LizardFraction extends Fraction {
         FractionDescription desc = new FractionDescription("");
         desc.plus("Einheiten können Laufen und Angreifen im gleichen Zug");
         desc.contra("Erhält nur jeden zweiten Zug einen Soldat");
-        desc.contra("Im Schnee -1 Würfel");
+        desc.contra("Im Schnee -1 Zahl");
         return desc;
     }
 
@@ -42,7 +42,7 @@ public class LizardFraction extends Fraction {
     @Override
     protected void powerMutatorArea(FightingPower power, Area area) {
         if (LocationUtils.isAreaType(area, AreaType.SNOW)) {
-            power.changeDiceNumber(-1);
+            power.changeNumberPlus(-1);
         }
     }
 

@@ -33,8 +33,7 @@ public class BarbarianFraction extends Fraction {
         desc.contra("-1 Zahl, wenn keine Barbarenrkieger im Kampf beteiligt sind");
         return desc;
     }
-
-
+    
     @Override
     public FightingPower calcFightingPower(Soldier soldier, BattleContext context) {
         FightingPower power = super.calcFightingPower(soldier, context);

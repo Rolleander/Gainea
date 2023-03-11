@@ -24,9 +24,7 @@ public class KnightsFraction extends Fraction {
         FractionDescription desc = new FractionDescription("");
         desc.plus("In Unterzahl +1 Zahl");
         desc.plus("Im 1v1 +2 Zahl");
-        desc.contra("Auf Sümpfen -1 Würfel");
-        desc.contra("Auf Seen -1 Würfel");
-        desc.contra("Auf Bergen -1 Würfel");
+        desc.contra("Auf Sümpfen und Seen -1 Zahl");
         return desc;
     }
 
@@ -42,9 +40,8 @@ public class KnightsFraction extends Fraction {
             //1v1  +2 Z
             power.changeNumberPlus(2);
         }
-        if (LocationUtils.isAreaType(context.getLocation(), AreaType.BOG, AreaType.LAKE, AreaType.MOUNTAIN)) {
-            // -1 W
-            power.changeDiceNumber(-1);
+        if (LocationUtils.isAreaType(context.getLocation(), AreaType.BOG, AreaType.LAKE)) {
+            power.changeNumberPlus(-1);
         }
         return power;
     }
