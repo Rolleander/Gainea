@@ -11,7 +11,7 @@ import com.broll.gainea.server.core.actions.ReactionActions;
 import com.broll.gainea.server.core.fractions.Fraction;
 import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.MapObject;
-import com.broll.gainea.server.core.objects.Monster;
+import com.broll.gainea.server.core.objects.monster.Monster;
 import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.server.core.processing.GameUpdateReceiverProxy;
 import com.broll.gainea.server.core.utils.GameUtils;

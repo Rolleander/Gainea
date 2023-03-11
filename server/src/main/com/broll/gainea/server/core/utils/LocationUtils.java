@@ -15,7 +15,7 @@ import com.broll.gainea.server.core.map.MapContainer;
 import com.broll.gainea.server.core.map.Ship;
 import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.MapObject;
-import com.broll.gainea.server.core.objects.Monster;
+import com.broll.gainea.server.core.objects.monster.Monster;
 import com.broll.gainea.server.core.player.Player;
 
 import org.apache.commons.lang3.ArrayUtils;

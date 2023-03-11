@@ -7,8 +7,8 @@ import com.broll.gainea.server.core.fractions.FractionType;
 import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.Commander;
-import com.broll.gainea.server.core.objects.Monster;
 import com.broll.gainea.server.core.objects.Soldier;
+import com.broll.gainea.server.core.objects.monster.Monster;
 import com.broll.gainea.server.core.utils.PlayerUtils;
 import com.broll.gainea.server.core.utils.UnitControl;
 
@@ -48,7 +48,7 @@ public class PoacherFraction extends Fraction {
             UnitControl.spawn(game, recruited, recruited.getLocation());
         }
     }
-    
+
     @Override
     public Soldier createSoldier() {
         Soldier soldier = new Soldier(owner);

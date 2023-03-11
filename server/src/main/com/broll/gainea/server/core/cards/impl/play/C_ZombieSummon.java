@@ -1,9 +1,9 @@
 package com.broll.gainea.server.core.cards.impl.play;
 
 import com.broll.gainea.server.core.cards.Card;
-import com.broll.gainea.server.core.objects.Monster;
-import com.broll.gainea.server.core.objects.MonsterActivity;
-import com.broll.gainea.server.core.objects.MonsterBehavior;
+import com.broll.gainea.server.core.objects.monster.Monster;
+import com.broll.gainea.server.core.objects.monster.MonsterActivity;
+import com.broll.gainea.server.core.objects.monster.MonsterBehavior;
 import com.broll.gainea.server.core.utils.StreamUtils;
 import com.broll.gainea.server.core.utils.UnitControl;
 
@@ -24,7 +24,7 @@ public class C_ZombieSummon extends Card {
 
     @Override
     protected void play() {
-        StreamUtils.safeForEach(owner.getUnits().stream(), unit->{
+        StreamUtils.safeForEach(owner.getUnits().stream(), unit -> {
             for (int i = 0; i < unit.getKills(); i++) {
                 Zombie zombie = new Zombie();
                 zombie.setOwner(owner);

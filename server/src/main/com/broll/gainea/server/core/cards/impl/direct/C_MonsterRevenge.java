@@ -1,9 +1,9 @@
 package com.broll.gainea.server.core.cards.impl.direct;
 
 import com.broll.gainea.server.core.cards.DirectlyPlayedCard;
-import com.broll.gainea.server.core.objects.Monster;
 import com.broll.gainea.server.core.objects.buffs.BuffType;
 import com.broll.gainea.server.core.objects.buffs.IntBuff;
+import com.broll.gainea.server.core.objects.monster.Monster;
 import com.broll.gainea.server.core.utils.UnitControl;
 
 import java.util.List;

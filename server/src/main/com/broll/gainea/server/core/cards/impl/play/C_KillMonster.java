@@ -2,8 +2,8 @@ package com.broll.gainea.server.core.cards.impl.play;
 
 import com.broll.gainea.server.core.cards.Card;
 import com.broll.gainea.server.core.objects.BattleObject;
-import com.broll.gainea.server.core.objects.GodDragon;
-import com.broll.gainea.server.core.objects.Monster;
+import com.broll.gainea.server.core.objects.monster.GodDragon;
+import com.broll.gainea.server.core.objects.monster.Monster;
 import com.broll.gainea.server.core.utils.SelectionUtils;
 import com.broll.gainea.server.core.utils.UnitControl;
 

@@ -10,10 +10,10 @@ import com.broll.gainea.server.core.map.Area;
 import com.broll.gainea.server.core.map.AreaType;
 import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.Commander;
-import com.broll.gainea.server.core.objects.Monster;
 import com.broll.gainea.server.core.objects.Soldier;
 import com.broll.gainea.server.core.objects.buffs.BuffType;
 import com.broll.gainea.server.core.objects.buffs.IntBuff;
+import com.broll.gainea.server.core.objects.monster.Monster;
 import com.broll.gainea.server.core.utils.UnitControl;
 
 import java.util.ArrayList;

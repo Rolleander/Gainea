@@ -8,6 +8,9 @@ import com.broll.gainea.server.core.objects.buffs.BuffableInt;
 import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.server.core.processing.GameUpdateReceiverAdapter;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 public abstract class MapObject extends GameUpdateReceiverAdapter {
     protected GameContainer game;
 
@@ -109,6 +112,10 @@ public abstract class MapObject extends GameUpdateReceiverAdapter {
         return true;
     }
 
+    public List<Location> getMoveTargets() {
+        return location.getConnectedLocations().stream().filter(this::canMoveTo).collect(Collectors.toList());
+    }
+
     public NT_BoardObject nt() {
         NT_BoardObject object = new NT_BoardObject();
         fillObject(object);
@@ -137,4 +144,6 @@ public abstract class MapObject extends GameUpdateReceiverAdapter {
                 ", location=" + location + '\'' +
                 '}';
     }
+
+
 }

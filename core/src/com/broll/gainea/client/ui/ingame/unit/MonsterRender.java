@@ -9,7 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.broll.gainea.Gainea;
 import com.broll.gainea.client.ui.ingame.map.MapObjectRender;
 import com.broll.gainea.net.NT_Monster;
-import com.broll.gainea.server.core.objects.MonsterBehavior;
+import com.broll.gainea.server.core.objects.monster.MonsterBehavior;
 
 public class MonsterRender extends UnitRender {
     private TextureRegion starPlate;
@@ -37,18 +37,17 @@ public class MonsterRender extends UnitRender {
             batch.draw(starPlate, getX() - MapObjectRender.R - 26, getY() - MapObjectRender.R + 48);
         }
         super.draw(batch, parentAlpha);
-        NT_Monster monster = (NT_Monster)getUnit();
+        NT_Monster monster = (NT_Monster) getUnit();
         MonsterBehavior behavior = MonsterBehavior.values()[monster.behavior];
-        if(shouldDrawPlate() && behavior != MonsterBehavior.RESIDENT){
-            batch.draw(bubble, getX() - 18, getY()-MapObjectRender.R - 16);
+        if (shouldDrawPlate() && behavior != MonsterBehavior.RESIDENT) {
+            batch.draw(bubble, getX() - 18, getY() - MapObjectRender.R - 16);
             int timer = monster.actionTimer;
-            if(timer<=1){
+            if (timer <= 1) {
                 numberLabel.setStyle(redStyle);
-            }
-            else{
+            } else {
                 numberLabel.setStyle(timerStyle);
             }
-            numberLabel.setPosition(getX() -6, getY()-MapObjectRender.R +3);
+            numberLabel.setPosition(getX() - 6, getY() - MapObjectRender.R + 3);
             numberLabel.setText("" + timer);
             numberLabel.draw(batch, parentAlpha);
         }

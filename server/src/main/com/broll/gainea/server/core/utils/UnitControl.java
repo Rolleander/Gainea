@@ -1,7 +1,7 @@
 package com.broll.gainea.server.core.utils;
 
-import com.broll.gainea.net.NT_Event;
 import com.broll.gainea.net.NT_BoardObject;
+import com.broll.gainea.net.NT_Event;
 import com.broll.gainea.net.NT_Event_FocusObject;
 import com.broll.gainea.net.NT_Event_FocusObjects;
 import com.broll.gainea.net.NT_Event_MovedObject;
@@ -12,13 +12,12 @@ import com.broll.gainea.server.core.map.Area;
 import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.MapObject;
-import com.broll.gainea.server.core.objects.Monster;
+import com.broll.gainea.server.core.objects.monster.Monster;
 import com.broll.gainea.server.core.player.Player;
+import com.google.common.collect.Lists;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.common.collect.Lists;
 
 import java.util.Collections;
 import java.util.Iterator;
@@ -76,7 +75,7 @@ public class UnitControl {
         });
     }
 
-    public static void update(GameContainer game,  List<? extends MapObject> objects){
+    public static void update(GameContainer game, List<? extends MapObject> objects) {
         NT_Event_UpdateObjects nt = new NT_Event_UpdateObjects();
         nt.objects = objects.stream().map(MapObject::nt).toArray(NT_BoardObject[]::new);
         GameUtils.sendUpdate(game, nt);

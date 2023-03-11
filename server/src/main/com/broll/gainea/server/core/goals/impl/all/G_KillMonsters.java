@@ -5,11 +5,9 @@ import com.broll.gainea.server.core.goals.Goal;
 import com.broll.gainea.server.core.goals.GoalDifficulty;
 import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.objects.MapObject;
-import com.broll.gainea.server.core.objects.Monster;
+import com.broll.gainea.server.core.objects.monster.Monster;
 import com.broll.gainea.server.core.player.Player;
-import com.broll.gainea.server.core.utils.LocationUtils;
 
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -46,10 +44,10 @@ public class G_KillMonsters extends Goal {
     @Override
     public void botStrategy(GoalStrategy strategy) {
         strategy.setSpreadUnits(false);
-        strategy.setPrepareStrategy(()->{
+        strategy.setPrepareStrategy(() -> {
             Set<Location> locations = game.getObjects().stream().filter(it -> it instanceof Monster).map(MapObject::getLocation).collect(Collectors.toSet());
             strategy.updateTargets(locations);
-            strategy.setRequiredUnits(starsTarget-stars);
+            strategy.setRequiredUnits(starsTarget - stars);
         });
     }
 }

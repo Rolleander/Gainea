@@ -1,9 +1,9 @@
-package com.broll.gainea.server.core.objects;
+package com.broll.gainea.server.core.objects.monster;
 
 import com.broll.gainea.misc.RandomUtils;
 import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.map.Location;
-import com.broll.gainea.server.core.map.Ship;
+import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.utils.LocationUtils;
 import com.broll.gainea.server.core.utils.UnitControl;
 import com.google.common.collect.Lists;
@@ -13,17 +13,17 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public enum MonsterBehavior {
-    RESIDENT("Sesshaft",(game, monster) -> {
+    RESIDENT("Sesshaft", (game, monster) -> {
     }),
-    RANDOM("Wild",(game, monster) -> {
+    RANDOM("Wild", (game, monster) -> {
         Location target = RandomUtils.pickRandom(getPossibleTargets(monster).collect(Collectors.toList()));
         if (target != null) {
             UnitControl.conquer(game, Lists.newArrayList(monster), target);
         }
     }),
-    AGGRESSIVE("Aggressiv",(game, monster) -> {
+    AGGRESSIVE("Aggressiv", (game, monster) -> {
         Location target = RandomUtils.pickRandom(getPossibleTargets(monster).filter(it -> !it.isFree() &&
-           monster.getBattleStrength() > LocationUtils.getUnits(it).stream().map(BattleObject::getBattleStrength).reduce(0, Integer::sum)
+                monster.getBattleStrength() > LocationUtils.getUnits(it).stream().map(BattleObject::getBattleStrength).reduce(0, Integer::sum)
         ).collect(Collectors.toList()));
         if (target != null) {
             UnitControl.conquer(game, Lists.newArrayList(monster), target);
@@ -31,13 +31,13 @@ public enum MonsterBehavior {
             RANDOM.doAction(game, monster);
         }
     }),
-    FLEEING("Scheu",(game, monster) -> {
+    FLEEING("Scheu", (game, monster) -> {
         Location target = RandomUtils.pickRandom(getPossibleTargets(monster).filter(Location::isFree).collect(Collectors.toList()));
         if (target != null) {
             UnitControl.move(game, monster, target);
         }
     }),
-    FRIENDLY("Freundlich",(game, monster) -> {
+    FRIENDLY("Freundlich", (game, monster) -> {
         Location target = RandomUtils.pickRandom(getPossibleTargets(monster).collect(Collectors.toList()));
         if (target != null) {
             UnitControl.move(game, monster, target);
@@ -61,7 +61,7 @@ public enum MonsterBehavior {
     }
 
     private static Stream<Location> getPossibleTargets(Monster monster) {
-        return monster.getLocation().getWalkableNeighbours().stream().filter(it -> !(it instanceof Ship));
+        return monster.getMoveTargets().stream();
     }
 
 }

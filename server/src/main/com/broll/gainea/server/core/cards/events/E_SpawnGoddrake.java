@@ -3,7 +3,7 @@ package com.broll.gainea.server.core.cards.events;
 import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.cards.EventCard;
 import com.broll.gainea.server.core.map.Location;
-import com.broll.gainea.server.core.objects.GodDragon;
+import com.broll.gainea.server.core.objects.monster.GodDragon;
 import com.broll.gainea.server.core.utils.LocationUtils;
 import com.broll.gainea.server.core.utils.UnitControl;
 

@@ -5,6 +5,7 @@ import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.server.core.utils.PlayerUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -67,22 +68,40 @@ public class BattleContext {
         return !getAliveDefenders().isEmpty();
     }
 
-    public List<BattleObject> getArmy(BattleObject unit) {
+    public List<BattleObject> getFightingMates(BattleObject unit) {
         if (isAttacking(unit)) {
             return getAliveAttackers();
         } else if (isDefending(unit)) {
             return getAliveDefenders();
         }
-        return null;
+        return new ArrayList<>();
     }
 
-    public List<BattleObject> getOpposingArmy(BattleObject unit) {
+    public List<BattleObject> getUnits(Player player) {
+        if (isAttacker(player)) {
+            return attackers.stream().filter(it -> it.getOwner() == player).collect(Collectors.toList());
+        } else if (isDefender(player)) {
+            return defenders.stream().filter(it -> it.getOwner() == player).collect(Collectors.toList());
+        }
+        return new ArrayList<>();
+    }
+
+    public List<BattleObject> getOpposingUnits(Player player) {
+        if (isAttacker(player)) {
+            return getDefenders();
+        } else if (isDefender(player)) {
+            return getAttackers();
+        }
+        return new ArrayList<>();
+    }
+
+    public List<BattleObject> getOpposingFightingMates(BattleObject unit) {
         if (isAttacking(unit)) {
             return getAliveDefenders();
         } else if (isDefending(unit)) {
             return getAliveAttackers();
         }
-        return null;
+        return new ArrayList<>();
     }
 
     public boolean isParticipating(Player player) {
@@ -116,7 +135,7 @@ public class BattleContext {
     public boolean isNeutralParticipant() {
         return isNeutralAttacker() || isNeutralDefender();
     }
-    
+
     public Player getAttackingPlayer() {
         return attackingPlayer;
     }

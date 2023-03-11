@@ -7,10 +7,12 @@ import com.broll.gainea.server.core.goals.GoalDifficulty;
 import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.monster.Monster;
 
-public class G_KillStrongMonster extends Goal {
+public class G_KillStrongMonster2 extends Goal {
 
-    public G_KillStrongMonster() {
-        super(GoalDifficulty.MEDIUM, "Besiege ein Monster mit 4 oder mehr Sternen mit nur einer Einheit");
+    private final static int KILLS = 4;
+
+    public G_KillStrongMonster2() {
+        super(GoalDifficulty.EASY, "Besiege ein Monster mit " + KILLS + " oder mehr Kills.");
     }
 
     @Override
@@ -23,7 +25,7 @@ public class G_KillStrongMonster extends Goal {
     private boolean isTarget(BattleObject unit) {
         if (unit instanceof Monster) {
             Monster monster = (Monster) unit;
-            return monster.getStars() >= 4 && unit.isDead();
+            return monster.getKills() >= KILLS && unit.isDead();
         }
         return false;
     }

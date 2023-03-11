@@ -1,4 +1,4 @@
-package com.broll.gainea.server.core.objects;
+package com.broll.gainea.server.core.objects.monster;
 
 import com.broll.gainea.server.core.battle.BattleResult;
 

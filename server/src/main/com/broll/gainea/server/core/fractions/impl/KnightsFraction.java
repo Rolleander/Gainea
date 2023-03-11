@@ -33,8 +33,8 @@ public class KnightsFraction extends Fraction {
     @Override
     public FightingPower calcFightingPower(Soldier soldier, BattleContext context) {
         FightingPower power = super.calcFightingPower(soldier, context);
-        List<BattleObject> army = context.getArmy(soldier);
-        List<BattleObject> opponents = context.getOpposingArmy(soldier);
+        List<BattleObject> army = context.getFightingMates(soldier);
+        List<BattleObject> opponents = context.getOpposingFightingMates(soldier);
         if (army.size() < opponents.size()) {
             // smaller army +1 Z
             power.changeNumberPlus(1);

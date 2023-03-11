@@ -5,8 +5,8 @@ import com.broll.gainea.server.core.bot.strategy.GoalStrategy;
 import com.broll.gainea.server.core.goals.Goal;
 import com.broll.gainea.server.core.goals.GoalDifficulty;
 import com.broll.gainea.server.core.map.Location;
-import com.broll.gainea.server.core.objects.GodDragon;
 import com.broll.gainea.server.core.objects.MapObject;
+import com.broll.gainea.server.core.objects.monster.GodDragon;
 import com.google.common.collect.Sets;
 
 import java.util.HashSet;

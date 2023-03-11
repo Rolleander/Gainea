@@ -1,11 +1,14 @@
-package com.broll.gainea.server.core.objects;
+package com.broll.gainea.server.core.objects.monster;
 
 import com.broll.gainea.net.NT_Monster;
+import com.broll.gainea.server.core.map.Location;
+import com.broll.gainea.server.core.objects.BattleObject;
 
 public class Monster extends BattleObject {
 
     private MonsterBehavior behavior = MonsterBehavior.RESIDENT;
     private MonsterActivity activity = MonsterActivity.SOMETIMES;
+    private MonsterMotion motion = MonsterMotion.TERRESTRIAL;
     private int actionTimer = NT_Monster.NO_ACTION_TIMER;
 
     public Monster() {
@@ -18,6 +21,10 @@ public class Monster extends BattleObject {
 
     public void setBehavior(MonsterBehavior behavior) {
         this.behavior = behavior;
+    }
+
+    public void setMotion(MonsterMotion motion) {
+        this.motion = motion;
     }
 
     public void setActivity(MonsterActivity activity) {
@@ -48,6 +55,11 @@ public class Monster extends BattleObject {
         }
     }
 
+    @Override
+    public boolean canMoveTo(Location to) {
+        return motion.canMoveTo(to);
+    }
+
     protected boolean isBehaviorActive() {
         if (owner == null) {
             return true;
@@ -70,6 +82,5 @@ public class Monster extends BattleObject {
     public static int stars(int power, int health) {
         return (power + health) / 2;
     }
-
 
 }

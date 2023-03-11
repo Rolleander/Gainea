@@ -2,9 +2,9 @@ package com.broll.gainea.server.core.cards.impl.play;
 
 import com.broll.gainea.server.core.cards.Card;
 import com.broll.gainea.server.core.map.Location;
-import com.broll.gainea.server.core.objects.GodDragon;
 import com.broll.gainea.server.core.objects.MapObject;
-import com.broll.gainea.server.core.objects.Monster;
+import com.broll.gainea.server.core.objects.monster.GodDragon;
+import com.broll.gainea.server.core.objects.monster.Monster;
 import com.broll.gainea.server.core.utils.SelectionUtils;
 import com.broll.gainea.server.core.utils.UnitControl;
 
@@ -24,15 +24,15 @@ public class C_MonsterRecruit extends Card {
         return !getMonsterLocations().isEmpty();
     }
 
-    private boolean validMonster(MapObject object){
+    private boolean validMonster(MapObject object) {
         return object instanceof Monster && object.getOwner() == null && !(object instanceof GodDragon);
     }
 
-    private Collection<Location> getMonsterLocations(){
+    private Collection<Location> getMonsterLocations() {
         Set<Location> monsterLocations = new HashSet<>();
         owner.getControlledLocations().forEach(location ->
                 location.getConnectedLocations().stream().
-                        filter(it->it.getInhabitants().stream().anyMatch(this::validMonster))
+                        filter(it -> it.getInhabitants().stream().anyMatch(this::validMonster))
                         .forEach(monsterLocations::add)
         );
         return monsterLocations;

@@ -1,15 +1,7 @@
 package com.broll.gainea.server.core.cards.impl.direct;
 
-import com.broll.gainea.misc.RandomUtils;
 import com.broll.gainea.server.core.cards.DirectlyPlayedCard;
-import com.broll.gainea.server.core.map.Location;
-import com.broll.gainea.server.core.objects.Commander;
-import com.broll.gainea.server.core.objects.Monster;
-import com.broll.gainea.server.core.utils.LocationUtils;
-import com.broll.gainea.server.core.utils.PlayerUtils;
-import com.broll.gainea.server.core.utils.UnitControl;
-
-import java.util.List;
+import com.broll.gainea.server.core.objects.monster.Monster;
 
 public class C_Phoenix extends DirectlyPlayedCard {
 
