@@ -3,7 +3,7 @@ package com.broll.gainea.server.core.cards.impl.play;
 import com.broll.gainea.server.core.cards.Card;
 import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.map.Ship;
-import com.broll.gainea.server.core.objects.BattleObject;
+import com.broll.gainea.server.core.objects.Unit;
 import com.broll.gainea.server.core.utils.LocationUtils;
 import com.broll.gainea.server.core.utils.PlayerUtils;
 import com.broll.gainea.server.core.utils.UnitControl;
@@ -27,7 +27,7 @@ public class C_Tunnel extends Card {
     @Override
     protected void play() {
         Location from = selectHandler.selectLocation("Wählt eine Truppe", owner.getControlledLocations());
-        List<BattleObject> units = PlayerUtils.getUnits(owner, from);
+        List<Unit> units = PlayerUtils.getUnits(owner, from);
         List<Location> targets = LocationUtils.getWalkableLocations(units.get(0), from, DISTANCE).stream()
                 .filter(it -> it.isFree() && !(it instanceof Ship)).collect(Collectors.toList());
         Location to = selectHandler.selectLocation("Wählt das Reiseziel", targets);

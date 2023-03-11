@@ -6,7 +6,7 @@ import com.broll.gainea.server.core.bot.strategy.GoalStrategy;
 import com.broll.gainea.server.core.goals.Goal;
 import com.broll.gainea.server.core.goals.GoalDifficulty;
 import com.broll.gainea.server.core.map.Continent;
-import com.broll.gainea.server.core.objects.BattleObject;
+import com.broll.gainea.server.core.objects.Unit;
 import com.broll.gainea.server.core.objects.monster.Monster;
 import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.server.core.utils.LocationUtils;
@@ -42,7 +42,7 @@ public class G_KillAllMonsters extends Goal {
 
     private int getMonsterCount() {
         return (int) continent.getAreas().stream().flatMap(it -> LocationUtils.getMonsters(it).stream())
-                .filter(BattleObject::isAlive).count();
+                .filter(Unit::isAlive).count();
     }
 
     @Override
@@ -53,7 +53,7 @@ public class G_KillAllMonsters extends Goal {
     }
 
     @Override
-    public void killed(BattleObject unit, BattleResult throughBattle) {
+    public void killed(Unit unit, BattleResult throughBattle) {
         if (unit instanceof Monster && unit.getOwner() == null) {
             check();
         }

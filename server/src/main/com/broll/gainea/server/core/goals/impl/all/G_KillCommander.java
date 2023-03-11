@@ -5,9 +5,9 @@ import com.broll.gainea.server.core.bot.strategy.GoalStrategy;
 import com.broll.gainea.server.core.goals.Goal;
 import com.broll.gainea.server.core.goals.GoalDifficulty;
 import com.broll.gainea.server.core.map.Location;
-import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.Commander;
 import com.broll.gainea.server.core.objects.MapObject;
+import com.broll.gainea.server.core.objects.Unit;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -19,7 +19,7 @@ public class G_KillCommander extends Goal {
     }
 
     @Override
-    public void killed(BattleObject unit, BattleResult throughBattle) {
+    public void killed(Unit unit, BattleResult throughBattle) {
         if (throughBattle != null) {
             if (throughBattle.isAttacker(player) && throughBattle.getDefenders().stream().anyMatch(it -> it instanceof Commander && it.isDead())) {
                 success();

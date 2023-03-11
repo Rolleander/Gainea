@@ -5,8 +5,8 @@ import com.broll.gainea.server.core.battle.BattleResult;
 import com.broll.gainea.server.core.battle.RollManipulator;
 import com.broll.gainea.server.core.cards.Card;
 import com.broll.gainea.server.core.map.Location;
-import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.MapObject;
+import com.broll.gainea.server.core.objects.Unit;
 import com.broll.gainea.server.core.player.Player;
 
 import java.util.List;
@@ -23,9 +23,9 @@ public interface IGameUpdateReceiver {
 
     void spawned(MapObject object, Location location);
 
-    void damaged(BattleObject unit, int damage);
+    void damaged(Unit unit, int damage);
 
-    void killed(BattleObject unit, BattleResult throughBattle);
+    void killed(Unit unit, BattleResult throughBattle);
 
     void earnedStars(Player player, int stars);
 

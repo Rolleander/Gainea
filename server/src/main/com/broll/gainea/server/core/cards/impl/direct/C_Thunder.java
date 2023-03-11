@@ -1,7 +1,7 @@
 package com.broll.gainea.server.core.cards.impl.direct;
 
 import com.broll.gainea.server.core.cards.DirectlyPlayedCard;
-import com.broll.gainea.server.core.objects.BattleObject;
+import com.broll.gainea.server.core.objects.Unit;
 import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.server.core.utils.GameUtils;
 import com.broll.gainea.server.core.utils.UnitControl;
@@ -20,7 +20,7 @@ public class C_Thunder extends DirectlyPlayedCard {
 
     @Override
     protected void play() {
-        List<BattleObject> units = new ArrayList<>();
+        List<Unit> units = new ArrayList<>();
         units.addAll(GameUtils.getUnits(game.getObjects()));
         game.getActivePlayers().stream().map(Player::getUnits).forEach(units::addAll);
         Collections.shuffle(units);

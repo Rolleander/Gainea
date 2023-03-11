@@ -2,9 +2,9 @@ package com.broll.gainea.server.core.objects.monster;
 
 import com.broll.gainea.net.NT_Monster;
 import com.broll.gainea.server.core.map.Location;
-import com.broll.gainea.server.core.objects.BattleObject;
+import com.broll.gainea.server.core.objects.Unit;
 
-public class Monster extends BattleObject {
+public class Monster extends Unit {
 
     private MonsterBehavior behavior = MonsterBehavior.RESIDENT;
     private MonsterActivity activity = MonsterActivity.SOMETIMES;

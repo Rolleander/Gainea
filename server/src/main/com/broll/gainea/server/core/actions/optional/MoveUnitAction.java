@@ -6,8 +6,8 @@ import com.broll.gainea.net.NT_Unit;
 import com.broll.gainea.server.core.actions.AbstractActionHandler;
 import com.broll.gainea.server.core.actions.ActionContext;
 import com.broll.gainea.server.core.map.Location;
-import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.MapObject;
+import com.broll.gainea.server.core.objects.Unit;
 import com.broll.gainea.server.core.utils.UnitControl;
 
 import org.slf4j.Logger;
@@ -20,7 +20,7 @@ public class MoveUnitAction extends AbstractActionHandler<NT_Action_Move, MoveUn
     private final static Logger Log = LoggerFactory.getLogger(MoveUnitAction.class);
 
     class Context extends ActionContext<NT_Action_Move> {
-        List<BattleObject> unitsToMove;
+        List<Unit> unitsToMove;
         Location location;
 
         public Context(NT_Action_Move action) {
@@ -28,10 +28,10 @@ public class MoveUnitAction extends AbstractActionHandler<NT_Action_Move, MoveUn
         }
     }
 
-    public Context move(List<BattleObject> objects, Location location) {
+    public Context move(List<Unit> objects, Location location) {
         NT_Action_Move moveUnit = new NT_Action_Move();
         moveUnit.location = (short) location.getNumber();
-        moveUnit.units = objects.stream().map(BattleObject::nt).toArray(NT_Unit[]::new);
+        moveUnit.units = objects.stream().map(Unit::nt).toArray(NT_Unit[]::new);
         Context context = new Context(moveUnit);
         context.location = location;
         context.unitsToMove = objects;
@@ -45,7 +45,7 @@ public class MoveUnitAction extends AbstractActionHandler<NT_Action_Move, MoveUn
             List<MapObject> selectedUnits = new ArrayList<>();
             Location from = null;
             for (int selection : reaction.options) {
-                BattleObject unit = context.unitsToMove.get(selection);
+                Unit unit = context.unitsToMove.get(selection);
                 if (from == null) {
                     from = unit.getLocation();
                 } else if (unit.getLocation() != from) {

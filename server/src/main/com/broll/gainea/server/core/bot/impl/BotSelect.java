@@ -9,7 +9,7 @@ import com.broll.gainea.server.core.bot.BotAction;
 import com.broll.gainea.server.core.bot.BotUtils;
 import com.broll.gainea.server.core.goals.Goal;
 import com.broll.gainea.server.core.map.Location;
-import com.broll.gainea.server.core.objects.BattleObject;
+import com.broll.gainea.server.core.objects.Unit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,7 +54,7 @@ public class BotSelect extends BotAction<NT_Action_SelectChoice> {
         return new TextSelection(selection);
     }
 
-    public UnitSelection selectUnit(SelectProvider<BattleObject> selection) {
+    public UnitSelection selectUnit(SelectProvider<Unit> selection) {
         return new UnitSelection(selection);
     }
 
@@ -141,9 +141,9 @@ public class BotSelect extends BotAction<NT_Action_SelectChoice> {
         }
     }
 
-    private class UnitSelection extends ObjectSelection<BattleObject> {
+    private class UnitSelection extends ObjectSelection<Unit> {
 
-        UnitSelection(SelectProvider<BattleObject> provider) {
+        UnitSelection(SelectProvider<Unit> provider) {
             super(provider, it -> BotUtils.getObject(game, (NT_Unit) it));
         }
     }

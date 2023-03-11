@@ -6,9 +6,9 @@ import com.broll.gainea.server.core.actions.AbstractActionHandler;
 import com.broll.gainea.server.core.actions.ActionContext;
 import com.broll.gainea.server.core.actions.RequiredActionContext;
 import com.broll.gainea.server.core.map.Location;
-import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.Commander;
 import com.broll.gainea.server.core.objects.Soldier;
+import com.broll.gainea.server.core.objects.Unit;
 import com.broll.gainea.server.core.objects.monster.Monster;
 import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.server.core.utils.LocationUtils;
@@ -24,10 +24,10 @@ public class PlaceUnitAction extends AbstractActionHandler<NT_Action_PlaceUnit, 
 
     private final static Logger Log = LoggerFactory.getLogger(PlaceUnitAction.class);
 
-    private BattleObject unitToPlace;
+    private Unit unitToPlace;
 
     class Context extends ActionContext<NT_Action_PlaceUnit> {
-        BattleObject unitToPlace;
+        Unit unitToPlace;
         List<Location> locations;
         Location selectedLocation;
 
@@ -36,23 +36,23 @@ public class PlaceUnitAction extends AbstractActionHandler<NT_Action_PlaceUnit, 
         }
     }
 
-    public Pair<BattleObject, Location> placeSoldier(Player player) {
+    public Pair<Unit, Location> placeSoldier(Player player) {
         return placeSoldier(player, player.getControlledLocations());
     }
 
-    public Pair<BattleObject, Location> placeSoldier(Player player, List<Location> locations) {
+    public Pair<Unit, Location> placeSoldier(Player player, List<Location> locations) {
         return placeUnit(player, createSoldier(player), locations, "Platziere einen Soldat");
     }
 
-    public Pair<BattleObject, Location> placeCommander(Player player) {
+    public Pair<Unit, Location> placeCommander(Player player) {
         return placeCommander(player, player.getControlledLocations());
     }
 
-    public Pair<BattleObject, Location> placeCommander(Player player, List<Location> locations) {
+    public Pair<Unit, Location> placeCommander(Player player, List<Location> locations) {
         return placeUnit(player, createCommander(player), locations, "Platziere deinen Feldherr");
     }
 
-    public Pair<BattleObject, Location> placeMonster(Player player, Monster monster) {
+    public Pair<Unit, Location> placeMonster(Player player, Monster monster) {
         return null;
     }
 
@@ -64,7 +64,7 @@ public class PlaceUnitAction extends AbstractActionHandler<NT_Action_PlaceUnit, 
         return player.getFraction().createCommander();
     }
 
-    public Pair<BattleObject, Location> placeUnit(Player player, BattleObject object, List<Location> locations, String message) {
+    public Pair<Unit, Location> placeUnit(Player player, Unit object, List<Location> locations, String message) {
         if (locations.isEmpty()) {
             throw new RuntimeException("Invalid place unit context: list of locations is empty");
         }
@@ -93,7 +93,7 @@ public class PlaceUnitAction extends AbstractActionHandler<NT_Action_PlaceUnit, 
         processingBlock.resume();
     }
 
-    public BattleObject getUnitToPlace() {
+    public Unit getUnitToPlace() {
         return unitToPlace;
     }
 }

@@ -7,9 +7,9 @@ import com.broll.gainea.server.core.battle.BattleContext;
 import com.broll.gainea.server.core.battle.FightingPower;
 import com.broll.gainea.server.core.map.Area;
 import com.broll.gainea.server.core.map.Location;
-import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.Commander;
 import com.broll.gainea.server.core.objects.Soldier;
+import com.broll.gainea.server.core.objects.Unit;
 import com.broll.gainea.server.core.objects.monster.Monster;
 import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.server.core.processing.GameUpdateReceiverAdapter;
@@ -71,8 +71,8 @@ public abstract class Fraction extends GameUpdateReceiverAdapter {
         owner.getCardHandler().drawRandomCard();
     }
 
-    public boolean isHostile(BattleObject battleObject) {
-        return battleObject.getOwner() != owner;
+    public boolean isHostile(Unit unit) {
+        return unit.getOwner() != owner;
     }
 
     public abstract Soldier createSoldier();

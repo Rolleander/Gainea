@@ -1,17 +1,14 @@
 package com.broll.gainea.server.core.fractions.impl;
 
+import com.broll.gainea.server.core.battle.BattleContext;
 import com.broll.gainea.server.core.battle.FightingPower;
 import com.broll.gainea.server.core.fractions.Fraction;
 import com.broll.gainea.server.core.fractions.FractionDescription;
 import com.broll.gainea.server.core.fractions.FractionType;
 import com.broll.gainea.server.core.map.AreaType;
-import com.broll.gainea.server.core.map.Location;
-import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.Commander;
 import com.broll.gainea.server.core.objects.Soldier;
 import com.broll.gainea.server.core.utils.LocationUtils;
-
-import java.util.List;
 
 public class SamuraiFraction extends Fraction {
     public SamuraiFraction() {
@@ -28,14 +25,14 @@ public class SamuraiFraction extends Fraction {
     }
 
     @Override
-    public FightingPower calcPower(Location location, List<BattleObject> fighters, List<BattleObject> enemies, boolean isAttacker) {
-        FightingPower power = super.calcPower(location, fighters, enemies, isAttacker);
-        if (isAttacker) {
+    public FightingPower calcFightingPower(Soldier soldier, BattleContext context) {
+        FightingPower power = super.calcFightingPower(soldier, context);
+        if (context.isAttacker(owner)) {
             power.changeNumberPlus(1);
         } else {
-            power.setHighestNumber(5);
+            power.withHighestNumber(5);
         }
-        if (LocationUtils.isAreaType(location, AreaType.MOUNTAIN)) {
+        if (LocationUtils.isAreaType(context.getLocation(), AreaType.MOUNTAIN)) {
             power.changeDiceNumber(1);
         }
         return power;

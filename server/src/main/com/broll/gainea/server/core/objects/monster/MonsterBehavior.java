@@ -3,7 +3,7 @@ package com.broll.gainea.server.core.objects.monster;
 import com.broll.gainea.misc.RandomUtils;
 import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.map.Location;
-import com.broll.gainea.server.core.objects.BattleObject;
+import com.broll.gainea.server.core.objects.Unit;
 import com.broll.gainea.server.core.utils.LocationUtils;
 import com.broll.gainea.server.core.utils.UnitControl;
 import com.google.common.collect.Lists;
@@ -23,7 +23,7 @@ public enum MonsterBehavior {
     }),
     AGGRESSIVE("Aggressiv", (game, monster) -> {
         Location target = RandomUtils.pickRandom(getPossibleTargets(monster).filter(it -> !it.isFree() &&
-                monster.getBattleStrength() > LocationUtils.getUnits(it).stream().map(BattleObject::getBattleStrength).reduce(0, Integer::sum)
+                monster.getBattleStrength() > LocationUtils.getUnits(it).stream().map(Unit::getBattleStrength).reduce(0, Integer::sum)
         ).collect(Collectors.toList()));
         if (target != null) {
             UnitControl.conquer(game, Lists.newArrayList(monster), target);

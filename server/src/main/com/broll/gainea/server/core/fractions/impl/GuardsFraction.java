@@ -1,15 +1,12 @@
 package com.broll.gainea.server.core.fractions.impl;
 
+import com.broll.gainea.server.core.battle.BattleContext;
 import com.broll.gainea.server.core.battle.FightingPower;
 import com.broll.gainea.server.core.fractions.Fraction;
 import com.broll.gainea.server.core.fractions.FractionDescription;
 import com.broll.gainea.server.core.fractions.FractionType;
-import com.broll.gainea.server.core.map.Location;
-import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.Commander;
 import com.broll.gainea.server.core.objects.Soldier;
-
-import java.util.List;
 
 public class GuardsFraction extends Fraction {
 
@@ -21,17 +18,17 @@ public class GuardsFraction extends Fraction {
     protected FractionDescription description() {
         FractionDescription desc = new FractionDescription("");
         desc.plus("Als Verteidiger ist die niedrigste Würfelzahl 3");
-        desc.contra("Als Angreifer -2 Würfel");
+        desc.contra("Als Angreifer höchste Würfelzahl 5");
         return desc;
     }
 
     @Override
-    public FightingPower calcPower(Location location, List<BattleObject> fighters, List<BattleObject> enemies, boolean isAttacker) {
-        FightingPower power = super.calcPower(location, fighters, enemies, isAttacker);
-        if (isAttacker) {
-            power.changeDiceNumber(-2);
+    public FightingPower calcFightingPower(Soldier soldier, BattleContext context) {
+        FightingPower power = super.calcFightingPower(soldier, context);
+        if (context.isAttacking(soldier)) {
+            power.withHighestNumber(5);
         } else {
-            power.setLowestNumber(3);
+            power.withLowestNumber(3);
         }
         return power;
     }

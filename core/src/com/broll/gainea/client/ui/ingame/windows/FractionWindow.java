@@ -12,7 +12,7 @@ import com.broll.gainea.client.ui.utils.TableUtils;
 import com.broll.gainea.server.core.fractions.Fraction;
 import com.broll.gainea.server.core.fractions.FractionDescription;
 import com.broll.gainea.server.core.fractions.FractionType;
-import com.broll.gainea.server.core.objects.BattleObject;
+import com.broll.gainea.server.core.objects.Unit;
 
 import java.util.Arrays;
 import java.util.List;
@@ -65,7 +65,7 @@ public class FractionWindow extends MenuWindow {
         return table;
     }
 
-    private MenuUnit unit(BattleObject object) {
+    private MenuUnit unit(Unit object) {
         MenuUnit unit = new MenuUnit(game, skin, object.nt(), () -> {
         });
         unit.setTouchable(Touchable.disabled);

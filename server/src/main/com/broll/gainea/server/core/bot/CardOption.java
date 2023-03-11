@@ -1,7 +1,7 @@
 package com.broll.gainea.server.core.bot;
 
 import com.broll.gainea.server.core.bot.impl.BotSelect;
-import com.broll.gainea.server.core.objects.BattleObject;
+import com.broll.gainea.server.core.objects.Unit;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,9 +24,9 @@ public class CardOption extends BotOptionalAction.BotOption {
 
     public void selectStrongestUnit(BotSelect select) {
         selectOptions.add(select.selectUnit(units ->
-                BotUtils.getHighestScoreEntry(units, BattleObject::getBattleStrength)));
+                BotUtils.getHighestScoreEntry(units, Unit::getBattleStrength)));
     }
-    
+
     public List<BotSelect.Selection> getSelectOptions() {
         return selectOptions;
     }

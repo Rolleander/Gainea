@@ -5,7 +5,7 @@ import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.bot.BotUtils;
 import com.broll.gainea.server.core.goals.Goal;
 import com.broll.gainea.server.core.map.Location;
-import com.broll.gainea.server.core.objects.BattleObject;
+import com.broll.gainea.server.core.objects.Unit;
 import com.broll.gainea.server.core.player.Player;
 
 import org.apache.commons.lang3.tuple.MutablePair;
@@ -22,8 +22,8 @@ public class BotStrategy {
     private GameContainer game;
     private Player player;
     private List<GoalStrategy> goalStrategies = new ArrayList<>();
-    private Map<BattleObject, GoalStrategy> strategizedUnits = new HashMap<>();
-    private Map<BattleObject, Location> moveTargets = new HashMap<>();
+    private Map<Unit, GoalStrategy> strategizedUnits = new HashMap<>();
+    private Map<Unit, Location> moveTargets = new HashMap<>();
     private GoalStrategy fallbackStrategy;
 
     public BotStrategy(GameContainer game, Player player, StrategyConstants constants) {
@@ -37,7 +37,7 @@ public class BotStrategy {
         return fallbackStrategy;
     }
 
-    public Map<BattleObject, Location> getMoveTargets() {
+    public Map<Unit, Location> getMoveTargets() {
         return moveTargets;
     }
 
@@ -45,7 +45,7 @@ public class BotStrategy {
         return constants;
     }
 
-    public GoalStrategy getStrategy(BattleObject unit) {
+    public GoalStrategy getStrategy(Unit unit) {
         return strategizedUnits.get(unit);
     }
 
@@ -54,14 +54,14 @@ public class BotStrategy {
     }
 
     private void strategizeNewUnits() {
-        for (BattleObject unit : player.getUnits()) {
+        for (Unit unit : player.getUnits()) {
             if (!strategizedUnits.containsKey(unit)) {
                 strategizeUnit(unit);
             }
         }
     }
 
-    private void strategizeUnit(BattleObject unit) {
+    private void strategizeUnit(Unit unit) {
         List<GoalStrategy> goals = goalStrategies.stream().filter(GoalStrategy::requiresMoreUnits).collect(Collectors.toList());
         if (!goals.isEmpty()) {
             GoalStrategy goal = goals.get(BotUtils.getLowestScoreIndex(goals,
@@ -74,7 +74,7 @@ public class BotStrategy {
         strategizeUnit(goal, unit);
     }
 
-    private void strategizeUnit(GoalStrategy goal, BattleObject unit) {
+    private void strategizeUnit(GoalStrategy goal, Unit unit) {
         goal.strategizeUnit(unit);
         strategizedUnits.put(unit, goal);
     }
@@ -82,7 +82,7 @@ public class BotStrategy {
     public void prepareTurn() {
         strategizeNewUnits();
         goalStrategies.forEach(goal -> {
-            List<BattleObject> deadUnits = goal.getUnits().stream().filter(BattleObject::isDead).collect(Collectors.toList());
+            List<Unit> deadUnits = goal.getUnits().stream().filter(Unit::isDead).collect(Collectors.toList());
             deadUnits.forEach(unit -> {
                 strategizedUnits.remove(unit);
                 moveTargets.remove(unit);
@@ -119,7 +119,7 @@ public class BotStrategy {
         restrategizeUnits(goal);
     }
 
-    public int chooseUnitPlace(BattleObject unit, List<Location> locations) {
+    public int chooseUnitPlace(Unit unit, List<Location> locations) {
         if (unit.getOwner() != player) {
             return RandomUtils.random(0, locations.size() - 1);
         }

@@ -10,7 +10,7 @@ import com.broll.gainea.server.core.cards.impl.play.C_PickCard;
 import com.broll.gainea.server.core.cards.impl.play.C_ReplaceGoal;
 import com.broll.gainea.server.core.map.Area;
 import com.broll.gainea.server.core.map.Location;
-import com.broll.gainea.server.core.objects.BattleObject;
+import com.broll.gainea.server.core.objects.Unit;
 import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.server.core.utils.LocationUtils;
 import com.broll.gainea.server.core.utils.ProcessingUtils;
@@ -129,7 +129,7 @@ public class GameStartSite extends GameSite {
         int placingRound = gameStart.startUnitsPlaced / playerCount;
         Player player = getPlacingPlayer();
         List<Location> locations = gameStart.playerData.get(player).startLocations;
-        BattleObject unitToPlace;
+        Unit unitToPlace;
         if (placingRound == 0) {
             unitToPlace = player.getFraction().createCommander();
         } else {
@@ -138,7 +138,7 @@ public class GameStartSite extends GameSite {
         String text = "Setze " + unitToPlace.getName() + " auf einen Startpunkt";
         ActionHandlers actionHandlers = game.getReactionHandler().getActionHandlers();
         PlaceUnitAction placeUnitAction = actionHandlers.getHandler(PlaceUnitAction.class);
-        Pair<BattleObject, Location> result = placeUnitAction.placeUnit(player, unitToPlace, locations, text);
+        Pair<Unit, Location> result = placeUnitAction.placeUnit(player, unitToPlace, locations, text);
         placedUnit(result.getRight());
     }
 

@@ -2,20 +2,18 @@ package com.broll.gainea.server.core.fractions.impl;
 
 import com.broll.gainea.misc.RandomUtils;
 import com.broll.gainea.net.NT_Unit;
+import com.broll.gainea.server.core.battle.BattleContext;
 import com.broll.gainea.server.core.battle.BattleResult;
 import com.broll.gainea.server.core.battle.FightingPower;
 import com.broll.gainea.server.core.fractions.Fraction;
 import com.broll.gainea.server.core.fractions.FractionDescription;
 import com.broll.gainea.server.core.fractions.FractionType;
-import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.map.Ship;
-import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.Commander;
 import com.broll.gainea.server.core.objects.Soldier;
+import com.broll.gainea.server.core.objects.Unit;
 import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.server.core.utils.UnitControl;
-
-import java.util.List;
 
 public class DruidsFraction extends Fraction {
 
@@ -34,13 +32,22 @@ public class DruidsFraction extends Fraction {
     }
 
     @Override
-    public void killed(BattleObject unit, BattleResult throughBattle) {
+    public FightingPower calcFightingPower(Soldier soldier, BattleContext context) {
+        FightingPower power = super.calcFightingPower(soldier, context);
+        if (context.getLocation() instanceof Ship) {
+            power.changeNumberPlus(-1);
+        }
+        return power;
+    }
+
+    @Override
+    public void killed(Unit unit, BattleResult throughBattle) {
         if (unit.getOwner() == owner) {
             druidDied(unit);
         }
     }
 
-    private void druidDied(BattleObject unit) {
+    private void druidDied(Unit unit) {
         if (!(unit instanceof Tree) && RandomUtils.randomBoolean(SPAWN_CHANCE)) {
             Tree tree = new Tree(owner);
             UnitControl.spawn(game, tree, unit.getLocation());
@@ -57,7 +64,6 @@ public class DruidsFraction extends Fraction {
         return soldier;
     }
 
-
     @Override
     public Commander createCommander() {
         Commander commander = new Commander(owner);
@@ -65,15 +71,6 @@ public class DruidsFraction extends Fraction {
         commander.setName("Druidenhaupt Zerus");
         commander.setIcon(102);
         return commander;
-    }
-
-    @Override
-    public FightingPower calcPower(Location location, List<BattleObject> fighters, List<BattleObject> enemies, boolean isAttacker) {
-        FightingPower power = super.calcPower(location, fighters, enemies, isAttacker);
-        if (location instanceof Ship) {
-            power.changeNumberPlus(-1);
-        }
-        return power;
     }
 
     private class Tree extends Soldier {

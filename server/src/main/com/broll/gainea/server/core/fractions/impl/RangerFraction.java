@@ -7,9 +7,9 @@ import com.broll.gainea.server.core.fractions.FractionDescription;
 import com.broll.gainea.server.core.fractions.FractionType;
 import com.broll.gainea.server.core.map.AreaType;
 import com.broll.gainea.server.core.map.Location;
-import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.Commander;
 import com.broll.gainea.server.core.objects.Soldier;
+import com.broll.gainea.server.core.objects.Unit;
 import com.broll.gainea.server.core.objects.monster.Monster;
 import com.broll.gainea.server.core.utils.LocationUtils;
 
@@ -32,7 +32,7 @@ public class RangerFraction extends Fraction {
     }
 
     @Override
-    public FightingPower calcPower(Location location, List<BattleObject> fighters, List<BattleObject> enemies, boolean isAttacker) {
+    public FightingPower calcPower(Location location, List<Unit> fighters, List<Unit> enemies, boolean isAttacker) {
         FightingPower power = super.calcPower(location, fighters, enemies, isAttacker);
         if (enemies.stream().map(it -> it instanceof Monster).reduce(true, Boolean::logicalAnd)) {
             //vs monsters +2 Z

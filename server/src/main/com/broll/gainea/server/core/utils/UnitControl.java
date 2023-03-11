@@ -10,8 +10,8 @@ import com.broll.gainea.net.NT_Event_UpdateObjects;
 import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.map.Area;
 import com.broll.gainea.server.core.map.Location;
-import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.MapObject;
+import com.broll.gainea.server.core.objects.Unit;
 import com.broll.gainea.server.core.objects.monster.Monster;
 import com.broll.gainea.server.core.player.Player;
 import com.google.common.collect.Lists;
@@ -45,15 +45,15 @@ public class UnitControl {
         ProcessingUtils.pause(MOVE_PAUSE);
     }
 
-    public static void damage(GameContainer game, BattleObject unit, int damage) {
+    public static void damage(GameContainer game, Unit unit, int damage) {
         damage(game, unit, damage, null);
     }
 
-    public static void kill(GameContainer game, BattleObject unit) {
+    public static void kill(GameContainer game, Unit unit) {
         damage(game, unit, Integer.MAX_VALUE, null);
     }
 
-    public static void heal(GameContainer game, BattleObject unit, int heal) {
+    public static void heal(GameContainer game, Unit unit, int heal) {
         heal(game, unit, heal, null);
     }
 
@@ -81,7 +81,7 @@ public class UnitControl {
         GameUtils.sendUpdate(game, nt);
     }
 
-    public static void heal(GameContainer game, BattleObject unit, int heal, Consumer<NT_Event_FocusObject> consumer) {
+    public static void heal(GameContainer game, Unit unit, int heal, Consumer<NT_Event_FocusObject> consumer) {
         Log.trace("UnitControl: heal unit " + unit + " for " + heal);
         heal = Math.max(unit.getMaxHealth().getValue() - unit.getHealth().getValue(), heal);
         unit.heal(heal);
@@ -95,7 +95,7 @@ public class UnitControl {
         ProcessingUtils.pause(DAMAGE_PAUSE);
     }
 
-    public static void damage(GameContainer game, BattleObject unit, int damage, Consumer<NT_Event_FocusObject> consumer) {
+    public static void damage(GameContainer game, Unit unit, int damage, Consumer<NT_Event_FocusObject> consumer) {
         Log.trace("UnitControl: damage unit " + unit + " for " + damage);
         //dont overkill
         damage = Math.min(unit.getHealth().getValue(), damage);
@@ -142,10 +142,10 @@ public class UnitControl {
         if (owner == null) {
             game.getObjects().add(object);
         } else {
-            owner.getUnits().add((BattleObject) object);
+            owner.getUnits().add((Unit) object);
         }
-        if (object instanceof BattleObject) {
-            game.getBuffProcessor().applyGlobalBuffs((BattleObject) object);
+        if (object instanceof Unit) {
+            game.getBuffProcessor().applyGlobalBuffs((Unit) object);
         }
         GameUtils.place(object, location);
         game.getUpdateReceiver().register(object);
@@ -190,9 +190,9 @@ public class UnitControl {
         }
     }
 
-    public static void conquer(GameContainer game, List<BattleObject> units, Location target) {
+    public static void conquer(GameContainer game, List<Unit> units, Location target) {
         Player owner = PlayerUtils.getOwner(units);
-        List<BattleObject> targetUnits;
+        List<Unit> targetUnits;
         if (owner == null) {
             targetUnits = LocationUtils.getUnits(target);
         } else {

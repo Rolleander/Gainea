@@ -5,7 +5,7 @@ import com.broll.gainea.server.core.battle.FightingPower;
 import com.broll.gainea.server.core.fractions.Fraction;
 import com.broll.gainea.server.core.player.Player;
 
-public class Soldier extends BattleObject {
+public class Soldier extends Unit {
 
     private Fraction fraction;
 

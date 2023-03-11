@@ -4,7 +4,7 @@ import com.broll.gainea.server.core.battle.Battle;
 import com.broll.gainea.server.core.battle.BattleContext;
 import com.broll.gainea.server.core.battle.FightResult;
 import com.broll.gainea.server.core.map.Location;
-import com.broll.gainea.server.core.objects.BattleObject;
+import com.broll.gainea.server.core.objects.Unit;
 import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.server.core.utils.PlayerUtils;
 
@@ -16,9 +16,9 @@ public class BattleSimulation {
 
     private static final int SIMULATIONS = 10;
 
-    public static List<BattleObject> calculateRequiredFighters(Location location, List<BattleObject> units, float winChance) {
-        List<BattleObject> fighters = new ArrayList<>();
-        for (BattleObject unit : units) {
+    public static List<Unit> calculateRequiredFighters(Location location, List<Unit> units, float winChance) {
+        List<Unit> fighters = new ArrayList<>();
+        for (Unit unit : units) {
             fighters.add(unit);
             if (calculateWinChance(location, fighters) >= winChance) {
                 return fighters;
@@ -27,7 +27,7 @@ public class BattleSimulation {
         return null;
     }
 
-    public static float calculateCurrentWinChance(List<BattleObject> attackers, List<BattleObject> defenders) {
+    public static float calculateCurrentWinChance(List<Unit> attackers, List<Unit> defenders) {
         float wins = 0;
         for (int i = 0; i < SIMULATIONS; i++) {
             if (winsBattle(attackers, defenders)) {
@@ -37,7 +37,7 @@ public class BattleSimulation {
         return wins / (float) SIMULATIONS;
     }
 
-    public static float calculateWinChance(Location location, List<BattleObject> units) {
+    public static float calculateWinChance(Location location, List<Unit> units) {
         float wins = 0;
         for (int i = 0; i < SIMULATIONS; i++) {
             if (winsBattle(location, units)) {
@@ -47,18 +47,18 @@ public class BattleSimulation {
         return wins / (float) SIMULATIONS;
     }
 
-    private static boolean winsBattle(Location location, List<BattleObject> units) {
+    private static boolean winsBattle(Location location, List<Unit> units) {
         Player owner = PlayerUtils.getOwner(units);
         return winsBattle(units, PlayerUtils.getHostileArmy(owner, location));
     }
 
-    private static boolean winsBattle(List<BattleObject> attackingUnits, List<BattleObject> defendingUnits) {
-        List<BattleObject> attackers = attackingUnits.stream().map(SimulationUnit::new).collect(Collectors.toList());
-        List<BattleObject> defenders = defendingUnits.stream().map(SimulationUnit::new).collect(Collectors.toList());
+    private static boolean winsBattle(List<Unit> attackingUnits, List<Unit> defendingUnits) {
+        List<Unit> attackers = attackingUnits.stream().map(SimulationUnit::new).collect(Collectors.toList());
+        List<Unit> defenders = defendingUnits.stream().map(SimulationUnit::new).collect(Collectors.toList());
         return isWinningBattle(attackers, defenders);
     }
 
-    private static boolean isWinningBattle(List<BattleObject> attackers, List<BattleObject> defenders) {
+    private static boolean isWinningBattle(List<Unit> attackers, List<Unit> defenders) {
         do {
             BattleContext context = new BattleContext(attackers, defenders);
             FightResult result = new Battle(context, attackers, defenders).fight();
@@ -68,9 +68,9 @@ public class BattleSimulation {
         return !attackers.isEmpty();
     }
 
-    private static class SimulationUnit extends BattleObject {
+    private static class SimulationUnit extends Unit {
 
-        public SimulationUnit(BattleObject original) {
+        public SimulationUnit(Unit original) {
             super(original.getOwner());
             copy(original, this);
         }

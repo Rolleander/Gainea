@@ -10,7 +10,7 @@ import com.broll.gainea.server.core.bot.BotUtils;
 import com.broll.gainea.server.core.bot.strategy.GoalStrategy;
 import com.broll.gainea.server.core.goals.Goal;
 import com.broll.gainea.server.core.goals.GoalDifficulty;
-import com.broll.gainea.server.core.objects.BattleObject;
+import com.broll.gainea.server.core.objects.Unit;
 import com.broll.gainea.server.core.player.Player;
 
 import java.util.stream.Collectors;
@@ -36,7 +36,7 @@ public class G_KillPlayer extends Goal {
     }
 
     @Override
-    public void killed(BattleObject unit, BattleResult throughBattle) {
+    public void killed(Unit unit, BattleResult throughBattle) {
         if (unit.getOwner() == target) {
             check();
         }

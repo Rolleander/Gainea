@@ -1,7 +1,7 @@
 package com.broll.gainea.server.core.battle;
 
 import com.broll.gainea.server.core.map.Location;
-import com.broll.gainea.server.core.objects.BattleObject;
+import com.broll.gainea.server.core.objects.Unit;
 import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.server.core.utils.PlayerUtils;
 
@@ -14,18 +14,18 @@ public class BattleContext {
 
     protected Location location;
     protected Location sourceLocation;
-    protected List<BattleObject> attackers;
-    protected List<BattleObject> defenders;
+    protected List<Unit> attackers;
+    protected List<Unit> defenders;
     protected Player attackingPlayer;
     protected List<Player> defendingPlayers;
 
-    public BattleContext(List<BattleObject> attackers, List<BattleObject> defenders) {
+    public BattleContext(List<Unit> attackers, List<Unit> defenders) {
         this.location = defenders.get(0).getLocation();
         this.sourceLocation = attackers.get(0).getLocation();
         this.attackers = attackers;
         this.defenders = defenders;
         this.attackingPlayer = PlayerUtils.getOwner(attackers);
-        this.defendingPlayers = defenders.stream().map(BattleObject::getOwner).distinct().collect(Collectors.toList());
+        this.defendingPlayers = defenders.stream().map(Unit::getOwner).distinct().collect(Collectors.toList());
     }
 
     public Location getLocation() {
@@ -36,28 +36,28 @@ public class BattleContext {
         return sourceLocation;
     }
 
-    public List<BattleObject> getAttackers() {
+    public List<Unit> getAttackers() {
         return attackers;
     }
 
-    public List<BattleObject> getDefenders() {
+    public List<Unit> getDefenders() {
         return defenders;
     }
 
-    public List<BattleObject> getAliveAttackers() {
-        return attackers.stream().filter(BattleObject::isAlive).collect(Collectors.toList());
+    public List<Unit> getAliveAttackers() {
+        return attackers.stream().filter(Unit::isAlive).collect(Collectors.toList());
     }
 
-    public List<BattleObject> getAliveDefenders() {
-        return defenders.stream().filter(BattleObject::isAlive).collect(Collectors.toList());
+    public List<Unit> getAliveDefenders() {
+        return defenders.stream().filter(Unit::isAlive).collect(Collectors.toList());
     }
 
-    public List<BattleObject> getKilledAttackers() {
-        return attackers.stream().filter(BattleObject::isDead).collect(Collectors.toList());
+    public List<Unit> getKilledAttackers() {
+        return attackers.stream().filter(Unit::isDead).collect(Collectors.toList());
     }
 
-    public List<BattleObject> getKilledDefenders() {
-        return defenders.stream().filter(BattleObject::isDead).collect(Collectors.toList());
+    public List<Unit> getKilledDefenders() {
+        return defenders.stream().filter(Unit::isDead).collect(Collectors.toList());
     }
 
     public boolean hasSurvivingAttackers() {
@@ -68,7 +68,7 @@ public class BattleContext {
         return !getAliveDefenders().isEmpty();
     }
 
-    public List<BattleObject> getFightingMates(BattleObject unit) {
+    public List<Unit> getFightingArmy(Unit unit) {
         if (isAttacking(unit)) {
             return getAliveAttackers();
         } else if (isDefending(unit)) {
@@ -77,7 +77,7 @@ public class BattleContext {
         return new ArrayList<>();
     }
 
-    public List<BattleObject> getUnits(Player player) {
+    public List<Unit> getUnits(Player player) {
         if (isAttacker(player)) {
             return attackers.stream().filter(it -> it.getOwner() == player).collect(Collectors.toList());
         } else if (isDefender(player)) {
@@ -86,7 +86,7 @@ public class BattleContext {
         return new ArrayList<>();
     }
 
-    public List<BattleObject> getOpposingUnits(Player player) {
+    public List<Unit> getOpposingUnits(Player player) {
         if (isAttacker(player)) {
             return getDefenders();
         } else if (isDefender(player)) {
@@ -95,7 +95,7 @@ public class BattleContext {
         return new ArrayList<>();
     }
 
-    public List<BattleObject> getOpposingFightingMates(BattleObject unit) {
+    public List<Unit> getOpposingFightingArmy(Unit unit) {
         if (isAttacking(unit)) {
             return getAliveDefenders();
         } else if (isDefending(unit)) {
@@ -112,11 +112,11 @@ public class BattleContext {
         return this.attackingPlayer == player;
     }
 
-    public boolean isAttacking(BattleObject unit) {
+    public boolean isAttacking(Unit unit) {
         return this.attackers.contains(unit);
     }
 
-    public boolean isDefending(BattleObject unit) {
+    public boolean isDefending(Unit unit) {
         return this.defenders.contains(unit);
     }
 

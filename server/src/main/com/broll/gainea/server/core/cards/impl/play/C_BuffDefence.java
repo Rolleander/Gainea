@@ -6,7 +6,7 @@ import com.broll.gainea.server.core.bot.impl.BotSelect;
 import com.broll.gainea.server.core.bot.strategy.BotStrategy;
 import com.broll.gainea.server.core.bot.strategy.ICardStrategy;
 import com.broll.gainea.server.core.cards.Card;
-import com.broll.gainea.server.core.objects.BattleObject;
+import com.broll.gainea.server.core.objects.Unit;
 import com.broll.gainea.server.core.utils.SelectionUtils;
 import com.broll.gainea.server.core.utils.UnitControl;
 
@@ -25,7 +25,7 @@ public class C_BuffDefence extends Card implements ICardStrategy {
 
     @Override
     protected void play() {
-        BattleObject unit = SelectionUtils.selectPlayerUnit(game, owner, "Welche Einheit soll ausgerüstet werden?");
+        Unit unit = SelectionUtils.selectPlayerUnit(game, owner, "Welche Einheit soll ausgerüstet werden?");
         unit.changeHealth(BUFF);
         UnitControl.focus(game, unit, NT_Event.EFFECT_BUFF);
     }

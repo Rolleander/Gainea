@@ -1,7 +1,7 @@
 package com.broll.gainea.server.core.battle;
 
 import com.broll.gainea.misc.RandomUtils;
-import com.broll.gainea.server.core.objects.BattleObject;
+import com.broll.gainea.server.core.objects.Unit;
 
 import java.util.Collections;
 import java.util.List;
@@ -11,7 +11,7 @@ public class RollResult {
 
     private List<Roll> rolls;
 
-    public RollResult(BattleContext context, List<BattleObject> units) {
+    public RollResult(BattleContext context, List<Unit> units) {
         this.rolls = units.stream().flatMap(unit -> unit.calcFightingPower(context).roll()
                 .stream().map(value -> new Roll(unit, value))).collect(Collectors.toList());
         sort();
@@ -84,10 +84,10 @@ public class RollResult {
     }
 
     public class Roll implements Comparable<Roll> {
-        public BattleObject source;
+        public Unit source;
         public int value;
 
-        private Roll(BattleObject source, int value) {
+        private Roll(Unit source, int value) {
             this.source = source;
             this.value = value;
         }

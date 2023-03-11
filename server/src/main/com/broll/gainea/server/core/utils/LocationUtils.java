@@ -13,8 +13,8 @@ import com.broll.gainea.server.core.map.IslandID;
 import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.map.MapContainer;
 import com.broll.gainea.server.core.map.Ship;
-import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.MapObject;
+import com.broll.gainea.server.core.objects.Unit;
 import com.broll.gainea.server.core.objects.monster.Monster;
 import com.broll.gainea.server.core.player.Player;
 
@@ -62,8 +62,8 @@ public final class LocationUtils {
 
     public static boolean emptyOrControlled(Location location, Player player) {
         return location.getInhabitants().stream().map(it -> {
-            if (it instanceof BattleObject) {
-                return ((BattleObject) it).getOwner() == player;
+            if (it instanceof Unit) {
+                return ((Unit) it).getOwner() == player;
             }
             return true;
         }).reduce(true, Boolean::logicalAnd);
@@ -80,8 +80,8 @@ public final class LocationUtils {
 
     public static boolean noControlledUnits(Location location) {
         return !location.getInhabitants().stream().anyMatch(it -> {
-            if (it instanceof BattleObject) {
-                return ((BattleObject) it).getOwner() != null;
+            if (it instanceof Unit) {
+                return ((Unit) it).getOwner() != null;
             }
             return false;
         });
@@ -95,8 +95,8 @@ public final class LocationUtils {
         return location.getInhabitants().stream().filter(it -> it instanceof Monster).map(it -> (Monster) it).collect(Collectors.toList());
     }
 
-    public static List<BattleObject> getUnits(Location location) {
-        return location.getInhabitants().stream().filter(it -> it instanceof BattleObject).map(it -> (BattleObject) it).collect(Collectors.toList());
+    public static List<Unit> getUnits(Location location) {
+        return location.getInhabitants().stream().filter(it -> it instanceof Unit).map(it -> (Unit) it).collect(Collectors.toList());
     }
 
     public static Location getRandomFree(List<? extends Location> locations) {

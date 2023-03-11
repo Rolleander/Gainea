@@ -1,7 +1,7 @@
 package com.broll.gainea.server.core.battle;
 
 import com.broll.gainea.misc.RandomUtils;
-import com.broll.gainea.server.core.objects.BattleObject;
+import com.broll.gainea.server.core.objects.Unit;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,17 +14,17 @@ public class Battle {
     private RollResult attackerRolls;
     private RollResult defenderRolls;
 
-    private List<BattleObject> attackers;
-    private List<BattleObject> defenders;
+    private List<Unit> attackers;
+    private List<Unit> defenders;
 
-    public Battle(List<BattleObject> attackingUnits, List<BattleObject> defendingUnits, RollResult attackerRolls, RollResult defenderRolls) {
+    public Battle(List<Unit> attackingUnits, List<Unit> defendingUnits, RollResult attackerRolls, RollResult defenderRolls) {
         this.attackers = attackingUnits;
         this.defenders = defendingUnits;
         this.attackerRolls = attackerRolls;
         this.defenderRolls = defenderRolls;
     }
 
-    public Battle(BattleContext context, List<BattleObject> attackingUnits, List<BattleObject> defendingUnits) {
+    public Battle(BattleContext context, List<Unit> attackingUnits, List<Unit> defendingUnits) {
         this(attackingUnits, defendingUnits, new RollResult(context, attackingUnits),
                 new RollResult(context, defendingUnits));
     }
@@ -48,18 +48,18 @@ public class Battle {
                 dealDamage(result, block, defenders, attackers);
             }
         }
-        List<BattleObject> deadAttackers = attackers.stream().filter(BattleObject::isDead).collect(Collectors.toList());
-        List<BattleObject> deadDefenders = defenders.stream().filter(BattleObject::isDead).collect(Collectors.toList());
+        List<Unit> deadAttackers = attackers.stream().filter(Unit::isDead).collect(Collectors.toList());
+        List<Unit> deadDefenders = defenders.stream().filter(Unit::isDead).collect(Collectors.toList());
         result.killed(deadAttackers, deadDefenders);
         return result;
     }
 
-    private void dealDamage(FightResult result, RollResult.Roll winningRoll, List<BattleObject> sourceUnits, List<BattleObject> targetUnits) {
-        BattleObject source = winningRoll.source;
+    private void dealDamage(FightResult result, RollResult.Roll winningRoll, List<Unit> sourceUnits, List<Unit> targetUnits) {
+        Unit source = winningRoll.source;
         if (source == null) {
             source = RandomUtils.pickRandom(sourceUnits);
         }
-        BattleObject target = getDamageTarget(targetUnits);
+        Unit target = getDamageTarget(targetUnits);
         if (target != null) {
             boolean lethal = target.takeDamage();
             if (lethal) {
@@ -69,8 +69,8 @@ public class Battle {
         }
     }
 
-    private BattleObject getDamageTarget(List<BattleObject> targetUnits) {
-        List<BattleObject> targets = new ArrayList<>(targetUnits);
+    private Unit getDamageTarget(List<Unit> targetUnits) {
+        List<Unit> targets = new ArrayList<>(targetUnits);
         //shuffe for damage (so that same powerlevel units get hit randomly)
         Collections.shuffle(targets);
         //sort ascending (so that weakest power level units die first)

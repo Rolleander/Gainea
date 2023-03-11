@@ -2,8 +2,8 @@ package com.broll.gainea.server.core.utils;
 
 import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.map.Location;
-import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.MapObject;
+import com.broll.gainea.server.core.objects.Unit;
 import com.broll.gainea.server.core.objects.monster.Monster;
 import com.broll.gainea.server.core.player.Player;
 
@@ -51,8 +51,8 @@ public final class GameUtils {
         game.getReactionHandler().getActionHandlers().getReactionActions().sendGameUpdate(update);
     }
 
-    public static List<BattleObject> getUnits(List<MapObject> objects) {
-        return objects.stream().filter(it -> it instanceof BattleObject).map(it -> (BattleObject) it).collect(Collectors.toList());
+    public static List<Unit> getUnits(List<MapObject> objects) {
+        return objects.stream().filter(it -> it instanceof Unit).map(it -> (Unit) it).collect(Collectors.toList());
     }
 
     public static boolean remove(GameContainer game, MapObject object) {

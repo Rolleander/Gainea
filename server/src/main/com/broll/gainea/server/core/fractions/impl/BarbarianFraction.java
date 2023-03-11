@@ -1,18 +1,20 @@
 package com.broll.gainea.server.core.fractions.impl;
 
 import com.broll.gainea.server.core.actions.ActionHandlers;
+import com.broll.gainea.server.core.battle.BattleContext;
 import com.broll.gainea.server.core.battle.BattleResult;
 import com.broll.gainea.server.core.battle.FightingPower;
 import com.broll.gainea.server.core.fractions.Fraction;
 import com.broll.gainea.server.core.fractions.FractionDescription;
 import com.broll.gainea.server.core.fractions.FractionType;
-import com.broll.gainea.server.core.map.Area;
-import com.broll.gainea.server.core.map.AreaType;
 import com.broll.gainea.server.core.objects.Commander;
 import com.broll.gainea.server.core.objects.Soldier;
+import com.broll.gainea.server.core.objects.Unit;
 import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.server.core.utils.PlayerUtils;
 import com.broll.gainea.server.core.utils.UnitControl;
+
+import java.util.List;
 
 public class BarbarianFraction extends Fraction {
     private static final int SUMMON_TURN = 3;
@@ -27,15 +29,28 @@ public class BarbarianFraction extends Fraction {
     protected FractionDescription description() {
         FractionDescription desc = new FractionDescription("");
         desc.plus("Nach " + SUMMON_TURN + " Runden ruft der Kommandant seine zweite Hand (2/3) herbei");
-        desc.contra("Im Sumpf -1 Würfel");
+        desc.plus("+1 Zahl, wenn Kommandant und zweite Hand zusammen kämpfen");
+        desc.contra("-1 Zahl, wenn keine Barbarenrkieger im Kampf beteiligt sind");
         return desc;
     }
 
+
     @Override
-    protected void powerMutatorArea(FightingPower power, Area area) {
-        if (area.getType() == AreaType.BOG) {
-            power.changeDiceNumber(-1);
+    public FightingPower calcFightingPower(Soldier soldier, BattleContext context) {
+        FightingPower power = super.calcFightingPower(soldier, context);
+        List<Unit> army = context.getFightingArmy(soldier);
+        if (army.stream().noneMatch(this::isPlainBarbarianSoldier)) {
+            power.changeNumberPlus(-1);
         }
+        if (army.stream().anyMatch(it -> it instanceof Commander) && army.stream().anyMatch(it -> it instanceof BarbarianBrother)) {
+            power.changeNumberPlus(1);
+        }
+        return power;
+    }
+
+    private boolean isPlainBarbarianSoldier(Unit unit) {
+        return unit instanceof Soldier && !(unit instanceof Commander) &&
+                !(unit instanceof BarbarianBrother) && ((Soldier) unit).getFraction() == this;
     }
 
     @Override

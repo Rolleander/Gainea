@@ -8,7 +8,7 @@ import com.broll.gainea.server.core.objects.buffs.BuffableInt;
 import com.broll.gainea.server.core.objects.buffs.IntBuff;
 import com.broll.gainea.server.core.player.Player;
 
-public abstract class BattleObject extends MapObject {
+public abstract class Unit extends MapObject {
 
     private BuffableInt<MapObject> maxHealth = new BuffableInt<>(this, 0);
     private BuffableInt<MapObject> power = new BuffableInt<>(this, 0);
@@ -22,14 +22,14 @@ public abstract class BattleObject extends MapObject {
     private int type = NT_Unit.TYPE_MALE;
     private int kills;
 
-    public BattleObject(Player owner) {
+    public Unit(Player owner) {
         super(owner);
         health.setMinValue(0);
         maxHealth.setMinValue(1);
         power.setMinValue(0);
     }
 
-    public static void copy(BattleObject from, BattleObject to) {
+    public static void copy(Unit from, Unit to) {
         to.maxHealth = from.maxHealth.copy(to);
         to.power = from.power.copy(to);
         to.health = from.health.copy(to);

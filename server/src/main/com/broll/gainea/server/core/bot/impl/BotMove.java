@@ -7,7 +7,7 @@ import com.broll.gainea.server.core.bot.BotOptionalAction;
 import com.broll.gainea.server.core.bot.BotUtils;
 import com.broll.gainea.server.core.bot.strategy.GoalStrategy;
 import com.broll.gainea.server.core.map.Location;
-import com.broll.gainea.server.core.objects.BattleObject;
+import com.broll.gainea.server.core.objects.Unit;
 import com.broll.gainea.server.core.utils.LocationUtils;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -35,10 +35,10 @@ public class BotMove extends BotOptionalAction<NT_Action_Move, BotMove.MoveOptio
     @Override
     public MoveOption score(NT_Action_Move action) {
         Location location = BotUtils.getLocation(game, action.location);
-        List<BattleObject> units = BotUtils.getObjects(game, action.units);
+        List<Unit> units = BotUtils.getObjects(game, action.units);
         List<GoalStrategy> goalStrategies = units.stream().map(it -> strategy.getStrategy(it)).filter(Objects::nonNull).distinct().collect(Collectors.toList());
         for (GoalStrategy goalStrategy : goalStrategies) {
-            List<BattleObject> goalUnits = units.stream().filter(it -> strategy.getStrategy(it) == goalStrategy).collect(Collectors.toList());
+            List<Unit> goalUnits = units.stream().filter(it -> strategy.getStrategy(it) == goalStrategy).collect(Collectors.toList());
             MoveOption move = chooseUnits(goalStrategy, action.units, goalUnits, location);
             if (move != null) {
                 return move;
@@ -54,12 +54,12 @@ public class BotMove extends BotOptionalAction<NT_Action_Move, BotMove.MoveOptio
     }
 
 
-    private MoveOption chooseUnits(GoalStrategy goalStrategy, NT_Unit[] nt_units, List<BattleObject> units, Location to) {
+    private MoveOption chooseUnits(GoalStrategy goalStrategy, NT_Unit[] nt_units, List<Unit> units, Location to) {
         List<Location> unitTargets = getPathTargets(units, goalStrategy);
         int distance = Integer.MAX_VALUE;
-        List<BattleObject> moveTogether = new ArrayList<>();
+        List<Unit> moveTogether = new ArrayList<>();
         for (int i = 0; i < units.size(); i++) {
-            BattleObject unit = units.get(i);
+            Unit unit = units.get(i);
             Location unitTarget = unitTargets.get(i);
             if (unitTarget == null || unitTarget == unit.getLocation()) {
                 continue;
@@ -80,7 +80,7 @@ public class BotMove extends BotOptionalAction<NT_Action_Move, BotMove.MoveOptio
         return moveOption;
     }
 
-    private List<Location> getPathTargets(List<BattleObject> units, GoalStrategy goalStrategy) {
+    private List<Location> getPathTargets(List<Unit> units, GoalStrategy goalStrategy) {
         return units.stream().map(it -> {
             Location target = strategy.getMoveTargets().get(it);
             if (target == null) {
@@ -90,7 +90,7 @@ public class BotMove extends BotOptionalAction<NT_Action_Move, BotMove.MoveOptio
         }).collect(Collectors.toList());
     }
 
-    private Location createPath(BattleObject unit, GoalStrategy goalStrategy) {
+    private Location createPath(Unit unit, GoalStrategy goalStrategy) {
         Location target = provideNextTarget(unit, goalStrategy);
         if (target != null) {
             strategy.getMoveTargets().put(unit, target);
@@ -98,7 +98,7 @@ public class BotMove extends BotOptionalAction<NT_Action_Move, BotMove.MoveOptio
         return target;
     }
 
-    private Location provideNextTarget(BattleObject unit, GoalStrategy goalStrategy) {
+    private Location provideNextTarget(Unit unit, GoalStrategy goalStrategy) {
         Set<Location> targets = goalStrategy.getTargetLocations();
         if (targets.size() == 1) {
             return targets.iterator().next();

@@ -8,9 +8,9 @@ import com.broll.gainea.server.core.fractions.FractionDescription;
 import com.broll.gainea.server.core.fractions.FractionType;
 import com.broll.gainea.server.core.map.Area;
 import com.broll.gainea.server.core.map.AreaType;
-import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.Commander;
 import com.broll.gainea.server.core.objects.Soldier;
+import com.broll.gainea.server.core.objects.Unit;
 import com.broll.gainea.server.core.objects.buffs.BuffType;
 import com.broll.gainea.server.core.objects.buffs.IntBuff;
 import com.broll.gainea.server.core.objects.monster.Monster;
@@ -23,7 +23,7 @@ public class WaterFraction extends Fraction {
 
     private final static int FROZEN_ROUNDS = 2;
 
-    private List<BattleObject> spawns = new ArrayList<>();
+    private List<Unit> spawns = new ArrayList<>();
 
     public WaterFraction() {
         super(FractionType.WATER);
@@ -71,7 +71,7 @@ public class WaterFraction extends Fraction {
         Commander commander = new Commander(owner) {
             @Override
             public void onDeath(BattleResult throughBattle) {
-                BattleObject summon = new IceSummon();
+                Unit summon = new IceSummon();
                 summon.setOwner(owner);
                 summon.setLocation(getLocation());
                 spawns.add(summon);
@@ -97,7 +97,7 @@ public class WaterFraction extends Fraction {
 
         @Override
         public void onDeath(BattleResult throughBattle) {
-            BattleObject commander = createCommander();
+            Unit commander = createCommander();
             commander.setLocation(getLocation());
             spawns.add(commander);
         }

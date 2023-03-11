@@ -1,8 +1,8 @@
 package com.broll.gainea.server.core.objects.buffs;
 
 import com.broll.gainea.server.core.GameContainer;
-import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.MapObject;
+import com.broll.gainea.server.core.objects.Unit;
 import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.server.core.processing.GameUpdateReceiverAdapter;
 import com.broll.gainea.server.core.utils.UnitControl;
@@ -46,8 +46,8 @@ public class BuffProcessor extends GameUpdateReceiverAdapter {
         //check if any unit died because of removal of buffs
         List<MapObject> update = new ArrayList<>();
         for (Object object : affectedObjects) {
-            if (object instanceof BattleObject) {
-                BattleObject unit = (BattleObject) object;
+            if (object instanceof Unit) {
+                Unit unit = (Unit) object;
                 if (unit.isDead()) {
                     UnitControl.kill(game, unit);
                 } else {
@@ -67,9 +67,9 @@ public class BuffProcessor extends GameUpdateReceiverAdapter {
         this.gloabalBuffs.put(globalBuff.getBuff(), globalBuff);
         //apply directly to all existing units for the targets
         globalBuff.getTargets().forEach(target -> {
-            List<BattleObject> units;
+            List<Unit> units;
             if (target == null) {
-                units = game.getObjects().stream().filter(it -> it instanceof BattleObject).map(it -> (BattleObject) it).collect(Collectors.toList());
+                units = game.getObjects().stream().filter(it -> it instanceof Unit).map(it -> (Unit) it).collect(Collectors.toList());
             } else {
                 units = target.getUnits();
             }
@@ -78,7 +78,7 @@ public class BuffProcessor extends GameUpdateReceiverAdapter {
         });
     }
 
-    public void applyGlobalBuffs(BattleObject unit) {
+    public void applyGlobalBuffs(Unit unit) {
         Player owner = unit.getOwner();
         gloabalBuffs.values().stream().filter(it -> it.getTargets().contains(owner)).forEach(buff -> buff.apply(unit));
     }

@@ -9,8 +9,8 @@ import com.broll.gainea.net.NT_Unit;
 import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.actions.ReactionActions;
 import com.broll.gainea.server.core.fractions.Fraction;
-import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.MapObject;
+import com.broll.gainea.server.core.objects.Unit;
 import com.broll.gainea.server.core.objects.monster.Monster;
 import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.server.core.processing.GameUpdateReceiverProxy;
@@ -49,11 +49,11 @@ public class BattleHandler {
         this.battleActive = false;
     }
 
-    public void startBattle(List<? extends BattleObject> attackers, List<? extends BattleObject> defenders) {
+    public void startBattle(List<? extends Unit> attackers, List<? extends Unit> defenders) {
         startBattle(attackers, defenders, true);
     }
 
-    public void startBattle(List<? extends BattleObject> attackers, List<? extends BattleObject> defenders, boolean allowRetreat) {
+    public void startBattle(List<? extends Unit> attackers, List<? extends Unit> defenders, boolean allowRetreat) {
         if (!battleActive) {
             this.allowRetreat = allowRetreat;
             this.context = new BattleContext(new ArrayList<>(attackers), new ArrayList<>(defenders));
@@ -93,8 +93,8 @@ public class BattleHandler {
     private void sendFightStart() {
         Log.trace("Start fight");
         NT_Battle_Start start = new NT_Battle_Start();
-        start.attackers = context.getAttackers().stream().sorted(sortById()).map(BattleObject::nt).toArray(NT_Unit[]::new);
-        start.defenders = context.getDefenders().stream().sorted(sortById()).map(BattleObject::nt).toArray(NT_Unit[]::new);
+        start.attackers = context.getAttackers().stream().sorted(sortById()).map(Unit::nt).toArray(NT_Unit[]::new);
+        start.defenders = context.getDefenders().stream().sorted(sortById()).map(Unit::nt).toArray(NT_Unit[]::new);
         start.allowRetreat = allowRetreat;
         start.location = context.getLocation().getNumber();
         game.getUpdateReceiver().battleBegin(context, rollManipulator);
@@ -105,7 +105,7 @@ public class BattleHandler {
     }
 
 
-    private Comparator<BattleObject> sortById() {
+    private Comparator<Unit> sortById() {
         return Comparator.comparingInt(MapObject::getId);
     }
 
@@ -136,8 +136,8 @@ public class BattleHandler {
         NT_Battle_Update update = new NT_Battle_Update();
         update.attackerRolls = result.getAttackRolls().stream().mapToInt(i -> i).toArray();
         update.defenderRolls = result.getDefenderRolls().stream().mapToInt(i -> i).toArray();
-        update.attackers = context.getAliveAttackers().stream().sorted(sortById()).map(BattleObject::nt).toArray(NT_Unit[]::new);
-        update.defenders = context.getAliveDefenders().stream().sorted(sortById()).map(BattleObject::nt).toArray(NT_Unit[]::new);
+        update.attackers = context.getAliveAttackers().stream().sorted(sortById()).map(Unit::nt).toArray(NT_Unit[]::new);
+        update.defenders = context.getAliveDefenders().stream().sorted(sortById()).map(Unit::nt).toArray(NT_Unit[]::new);
         logContext("Fight round result:");
         int state = NT_Battle_Update.STATE_FIGHTING;
         boolean attackersDead = context.getAliveAttackers().isEmpty();
@@ -209,7 +209,7 @@ public class BattleHandler {
                 " Killed Defenders: (" + result.getKilledDefenders().stream().map(it -> it.getId() + "| " + it.getName() + " " + it.getPower() + " " + it.getHealth()).collect(Collectors.joining(", ")) + ")");
         battleActive = false;
         GameUpdateReceiverProxy updateReceiver = game.getUpdateReceiver();
-        List<BattleObject> fallenUnits = new ArrayList<>();
+        List<Unit> fallenUnits = new ArrayList<>();
         fallenUnits.addAll(result.getKilledAttackers());
         fallenUnits.addAll(result.getKilledDefenders());
         fallenUnits.forEach(unit -> GameUtils.remove(game, unit));
@@ -226,7 +226,7 @@ public class BattleHandler {
         result.getDefendingPlayers().forEach(defendingPlayer -> rewardKilledMonsters(defendingPlayer, result.getKilledDefenders()));
     }
 
-    private void rewardKilledMonsters(Player killer, List<BattleObject> units) {
+    private void rewardKilledMonsters(Player killer, List<Unit> units) {
         if (killer != null) {
             Fraction fraction = killer.getFraction();
             units.stream().filter(it -> it instanceof Monster).map(it -> (Monster) it).forEach(monster -> {

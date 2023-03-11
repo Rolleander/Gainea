@@ -5,7 +5,7 @@ import com.broll.gainea.net.NT_Unit;
 import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.fractions.Fraction;
 import com.broll.gainea.server.core.map.Location;
-import com.broll.gainea.server.core.objects.BattleObject;
+import com.broll.gainea.server.core.objects.Unit;
 import com.broll.gainea.server.init.PlayerData;
 import com.broll.networklib.server.impl.LobbyPlayer;
 
@@ -17,7 +17,7 @@ public class Player {
 
     private Fraction fraction;
     private LobbyPlayer<PlayerData> serverPlayer;
-    private List<BattleObject> units = new ArrayList<>();
+    private List<Unit> units = new ArrayList<>();
     private GoalHandler goalHandler;
     private CardHandler cardHandler;
     private int skipRounds;
@@ -66,7 +66,7 @@ public class Player {
     }
 
     public List<Location> getControlledLocations() {
-        return units.stream().map(BattleObject::getLocation).distinct().collect(Collectors.toList());
+        return units.stream().map(Unit::getLocation).distinct().collect(Collectors.toList());
     }
 
     public NT_Player nt() {
@@ -78,7 +78,7 @@ public class Player {
         player.stars = (short) goalHandler.getStars();
         player.name = serverPlayer.getName();
         player.points = (byte) goalHandler.getScore();
-        player.units = units.stream().map(BattleObject::nt).toArray(NT_Unit[]::new);
+        player.units = units.stream().map(Unit::nt).toArray(NT_Unit[]::new);
         return player;
     }
 
@@ -90,7 +90,7 @@ public class Player {
         return goalHandler;
     }
 
-    public List<BattleObject> getUnits() {
+    public List<Unit> getUnits() {
         return units;
     }
 

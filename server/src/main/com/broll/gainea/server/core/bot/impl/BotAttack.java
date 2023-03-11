@@ -9,8 +9,8 @@ import com.broll.gainea.server.core.bot.BotUtils;
 import com.broll.gainea.server.core.bot.strategy.BattleSimulation;
 import com.broll.gainea.server.core.bot.strategy.GoalStrategy;
 import com.broll.gainea.server.core.map.Location;
-import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.MapObject;
+import com.broll.gainea.server.core.objects.Unit;
 import com.broll.gainea.server.core.utils.LocationUtils;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -28,14 +28,14 @@ public class BotAttack extends BotOptionalAction<NT_Action_Attack, BotAttack.Att
     @Override
     public AttackOption score(NT_Action_Attack action) {
         Location location = BotUtils.getLocation(game, action.location);
-        List<BattleObject> usableUnits = usableUnits(action.units);
+        List<Unit> usableUnits = usableUnits(action.units);
         int fightType = getFighType(location);
         float winChance = getRequiredWinChance(fightType);
         int[] unitIds = Arrays.stream(action.units).mapToInt(it -> it.id).toArray();
         List<Location> attackFromOptions = usableUnits.stream().map(MapObject::getLocation).distinct().collect(Collectors.toList());
         for (Location attackFrom : attackFromOptions) {
-            List<BattleObject> groupedUnits = usableUnits.stream().filter(it -> it.getLocation() == attackFrom).collect(Collectors.toList());
-            List<BattleObject> fighters = BattleSimulation.calculateRequiredFighters(location, groupedUnits, winChance);
+            List<Unit> groupedUnits = usableUnits.stream().filter(it -> it.getLocation() == attackFrom).collect(Collectors.toList());
+            List<Unit> fighters = BattleSimulation.calculateRequiredFighters(location, groupedUnits, winChance);
             if (fighters != null) {
                 AttackOption option = new AttackOption((3 - fightType) * 5);
                 option.type = fightType;
@@ -60,14 +60,14 @@ public class BotAttack extends BotOptionalAction<NT_Action_Attack, BotAttack.Att
 
 
     public boolean keepAttacking(NT_Battle_Update update) {
-        List<BattleObject> attackers = BotUtils.getObjects(game, update.attackers);
-        List<BattleObject> defenders = BotUtils.getObjects(game, update.defenders);
+        List<Unit> attackers = BotUtils.getObjects(game, update.attackers);
+        List<Unit> defenders = BotUtils.getObjects(game, update.defenders);
         float winChance = getRequiredWinChance(getSelectedOption().type);
         return BattleSimulation.calculateCurrentWinChance(attackers, defenders) >= winChance;
     }
 
-    private List<BattleObject> usableUnits(NT_Unit[] ntUnits) {
-        List<BattleObject> units = BotUtils.getObjects(game, ntUnits);
+    private List<Unit> usableUnits(NT_Unit[] ntUnits) {
+        List<Unit> units = BotUtils.getObjects(game, ntUnits);
         return units.stream().filter(it -> {
             if (strategy.getMoveTargets().get(it) == it.getLocation()) {
                 return false;

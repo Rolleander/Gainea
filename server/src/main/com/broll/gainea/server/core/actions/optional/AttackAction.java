@@ -6,7 +6,7 @@ import com.broll.gainea.net.NT_Unit;
 import com.broll.gainea.server.core.actions.AbstractActionHandler;
 import com.broll.gainea.server.core.actions.ActionContext;
 import com.broll.gainea.server.core.map.Location;
-import com.broll.gainea.server.core.objects.BattleObject;
+import com.broll.gainea.server.core.objects.Unit;
 import com.broll.gainea.server.core.utils.PlayerUtils;
 
 import org.slf4j.Logger;
@@ -19,7 +19,7 @@ public class AttackAction extends AbstractActionHandler<NT_Action_Attack, Attack
     private final static Logger Log = LoggerFactory.getLogger(AttackAction.class);
 
     class Context extends ActionContext<NT_Action_Attack> {
-        List<BattleObject> attackers;
+        List<Unit> attackers;
         Location location;
 
         public Context(NT_Action_Attack action) {
@@ -27,9 +27,9 @@ public class AttackAction extends AbstractActionHandler<NT_Action_Attack, Attack
         }
     }
 
-    public Context attack(List<BattleObject> attackers, Location attackLocation) {
+    public Context attack(List<Unit> attackers, Location attackLocation) {
         NT_Action_Attack action = new NT_Action_Attack();
-        action.units = attackers.stream().map(BattleObject::nt).toArray(NT_Unit[]::new);
+        action.units = attackers.stream().map(Unit::nt).toArray(NT_Unit[]::new);
         action.location = (short) attackLocation.getNumber();
         Context context = new Context(action);
         context.attackers = attackers;
@@ -41,10 +41,10 @@ public class AttackAction extends AbstractActionHandler<NT_Action_Attack, Attack
     public void handleReaction(Context context, NT_Action_Attack action, NT_Reaction reaction) {
         game.getProcessingCore().execute(() -> {
             Log.trace("Handle attack reaction");
-            List<BattleObject> selectedAttackers = new ArrayList<>();
+            List<Unit> selectedAttackers = new ArrayList<>();
             Location from = null;
             for (int selection : reaction.options) {
-                BattleObject attacker = context.attackers.get(selection);
+                Unit attacker = context.attackers.get(selection);
                 if (from == null) {
                     from = attacker.getLocation();
                 } else if (attacker.getLocation() != from) {
@@ -54,14 +54,14 @@ public class AttackAction extends AbstractActionHandler<NT_Action_Attack, Attack
             }
             context.attackers.removeAll(selectedAttackers);
             if (!selectedAttackers.isEmpty()) {
-                selectedAttackers.forEach(BattleObject::attacked);
+                selectedAttackers.forEach(Unit::attacked);
                 startFight(selectedAttackers, context.location);
             }
         });
     }
 
-    private void startFight(List<BattleObject> attackers, Location attackLocation) {
-        List<BattleObject> defenders = PlayerUtils.getHostileArmy(player, attackLocation);
+    private void startFight(List<Unit> attackers, Location attackLocation) {
+        List<Unit> defenders = PlayerUtils.getHostileArmy(player, attackLocation);
         game.getBattleHandler().startBattle(attackers, defenders);
     }
 }

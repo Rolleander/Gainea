@@ -4,7 +4,7 @@ import com.broll.gainea.server.core.battle.BattleResult;
 import com.broll.gainea.server.core.bot.strategy.GoalStrategy;
 import com.broll.gainea.server.core.goals.GoalDifficulty;
 import com.broll.gainea.server.core.goals.RoundGoal;
-import com.broll.gainea.server.core.objects.BattleObject;
+import com.broll.gainea.server.core.objects.Unit;
 
 public class G_Survive extends RoundGoal {
     private final static int TARGET = 5;
@@ -14,7 +14,7 @@ public class G_Survive extends RoundGoal {
     }
 
     @Override
-    public void killed(BattleObject unit, BattleResult throughBattle) {
+    public void killed(Unit unit, BattleResult throughBattle) {
         if (unit.getOwner() == player) {
             resetRounds();
         }

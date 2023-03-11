@@ -1,8 +1,8 @@
 package com.broll.gainea.server.core.cards.impl.play;
 
 import com.broll.gainea.server.core.cards.Card;
-import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.Commander;
+import com.broll.gainea.server.core.objects.Unit;
 import com.broll.gainea.server.core.utils.SelectionUtils;
 import com.broll.gainea.server.core.utils.UnitControl;
 
@@ -19,8 +19,8 @@ public class C_KillSoldier extends Card {
 
     @Override
     protected void play() {
-        BattleObject unit = SelectionUtils.selectOtherPlayersUnit(game, owner, "Wählt eine Einheit aus die vernichtet werden soll", it -> it instanceof Commander == false);
-        if(unit!=null){
+        Unit unit = SelectionUtils.selectOtherPlayersUnit(game, owner, "Wählt eine Einheit aus die vernichtet werden soll", it -> it instanceof Commander == false);
+        if (unit != null) {
             UnitControl.kill(game, unit);
         }
     }

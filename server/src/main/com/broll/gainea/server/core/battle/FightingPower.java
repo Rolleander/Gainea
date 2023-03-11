@@ -2,7 +2,7 @@ package com.broll.gainea.server.core.battle;
 
 
 import com.broll.gainea.misc.RandomUtils;
-import com.broll.gainea.server.core.objects.BattleObject;
+import com.broll.gainea.server.core.objects.Unit;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,7 +15,7 @@ public class FightingPower {
     private int highestNumber = 6;
     private int numberPlus = 0;
 
-    public FightingPower(BattleObject unit) {
+    public FightingPower(Unit unit) {
         this(unit.getPower().getValue());
     }
 
@@ -54,12 +54,12 @@ public class FightingPower {
         return this;
     }
 
-    public FightingPower setHighestNumber(int highestNumber) {
+    public FightingPower withHighestNumber(int highestNumber) {
         this.highestNumber = highestNumber;
         return this;
     }
 
-    public FightingPower setLowestNumber(int lowestNumber) {
+    public FightingPower withLowestNumber(int lowestNumber) {
         this.lowestNumber = lowestNumber;
         return this;
     }

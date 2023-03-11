@@ -6,8 +6,8 @@ import com.broll.gainea.server.core.battle.FightResult;
 import com.broll.gainea.server.core.map.Area;
 import com.broll.gainea.server.core.map.AreaType;
 import com.broll.gainea.server.core.map.impl.GaineaMap;
-import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.Soldier;
+import com.broll.gainea.server.core.objects.Unit;
 import com.broll.gainea.server.core.objects.buffs.BuffableInt;
 import com.google.common.collect.Lists;
 
@@ -25,22 +25,22 @@ public class BattleTest {
                 fighter(1, 1)), Lists.newArrayList(fighter(8, 8)));
     }
 
-    private BattleObject fighter(int power, int health) {
-        BattleObject bo = new Soldier(null);
+    private Unit fighter(int power, int health) {
+        Unit bo = new Soldier(null);
         bo.setStats(power, health);
         return bo;
     }
 
-    private void fight(List<BattleObject> attackers, List<BattleObject> defenders) {
-        List<Integer> attackerHealth = attackers.stream().map(BattleObject::getHealth).map(BuffableInt::getValue).collect(Collectors.toList());
-        List<Integer> defenderHealth = defenders.stream().map(BattleObject::getHealth).map(BuffableInt::getValue).collect(Collectors.toList());
+    private void fight(List<Unit> attackers, List<Unit> defenders) {
+        List<Integer> attackerHealth = attackers.stream().map(Unit::getHealth).map(BuffableInt::getValue).collect(Collectors.toList());
+        List<Integer> defenderHealth = defenders.stream().map(Unit::getHealth).map(BuffableInt::getValue).collect(Collectors.toList());
         System.out.println("Attackers: " + attackers.stream().map(it -> it.getPower().getValue() + "/" + it.getHealth().getValue()).collect(Collectors.toList()));
         System.out.println("Defenders: " + defenders.stream().map(it -> it.getPower().getValue() + "/" + it.getHealth().getValue()).collect(Collectors.toList()));
         FightResult result = battle(attackers, defenders);
         System.out.println("Attacker Rolls: " + result.getAttackRolls());
         System.out.println("Defender Rolls: " + result.getDefenderRolls());
-        List<Integer> attackerHealth2 = attackers.stream().map(BattleObject::getHealth).map(BuffableInt::getValue).collect(Collectors.toList());
-        List<Integer> defenderHealth2 = defenders.stream().map(BattleObject::getHealth).map(BuffableInt::getValue).collect(Collectors.toList());
+        List<Integer> attackerHealth2 = attackers.stream().map(Unit::getHealth).map(BuffableInt::getValue).collect(Collectors.toList());
+        List<Integer> defenderHealth2 = defenders.stream().map(Unit::getHealth).map(BuffableInt::getValue).collect(Collectors.toList());
         List<Integer> attackerDamage = new ArrayList<>();
         List<Integer> defenderDamage = new ArrayList<>();
         for (int i = 0; i < attackerHealth.size(); i++) {
@@ -51,12 +51,12 @@ public class BattleTest {
         }
         System.out.println("Damage to Attackers: " + attackerDamage);
         System.out.println("Damage to Defenders: " + defenderDamage);
-        if (attackers.stream().map(BattleObject::isAlive).reduce(false, Boolean::logicalOr) && defenders.stream().map(BattleObject::isAlive).reduce(false, Boolean::logicalOr)) {
-            fight(attackers.stream().filter(BattleObject::isAlive).collect(Collectors.toList()), defenders.stream().filter(BattleObject::isAlive).collect(Collectors.toList()));
+        if (attackers.stream().map(Unit::isAlive).reduce(false, Boolean::logicalOr) && defenders.stream().map(Unit::isAlive).reduce(false, Boolean::logicalOr)) {
+            fight(attackers.stream().filter(Unit::isAlive).collect(Collectors.toList()), defenders.stream().filter(Unit::isAlive).collect(Collectors.toList()));
         }
     }
 
-    private FightResult battle(List<BattleObject> attackers, List<BattleObject> defenders) {
+    private FightResult battle(List<Unit> attackers, List<Unit> defenders) {
         Area area = new Area(GaineaMap.Areas.DUNKLESMEER);
         area.setType(AreaType.LAKE);
         BattleContext context = new BattleContext(area, attackers, defenders);

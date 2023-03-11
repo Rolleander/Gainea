@@ -1,18 +1,17 @@
 package com.broll.gainea.server.core.battle;
 
 import com.broll.gainea.net.NT_Battle_Damage;
-import com.broll.gainea.server.core.objects.BattleObject;
-
-import org.checkerframework.checker.units.qual.A;
+import com.broll.gainea.server.core.objects.Unit;
 
 import java.util.ArrayList;
 import java.util.List;
+
 public class FightResult {
 
     private List<Integer> attackRolls;
     private List<Integer> defenderRolls;
-    private List<BattleObject> deadAttackers;
-    private List<BattleObject> deadDefenders;
+    private List<Unit> deadAttackers;
+    private List<Unit> deadDefenders;
     private List<AttackDamage> damage = new ArrayList<>();
 
     public FightResult(List<Integer> attackRolls, List<Integer> defenderRolls) {
@@ -20,7 +19,7 @@ public class FightResult {
         this.defenderRolls = defenderRolls;
     }
 
-    public void damage(BattleObject source, BattleObject target, boolean lethal){
+    public void damage(Unit source, Unit target, boolean lethal) {
         AttackDamage damage = new AttackDamage();
         damage.source = source;
         damage.target = target;
@@ -28,7 +27,7 @@ public class FightResult {
         this.damage.add(damage);
     }
 
-    public void killed(List<BattleObject> deadAttackers, List<BattleObject> deadDefenders){
+    public void killed(List<Unit> deadAttackers, List<Unit> deadDefenders) {
         this.deadAttackers = deadAttackers;
         this.deadDefenders = deadDefenders;
     }
@@ -37,11 +36,11 @@ public class FightResult {
         return damage;
     }
 
-    public List<BattleObject> getDeadAttackers() {
+    public List<Unit> getDeadAttackers() {
         return deadAttackers;
     }
 
-    public List<BattleObject> getDeadDefenders() {
+    public List<Unit> getDeadDefenders() {
         return deadDefenders;
     }
 
@@ -53,12 +52,12 @@ public class FightResult {
         return defenderRolls;
     }
 
-    public class AttackDamage{
-        public BattleObject source;
-        public BattleObject target;
+    public class AttackDamage {
+        public Unit source;
+        public Unit target;
         public boolean lethalHit;
 
-        public NT_Battle_Damage nt(){
+        public NT_Battle_Damage nt() {
             NT_Battle_Damage nt = new NT_Battle_Damage();
             nt.source = source.getId();
             nt.target = target.getId();

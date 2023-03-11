@@ -1,7 +1,7 @@
 package com.broll.gainea.server.core.cards.impl.play;
 
 import com.broll.gainea.server.core.cards.Card;
-import com.broll.gainea.server.core.objects.BattleObject;
+import com.broll.gainea.server.core.objects.Unit;
 import com.broll.gainea.server.core.objects.monster.GodDragon;
 import com.broll.gainea.server.core.objects.monster.Monster;
 import com.broll.gainea.server.core.utils.SelectionUtils;
@@ -19,7 +19,7 @@ public class C_KillMonster extends Card {
 
     @Override
     protected void play() {
-        BattleObject monster = SelectionUtils.selectWildMonster(game, "Wählt ein Monster das vernichtet werden soll", it -> it instanceof GodDragon == false);
+        Unit monster = SelectionUtils.selectWildMonster(game, "Wählt ein Monster das vernichtet werden soll", it -> it instanceof GodDragon == false);
         UnitControl.kill(game, monster);
     }
 

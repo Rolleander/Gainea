@@ -6,7 +6,7 @@ import com.broll.gainea.server.core.goals.CustomOccupyGoal;
 import com.broll.gainea.server.core.goals.GoalDifficulty;
 import com.broll.gainea.server.core.map.Area;
 import com.broll.gainea.server.core.map.Location;
-import com.broll.gainea.server.core.objects.BattleObject;
+import com.broll.gainea.server.core.objects.Unit;
 import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.server.core.utils.LocationUtils;
 import com.broll.gainea.server.core.utils.PlayerUtils;
@@ -21,7 +21,7 @@ public class G_MoveUnit extends CustomOccupyGoal {
 
     private Area from, to;
     private int distance;
-    private List<BattleObject> walkingUnits = new ArrayList<>();
+    private List<Unit> walkingUnits = new ArrayList<>();
 
     public G_MoveUnit() {
         this(GoalDifficulty.EASY, 6);
@@ -72,7 +72,7 @@ public class G_MoveUnit extends CustomOccupyGoal {
 
     @Override
     public void check() {
-        walkingUnits.removeIf(BattleObject::isDead);
+        walkingUnits.removeIf(Unit::isDead);
         walkingUnits.addAll(PlayerUtils.getUnits(player, from));
         if (walkingUnits.stream().anyMatch(it -> it.getLocation() == to)) {
             updateProgression(distance);

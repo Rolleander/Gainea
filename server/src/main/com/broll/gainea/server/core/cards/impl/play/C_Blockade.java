@@ -3,7 +3,7 @@ package com.broll.gainea.server.core.cards.impl.play;
 import com.broll.gainea.server.core.cards.Card;
 import com.broll.gainea.server.core.map.Area;
 import com.broll.gainea.server.core.map.Location;
-import com.broll.gainea.server.core.objects.BattleObject;
+import com.broll.gainea.server.core.objects.Unit;
 import com.broll.gainea.server.core.objects.buffs.BuffType;
 import com.broll.gainea.server.core.objects.buffs.IntBuff;
 import com.broll.gainea.server.core.utils.UnitControl;
@@ -36,7 +36,7 @@ public class C_Blockade extends Card {
         game.getBuffProcessor().timeoutBuff(buff, ROUNDS);
     }
 
-    private class Blockade extends BattleObject {
+    private class Blockade extends Unit {
         public Blockade() {
             super(null);
             setIcon(127);

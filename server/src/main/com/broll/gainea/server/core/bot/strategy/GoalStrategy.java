@@ -4,7 +4,7 @@ import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.bot.BotUtils;
 import com.broll.gainea.server.core.goals.Goal;
 import com.broll.gainea.server.core.map.Location;
-import com.broll.gainea.server.core.objects.BattleObject;
+import com.broll.gainea.server.core.objects.Unit;
 import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.server.core.utils.PlayerUtils;
 
@@ -24,7 +24,7 @@ public class GoalStrategy {
     private Player player;
     private GameContainer game;
     private StrategyConstants constants;
-    private List<BattleObject> units = new ArrayList<>();
+    private List<Unit> units = new ArrayList<>();
     private Set<Location> targetLocations = new HashSet<>();
     private IPrepareStrategy prepareStrategy;
     private int requiredUnits;
@@ -52,24 +52,24 @@ public class GoalStrategy {
         return spreadUnits;
     }
 
-    public boolean allowFighting(BattleObject unit) {
+    public boolean allowFighting(Unit unit) {
         Location location = unit.getLocation();
         if (!targetLocations.contains(location)) {
             return true;
         }
         int lowestOccupation = getLowesOccupations();
-        List<BattleObject> occupiers = getOccupyingUnits(location);
+        List<Unit> occupiers = getOccupyingUnits(location);
         int occupierCount = occupiers.size();
         int expendable = occupierCount - Math.max(1, lowestOccupation);
         int index = occupiers.indexOf(unit);
         return index < expendable && expendable > 0;
     }
 
-    private List<BattleObject> getOccupyingUnits(Location location) {
+    private List<Unit> getOccupyingUnits(Location location) {
         return units.stream().filter(it -> it.getLocation() == location).collect(Collectors.toList());
     }
 
-    public List<BattleObject> getUnits() {
+    public List<Unit> getUnits() {
         return units;
     }
 
@@ -103,15 +103,15 @@ public class GoalStrategy {
         return units.size() < requiredUnits && !getTargetLocations().isEmpty();
     }
 
-    public void strategizeUnit(BattleObject unit) {
+    public void strategizeUnit(Unit unit) {
         this.units.add(unit);
     }
 
-    public int getClosestDistance(BattleObject unit, Location location) {
+    public int getClosestDistance(Unit unit, Location location) {
         return BotUtils.getBestPath(unit, location, getTargetLocations()).getValue();
     }
 
-    public void scoreLocations(BattleObject unit, Map<Location, MutablePair<GoalStrategy, Integer>> locationScores) {
+    public void scoreLocations(Unit unit, Map<Location, MutablePair<GoalStrategy, Integer>> locationScores) {
         for (Location location : locationScores.keySet()) {
             MutablePair<GoalStrategy, Integer> entry = locationScores.get(location);
             int score = getClosestDistance(unit, location);

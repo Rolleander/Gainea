@@ -6,7 +6,7 @@ import com.broll.gainea.server.core.bot.impl.BotSelect;
 import com.broll.gainea.server.core.bot.strategy.BotStrategy;
 import com.broll.gainea.server.core.bot.strategy.ICardStrategy;
 import com.broll.gainea.server.core.cards.Card;
-import com.broll.gainea.server.core.objects.BattleObject;
+import com.broll.gainea.server.core.objects.Unit;
 import com.broll.gainea.server.core.utils.SelectionUtils;
 import com.broll.gainea.server.core.utils.UnitControl;
 
@@ -22,7 +22,7 @@ public class C_Buff extends Card implements ICardStrategy {
 
     @Override
     protected void play() {
-        BattleObject unit = SelectionUtils.selectPlayerUnit(game, owner, "Welche Einheit soll gestärkt werden?");
+        Unit unit = SelectionUtils.selectPlayerUnit(game, owner, "Welche Einheit soll gestärkt werden?");
         if (unit != null) {
             unit.getPower().addValue(1);
             unit.getHealth().addValue(1);

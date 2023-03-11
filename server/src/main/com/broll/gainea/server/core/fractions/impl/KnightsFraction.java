@@ -6,9 +6,9 @@ import com.broll.gainea.server.core.fractions.Fraction;
 import com.broll.gainea.server.core.fractions.FractionDescription;
 import com.broll.gainea.server.core.fractions.FractionType;
 import com.broll.gainea.server.core.map.AreaType;
-import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.Commander;
 import com.broll.gainea.server.core.objects.Soldier;
+import com.broll.gainea.server.core.objects.Unit;
 import com.broll.gainea.server.core.utils.LocationUtils;
 
 import java.util.List;
@@ -33,8 +33,8 @@ public class KnightsFraction extends Fraction {
     @Override
     public FightingPower calcFightingPower(Soldier soldier, BattleContext context) {
         FightingPower power = super.calcFightingPower(soldier, context);
-        List<BattleObject> army = context.getFightingMates(soldier);
-        List<BattleObject> opponents = context.getOpposingFightingMates(soldier);
+        List<Unit> army = context.getFightingArmy(soldier);
+        List<Unit> opponents = context.getOpposingFightingArmy(soldier);
         if (army.size() < opponents.size()) {
             // smaller army +1 Z
             power.changeNumberPlus(1);

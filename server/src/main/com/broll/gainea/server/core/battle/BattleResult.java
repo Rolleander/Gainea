@@ -1,7 +1,7 @@
 package com.broll.gainea.server.core.battle;
 
 import com.broll.gainea.server.core.map.Location;
-import com.broll.gainea.server.core.objects.BattleObject;
+import com.broll.gainea.server.core.objects.Unit;
 import com.broll.gainea.server.core.player.Player;
 import com.google.common.collect.Lists;
 
@@ -79,7 +79,7 @@ public class BattleResult extends BattleContext {
         return !attackersWon() && !defendersWon();
     }
 
-    public List<BattleObject> getWinnerUnits() {
+    public List<Unit> getWinnerUnits() {
         if (attackersWon()) {
             return getAttackers();
         } else if (defendersWon()) {
@@ -88,7 +88,7 @@ public class BattleResult extends BattleContext {
         return new ArrayList<>();
     }
 
-    public List<BattleObject> getLoserUnits() {
+    public List<Unit> getLoserUnits() {
         if (attackersWon()) {
             return getDefenders();
         } else if (defendersWon()) {
@@ -97,7 +97,7 @@ public class BattleResult extends BattleContext {
         return new ArrayList<>();
     }
 
-    public List<BattleObject> getWinnerSurvivingUnits() {
+    public List<Unit> getWinnerSurvivingUnits() {
         if (attackersWon()) {
             return getAliveAttackers();
         } else if (defendersWon()) {
@@ -106,7 +106,7 @@ public class BattleResult extends BattleContext {
         return new ArrayList<>();
     }
 
-    public List<BattleObject> getLoserSurvivingUnits() {
+    public List<Unit> getLoserSurvivingUnits() {
         if (attackersWon()) {
             return getAliveDefenders();
         } else if (defendersWon()) {
@@ -115,7 +115,7 @@ public class BattleResult extends BattleContext {
         return new ArrayList<>();
     }
 
-    public List<BattleObject> getWinnerDeadUnits() {
+    public List<Unit> getWinnerDeadUnits() {
         if (attackersWon()) {
             return getKilledAttackers();
         } else if (defendersWon()) {
@@ -124,7 +124,7 @@ public class BattleResult extends BattleContext {
         return new ArrayList<>();
     }
 
-    public List<BattleObject> getLoserDeadUnits() {
+    public List<Unit> getLoserDeadUnits() {
         if (attackersWon()) {
             return getKilledDefenders();
         } else if (defendersWon()) {

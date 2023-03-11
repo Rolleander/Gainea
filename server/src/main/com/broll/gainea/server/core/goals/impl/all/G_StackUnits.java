@@ -6,9 +6,8 @@ import com.broll.gainea.server.core.bot.strategy.GoalStrategy;
 import com.broll.gainea.server.core.goals.CustomOccupyGoal;
 import com.broll.gainea.server.core.goals.GoalDifficulty;
 import com.broll.gainea.server.core.map.Area;
-import com.broll.gainea.server.core.objects.BattleObject;
+import com.broll.gainea.server.core.objects.Unit;
 import com.broll.gainea.server.core.player.Player;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 public class G_StackUnits extends CustomOccupyGoal {
@@ -32,7 +31,7 @@ public class G_StackUnits extends CustomOccupyGoal {
 
     @Override
     public void check() {
-        int playerUnits = (int) area.getInhabitants().stream().filter(it -> it.getOwner() == player && it instanceof BattleObject).count();
+        int playerUnits = (int) area.getInhabitants().stream().filter(it -> it.getOwner() == player && it instanceof Unit).count();
         updateProgression(playerUnits);
         if (playerUnits >= COUNT) {
             success();

@@ -1,7 +1,7 @@
 package com.broll.gainea.server.core.cards.impl.play;
 
 import com.broll.gainea.server.core.cards.Card;
-import com.broll.gainea.server.core.objects.BattleObject;
+import com.broll.gainea.server.core.objects.Unit;
 import com.broll.gainea.server.core.utils.UnitControl;
 
 public class C_HealingSpell extends Card {
@@ -16,7 +16,7 @@ public class C_HealingSpell extends Card {
 
     @Override
     protected void play() {
-        owner.getUnits().stream().filter(BattleObject::isHurt).forEach(unit->{
+        owner.getUnits().stream().filter(Unit::isHurt).forEach(unit -> {
             UnitControl.heal(game, unit, 10000);
         });
     }

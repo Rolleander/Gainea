@@ -2,7 +2,7 @@ package com.broll.gainea.server.core.cards.impl.play;
 
 import com.broll.gainea.server.core.cards.Card;
 import com.broll.gainea.server.core.map.Location;
-import com.broll.gainea.server.core.objects.BattleObject;
+import com.broll.gainea.server.core.objects.Unit;
 import com.broll.gainea.server.core.objects.monster.Monster;
 import com.broll.gainea.server.core.objects.monster.MonsterActivity;
 import com.broll.gainea.server.core.objects.monster.MonsterBehavior;
@@ -34,7 +34,7 @@ public class C_MonsterAttack extends Card {
         monster.setBehavior(MonsterBehavior.RANDOM);
         monster.setActivity(MonsterActivity.SOMETIMES);
         Location target = selectHandler.selectLocation("Wählt die feindliche Truppe", new ArrayList<>(PlayerUtils.getHostileLocations(game, owner)));
-        List<BattleObject> hostileArmy = PlayerUtils.getHostileArmy(owner, target);
+        List<Unit> hostileArmy = PlayerUtils.getHostileArmy(owner, target);
         UnitControl.spawn(game, monster, target);
         game.getBattleHandler().startBattle(Lists.newArrayList(monster), hostileArmy);
     }

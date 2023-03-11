@@ -8,7 +8,7 @@ import com.broll.gainea.server.core.actions.optional.CardAction;
 import com.broll.gainea.server.core.actions.optional.MoveUnitAction;
 import com.broll.gainea.server.core.cards.Card;
 import com.broll.gainea.server.core.map.Location;
-import com.broll.gainea.server.core.objects.BattleObject;
+import com.broll.gainea.server.core.objects.Unit;
 import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.server.core.utils.PlayerUtils;
 
@@ -43,9 +43,9 @@ public class TurnBuilder {
         List<ActionContext> actions = new ArrayList<>();
         AttackAction attackHandler = actionHandlers.getHandler(AttackAction.class);
         MoveUnitAction moveHandler = actionHandlers.getHandler(MoveUnitAction.class);
-        MultiValueMap<Location, BattleObject> moveableTo = new MultiValueMap<>();
-        MultiValueMap<Location, BattleObject> attackableTo = new MultiValueMap<>();
-        player.getUnits().stream().filter(BattleObject::isControllable).forEach(unit -> {
+        MultiValueMap<Location, Unit> moveableTo = new MultiValueMap<>();
+        MultiValueMap<Location, Unit> attackableTo = new MultiValueMap<>();
+        player.getUnits().stream().filter(Unit::isControllable).forEach(unit -> {
             List<Location> walkableLocations = unit.getLocation().getConnectedLocations().stream().filter(unit::canMoveTo).collect(Collectors.toList());
             if (unit.hasRemainingAttack()) {
                 List<Location> attackableLocations = walkableLocations.stream().filter(it -> PlayerUtils.hasHostileArmy(player, it)).collect(Collectors.toList());
@@ -56,8 +56,8 @@ public class TurnBuilder {
                 walkableLocations.forEach(it -> moveableTo.put(it, unit));
             }
         });
-        moveableTo.keySet().forEach(moveTo -> actions.add(moveHandler.move((List<BattleObject>) moveableTo.getCollection(moveTo), moveTo)));
-        attackableTo.keySet().forEach(attackTo -> actions.add(attackHandler.attack((List<BattleObject>) attackableTo.getCollection(attackTo), attackTo)));
+        moveableTo.keySet().forEach(moveTo -> actions.add(moveHandler.move((List<Unit>) moveableTo.getCollection(moveTo), moveTo)));
+        attackableTo.keySet().forEach(attackTo -> actions.add(attackHandler.attack((List<Unit>) attackableTo.getCollection(attackTo), attackTo)));
         return actions;
     }
 

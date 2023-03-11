@@ -5,8 +5,8 @@ import com.broll.gainea.net.NT_Unit;
 import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.goals.Goal;
 import com.broll.gainea.server.core.map.Location;
-import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.MapObject;
+import com.broll.gainea.server.core.objects.Unit;
 import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.server.core.utils.LocationUtils;
 
@@ -27,21 +27,21 @@ public class BotUtils {
         return game.getMap().getLocation(id);
     }
 
-    public static List<BattleObject> getObjects(GameContainer game, NT_Unit[] units) {
+    public static List<Unit> getObjects(GameContainer game, NT_Unit[] units) {
         return Arrays.stream(units).map(it -> BotUtils.getObject(game, it)).collect(Collectors.toList());
     }
 
-    public static BattleObject getObject(GameContainer game, NT_Unit unit) {
+    public static Unit getObject(GameContainer game, NT_Unit unit) {
         if (unit.owner == NT_Unit.NO_OWNER) {
             for (MapObject object : game.getObjects()) {
-                if (object.getId() == unit.id && object instanceof BattleObject) {
-                    return (BattleObject) object;
+                if (object.getId() == unit.id && object instanceof Unit) {
+                    return (Unit) object;
                 }
             }
         }
         for (Player player : game.getAllPlayers()) {
             if (player.getServerPlayer().getId() == unit.owner) {
-                for (BattleObject object : player.getUnits()) {
+                for (Unit object : player.getUnits()) {
                     if (object.getId() == unit.id) {
                         return object;
                     }
@@ -98,7 +98,7 @@ public class BotUtils {
         return index;
     }
 
-    public static Pair<Location, Integer> getBestPath(Player player, BattleObject object, Collection<Location> fromOptions, Location to) {
+    public static Pair<Location, Integer> getBestPath(Player player, Unit object, Collection<Location> fromOptions, Location to) {
         int distance = Integer.MAX_VALUE;
         int units = 0;
         Location location = fromOptions.iterator().next();
@@ -117,7 +117,7 @@ public class BotUtils {
         return Pair.of(location, distance);
     }
 
-    public static Pair<Location, Integer> getBestPath(BattleObject object, Location from, Collection<Location> toOptions) {
+    public static Pair<Location, Integer> getBestPath(Unit object, Location from, Collection<Location> toOptions) {
         int distance = Integer.MAX_VALUE;
         int units = 0;
         Location location = toOptions.iterator().next();

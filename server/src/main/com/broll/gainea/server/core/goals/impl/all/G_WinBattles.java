@@ -5,7 +5,7 @@ import com.broll.gainea.server.core.bot.strategy.GoalStrategy;
 import com.broll.gainea.server.core.goals.Goal;
 import com.broll.gainea.server.core.goals.GoalDifficulty;
 import com.broll.gainea.server.core.map.Location;
-import com.broll.gainea.server.core.objects.BattleObject;
+import com.broll.gainea.server.core.objects.Unit;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -45,7 +45,7 @@ public class G_WinBattles extends Goal {
         strategy.setSpreadUnits(false);
         strategy.setPrepareStrategy(() -> {
             Set<Location> locations = game.getAllPlayers().stream().filter(it -> it != player)
-                    .flatMap(it -> it.getUnits().stream()).map(BattleObject::getLocation).collect(Collectors.toSet());
+                    .flatMap(it -> it.getUnits().stream()).map(Unit::getLocation).collect(Collectors.toSet());
             strategy.updateTargets(locations);
             strategy.setRequiredUnits((winTarget - wins) * 3);
         });

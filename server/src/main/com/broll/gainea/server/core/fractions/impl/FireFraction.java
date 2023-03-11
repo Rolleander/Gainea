@@ -6,9 +6,9 @@ import com.broll.gainea.server.core.fractions.Fraction;
 import com.broll.gainea.server.core.fractions.FractionDescription;
 import com.broll.gainea.server.core.fractions.FractionType;
 import com.broll.gainea.server.core.map.AreaType;
-import com.broll.gainea.server.core.objects.BattleObject;
 import com.broll.gainea.server.core.objects.Commander;
 import com.broll.gainea.server.core.objects.Soldier;
+import com.broll.gainea.server.core.objects.Unit;
 import com.broll.gainea.server.core.objects.monster.Monster;
 import com.broll.gainea.server.core.utils.LocationUtils;
 import com.broll.gainea.server.core.utils.SelectionUtils;
@@ -81,7 +81,7 @@ public class FireFraction extends Fraction {
 
         @Override
         protected void play() {
-            BattleObject unit = SelectionUtils.selectEnemyUnit(game, owner, "Welcher Einheit soll Schaden zugeführt werden?");
+            Unit unit = SelectionUtils.selectEnemyUnit(game, owner, "Welcher Einheit soll Schaden zugeführt werden?");
             if (unit != null) {
                 UnitControl.damage(game, unit, 1);
             }

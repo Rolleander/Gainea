@@ -3,7 +3,7 @@ package com.broll.gainea.server.core.cards.impl.play;
 import com.broll.gainea.server.core.cards.Card;
 import com.broll.gainea.server.core.map.Area;
 import com.broll.gainea.server.core.map.Location;
-import com.broll.gainea.server.core.objects.BattleObject;
+import com.broll.gainea.server.core.objects.Unit;
 import com.broll.gainea.server.core.objects.monster.Monster;
 import com.broll.gainea.server.core.utils.SelectionUtils;
 import com.broll.gainea.server.core.utils.UnitControl;
@@ -23,7 +23,7 @@ public class C_MoveMonster extends Card {
 
     @Override
     protected void play() {
-        BattleObject monster = SelectionUtils.selectWildMonster(game, "Wählt ein Monster das bewegt werden soll");
+        Unit monster = SelectionUtils.selectWildMonster(game, "Wählt ein Monster das bewegt werden soll");
         List<Area> locations = game.getMap().getAllAreas().stream().filter(Area::isFree).collect(Collectors.toList());
         Location target = selectHandler.selectLocation("Wählt das Reiseziel", locations);
         if (target != null) {
