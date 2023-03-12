@@ -1,15 +1,14 @@
 
-- buffs im kampf bessr sehen
+- buffs im kampf besser sehen
 
 
 cards:
 - swap place with enemy army ?
 - teleport to random field of selected continent
 - alle einheiten auf einen platz
-- einheit bekehren
 
 
-karten:
+unbenutzte karten:
 
 >4  assassine
 >27 buch

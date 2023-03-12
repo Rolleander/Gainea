@@ -20,6 +20,12 @@ public final class SelectionUtils {
 
     }
 
+    public static Unit selectUnit(GameContainer game, Player selectingPlayer, String text, List<Unit> units) {
+        Set<Location> locations = new HashSet<>();
+        locations.addAll(units.stream().map(MapObject::getLocation).collect(Collectors.toList()));
+        return selectUnitFromLocations(game, new ArrayList<>(locations), units::contains, text);
+    }
+
     public static Unit selectPlayerUnit(GameContainer game, Player player, String text) {
         return selectPlayerUnit(game, player, text, it -> true);
     }
@@ -103,4 +109,6 @@ public final class SelectionUtils {
         SelectChoiceAction handler = game.getReactionHandler().getActionHandlers().getHandler(SelectChoiceAction.class);
         return selection.get(handler.selectObject(selectingPlayer, text, selection.stream().map(MapObject::nt).collect(Collectors.toList())));
     }
+
+
 }

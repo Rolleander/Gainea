@@ -1,10 +1,12 @@
 package com.broll.gainea.server.core.fractions.impl;
 
 import com.broll.gainea.server.core.actions.ActionHandlers;
+import com.broll.gainea.server.core.battle.FightingPower;
 import com.broll.gainea.server.core.cards.Card;
 import com.broll.gainea.server.core.fractions.Fraction;
 import com.broll.gainea.server.core.fractions.FractionDescription;
 import com.broll.gainea.server.core.fractions.FractionType;
+import com.broll.gainea.server.core.map.Area;
 import com.broll.gainea.server.core.map.AreaType;
 import com.broll.gainea.server.core.objects.Soldier;
 import com.broll.gainea.server.core.objects.Unit;
@@ -25,8 +27,16 @@ public class FireFraction extends Fraction {
     protected FractionDescription description() {
         FractionDescription desc = new FractionDescription("");
         desc.plus("Erhält jede dritte Runde eine Feuerregen-Karte\n(Verursacht 1 Schaden an einer beliebigen feindlichen Einheit)");
+        desc.plus("Zahl +1 auf Wüsten");
         desc.contra("Erhält keine Belohnung für besiegte Monster auf Schnee oder Seen");
         return desc;
+    }
+
+    @Override
+    protected void powerMutatorArea(FightingPower power, Area area) {
+        if (area.getType() == AreaType.DESERT) {
+            power.changeNumberPlus(1);
+        }
     }
 
     @Override

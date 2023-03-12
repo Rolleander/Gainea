@@ -9,6 +9,7 @@ import com.broll.gainea.server.core.objects.MapObject;
 import com.broll.gainea.server.core.objects.Unit;
 import com.broll.gainea.server.core.player.Player;
 
+import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,6 +55,11 @@ public class GameUpdateReceiverProxy implements IGameUpdateReceiver {
 
     private boolean isNotRemoved(IGameUpdateReceiver receiver) {
         return !removed.contains(receiver);
+    }
+
+    @Override
+    public void battleIntention(BattleContext context, MutableBoolean cancelFight) {
+        run(receiver -> receiver.battleIntention(context, cancelFight));
     }
 
     @Override

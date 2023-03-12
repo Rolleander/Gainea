@@ -9,9 +9,16 @@ import com.broll.gainea.server.core.objects.MapObject;
 import com.broll.gainea.server.core.objects.Unit;
 import com.broll.gainea.server.core.player.Player;
 
+import org.apache.commons.lang3.mutable.MutableBoolean;
+
 import java.util.List;
 
 public abstract class GameUpdateReceiverAdapter implements IGameUpdateReceiver {
+
+    @Override
+    public void battleIntention(BattleContext context, MutableBoolean cancelFight) {
+        
+    }
 
     @Override
     public void battleBegin(BattleContext context, RollManipulator rollManipulator) {

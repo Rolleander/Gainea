@@ -18,6 +18,7 @@ import com.broll.gainea.server.core.utils.GameUtils;
 import com.broll.gainea.server.core.utils.ProcessingUtils;
 import com.broll.gainea.server.core.utils.UnitControl;
 
+import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,6 +40,7 @@ public class BattleHandler {
     private RollManipulator rollManipulator;
     private BattleContext context;
     private boolean allowRetreat = true;
+
 
     public BattleHandler(GameContainer gameContainer, ReactionActions reactionResult) {
         this.game = gameContainer;
@@ -70,6 +72,12 @@ public class BattleHandler {
 
     private void prepareFight() {
         Log.trace("Prepare fight");
+        MutableBoolean cancelFight = new MutableBoolean(false);
+        game.getUpdateReceiver().battleIntention(context, cancelFight);
+        if (cancelFight.isTrue()) {
+            Log.info("Battle cancelled from receiver");
+            return;
+        }
         battleActive = true;
         //attackers are always of one owner
         if (context.isNeutralAttacker()) {
@@ -92,12 +100,12 @@ public class BattleHandler {
 
     private void sendFightStart() {
         Log.trace("Start fight");
+        game.getUpdateReceiver().battleBegin(context, rollManipulator);
         NT_Battle_Start start = new NT_Battle_Start();
         start.attackers = context.getAttackers().stream().sorted(sortById()).map(Unit::nt).toArray(NT_Unit[]::new);
         start.defenders = context.getDefenders().stream().sorted(sortById()).map(Unit::nt).toArray(NT_Unit[]::new);
         start.allowRetreat = allowRetreat;
         start.location = context.getLocation().getNumber();
-        game.getUpdateReceiver().battleBegin(context, rollManipulator);
         if (!context.isNeutralAttacker()) {
             start.attacker = context.getAttackingPlayer().getServerPlayer().getId();
         }
