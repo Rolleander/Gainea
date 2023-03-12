@@ -7,7 +7,6 @@ import com.broll.gainea.server.core.battle.FightingPower;
 import com.broll.gainea.server.core.fractions.Fraction;
 import com.broll.gainea.server.core.fractions.FractionDescription;
 import com.broll.gainea.server.core.fractions.FractionType;
-import com.broll.gainea.server.core.objects.Commander;
 import com.broll.gainea.server.core.objects.Soldier;
 
 public class MercenaryFraction extends Fraction {
@@ -56,13 +55,13 @@ public class MercenaryFraction extends Fraction {
 
 
     @Override
-    public Commander createCommander() {
-        Commander commander = new Commander(owner);
+    public Soldier createCommander() {
+        Soldier commander = new Soldier(owner);
+        commander.setCommander(true);
         commander.setStats(COMMANDER_POWER, COMMANDER_HEALTH);
         commander.setName("Söldnerkommandant");
         commander.setIcon(5);
         return commander;
     }
-
-
+    
 }

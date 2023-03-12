@@ -8,11 +8,20 @@ import com.broll.gainea.server.core.player.Player;
 public class Soldier extends Unit {
 
     private Fraction fraction;
+    private boolean commander;
 
     public Soldier(Player owner) {
         super(owner);
         this.fraction = owner.getFraction();
         setIcon(4);
+    }
+
+    public void setCommander(boolean commander) {
+        this.commander = commander;
+    }
+
+    public boolean isCommander() {
+        return commander;
     }
 
     @Override

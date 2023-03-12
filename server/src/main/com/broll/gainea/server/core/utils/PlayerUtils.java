@@ -2,8 +2,8 @@ package com.broll.gainea.server.core.utils;
 
 import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.map.Location;
-import com.broll.gainea.server.core.objects.Commander;
 import com.broll.gainea.server.core.objects.MapObject;
+import com.broll.gainea.server.core.objects.Soldier;
 import com.broll.gainea.server.core.objects.Unit;
 import com.broll.gainea.server.core.player.Player;
 
@@ -36,8 +36,12 @@ public final class PlayerUtils {
         return game.getAllPlayers().stream().filter(it -> it != player);
     }
 
-    public static Optional<Commander> getCommander(Player player) {
-        return player.getUnits().stream().filter(unit -> unit instanceof Commander).map(it -> (Commander) it).findFirst();
+    public static Optional<Soldier> getCommander(Player player) {
+        return player.getUnits().stream().filter(PlayerUtils::isCommander).map(it -> (Soldier) it).findFirst();
+    }
+
+    public static boolean isCommander(Unit unit) {
+        return unit instanceof Soldier && ((Soldier) unit).isCommander();
     }
 
     public static List<Unit> getUnits(Player player, Location location) {

@@ -7,7 +7,6 @@ import com.broll.gainea.server.core.battle.FightingPower;
 import com.broll.gainea.server.core.fractions.Fraction;
 import com.broll.gainea.server.core.fractions.FractionDescription;
 import com.broll.gainea.server.core.fractions.FractionType;
-import com.broll.gainea.server.core.objects.Commander;
 import com.broll.gainea.server.core.objects.Soldier;
 import com.broll.gainea.server.core.objects.Unit;
 import com.broll.gainea.server.core.objects.monster.Monster;
@@ -58,8 +57,9 @@ public class MonkFraction extends Fraction {
 
 
     @Override
-    public Commander createCommander() {
-        Commander commander = new Commander(owner);
+    public Soldier createCommander() {
+        Soldier commander = new Soldier(owner);
+        commander.setCommander(true);
         commander.setStats(COMMANDER_POWER, COMMANDER_HEALTH);
         commander.setName("Großmeister Eron");
         commander.setIcon(107);

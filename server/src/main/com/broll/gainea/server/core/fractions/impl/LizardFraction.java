@@ -7,7 +7,6 @@ import com.broll.gainea.server.core.fractions.FractionDescription;
 import com.broll.gainea.server.core.fractions.FractionType;
 import com.broll.gainea.server.core.map.Area;
 import com.broll.gainea.server.core.map.AreaType;
-import com.broll.gainea.server.core.objects.Commander;
 import com.broll.gainea.server.core.objects.Soldier;
 import com.broll.gainea.server.core.utils.LocationUtils;
 
@@ -58,8 +57,9 @@ public class LizardFraction extends Fraction {
 
 
     @Override
-    public Commander createCommander() {
-        Commander commander = new Commander(owner);
+    public Soldier createCommander() {
+        Soldier commander = new Soldier(owner);
+        commander.setCommander(true);
         commander.setStats(3, 5);
         commander.setName("Grash der Vernichter");
         commander.setIcon(123);

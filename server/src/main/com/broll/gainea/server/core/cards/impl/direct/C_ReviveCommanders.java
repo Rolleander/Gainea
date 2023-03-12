@@ -3,7 +3,7 @@ package com.broll.gainea.server.core.cards.impl.direct;
 import com.broll.gainea.misc.RandomUtils;
 import com.broll.gainea.server.core.cards.DirectlyPlayedCard;
 import com.broll.gainea.server.core.map.Location;
-import com.broll.gainea.server.core.objects.Commander;
+import com.broll.gainea.server.core.objects.Soldier;
 import com.broll.gainea.server.core.utils.LocationUtils;
 import com.broll.gainea.server.core.utils.PlayerUtils;
 import com.broll.gainea.server.core.utils.UnitControl;
@@ -25,7 +25,7 @@ public class C_ReviveCommanders extends DirectlyPlayedCard {
             if (location == null) {
                 location = LocationUtils.getRandomFree(game.getMap().getAllAreas());
             }
-            Commander commander = player.getFraction().createCommander();
+            Soldier commander = player.getFraction().createCommander();
             UnitControl.spawn(game, commander, location);
         });
     }

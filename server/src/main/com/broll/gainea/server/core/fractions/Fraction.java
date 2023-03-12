@@ -7,7 +7,6 @@ import com.broll.gainea.server.core.battle.BattleContext;
 import com.broll.gainea.server.core.battle.FightingPower;
 import com.broll.gainea.server.core.map.Area;
 import com.broll.gainea.server.core.map.Location;
-import com.broll.gainea.server.core.objects.Commander;
 import com.broll.gainea.server.core.objects.Soldier;
 import com.broll.gainea.server.core.objects.Unit;
 import com.broll.gainea.server.core.objects.monster.Monster;
@@ -77,7 +76,7 @@ public abstract class Fraction extends GameUpdateReceiverAdapter {
 
     public abstract Soldier createSoldier();
 
-    public abstract Commander createCommander();
+    public abstract Soldier createCommander();
 
     public FractionDescription getDescription() {
         return description;

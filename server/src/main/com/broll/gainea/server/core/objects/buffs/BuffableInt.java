@@ -21,7 +21,7 @@ public class BuffableInt<T> extends BuffableValue<T, IntBuff, Integer> {
     }
 
     protected void recalc() {
-        buffedValue = value.intValue();
+        buffedValue = value;
         for (IntBuff buff : buffs) {
             int modifier = buff.getModifier();
             switch (buff.getType()) {

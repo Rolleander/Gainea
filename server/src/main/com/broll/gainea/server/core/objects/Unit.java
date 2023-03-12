@@ -14,6 +14,9 @@ public abstract class Unit extends MapObject {
     private BuffableInt<MapObject> power = new BuffableInt<>(this, 0);
     private BuffableInt<MapObject> health = new BuffableInt<>(this, 0);
     private BuffableInt<MapObject> attacksPerTurn = new BuffableInt<>(this, 1); //default 1 attack
+
+    private BuffableInt<MapObject> numberPlus = new BuffableInt<>(this, 0);
+
     private int attackCount;
     private boolean moveOrAttackRestriction = true; //usually units can only attack or move in one turn
     private boolean attacked = false;
@@ -38,6 +41,7 @@ public abstract class Unit extends MapObject {
         to.moveCount = from.moveCount;
         to.attacksPerTurn = from.attacksPerTurn.copy(to);
         to.movesPerTurn = from.movesPerTurn.copy(to);
+        to.numberPlus = from.numberPlus.copy(to);
         to.setMoveOrAttackRestriction(from.isMoveOrAttackRestriction());
         to.setIcon(from.getIcon());
         to.setLocation(from.getLocation());
@@ -73,7 +77,7 @@ public abstract class Unit extends MapObject {
     }
 
     public FightingPower calcFightingPower(BattleContext context) {
-        return new FightingPower(this);
+        return new FightingPower(this).changeNumberPlus(numberPlus.getValue());
     }
 
     @Override
@@ -179,6 +183,10 @@ public abstract class Unit extends MapObject {
 
     public BuffableInt<MapObject> getAttacksPerTurn() {
         return attacksPerTurn;
+    }
+
+    public BuffableInt<MapObject> getNumberPlus() {
+        return numberPlus;
     }
 
     public void setOwner(Player owner) {

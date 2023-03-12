@@ -9,12 +9,12 @@ import com.broll.gainea.server.core.fractions.FractionDescription;
 import com.broll.gainea.server.core.fractions.FractionType;
 import com.broll.gainea.server.core.map.Area;
 import com.broll.gainea.server.core.map.AreaType;
-import com.broll.gainea.server.core.objects.Commander;
 import com.broll.gainea.server.core.objects.Soldier;
 import com.broll.gainea.server.core.objects.Unit;
 import com.broll.gainea.server.core.objects.buffs.BuffType;
 import com.broll.gainea.server.core.objects.buffs.IntBuff;
 import com.broll.gainea.server.core.objects.monster.Monster;
+import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.server.core.utils.LocationUtils;
 import com.broll.gainea.server.core.utils.UnitControl;
 
@@ -56,21 +56,9 @@ public class WaterFraction extends Fraction {
     }
 
 
-    private void movedUnit(Unit unit) {
-        if (LocationUtils.isAreaType(unit.getLocation(), AreaType.LAKE)) {
-            unit.turnStart();
-        }
-    }
-
     @Override
     public Soldier createSoldier() {
-        Soldier soldier = new Soldier(owner) {
-            @Override
-            public void moved() {
-                super.moved();
-                movedUnit(this);
-            }
-        };
+        Soldier soldier = new WaterSoldier(owner);
         soldier.setStats(SOLDIER_POWER, SOLDIER_HEALTH);
         soldier.setName("Wassermagier");
         soldier.setIcon(46);
@@ -79,8 +67,8 @@ public class WaterFraction extends Fraction {
 
 
     @Override
-    public Commander createCommander() {
-        Commander commander = new Commander(owner) {
+    public Soldier createCommander() {
+        Soldier commander = new WaterSoldier(owner) {
             @Override
             public void onDeath(BattleResult throughBattle) {
                 Unit summon = new IceSummon();
@@ -88,17 +76,27 @@ public class WaterFraction extends Fraction {
                 summon.setLocation(getLocation());
                 spawns.add(summon);
             }
-
-            @Override
-            public void moved() {
-                super.moved();
-                movedUnit(this);
-            }
         };
+        commander.setCommander(true);
         commander.setStats(COMMANDER_POWER, COMMANDER_HEALTH);
         commander.setName("Frostbeschwörer Arn");
         commander.setIcon(116);
         return commander;
+    }
+
+    private class WaterSoldier extends Soldier {
+
+        public WaterSoldier(Player owner) {
+            super(owner);
+        }
+
+        @Override
+        public void moved() {
+            super.moved();
+            if (LocationUtils.isAreaType(getLocation(), AreaType.LAKE)) {
+                turnStart();
+            }
+        }
     }
 
     private class IceSummon extends Monster {
@@ -125,7 +123,9 @@ public class WaterFraction extends Fraction {
         @Override
         public void moved() {
             super.moved();
-            movedUnit(this);
+            if (LocationUtils.isAreaType(getLocation(), AreaType.LAKE)) {
+                turnStart();
+            }
         }
 
         @Override

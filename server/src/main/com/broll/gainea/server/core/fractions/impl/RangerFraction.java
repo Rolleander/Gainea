@@ -7,7 +7,6 @@ import com.broll.gainea.server.core.fractions.Fraction;
 import com.broll.gainea.server.core.fractions.FractionDescription;
 import com.broll.gainea.server.core.fractions.FractionType;
 import com.broll.gainea.server.core.map.AreaType;
-import com.broll.gainea.server.core.objects.Commander;
 import com.broll.gainea.server.core.objects.Soldier;
 import com.broll.gainea.server.core.objects.monster.Monster;
 import com.broll.gainea.server.core.utils.LocationUtils;
@@ -50,8 +49,9 @@ public class RangerFraction extends Fraction {
 
 
     @Override
-    public Commander createCommander() {
-        Commander commander = new Commander(owner);
+    public Soldier createCommander() {
+        Soldier commander = new Soldier(owner);
+        commander.setCommander(true);
         commander.setStats(COMMANDER_POWER, COMMANDER_HEALTH);
         commander.setName("Elfenschützin");
         commander.setType(NT_Unit.TYPE_FEMALE);

@@ -8,8 +8,8 @@ import com.broll.gainea.server.core.fractions.FractionType;
 import com.broll.gainea.server.core.map.AreaType;
 import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.map.Ship;
-import com.broll.gainea.server.core.objects.Commander;
 import com.broll.gainea.server.core.objects.Soldier;
+import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.server.core.utils.LocationUtils;
 
 public class VikingFraction extends Fraction {
@@ -42,12 +42,7 @@ public class VikingFraction extends Fraction {
 
     @Override
     public Soldier createSoldier() {
-        Soldier soldier = new Soldier(owner) {
-            @Override
-            public boolean canMoveTo(Location to) {
-                return canVikingMove(to);
-            }
-        };
+        Soldier soldier = new VikingSoldier(owner);
         soldier.setStats(SOLDIER_POWER, SOLDIER_HEALTH);
         soldier.setName("Wikinger");
         soldier.setIcon(106);
@@ -56,22 +51,25 @@ public class VikingFraction extends Fraction {
 
 
     @Override
-    public Commander createCommander() {
-        Commander commander = new Commander(owner) {
-            @Override
-            public boolean canMoveTo(Location to) {
-                return canVikingMove(to);
-            }
-        };
+    public Soldier createCommander() {
+        Soldier commander = new VikingSoldier(owner);
+        commander.setCommander(true);
         commander.setStats(COMMANDER_POWER, COMMANDER_HEALTH);
         commander.setName("Jarl Olaf");
         commander.setIcon(104);
         return commander;
     }
 
+    private static class VikingSoldier extends Soldier {
 
-    private boolean canVikingMove(Location to) {
-        return to.isTraversable();
+        public VikingSoldier(Player owner) {
+            super(owner);
+        }
+
+        @Override
+        public boolean canMoveTo(Location to) {
+            return to.isTraversable();
+        }
     }
 
 

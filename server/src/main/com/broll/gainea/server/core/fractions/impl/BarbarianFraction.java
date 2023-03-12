@@ -7,7 +7,6 @@ import com.broll.gainea.server.core.battle.FightingPower;
 import com.broll.gainea.server.core.fractions.Fraction;
 import com.broll.gainea.server.core.fractions.FractionDescription;
 import com.broll.gainea.server.core.fractions.FractionType;
-import com.broll.gainea.server.core.objects.Commander;
 import com.broll.gainea.server.core.objects.Soldier;
 import com.broll.gainea.server.core.objects.Unit;
 import com.broll.gainea.server.core.player.Player;
@@ -33,7 +32,7 @@ public class BarbarianFraction extends Fraction {
         desc.contra("-1 Zahl, wenn keine Barbarenrkieger im Kampf beteiligt sind");
         return desc;
     }
-    
+
     @Override
     public FightingPower calcFightingPower(Soldier soldier, BattleContext context) {
         FightingPower power = super.calcFightingPower(soldier, context);
@@ -41,14 +40,15 @@ public class BarbarianFraction extends Fraction {
         if (army.stream().noneMatch(this::isPlainBarbarianSoldier)) {
             power.changeNumberPlus(-1);
         }
-        if (army.stream().anyMatch(it -> it instanceof Commander) && army.stream().anyMatch(it -> it instanceof BarbarianBrother)) {
+        if (army.stream().anyMatch(PlayerUtils::isCommander)
+                && army.stream().anyMatch(it -> it instanceof BarbarianBrother)) {
             power.changeNumberPlus(1);
         }
         return power;
     }
 
     private boolean isPlainBarbarianSoldier(Unit unit) {
-        return unit instanceof Soldier && !(unit instanceof Commander) &&
+        return unit instanceof Soldier && !((Soldier) unit).isCommander() &&
                 !(unit instanceof BarbarianBrother) && ((Soldier) unit).getFraction() == this;
     }
 
@@ -63,8 +63,9 @@ public class BarbarianFraction extends Fraction {
 
 
     @Override
-    public Commander createCommander() {
-        Commander commander = new Commander(owner);
+    public Soldier createCommander() {
+        Soldier commander = new Soldier(owner);
+        commander.setCommander(true);
         commander.setStats(COMMANDER_POWER, COMMANDER_HEALTH);
         commander.setName("Barbarenanführer");
         commander.setIcon(45);

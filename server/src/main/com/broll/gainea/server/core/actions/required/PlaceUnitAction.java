@@ -6,7 +6,6 @@ import com.broll.gainea.server.core.actions.AbstractActionHandler;
 import com.broll.gainea.server.core.actions.ActionContext;
 import com.broll.gainea.server.core.actions.RequiredActionContext;
 import com.broll.gainea.server.core.map.Location;
-import com.broll.gainea.server.core.objects.Commander;
 import com.broll.gainea.server.core.objects.Soldier;
 import com.broll.gainea.server.core.objects.Unit;
 import com.broll.gainea.server.core.objects.monster.Monster;
@@ -60,7 +59,7 @@ public class PlaceUnitAction extends AbstractActionHandler<NT_Action_PlaceUnit, 
         return player.getFraction().createSoldier();
     }
 
-    private Commander createCommander(Player player) {
+    private Soldier createCommander(Player player) {
         return player.getFraction().createCommander();
     }
 
