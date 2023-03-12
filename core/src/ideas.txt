@@ -1,4 +1,6 @@
 
+- buffs im kampf bessr sehen
+
 
 cards:
 - swap place with enemy army ?
@@ -6,12 +8,11 @@ cards:
 - alle einheiten auf einen platz
 - einheit bekehren
 
+
 karten:
 
 >4  assassine
->17  könig
 >27 buch
->53 pfeilhagel
 >68 seeschlacht
 
 

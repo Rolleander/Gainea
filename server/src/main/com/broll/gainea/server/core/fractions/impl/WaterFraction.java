@@ -84,7 +84,7 @@ public class WaterFraction extends Fraction {
         return commander;
     }
 
-    private class WaterSoldier extends Soldier {
+    private static class WaterSoldier extends Soldier {
 
         public WaterSoldier(Player owner) {
             super(owner);

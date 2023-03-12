@@ -2,6 +2,7 @@ package com.broll.gainea.server.core.cards.impl.direct;
 
 import com.broll.gainea.server.core.cards.DirectlyPlayedCard;
 import com.broll.gainea.server.core.objects.monster.Monster;
+import com.broll.gainea.server.core.objects.monster.MonsterMotion;
 
 public class C_Phoenix extends DirectlyPlayedCard {
 
@@ -19,6 +20,7 @@ public class C_Phoenix extends DirectlyPlayedCard {
         monster.setHealth(2);
         monster.setPower(2);
         monster.setIcon(124);
+        monster.setMotion(MonsterMotion.AIRBORNE);
         monster.setOwner(owner);
         placeUnitHandler.placeUnit(owner, monster, owner.getControlledLocations(), "Ort der Beschwörung wählen");
     }

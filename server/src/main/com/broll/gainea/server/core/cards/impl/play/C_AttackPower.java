@@ -11,8 +11,8 @@ import com.broll.gainea.server.core.utils.UnitControl;
 
 import java.util.List;
 
-public class C_BattlePower extends Card {
-    public C_BattlePower() {
+public class C_AttackPower extends Card {
+    public C_AttackPower() {
         super(22, "Sturmangriff", "Verleiht allen Einheiten einer eurer Truppen +1 Angriff für eine Runde");
         setDrawChance(0.5f);
     }

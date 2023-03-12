@@ -10,9 +10,9 @@ import java.util.function.Function;
 public enum MonsterMotion {
 
     TERRESTRIAL(to -> !(to instanceof Ship) && !LocationUtils.isAreaType(to, AreaType.LAKE)),
-    AIRBORN(to -> true),
+    AIRBORNE(to -> true),
     AQUARIAN(to -> (to instanceof Ship) || LocationUtils.isAreaType(to, AreaType.LAKE)),
-    AMPHIBIAN(to -> true);
+    AMPHIBIAN(to -> !LocationUtils.isAreaType(to, AreaType.DESERT));
 
     private Function<Location, Boolean> canMove;
 

@@ -16,7 +16,7 @@ public class C_Tunnel extends Card {
     private final static int DISTANCE = 4;
 
     public C_Tunnel() {
-        super(77, "Tunnelgräber", "Bewegt eine Truppe auf ein beliebiges freies Gebiet, welches maximal " + DISTANCE + " Schritte entfernt ist");
+        super(77, "Tunnelgräber", "Bewegt eine Truppe auf ein beliebiges freies Gebiet, welches maximal " + DISTANCE + " Felder entfernt ist");
     }
 
     @Override
@@ -28,7 +28,7 @@ public class C_Tunnel extends Card {
     protected void play() {
         Location from = selectHandler.selectLocation("Wählt eine Truppe", owner.getControlledLocations());
         List<Unit> units = PlayerUtils.getUnits(owner, from);
-        List<Location> targets = LocationUtils.getWalkableLocations(units.get(0), from, DISTANCE).stream()
+        List<Location> targets = LocationUtils.getConnectedLocations(from, DISTANCE).stream()
                 .filter(it -> it.isFree() && !(it instanceof Ship)).collect(Collectors.toList());
         Location to = selectHandler.selectLocation("Wählt das Reiseziel", targets);
         UnitControl.move(game, units, to);

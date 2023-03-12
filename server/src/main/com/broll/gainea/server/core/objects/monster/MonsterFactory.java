@@ -14,7 +14,7 @@ import static com.broll.gainea.server.core.objects.monster.MonsterBehavior.FLEEI
 import static com.broll.gainea.server.core.objects.monster.MonsterBehavior.FRIENDLY;
 import static com.broll.gainea.server.core.objects.monster.MonsterBehavior.RANDOM;
 import static com.broll.gainea.server.core.objects.monster.MonsterBehavior.RESIDENT;
-import static com.broll.gainea.server.core.objects.monster.MonsterMotion.AIRBORN;
+import static com.broll.gainea.server.core.objects.monster.MonsterMotion.AIRBORNE;
 import static com.broll.gainea.server.core.objects.monster.MonsterMotion.AMPHIBIAN;
 import static com.broll.gainea.server.core.objects.monster.MonsterMotion.AQUARIAN;
 import static com.broll.gainea.server.core.objects.monster.MonsterMotion.TERRESTRIAL;
@@ -45,14 +45,14 @@ public class MonsterFactory {
         add("Wendigo", 52, 3, 2, AGGRESSIVE, RARELY, new AreaType[]{SNOW});
         add("Picker", 53, 1, 1, RANDOM, OFTEN, new AreaType[]{DESERT});
         add("Waldwolf", 54, 2, 1, RANDOM, OFTEN, new AreaType[]{PLAINS, MOUNTAIN});
-        add("Wyvern", 55, AIRBORN, 2, 2, FLEEING, new AreaType[]{PLAINS, MOUNTAIN});
+        add("Wyvern", 55, AIRBORNE, 2, 2, FLEEING, new AreaType[]{PLAINS, MOUNTAIN});
         add("Sumpfkrokodil", 56, 2, 2, FLEEING, RARELY, new AreaType[]{BOG, LAKE, PLAINS});
-        add("Adlerdrache", 57, AIRBORN, 2, 2, FLEEING, OFTEN, new AreaType[]{MOUNTAIN, DESERT});
+        add("Adlerdrache", 57, AIRBORNE, 2, 2, FLEEING, OFTEN, new AreaType[]{MOUNTAIN, DESERT});
         add("Eberkrieger", 59, 2, 2, AGGRESSIVE, new AreaType[]{MOUNTAIN, DESERT, PLAINS});
         add("Dämonenlord", 60, 4, 3, AGGRESSIVE, OFTEN, new AreaType[]{BOG});
         add("Keiler", 61, 1, 2, RANDOM, new AreaType[]{PLAINS, SNOW});
         add("Riesenkröte", 62, AMPHIBIAN, 1, 1, FRIENDLY, new AreaType[]{BOG, PLAINS});
-        add("Donnerdrache", 63, AIRBORN, 5, 4, RANDOM, new AreaType[]{MOUNTAIN, DESERT});
+        add("Donnerdrache", 63, AIRBORNE, 5, 4, RANDOM, new AreaType[]{MOUNTAIN, DESERT});
         add("Bergriese", 64, 3, 4, AGGRESSIVE, new AreaType[]{MOUNTAIN, SNOW});
         add("Ork", 65, 2, 2, AGGRESSIVE, ALL_BUT_LAKE);
         add("Dämonenhyäne", 66, 2, 1, FLEEING, OFTEN, new AreaType[]{MOUNTAIN, DESERT});
@@ -61,7 +61,7 @@ public class MonsterFactory {
         add("Tundranashorn", 69, 2, 4, FRIENDLY, RARELY, new AreaType[]{SNOW});
         add("Grizzly", 70, 2, 3, RANDOM, new AreaType[]{PLAINS, SNOW, MOUNTAIN});
         add("Urkrabbe", 71, AMPHIBIAN, 2, 3, RANDOM, RARELY, new AreaType[]{LAKE});
-        add("Smaragddrache", 72, AIRBORN, 4, 2, RANDOM, new AreaType[]{PLAINS});
+        add("Smaragddrache", 72, AIRBORNE, 4, 2, RANDOM, new AreaType[]{PLAINS});
         add("Raptor", 73, 2, 2, AGGRESSIVE, OFTEN, new AreaType[]{PLAINS, DESERT, MOUNTAIN});
         add("Gigasaurus", 74, 5, 4, AGGRESSIVE, new AreaType[]{PLAINS});
         add("Dornviper", 75, 5, 2, FLEEING, new AreaType[]{BOG, DESERT, MOUNTAIN});
@@ -84,7 +84,7 @@ public class MonsterFactory {
         add("Skelettdrache", 92, 5, 5, AGGRESSIVE, new AreaType[]{BOG, MOUNTAIN});
         add("Wüstenkoloss", 97, 6, 6, RANDOM, RARELY, new AreaType[]{DESERT});
         add("Titanschnapper", 98, 2, 6, FLEEING, RARELY, new AreaType[]{LAKE});
-        add("Phönix", 124, AIRBORN, 2, 2, FRIENDLY, OFTEN, new AreaType[]{PLAINS, MOUNTAIN, DESERT});
+        add("Phönix", 124, AIRBORNE, 2, 2, FRIENDLY, OFTEN, new AreaType[]{PLAINS, MOUNTAIN, DESERT});
     }
 
     private void addAquarian(String name, int icon, int power, int health) {

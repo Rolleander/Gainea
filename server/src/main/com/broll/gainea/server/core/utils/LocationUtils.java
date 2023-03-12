@@ -17,6 +17,7 @@ import com.broll.gainea.server.core.objects.MapObject;
 import com.broll.gainea.server.core.objects.Unit;
 import com.broll.gainea.server.core.objects.monster.Monster;
 import com.broll.gainea.server.core.player.Player;
+import com.google.common.collect.Lists;
 
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -171,6 +172,21 @@ public final class LocationUtils {
         }
         visited.addAll(remaining);
         visited.remove(from);
+        return visited;
+    }
+
+    public static List<Location> getConnectedLocations(Location location, int maxDistance) {
+        List<Location> visited = new ArrayList<>();
+        List<Location> remaining = Lists.newArrayList(location);
+        int distance = 0;
+        while (distance < maxDistance) {
+            distance++;
+            visited.addAll(remaining);
+            remaining = remaining.stream().flatMap(it -> it.getConnectedLocations().stream()).collect(Collectors.toList());
+            remaining.removeAll(visited);
+        }
+        visited.addAll(remaining);
+        visited.remove(location);
         return visited;
     }
 

@@ -52,7 +52,7 @@ public class FightResult {
         return defenderRolls;
     }
 
-    public class AttackDamage {
+    public static class AttackDamage {
         public Unit source;
         public Unit target;
         public boolean lethalHit;

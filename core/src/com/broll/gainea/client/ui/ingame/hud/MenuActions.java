@@ -115,4 +115,10 @@ public class MenuActions extends Table {
     public LogWindow getLogWindow() {
         return logWindow;
     }
+
+    public void hideWindows() {
+        cardWindow.setVisible(false);
+        fractionWindow.setVisible(false);
+        logWindow.setVisible(false);
+    }
 }

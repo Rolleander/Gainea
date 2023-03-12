@@ -10,7 +10,7 @@ public class GodDragon extends Monster {
         setStats(8, 8);
         setBehavior(MonsterBehavior.AGGRESSIVE);
         setActivity(MonsterActivity.ALWAYS);
-        setMotion(MonsterMotion.AIRBORN);
+        setMotion(MonsterMotion.AIRBORNE);
     }
 
     @Override

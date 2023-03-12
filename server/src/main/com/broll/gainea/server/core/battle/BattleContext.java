@@ -36,6 +36,15 @@ public class BattleContext {
         return sourceLocation;
     }
 
+    public Location getLocation(Player player) {
+        if (isAttacker(player)) {
+            return sourceLocation;
+        } else if (isDefender(player)) {
+            return location;
+        }
+        return null;
+    }
+    
     public List<Unit> getAttackers() {
         return attackers;
     }

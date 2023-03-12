@@ -121,7 +121,7 @@ public class BattleHandler {
     private FightResult rollFight() {
         RollResult attackerRolls = new RollResult(context, context.getAliveAttackers());
         RollResult defenderRolls = new RollResult(context, context.getAliveDefenders());
-        rollManipulator.roundStarts(context, attackerRolls, defenderRolls);
+        rollManipulator.roundStarts(attackerRolls, defenderRolls);
         return new Battle(context.getAliveAttackers(), context.getAliveDefenders(), attackerRolls, defenderRolls).fight();
     }
 

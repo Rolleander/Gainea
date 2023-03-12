@@ -86,10 +86,7 @@ public class ShadowFraction extends Fraction {
     @Override
     public void battleResult(BattleResult result) {
         if (result.isParticipating(owner)) {
-            Location spawnLocation = result.getLocation();
-            if (result.isAttacker(owner) && result.isLoser(owner)) {
-                spawnLocation = result.getSourceLocation();
-            }
+            Location spawnLocation = result.getEndLocation(owner);
             List<Unit> killedEnemies = result.getOpposingUnits(owner).stream().filter(Unit::isDead).collect(Collectors.toList());
             summonSkeletons(killedEnemies, spawnLocation);
         }

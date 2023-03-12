@@ -132,4 +132,14 @@ public class BattleResult extends BattleContext {
         }
         return new ArrayList<>();
     }
+
+    public Location getEndLocation(Player player) {
+        if (isAttacker(player)) {
+            return getAttackerEndLocation();
+        } else if (isDefender(player)) {
+            return location;
+        }
+        return null;
+    }
+    
 }
