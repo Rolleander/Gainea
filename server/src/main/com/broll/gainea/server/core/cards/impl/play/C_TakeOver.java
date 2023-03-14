@@ -23,12 +23,14 @@ public class C_TakeOver extends Card {
     }
 
     private List<Unit> getTargets() {
-        return game.getAllPlayers().stream().flatMap(it -> it.getUnits().stream()).filter(it -> !PlayerUtils.isCommander(it)).collect(Collectors.toList());
+        return PlayerUtils.getOtherPlayers(game, owner).flatMap(it -> it.getUnits().stream()).filter(it -> !PlayerUtils.isCommander(it)).collect(Collectors.toList());
     }
 
     @Override
     protected void play() {
         Unit unit = SelectionUtils.selectUnit(game, owner, "Welche Einheit soll übernommen werden?", getTargets());
+        unit.getOwner().getUnits().remove(unit);
+        owner.getUnits().add(unit);
         unit.setOwner(owner);
         UnitControl.move(game, unit, PlayerUtils.getCommander(owner).get().getLocation());
         GameUtils.sendUpdate(game, game.nt());

@@ -46,6 +46,7 @@ public class C_MonsterRecruit extends Card {
                     new ArrayList<>(monsterLocations), this::validMonster,
                     "Welches Monster soll rekrutiert werden?");
             owner.getUnits().add(monster);
+            monster.removeActionTimer();
             monster.setOwner(owner);
             game.getObjects().remove(monster);
             UnitControl.focus(game, monster, 0);

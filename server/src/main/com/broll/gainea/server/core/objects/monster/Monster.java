@@ -15,6 +15,10 @@ public class Monster extends Unit {
         super(null);
     }
 
+    public void removeActionTimer() {
+        this.actionTimer = NT_Monster.NO_ACTION_TIMER;
+    }
+
     public int getStars() {
         return getStars(this);
     }

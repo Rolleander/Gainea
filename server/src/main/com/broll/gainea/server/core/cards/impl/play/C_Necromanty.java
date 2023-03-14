@@ -8,9 +8,9 @@ import com.broll.gainea.server.core.objects.buffs.TimedEffect;
 import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.server.core.utils.UnitControl;
 
-public class C_Necromantie extends Card {
+public class C_Necromanty extends Card {
 
-    public C_Necromantie() {
+    public C_Necromanty() {
         super(70, "Nekromantie", "Für diesen Zug werden bei euren Angriffen eure gefallenen Soldaten zu Skeletten (1/1)");
     }
 
@@ -37,7 +37,7 @@ public class C_Necromantie extends Card {
         UnitControl.spawn(game, new Skeleton(owner), location);
     }
 
-    private class Skeleton extends Soldier {
+    private static class Skeleton extends Soldier {
 
         public Skeleton(Player owner) {
             super(owner);
