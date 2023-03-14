@@ -30,8 +30,6 @@ public class C_TakeOver extends Card {
     protected void play() {
         Unit unit = SelectionUtils.selectUnit(game, owner, "Welche Einheit soll übernommen werden?", getTargets());
         unit.setOwner(owner);
-        unit.moved();
-        unit.attacked();
         UnitControl.move(game, unit, PlayerUtils.getCommander(owner).get().getLocation());
         GameUtils.sendUpdate(game, game.nt());
     }

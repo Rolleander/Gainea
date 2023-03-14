@@ -59,6 +59,9 @@ public class BattleSimulation {
     }
 
     private static boolean isWinningBattle(List<Unit> attackers, List<Unit> defenders) {
+        if (defenders.isEmpty() || attackers.isEmpty()) {
+            return true;
+        }
         do {
             BattleContext context = new BattleContext(attackers, defenders);
             FightResult result = new Battle(context, attackers, defenders).fight();

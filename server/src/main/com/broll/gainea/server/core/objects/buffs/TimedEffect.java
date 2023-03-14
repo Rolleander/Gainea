@@ -6,8 +6,8 @@ import com.broll.gainea.server.core.processing.GameUpdateReceiverAdapter;
 
 public class TimedEffect extends GameUpdateReceiverAdapter {
 
-    protected GameContainer game;
-    protected Player owner;
+    private GameContainer game;
+    private Player owner;
     private boolean forThisTurn;
     private int rounds;
 

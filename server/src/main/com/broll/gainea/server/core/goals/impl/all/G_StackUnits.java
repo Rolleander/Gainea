@@ -26,6 +26,7 @@ public class G_StackUnits extends CustomOccupyGoal {
         text = "Besetze " + area.getName() + " mit mindestens " + COUNT + " Einheiten";
         setExpansionRestriction(area.getContainer().getExpansion().getType());
         setProgressionGoal(COUNT);
+        locations.add(area);
         return true;
     }
 

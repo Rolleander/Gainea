@@ -38,7 +38,7 @@ public class SelectOptionWindow {
         scrollPane.setOverscroll(false, false);
         scrollPane.setScrollingDisabled(true, false);
         scrollPane.setFadeScrollBars(false);
-        window.add(scrollPane).maxHeight(400);
+        window.add(scrollPane).maxHeight(530);
         TableUtils.consumeClicks(window);
         return window;
     }

@@ -6,11 +6,13 @@ import com.broll.gainea.net.NT_GoalProgression;
 import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.bot.strategy.GoalStrategy;
 import com.broll.gainea.server.core.map.ExpansionType;
+import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.server.core.processing.GameUpdateReceiverAdapter;
 import com.broll.gainea.server.core.utils.GameUtils;
 import com.broll.gainea.server.core.utils.ProcessingUtils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,6 +20,9 @@ import java.util.stream.Collectors;
 public abstract class Goal extends GameUpdateReceiverAdapter {
 
     protected String text;
+
+    protected List<Location> locations = new ArrayList<>();
+
     protected GoalDifficulty difficulty;
     private String restrictionInfo;
     private int id;
@@ -109,6 +114,7 @@ public abstract class Goal extends GameUpdateReceiverAdapter {
         goal.restriction = restrictionInfo;
         goal.progression = progression;
         goal.progressionGoal = progressionGoal;
+        goal.locations = locations.stream().mapToInt(Location::getNumber).toArray();
         return goal;
     }
 

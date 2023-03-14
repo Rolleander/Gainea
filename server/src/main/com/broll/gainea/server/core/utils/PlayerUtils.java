@@ -10,6 +10,7 @@ import com.broll.gainea.server.core.player.Player;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -72,7 +73,7 @@ public final class PlayerUtils {
     }
 
     public static Player getOwner(List<Unit> units) {
-        return units.stream().map(it -> it.getOwner()).filter(it -> it != null).findFirst().orElse(null);
+        return units.stream().map(Unit::getOwner).filter(Objects::nonNull).findFirst().orElse(null);
     }
 
 

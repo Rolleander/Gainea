@@ -32,6 +32,7 @@ public class C_BuffDefence extends Card implements ICardStrategy {
 
     @Override
     public CardOption strategy(BotStrategy strategy, BotSelect select) {
+        //todo: must pick location first sometimes...
         CardOption option = new CardOption();
         option.selectStrongestUnit(select);
         return option;

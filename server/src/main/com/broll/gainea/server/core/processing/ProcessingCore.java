@@ -78,7 +78,7 @@ public class ProcessingCore {
 
     private synchronized void done() {
         RunnableWrapper wrapper = queue.poll();
-        if (wrapper != null) {
+        if (wrapper != null && !executor.isShutdown()) {
             //start next one
             execute(wrapper);
         } else {

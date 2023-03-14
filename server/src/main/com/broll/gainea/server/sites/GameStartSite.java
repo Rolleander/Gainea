@@ -35,7 +35,8 @@ import java.util.stream.Collectors;
 public class GameStartSite extends GameSite {
     private final static Logger Log = LoggerFactory.getLogger(GameStartSite.class);
 
-    private final static List<Class<? extends Card>> STARTING_CARDS = Lists.newArrayList(C_ReplaceGoal.class, C_PickCard.class);
+    private final static List<Class<? extends Card>> STARTING_CARDS =
+            Lists.newArrayList(C_ReplaceGoal.class, C_PickCard.class);
 
     private class GameStartData {
         boolean loading = true;

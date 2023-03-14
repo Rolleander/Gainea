@@ -3,7 +3,6 @@ package com.broll.gainea.server.core.battle;
 import com.broll.gainea.misc.RandomUtils;
 import com.broll.gainea.server.core.objects.Unit;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -70,7 +69,7 @@ public class Battle {
     }
 
     private Unit getDamageTarget(List<Unit> targetUnits) {
-        List<Unit> targets = new ArrayList<>(targetUnits);
+        List<Unit> targets = targetUnits.stream().filter(Unit::isAlive).collect(Collectors.toList());
         //shuffe for damage (so that same powerlevel units get hit randomly)
         Collections.shuffle(targets);
         //sort ascending (so that weakest power level units die first)

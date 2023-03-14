@@ -12,8 +12,9 @@ public class Soldier extends Unit {
 
     public Soldier(Player owner) {
         super(owner);
-        this.fraction = owner.getFraction();
-        setIcon(4);
+        if (owner != null) {
+            this.fraction = owner.getFraction();
+        }
     }
 
     public void setCommander(boolean commander) {

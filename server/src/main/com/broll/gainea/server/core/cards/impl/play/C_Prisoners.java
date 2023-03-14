@@ -36,8 +36,6 @@ public class C_Prisoners extends Card {
             private void recruit(Unit unit, Location location) {
                 unit.heal();
                 //so they cant be used this turn
-                unit.attacked();
-                unit.moved();
                 unit.setOwner(owner);
                 UnitControl.spawn(game, unit, location);
             }

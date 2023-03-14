@@ -42,7 +42,7 @@ public class InGameUI {
     private Gainea game;
     private Skin skin;
     private Table centerOverlay;
-    private Table center = new Table();
+    private Table rightPanel = new Table();
     private Table centerContent = new Table();
     private AttackAndMoveActionHandler attackAndMoveHandler;
     private RequiredActionHandler requiredActionHandler;
@@ -82,29 +82,28 @@ public class InGameUI {
     }
 
     public void show() {
-        Table overlay = new Table();
-        overlay.setFillParent(true);
-        overlay.add(center).center().expand().fill().padTop(40).padBottom(40).row();
-        game.uiStage.addActor(overlay);
-        Table overlay2 = new Table();
-        overlay2.setFillParent(true);
-        overlay2.add(centerContent).expand();
-        game.uiStage.addActor(overlay2);
-        Table overlay3 = new Table();
-        overlay3.setFillParent(true);
-        overlay3.add(centerOverlay).expand().fill().row();
-        game.uiStage.addActor(overlay3);
+        addCenterComponent(rightPanel).center().padTop(40).padBottom(40).top().right();
+        addCenterComponent(centerContent).center();
+        addCenterComponent(centerOverlay).center().top().padTop(200);
         game.uiStage.addActor(playerOverlay);
         game.uiStage.addActor(goalOverlay);
         menuActions.show();
+    }
+
+    private Table addCenterComponent(Table component) {
+        Table container = new Table();
+        container.setFillParent(true);
+        container.add(component);
+        game.uiStage.addActor(container);
+        return container;
     }
 
     public void selectStack(Location location, Collection<MapObjectRender> stack) {
         clearSelection();
         AudioPlayer.playSound("select.ogg");
         Table window = UnitSelectionWindow.create(game, skin, location, stack);
-        center.add(window).right().top().expand();
-        center.layout();
+        rightPanel.add(window).right().top().expand();
+        rightPanel.layout();
     }
 
     public void selectedUnits(List<NT_Unit> units) {
@@ -114,7 +113,7 @@ public class InGameUI {
     }
 
     public void clearSelection() {
-        center.clear();
+        rightPanel.clear();
         attackAndMoveHandler.showFor(new ArrayList<>());
     }
 

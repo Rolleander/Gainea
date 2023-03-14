@@ -65,6 +65,8 @@ public class G_MoveUnit extends CustomOccupyGoal {
         if (to == null) {
             return false;
         }
+        this.locations.add(from);
+        this.locations.add(to);
         this.text = "Bewege eine Einheit von " + from.getName() + " nach " + to.getName();
         setProgressionGoal(distance);
         return super.init(game, player);

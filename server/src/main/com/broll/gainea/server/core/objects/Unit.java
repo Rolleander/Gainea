@@ -24,6 +24,7 @@ public abstract class Unit extends MapObject {
     protected boolean controllable = true;
     private int type = NT_Unit.TYPE_MALE;
     private int kills;
+    private boolean justSpawned = true;
 
     public Unit(Player owner) {
         super(owner);
@@ -52,6 +53,7 @@ public abstract class Unit extends MapObject {
     @Override
     public void turnStart() {
         super.turnStart();
+        justSpawned = false;
         attackCount = 0;
         moved = false;
         attacked = false;
@@ -59,6 +61,7 @@ public abstract class Unit extends MapObject {
 
     @Override
     public boolean hasRemainingMove() {
+        if (justSpawned) return false;
         if (moveOrAttackRestriction && attacked) {
             return false;
         }
@@ -66,6 +69,7 @@ public abstract class Unit extends MapObject {
     }
 
     public boolean hasRemainingAttack() {
+        if (justSpawned) return false;
         if (moveOrAttackRestriction && moved) {
             return false;
         }

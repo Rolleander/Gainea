@@ -10,7 +10,6 @@ import com.broll.gainea.server.core.fractions.FractionDescription;
 import com.broll.gainea.server.core.fractions.FractionType;
 import com.broll.gainea.server.core.map.Ship;
 import com.broll.gainea.server.core.objects.Soldier;
-import com.broll.gainea.server.core.objects.Unit;
 import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.server.core.utils.UnitControl;
 
@@ -39,23 +38,10 @@ public class DruidsFraction extends Fraction {
         return power;
     }
 
-    @Override
-    public void killed(Unit unit, BattleResult throughBattle) {
-        if (unit.getOwner() == owner) {
-            druidDied(unit);
-        }
-    }
-
-    private void druidDied(Unit unit) {
-        if (!(unit instanceof Tree) && RandomUtils.randomBoolean(SPAWN_CHANCE)) {
-            Tree tree = new Tree(owner);
-            UnitControl.spawn(game, tree, unit.getLocation());
-        }
-    }
 
     @Override
     public Soldier createSoldier() {
-        Soldier soldier = new Soldier(owner);
+        Soldier soldier = new DruidSoldier(owner);
         soldier.setStats(SOLDIER_POWER, SOLDIER_HEALTH);
         soldier.setName("Druidin");
         soldier.setIcon(110);
@@ -65,12 +51,27 @@ public class DruidsFraction extends Fraction {
 
     @Override
     public Soldier createCommander() {
-        Soldier commander = new Soldier(owner);
+        Soldier commander = new DruidSoldier(owner);
         commander.setCommander(true);
         commander.setStats(COMMANDER_POWER, COMMANDER_HEALTH);
         commander.setName("Druidenhaupt Zerus");
         commander.setIcon(102);
         return commander;
+    }
+
+    private class DruidSoldier extends Soldier {
+
+        public DruidSoldier(Player owner) {
+            super(owner);
+        }
+
+        @Override
+        public void onDeath(BattleResult throughBattle) {
+            if (RandomUtils.randomBoolean(SPAWN_CHANCE)) {
+                Tree tree = new Tree(getOwner());
+                UnitControl.spawn(game, tree, getLocation());
+            }
+        }
     }
 
     private class Tree extends Soldier {

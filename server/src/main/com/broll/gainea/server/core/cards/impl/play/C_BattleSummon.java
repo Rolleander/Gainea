@@ -29,6 +29,7 @@ public class C_BattleSummon extends Card {
         demon.setName("Rachedämon");
         IntBuff buff = new IntBuff(BuffType.ADD, 3);
         demon.getHealth().addBuff(buff);
+        demon.turnStart();
         placeUnitHandler.placeUnit(owner, demon, locations, "Wählt einen Ort für die Beschwörung");
         game.getBuffProcessor().timeoutBuff(buff, 1);
     }
