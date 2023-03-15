@@ -6,6 +6,7 @@ cards:
 - swap place with enemy army ?
 - teleport to random field of selected continent
 - alle einheiten auf einen platz
+- eine directplay card aussuchen 
 
 
 unbenutzte karten:

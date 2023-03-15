@@ -15,7 +15,7 @@ import java.util.Set;
 
 public class C_MonsterRecruit extends Card {
     public C_MonsterRecruit() {
-        super(71, "Tierfreund", "Rekrutiert ein benachbartes Monster");
+        super(71, "Tierfreund", "Rekrutiert ein benachbartes Monster (ausser Götterdrache)");
         setDrawChance(0.5f);
     }
 
@@ -46,7 +46,7 @@ public class C_MonsterRecruit extends Card {
                     new ArrayList<>(monsterLocations), this::validMonster,
                     "Welches Monster soll rekrutiert werden?");
             owner.getUnits().add(monster);
-            monster.removeActionTimer();
+            monster.removeActionTimer(); // todo: client siehts immer noch?
             monster.setOwner(owner);
             game.getObjects().remove(monster);
             UnitControl.focus(game, monster, 0);

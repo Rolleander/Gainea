@@ -27,6 +27,9 @@ public class Soldier extends Unit {
 
     @Override
     public FightingPower calcFightingPower(BattleContext context) {
+        if (fraction == null) {
+            return super.calcFightingPower(context);
+        }
         return fraction.calcFightingPower(this, context);
     }
 

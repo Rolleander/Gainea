@@ -1,1 +1,8 @@
 
+fraktionsauswahl hängt
+
+chatwindow reset new message on click
+
+spion karte wurd zu kurz angezeigt
+
+karten steal update client ...
