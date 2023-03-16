@@ -231,7 +231,8 @@ public class BattleHandler {
         GameUtils.sendUpdate(game, game.nt());
         //find dead monsters to give killing player rewards
         rewardKilledMonsters(result.getAttackingPlayer(), result.getKilledDefenders());
-        result.getDefendingPlayers().forEach(defendingPlayer -> rewardKilledMonsters(defendingPlayer, result.getKilledDefenders()));
+        result.getDefendingPlayers().forEach(defendingPlayer ->
+                rewardKilledMonsters(defendingPlayer, result.getKilledAttackers()));
     }
 
     private void rewardKilledMonsters(Player killer, List<Unit> units) {

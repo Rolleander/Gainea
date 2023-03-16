@@ -20,12 +20,13 @@ public final class GameUtils {
         int round = game.getRounds();
         int roundLimit = game.getGameSettings().getRoundLimit();
         int scoreLimit = game.getGameSettings().getPointLimit();
-        boolean end = false;
-        if (scoreLimit > 0) {
-            end = maxScore >= scoreLimit;
-        }
-        if (roundLimit > 0) {
-            end = end && round > roundLimit;
+        boolean roundLimitReached = roundLimit > 0 && round > roundLimit;
+        boolean scoreLimitReached = scoreLimit > 0 && maxScore >= scoreLimit;
+        boolean end;
+        if (scoreLimit > 0 && roundLimit > 0) {
+            end = roundLimitReached && scoreLimitReached;
+        } else {
+            end = roundLimitReached || scoreLimitReached;
         }
         if (noActivePlayersRemaining(game)) {
             end = true;

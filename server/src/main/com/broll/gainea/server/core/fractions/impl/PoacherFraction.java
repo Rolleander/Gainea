@@ -35,7 +35,6 @@ public class PoacherFraction extends Fraction {
     @Override
     public void killedMonster(Monster monster) {
         super.killedMonster(monster);
-        //todo doesnt happen when being attacked :(
         //recruit monster in player army
         Monster recruited = new Monster();
         Unit.copy(monster, recruited);
