@@ -34,6 +34,7 @@ public class C_Prisoners extends Card {
             }
 
             private void recruit(Unit unit, Location location) {
+                //todo restlichen angreifer sind nicht mehr zum ziel gelaufen...? ein gefangener landet beim spieler, einer nicht
                 unit.heal();
                 //so they cant be used this turn
                 unit.setOwner(owner);

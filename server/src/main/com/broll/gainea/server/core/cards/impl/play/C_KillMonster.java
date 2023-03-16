@@ -19,7 +19,9 @@ public class C_KillMonster extends Card {
 
     @Override
     protected void play() {
+        //todo konnte götterdrache auswählen (wurde aber nicht gekillt)
         Unit monster = SelectionUtils.selectWildMonster(game, "Wählt ein Monster das vernichtet werden soll", it -> it instanceof GodDragon == false);
+        //null pointer hier dann
         UnitControl.kill(game, monster);
     }
 

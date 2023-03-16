@@ -27,6 +27,7 @@ public class C_Blockade extends Card {
 
     @Override
     protected void play() {
+        //todo : leben wird nicht rot wenn geschwächt
         Blockade soldier = new Blockade();
         IntBuff buff = new IntBuff(BuffType.ADD, 10);
         soldier.getHealth().addBuff(buff);

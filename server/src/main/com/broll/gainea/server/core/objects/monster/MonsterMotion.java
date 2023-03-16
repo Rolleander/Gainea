@@ -12,7 +12,7 @@ public enum MonsterMotion {
     TERRESTRIAL(to -> !(to instanceof Ship) && !LocationUtils.isAreaType(to, AreaType.LAKE)),
     AIRBORNE(to -> true),
     AQUARIAN(to -> (to instanceof Ship) || LocationUtils.isAreaType(to, AreaType.LAKE)),
-    AMPHIBIAN(to -> !LocationUtils.isAreaType(to, AreaType.DESERT));
+    AMPHIBIAN(to -> (to instanceof Ship) || !LocationUtils.isAreaType(to, AreaType.DESERT));
 
     private Function<Location, Boolean> canMove;
 

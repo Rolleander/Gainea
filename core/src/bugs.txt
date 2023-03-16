@@ -6,3 +6,9 @@ chatwindow reset new message on click
 spion karte wurd zu kurz angezeigt
 
 karten steal update client ...
+
+kartentext soll ins log
+
+rundenende funktioniert nicht (25 ausgewählt ... hört nicht auf )
+
+surrender bot bleibt übrig??? game beendet nicht

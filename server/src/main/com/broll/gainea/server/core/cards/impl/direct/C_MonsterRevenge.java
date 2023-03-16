@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 public class C_MonsterRevenge extends DirectlyPlayedCard {
 
     private final static int ROUNDS = 3;
-    private final static int BUFF = 3;
+    private final static int BUFF = 2;
 
     public C_MonsterRevenge() {
         super(33, "Gesetz des Stärkeren", "Für " + ROUNDS + " Runden erhalten alle wilden Monster +" + BUFF + "/+" + BUFF);
