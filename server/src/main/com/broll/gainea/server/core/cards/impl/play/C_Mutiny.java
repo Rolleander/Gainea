@@ -5,7 +5,7 @@ import com.broll.gainea.server.core.objects.buffs.TimedEffect;
 
 public class C_Mutiny extends Card {
 
-    private final static int ROUNDS = 3;
+    private final static int ROUNDS = 2;
 
     public C_Mutiny() {
         super(15, "Meuterei", "Alle Schiffe sind für " + ROUNDS + " Runden nicht mehr begehbar");

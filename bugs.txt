@@ -1,0 +1,40 @@
+
+fraktionsauswahl hängt
+
+chatwindow reset new message on click
+
+spion karte wurd zu kurz angezeigt
+
+karten steal update client ...
+
+kartentext soll ins log
+
+surrender bot bleibt übrig??? game beendet nicht
+
+echsen: immer neue einheit wenn alle tot
+
+
+log horizontal scrollen oder line breaK
+
+
+wenn nur bewegen statt angreifen darf man nicht auf besetzes feld
+ (echse greift an, verliert und läuft dann auf das besetzte feld)
+
+ bot stackt nur noch :(
+
+ hai kann nicht schiffe rückwärts drauf wenn kontrolliert (aber runter?!)
+
+ monstertimer wird als -1 angezeigt im client manchmal wenn es nicht aktiv ist
+
+
+ massenpanik: nicht mehr auf frei und alle connected locations
+
+ portal: teleportiert direkt beim reinlaufen
+
+ schattenfesseln: angreifen geht noch
+
+kill monster goal: darf nicht eigene zählen
+
+wilderer: rekrutierte monster sollen kills behalten
+
+surrender works when last players turn ?
