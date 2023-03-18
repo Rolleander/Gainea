@@ -112,6 +112,7 @@ public class GameState {
     public void updateMapObjects() {
         mapObjectsContainer.update(Streams.concat(objects.stream(), players.stream().flatMap(p -> Arrays.stream(p.units))).collect(Collectors.toList()));
         mapEffectContainer.update(this.effects);
+        game.ui.inGameUI.getRequiredActionHandler().toFront();
     }
 
     public void performAction(NT_Action action, PlayerPerformAction playerPerformAction) {

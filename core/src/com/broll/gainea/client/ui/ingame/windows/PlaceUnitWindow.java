@@ -35,7 +35,7 @@ public class PlaceUnitWindow {
         for (int i = 0; i < locations.length; i++) {
             Location location = game.state.getMap().getLocation(locations[i]);
             int optionIndex = i;
-            MapAction mapAction = new MapAction(game, 2, location.getNumber(), () ->
+            MapAction mapAction = new MapAction(game, MapAction.TYPE_PLACE, location.getNumber(), () ->
                     container.reactionResult(action, optionIndex)
             );
             mapAction.setVisible(true);

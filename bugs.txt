@@ -7,6 +7,4 @@ spion karte wurd zu kurz angezeigt
 
 karten steal update client ...
 
- bot stackt nur noch :(
-
  hai kann nicht schiffe rückwärts drauf wenn kontrolliert (aber runter?!)

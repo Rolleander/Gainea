@@ -1,6 +1,7 @@
 package com.broll.gainea.server.core.processing;
 
 import com.broll.gainea.server.core.GameContainer;
+import com.broll.gainea.server.core.utils.ProcessingUtils;
 import com.broll.gainea.server.init.LobbyData;
 import com.broll.gainea.server.init.PlayerData;
 import com.broll.networklib.server.impl.ServerLobby;
@@ -47,12 +48,12 @@ public class ProcessingCore {
     }
 
     public synchronized void execute(Runnable runnable, int afterDelay) {
-        if (!game.isGameOver()) {
-            ensureExecute(runnable, afterDelay);
+        if (game.isGameOver()) {
+            return;
         }
-    }
-
-    public synchronized void ensureExecute(Runnable runnable, int afterDelay) {
+        if (ProcessingUtils.MAX_PAUSE > 0) {
+            afterDelay = Math.min(afterDelay, ProcessingUtils.MAX_PAUSE);
+        }
         RunnableWrapper wrapper = new RunnableWrapper();
         wrapper.runnable = runnable;
         wrapper.delay = afterDelay;

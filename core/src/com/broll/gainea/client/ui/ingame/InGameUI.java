@@ -122,6 +122,7 @@ public class InGameUI {
         List<NT_Action_Attack> attacks = actions.stream().filter(it -> it instanceof NT_Action_Attack).map(it -> (NT_Action_Attack) it).collect(Collectors.toList());
         activeCards(actions.stream().filter(it -> it instanceof NT_Action_Card).map(it -> (NT_Action_Card) it).collect(Collectors.toList()), playerPerformAction);
         attackAndMoveHandler.update(moves, attacks, playerPerformAction);
+        requiredActionHandler.toFront();
         menuActions.updateOptionalActions(playerPerformAction);
     }
 
@@ -170,5 +171,7 @@ public class InGameUI {
         return battleHandler;
     }
 
-
+    public RequiredActionHandler getRequiredActionHandler() {
+        return requiredActionHandler;
+    }
 }

@@ -10,20 +10,25 @@ import com.broll.gainea.server.core.objects.buffs.BuffableInt;
 import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.server.core.utils.PlayerUtils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class BattleSimulation {
-
+    private final static Logger Log = LoggerFactory.getLogger(BattleSimulation.class);
     private static final int SIMULATIONS = 10;
 
     public static List<Unit> calculateRequiredFighters(Location location, List<Unit> units, float winChance) {
         List<Unit> fighters = new ArrayList<>();
         for (Unit unit : units) {
             fighters.add(unit);
-            if (calculateWinChance(location, fighters) >= winChance) {
+            float calculatedWinchance = calculateWinChance(location, fighters);
+            if (calculatedWinchance >= winChance) {
+                Log.trace("Attacking with " + fighters.size() + "/" + units.size() + " units should win with " + calculatedWinchance * 100 + "%");
                 return fighters;
             }
         }
@@ -37,7 +42,9 @@ public class BattleSimulation {
                 wins++;
             }
         }
-        return wins / (float) SIMULATIONS;
+        float winChance = wins / (float) SIMULATIONS;
+        Log.trace("Continuing attack should win with " + winChance * 100 + "%");
+        return winChance;
     }
 
     public static float calculateWinChance(Location location, List<Unit> units) {
@@ -56,18 +63,21 @@ public class BattleSimulation {
     }
 
     private static boolean winsBattle(List<Unit> attackers, List<Unit> defenders) {
-        if (defenders.isEmpty() || attackers.isEmpty()) {
-            return true;
-        }
         UnitSimulationWrapper simulationWrapper = new UnitSimulationWrapper(attackers, defenders);
-        do {
+        while (attackers.stream().anyMatch(Unit::isAlive) && defenders.stream().anyMatch(Unit::isAlive)) {
             BattleContext context = new BattleContext(attackers, defenders);
-            FightResult result = new Battle(context, attackers, defenders).fight();
-            attackers.removeAll(result.getDeadAttackers());
-            defenders.removeAll(result.getDeadDefenders());
-        } while (!attackers.isEmpty() && !defenders.isEmpty());
+            new Battle(context,
+                    attackers.stream().filter(Unit::isAlive).collect(Collectors.toList()),
+                    defenders.stream().filter(Unit::isAlive).collect(Collectors.toList())) {
+                @Override
+                protected void damage(FightResult result, Unit source, Unit target) {
+                    target.takeDamage();
+                }
+            }.fight();
+        }
+        boolean winner = attackers.stream().anyMatch(Unit::isAlive);
         simulationWrapper.restore();
-        return !attackers.isEmpty();
+        return winner;
     }
 
     private static class UnitSimulationWrapper {

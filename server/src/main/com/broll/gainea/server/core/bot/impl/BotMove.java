@@ -76,6 +76,7 @@ public class BotMove extends BotOptionalAction<NT_Action_Move, BotMove.MoveOptio
         }
         int[] unitIds = Arrays.stream(nt_units).mapToInt(it -> it.id).toArray();
         MoveOption moveOption = new MoveOption(Math.max(MOVE_SCORE - distance, 1));
+        moveOption.location = to;
         moveOption.moveUnits = moveTogether.stream().mapToInt(it -> ArrayUtils.indexOf(unitIds, it.getId())).toArray();
         return moveOption;
     }
@@ -131,8 +132,15 @@ public class BotMove extends BotOptionalAction<NT_Action_Move, BotMove.MoveOptio
     public static class MoveOption extends BotOption {
         private int[] moveUnits;
 
+        private Location location;
+
         public MoveOption(float score) {
             super(score);
+        }
+
+        @Override
+        public String toString() {
+            return "move to " + location + " with " + moveUnits.length + " units";
         }
     }
 

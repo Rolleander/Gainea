@@ -29,7 +29,7 @@ public class MapAction extends Image {
     public final static int TYPE_MOVE = 0;
     public final static int TYPE_ATTACK = 1;
     public final static int TYPE_PLACE = 2;
-    
+
     public MapAction(Gainea game, int type, int locationId, ActionListener clicked) {
         setVisible(false);
         this.type = type;
@@ -39,6 +39,7 @@ public class MapAction extends Image {
         setDrawable(new TextureRegionDrawable(region));
         setSize(SIZE, SIZE);
         setOrigin(Align.center);
+        setZIndex(10000);
         if (clicked != null) {
             addListener(new ClickListener() {
                 @Override

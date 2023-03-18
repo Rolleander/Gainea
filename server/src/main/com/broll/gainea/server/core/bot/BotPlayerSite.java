@@ -51,7 +51,8 @@ public class BotPlayerSite extends BotSite<PlayerData> {
 
     @PackageReceiver
     public void turnActions(NT_PlayerTurnActions turn) {
-        pickTurnAction(turn);
+        strategy.prepareTurn();
+        sendServer(botActionHandler.createBestReaction(turn));
     }
 
     @PackageReceiver
@@ -85,11 +86,6 @@ public class BotPlayerSite extends BotSite<PlayerData> {
         if (nt.player == getBot().getId()) {
             strategy.synchronizeGoalStrategies();
         }
-    }
-
-    private void pickTurnAction(NT_PlayerTurnActions actions) {
-        strategy.prepareTurn();
-        sendServer(botActionHandler.createBestReaction(actions));
     }
 
 }

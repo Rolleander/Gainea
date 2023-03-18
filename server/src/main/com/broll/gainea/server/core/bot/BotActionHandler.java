@@ -9,10 +9,14 @@ import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.bot.strategy.BotStrategy;
 import com.broll.gainea.server.core.player.Player;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public class BotActionHandler {
+    private final static Logger Log = LoggerFactory.getLogger(BotActionHandler.class);
 
     private final static String PACKAGE_PATH = "com.broll.gainea.server.core.bot.impl";
     private GameContainer game;
@@ -53,12 +57,16 @@ public class BotActionHandler {
         for (NT_Action action : turn.actions) {
             BotOptionalAction botAction = (BotOptionalAction) actions.get(action.getClass());
             BotOptionalAction.BotOption botOption = botAction.score(action);
-            if (botOption != null && botOption.getScore() > bestOption.getScore()) {
-                bestOption = botOption;
-                bestAction = botAction;
-                ntAction = action;
+            if (botOption != null) {
+                Log.trace(bot + " scored [" + botOption.getScore() + "] for option " + botOption);
+                if (botOption.getScore() > bestOption.getScore()) {
+                    bestOption = botOption;
+                    bestAction = botAction;
+                    ntAction = action;
+                }
             }
         }
+        Log.trace(bot + " picked best option: " + bestOption);
         if (bestOption == endTurnOption) {
             return new NT_EndTurn();
         }
@@ -69,6 +77,11 @@ public class BotActionHandler {
     private class EndTurnOption extends BotOptionalAction.BotOption {
         public EndTurnOption() {
             super(0);
+        }
+
+        @Override
+        public String toString() {
+            return "endturn";
         }
     }
 

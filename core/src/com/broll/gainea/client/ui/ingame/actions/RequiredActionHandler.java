@@ -36,6 +36,10 @@ public class RequiredActionHandler {
         this.skin = skin;
     }
 
+    public void toFront() {
+        mapActions.forEach(it -> it.setZIndex(10000));
+    }
+
     public void handleAction(NT_Action action, PlayerPerformAction playerPerformAction) {
         mapActions.clear();
         RequiredActionContainer container = new RequiredActionContainer(mapActions, playerPerformAction, this::close);

@@ -35,6 +35,9 @@ public class BotAttack extends BotOptionalAction<NT_Action_Attack, BotAttack.Att
         List<Location> attackFromOptions = usableUnits.stream().map(MapObject::getLocation).distinct().collect(Collectors.toList());
         for (Location attackFrom : attackFromOptions) {
             List<Unit> groupedUnits = usableUnits.stream().filter(it -> it.getLocation() == attackFrom).collect(Collectors.toList());
+            if (groupedUnits.isEmpty()) {
+                continue;
+            }
             List<Unit> fighters = BattleSimulation.calculateRequiredFighters(location, groupedUnits, winChance);
             if (fighters != null) {
                 AttackOption option = new AttackOption((3 - fightType) * 5);
@@ -62,6 +65,9 @@ public class BotAttack extends BotOptionalAction<NT_Action_Attack, BotAttack.Att
     public boolean keepAttacking(NT_Battle_Update update) {
         List<Unit> attackers = BotUtils.getObjects(game, update.attackers);
         List<Unit> defenders = BotUtils.getObjects(game, update.defenders);
+        if (attackers.stream().noneMatch(Unit::isAlive) || defenders.stream().noneMatch(Unit::isAlive)) {
+            return false;
+        }
         float winChance = getRequiredWinChance(getSelectedOption().type);
         return BattleSimulation.calculateCurrentWinChance(attackers, defenders) >= winChance;
     }
@@ -114,6 +120,11 @@ public class BotAttack extends BotOptionalAction<NT_Action_Attack, BotAttack.Att
 
         public AttackOption(float score) {
             super(score);
+        }
+
+        @Override
+        public String toString() {
+            return "attack " + location + " with " + attackUnits.length + " units";
         }
     }
 

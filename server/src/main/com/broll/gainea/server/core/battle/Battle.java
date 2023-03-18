@@ -60,13 +60,18 @@ public class Battle {
         }
         Unit target = getDamageTarget(targetUnits);
         if (target != null) {
-            boolean lethal = target.takeDamage();
-            if (lethal) {
-                source.addKill();
-            }
-            result.damage(source, target, lethal);
+            damage(result, source, target);
         }
     }
+
+    protected void damage(FightResult result, Unit source, Unit target) {
+        boolean lethal = target.takeDamage();
+        if (lethal) {
+            source.addKill();
+        }
+        result.damage(source, target, lethal);
+    }
+
 
     private Unit getDamageTarget(List<Unit> targetUnits) {
         List<Unit> targets = targetUnits.stream().filter(Unit::isAlive).collect(Collectors.toList());

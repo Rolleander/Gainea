@@ -6,6 +6,7 @@ import com.broll.gainea.server.core.objects.Unit;
 
 public class Monster extends Unit {
 
+    private final static int MAX_STARS = 8;
     private MonsterBehavior behavior = MonsterBehavior.RESIDENT;
     private MonsterActivity activity = MonsterActivity.SOMETIMES;
     private MonsterMotion motion = MonsterMotion.TERRESTRIAL;
@@ -89,7 +90,7 @@ public class Monster extends Unit {
     }
 
     public static int stars(int power, int health) {
-        return (power + health) / 2;
+        return Math.min((power + health) / 2, MAX_STARS);
     }
 
 }
