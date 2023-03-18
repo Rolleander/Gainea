@@ -87,6 +87,7 @@ public class GameBoardSite extends GameSite {
         if (GameUtils.noActivePlayersRemaining(getGame())) {
             getGame().end();
             getGame().getProcessingCore().shutdown();
+            getGame().getReactionHandler().finishedProcessing();
         } else {
             MessageUtils.displayMessage(getLobby().getData().getGame(), getPlayer().getName() + " hat aufgegeben!");
             endTurn(null);

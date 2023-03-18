@@ -12,6 +12,8 @@ public class LogWindow extends MenuWindow {
     private Table logTable;
     private ScrollPane logScrollPane;
 
+    private final static int MESSAGE_LENGTH = 450;
+
     public LogWindow(Gainea game) {
         super(game, "Log", game.ui.skin);
         logTable = new Table(skin);
@@ -41,14 +43,14 @@ public class LogWindow extends MenuWindow {
 
     private Table basicLog(String message) {
         Table log = new Table(skin);
-        log.add(LabelUtils.markup(skin, message));
+        log.add(LabelUtils.autoWrap(LabelUtils.markup(skin, message), MESSAGE_LENGTH));
         return log;
     }
 
     private Table iconLog(int icon, String message) {
         Table log = new Table(skin);
         log.add(new Image(TextureUtils.icon(game, icon))).padRight(10);
-        log.add(LabelUtils.markup(skin, message));
+        log.add(LabelUtils.autoWrap(LabelUtils.markup(skin, message), MESSAGE_LENGTH));
         return log;
     }
 

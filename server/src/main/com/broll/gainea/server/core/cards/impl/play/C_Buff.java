@@ -25,8 +25,7 @@ public class C_Buff extends Card implements ICardStrategy {
         Unit unit = SelectionUtils.selectPlayerUnit(game, owner, "Welche Einheit soll gestärkt werden?");
         if (unit != null) {
             unit.getPower().addValue(1);
-            unit.getHealth().addValue(1);
-            unit.getMaxHealth().addValue(1);
+            unit.changeHealth(1);
             UnitControl.focus(game, unit, NT_Event.EFFECT_BUFF);
         }
     }

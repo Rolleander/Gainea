@@ -159,9 +159,9 @@ public class GameEventSite extends AbstractGameSite {
             }
             if (card.player == getPlayer().getId()) {
                 game.state.getCards().remove(card.card);
-                logWindow().logCardEvent("Du hast [VIOLET]" + card.card.title + "[] ausgespielt!");
+                logWindow().logCardEvent("Du hast [VIOLET]" + card.card.title + "[] ausgespielt: [GRAY]" + card.card.text + "[]");
             } else if (owner != null) {
-                logWindow().logCardEvent(owner.name + " hat [VIOLET]" + card.card.title + "[] ausgespielt!");
+                logWindow().logCardEvent(owner.name + " hat [VIOLET]" + card.card.title + "[] ausgespielt: [GRAY]" + card.card.text + "[]");
             }
         }
         game.ui.inGameUI.updateWindows();

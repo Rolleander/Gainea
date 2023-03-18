@@ -9,6 +9,9 @@ import com.broll.gainea.server.core.objects.buffs.TimedEffect;
 import com.broll.gainea.server.core.utils.PlayerUtils;
 import com.broll.gainea.server.core.utils.UnitControl;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class C_Prisoners extends Card {
 
     public C_Prisoners() {
@@ -26,19 +29,21 @@ public class C_Prisoners extends Card {
         TimedEffect.forCurrentTurn(game, new TimedEffect() {
             public void battleResult(BattleResult result) {
                 if (result.isWinner(owner)) {
-                    result.getOpposingUnits(owner).stream()
+                    List<Unit> killedSoldiers = result.getOpposingUnits(owner).stream()
                             .filter(it -> it instanceof Soldier && it.isDead() && !PlayerUtils.isCommander(it))
-                            .forEach(unit -> recruit(unit, result.getEndLocation(owner)));
+                            .collect(Collectors.toList());
+                    recruit(killedSoldiers, result.getEndLocation(owner));
                     unregister();
                 }
             }
 
-            private void recruit(Unit unit, Location location) {
-                //todo restlichen angreifer sind nicht mehr zum ziel gelaufen...? ein gefangener landet beim spieler, einer nicht
-                unit.heal();
-                //so they cant be used this turn
-                unit.setOwner(owner);
-                UnitControl.spawn(game, unit, location);
+            private void recruit(List<Unit> killedSoldiers, Location location) {
+                killedSoldiers.forEach(it -> {
+                    it.heal();
+                    it.setOwner(owner);
+                    it.setLocation(location);
+                });
+                UnitControl.update(game, killedSoldiers);
             }
         });
     }

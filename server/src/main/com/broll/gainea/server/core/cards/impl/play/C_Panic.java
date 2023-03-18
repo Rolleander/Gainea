@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 public class C_Panic extends Card {
     public C_Panic() {
-        super(46, "Massenpanik", "Wählt ein Land mit mindestens einer Einheit. Alle Einheiten des gewählten Ortes werden auf freie angrenzende Orte verteilt.");
+        super(46, "Massenpanik", "Wählt ein Land mit mindestens einer Einheit. Alle Einheiten des gewählten Ortes werden auf angrenzende Orte verteilt.");
         setDrawChance(0.9f);
     }
 
@@ -28,17 +28,15 @@ public class C_Panic extends Card {
         if (!locations.isEmpty()) {
             Location source = selectHandler.selectLocation("Wählt einen Zielort für die Panik", locations);
             List<MapObject> inhabitants = new ArrayList<>(source.getInhabitants());
-            List<Location> emptyNeighbours = source.getWalkableNeighbours().stream().filter(Location::isFree).collect(Collectors.toList());
-            if (!emptyNeighbours.isEmpty()) {
-                Collections.shuffle(emptyNeighbours);
-                int index = 0;
-                for (MapObject object : inhabitants) {
-                    Location target = emptyNeighbours.get(index);
-                    UnitControl.move(game, Lists.newArrayList(object), target);
-                    index++;
-                    if (index >= emptyNeighbours.size()) {
-                        index = 0;
-                    }
+            List<Location> neighbours = new ArrayList<>(source.getConnectedLocations());
+            Collections.shuffle(neighbours);
+            int index = 0;
+            for (MapObject object : inhabitants) {
+                Location target = neighbours.get(index);
+                UnitControl.move(game, Lists.newArrayList(object), target);
+                index++;
+                if (index >= neighbours.size()) {
+                    index = 0;
                 }
             }
         }

@@ -39,7 +39,7 @@ public class MonsterRender extends UnitRender {
         super.draw(batch, parentAlpha);
         NT_Monster monster = (NT_Monster) getUnit();
         MonsterBehavior behavior = MonsterBehavior.values()[monster.behavior];
-        if (shouldDrawPlate() && behavior != MonsterBehavior.RESIDENT) {
+        if (shouldDrawPlate() && behavior != MonsterBehavior.RESIDENT && monster.actionTimer > NT_Monster.NO_ACTION_TIMER) {
             batch.draw(bubble, getX() - 18, getY() - MapObjectRender.R - 16);
             int timer = monster.actionTimer;
             if (timer <= 1) {

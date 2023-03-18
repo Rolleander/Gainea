@@ -4,6 +4,7 @@ import com.broll.gainea.net.NT_Event;
 import com.broll.gainea.server.core.cards.Card;
 import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.objects.MapObject;
+import com.broll.gainea.server.core.objects.Unit;
 import com.broll.gainea.server.core.objects.buffs.BuffType;
 import com.broll.gainea.server.core.objects.buffs.IntBuff;
 import com.broll.gainea.server.core.utils.PlayerUtils;
@@ -33,6 +34,9 @@ public class C_Rooting extends Card {
         IntBuff rootDebuff = new IntBuff(BuffType.SET, 0);
         units.forEach(unit -> {
             unit.getMovesPerTurn().addBuff(rootDebuff);
+            if (unit instanceof Unit) {
+                ((Unit) unit).getAttacksPerTurn().addBuff(rootDebuff);
+            }
         });
         UnitControl.focus(game, units, NT_Event.EFFECT_DEBUFF);
         game.getBuffProcessor().timeoutBuff(rootDebuff, DURATION);

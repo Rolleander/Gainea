@@ -8,7 +8,6 @@ import com.broll.gainea.server.core.objects.monster.Monster;
 import com.broll.gainea.server.core.utils.SelectionUtils;
 import com.broll.gainea.server.core.utils.UnitControl;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -43,10 +42,10 @@ public class C_MonsterRecruit extends Card {
         Collection<Location> monsterLocations = getMonsterLocations();
         if (!monsterLocations.isEmpty()) {
             Monster monster = (Monster) SelectionUtils.selectUnitFromLocations(game,
-                    new ArrayList<>(monsterLocations), this::validMonster,
+                    monsterLocations, this::validMonster,
                     "Welches Monster soll rekrutiert werden?");
             owner.getUnits().add(monster);
-            monster.removeActionTimer(); // todo: client siehts immer noch?
+            monster.removeActionTimer();
             monster.setOwner(owner);
             game.getObjects().remove(monster);
             UnitControl.focus(game, monster, 0);

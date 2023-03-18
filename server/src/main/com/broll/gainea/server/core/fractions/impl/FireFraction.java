@@ -91,7 +91,7 @@ public class FireFraction extends Fraction {
 
         @Override
         protected void play() {
-            Unit unit = SelectionUtils.selectEnemyUnit(game, owner, "Welcher Einheit soll Schaden zugeführt werden?");
+            Unit unit = SelectionUtils.selectHostileUnit(game, owner, "Welcher Einheit soll Schaden zugeführt werden?");
             if (unit != null) {
                 UnitControl.damage(game, unit, 1);
             }

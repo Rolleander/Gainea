@@ -26,6 +26,8 @@ public class ReactionHandler {
     private Map<RequiredActionContext, RequiredAction> requiredActions = Collections.synchronizedMap(new HashMap<>());
     private ActionHandlers actionHandlers;
 
+    private boolean gameStopped = false;
+
     public ReactionHandler(GameContainer game, ActionHandlers actionHandlers) {
         this.game = game;
         this.actionHandlers = actionHandlers;
@@ -64,6 +66,10 @@ public class ReactionHandler {
     }
 
     private void stopGame() {
+        if (gameStopped) {
+            return;
+        }
+        gameStopped = true;
         game.getProcessingCore().shutdown();
         Log.trace("Process gameend");
         NT_GameOver gameOver = new NT_GameOver();

@@ -27,10 +27,9 @@ public class C_Blockade extends Card {
 
     @Override
     protected void play() {
-        //todo : leben wird nicht rot wenn geschwächt
         Blockade soldier = new Blockade();
         IntBuff buff = new IntBuff(BuffType.ADD, 10);
-        soldier.getHealth().addBuff(buff);
+        soldier.addHealthBuff(buff);
         List<Area> locations = game.getMap().getAllAreas().stream().filter(Location::isFree).collect(Collectors.toList());
         Location location = selectHandler.selectLocation("Wo soll die Befestigung errichtet werden?", locations);
         UnitControl.spawn(game, soldier, location);

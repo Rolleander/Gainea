@@ -3,6 +3,7 @@ package com.broll.gainea.server.core.bot.strategy;
 import com.broll.gainea.server.core.battle.Battle;
 import com.broll.gainea.server.core.battle.BattleContext;
 import com.broll.gainea.server.core.battle.FightResult;
+import com.broll.gainea.server.core.battle.FightingPower;
 import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.objects.Unit;
 import com.broll.gainea.server.core.player.Player;
@@ -72,10 +73,17 @@ public class BattleSimulation {
     }
 
     private static class SimulationUnit extends Unit {
+        private Unit original;
 
         public SimulationUnit(Unit original) {
             super(original.getOwner());
+            this.original = original;
             copy(original, this);
+        }
+
+        @Override
+        public FightingPower calcFightingPower(BattleContext context) {
+            return original.calcFightingPower(context);
         }
     }
 

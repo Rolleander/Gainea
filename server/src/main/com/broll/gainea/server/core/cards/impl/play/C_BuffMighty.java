@@ -21,8 +21,7 @@ public class C_BuffMighty extends Card {
     protected void play() {
         Unit unit = SelectionUtils.selectPlayerUnit(game, owner, "Welche Einheit soll gestärkt werden?");
         unit.setPower(unit.getPower().getRootValue() * 2);
-        unit.getHealth().setValue(unit.getHealth().getRootValue() * 2);
-        unit.getMaxHealth().setValue(unit.getMaxHealth().getRootValue() * 2);
+        unit.changeHealth(unit.getHealth().getRootValue() * 2);
         UnitControl.focus(game, unit, NT_Event.EFFECT_BUFF);
     }
 

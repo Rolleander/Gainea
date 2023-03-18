@@ -4,8 +4,11 @@ import com.broll.gainea.net.NT_BoardEffect;
 import com.broll.gainea.server.core.cards.Card;
 import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.objects.MapEffect;
+import com.broll.gainea.server.core.objects.MapObject;
 import com.broll.gainea.server.core.objects.buffs.TimedEffect;
+import com.broll.gainea.server.core.utils.UnitControl;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class C_RedPortal extends Card {
@@ -30,7 +33,7 @@ public class C_RedPortal extends Card {
         MapEffect.spawn(game, startPortal);
         Location to = selectHandler.selectLocation("Wähle den Zielort für das Portal", from.getContainer().getExpansion().getAllAreas().stream()
                 .filter(it -> it.isFree() && it != from && !from.getConnectedLocations().contains(it)).collect(Collectors.toList()));
-        if (from != null && to != null) {
+        if (to != null) {
             MapEffect endPortal = new MapEffect(NT_BoardEffect.EFFECT_PORTAL, "", to);
             MapEffect.spawn(game, endPortal);
             from.getConnectedLocations().add(to);
@@ -43,6 +46,31 @@ public class C_RedPortal extends Card {
                     MapEffect.despawn(game, endPortal);
                     from.getConnectedLocations().remove(to);
                     to.getConnectedLocations().remove(from);
+                }
+
+                private boolean ignoreNextEvent = false;
+
+                @Override
+                public void moved(List<MapObject> units, Location location) {
+                    if (ignoreNextEvent) {
+                        ignoreNextEvent = false;
+                        return;
+                    }
+                    Location source = units.stream().map(MapObject::getLocation).findFirst().orElse(null);
+                    if (source == from || source == to) {
+                        //dont teleport back when walking through teleport manually
+                        return;
+                    }
+                    Location moveTo = null;
+                    if (location == from) {
+                        moveTo = to;
+                    } else if (location == to) {
+                        moveTo = from;
+                    }
+                    if (moveTo != null) {
+                        ignoreNextEvent = true; // to prevent endless event loop
+                        UnitControl.move(game, units, moveTo);
+                    }
                 }
             });
         } else {

@@ -6,9 +6,9 @@ import com.broll.gainea.server.core.fractions.Fraction;
 import com.broll.gainea.server.core.fractions.FractionDescription;
 import com.broll.gainea.server.core.fractions.FractionType;
 import com.broll.gainea.server.core.objects.Soldier;
-import com.broll.gainea.server.core.objects.Unit;
 import com.broll.gainea.server.core.objects.monster.Monster;
 import com.broll.gainea.server.core.utils.UnitControl;
+import com.google.common.collect.Lists;
 
 public class PoacherFraction extends Fraction {
     public PoacherFraction() {
@@ -36,11 +36,11 @@ public class PoacherFraction extends Fraction {
     public void killedMonster(Monster monster) {
         super.killedMonster(monster);
         //recruit monster in player army
-        Monster recruited = new Monster();
-        Unit.copy(monster, recruited);
-        recruited.heal();
-        recruited.setOwner(owner);
-        UnitControl.spawn(game, recruited, recruited.getLocation());
+        monster.heal();
+        monster.setOwner(owner);
+        game.getObjects().remove(monster);
+        owner.getUnits().add(monster);
+        UnitControl.update(game, Lists.newArrayList(monster));
     }
 
     @Override

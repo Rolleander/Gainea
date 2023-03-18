@@ -33,7 +33,7 @@ public class G_KillAllMonsters extends Goal {
             if (monsterCount >= 2) {
                 this.difficulty = monsterCount >= 5 ? GoalDifficulty.MEDIUM : GoalDifficulty.EASY;
                 this.setExpansionRestriction(continent.getExpansion().getType());
-                this.text = "Auf dem Kontinent " + continent.getName() + " darf es keine Monster mehr geben";
+                this.text = "Auf dem Kontinent " + continent.getName() + " darf es keine wilden Monster mehr geben";
                 return super.init(game, player);
             }
         }
@@ -42,7 +42,7 @@ public class G_KillAllMonsters extends Goal {
 
     private int getMonsterCount() {
         return (int) continent.getAreas().stream().flatMap(it -> LocationUtils.getMonsters(it).stream())
-                .filter(Unit::isAlive).count();
+                .filter(it -> it.getOwner() == null).filter(Unit::isAlive).count();
     }
 
     @Override

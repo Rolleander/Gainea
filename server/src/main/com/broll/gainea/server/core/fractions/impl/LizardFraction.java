@@ -31,7 +31,7 @@ public class LizardFraction extends Fraction {
     @Override
     public void prepareTurn(ActionHandlers actionHandlers) {
         turns++;
-        if (turns >= SPAWN_TURN) {
+        if (turns >= SPAWN_TURN || owner.getControlledLocations().isEmpty()) {
             //spawn  soldier
             super.prepareTurn(actionHandlers);
             turns = 0;
