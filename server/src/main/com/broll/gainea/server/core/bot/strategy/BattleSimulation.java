@@ -3,15 +3,17 @@ package com.broll.gainea.server.core.bot.strategy;
 import com.broll.gainea.server.core.battle.Battle;
 import com.broll.gainea.server.core.battle.BattleContext;
 import com.broll.gainea.server.core.battle.FightResult;
-import com.broll.gainea.server.core.battle.FightingPower;
 import com.broll.gainea.server.core.map.Location;
+import com.broll.gainea.server.core.objects.MapObject;
 import com.broll.gainea.server.core.objects.Unit;
+import com.broll.gainea.server.core.objects.buffs.BuffableInt;
 import com.broll.gainea.server.core.player.Player;
 import com.broll.gainea.server.core.utils.PlayerUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class BattleSimulation {
 
@@ -53,38 +55,38 @@ public class BattleSimulation {
         return winsBattle(units, PlayerUtils.getHostileArmy(owner, location));
     }
 
-    private static boolean winsBattle(List<Unit> attackingUnits, List<Unit> defendingUnits) {
-        List<Unit> attackers = attackingUnits.stream().map(SimulationUnit::new).collect(Collectors.toList());
-        List<Unit> defenders = defendingUnits.stream().map(SimulationUnit::new).collect(Collectors.toList());
-        return isWinningBattle(attackers, defenders);
-    }
-
-    private static boolean isWinningBattle(List<Unit> attackers, List<Unit> defenders) {
+    private static boolean winsBattle(List<Unit> attackers, List<Unit> defenders) {
         if (defenders.isEmpty() || attackers.isEmpty()) {
             return true;
         }
+        UnitSimulationWrapper simulationWrapper = new UnitSimulationWrapper(attackers, defenders);
         do {
             BattleContext context = new BattleContext(attackers, defenders);
             FightResult result = new Battle(context, attackers, defenders).fight();
             attackers.removeAll(result.getDeadAttackers());
             defenders.removeAll(result.getDeadDefenders());
         } while (!attackers.isEmpty() && !defenders.isEmpty());
+        simulationWrapper.restore();
         return !attackers.isEmpty();
     }
 
-    private static class SimulationUnit extends Unit {
-        private Unit original;
+    private static class UnitSimulationWrapper {
 
-        public SimulationUnit(Unit original) {
-            super(original.getOwner());
-            this.original = original;
-            copy(original, this);
+        private List<Unit> units;
+        private List<BuffableInt<MapObject>> originalHealth;
+
+        public UnitSimulationWrapper(List<Unit> attackers, List<Unit> defenders) {
+            units = Stream.concat(attackers.stream(), defenders.stream()).collect(Collectors.toList());
+            originalHealth = units.stream().map(Unit::getHealth).collect(Collectors.toList());
+            units.forEach(it -> it.overwriteHealth(it.getHealth().copy()));
         }
 
-        @Override
-        public FightingPower calcFightingPower(BattleContext context) {
-            return original.calcFightingPower(context);
+        public void restore() {
+            for (int i = 0; i < units.size(); i++) {
+                units.get(i).overwriteHealth(originalHealth.get(i));
+            }
         }
+
     }
 
 }

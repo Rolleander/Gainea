@@ -156,6 +156,10 @@ public abstract class Unit extends MapObject {
         this.maxHealth.addValue(change);
     }
 
+    public void overwriteHealth(BuffableInt<MapObject> health) {
+        this.health = health;
+    }
+
     public void setPower(int power) {
         this.power.setValue(power);
     }

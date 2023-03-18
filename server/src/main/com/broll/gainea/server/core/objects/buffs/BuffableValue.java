@@ -5,7 +5,7 @@ import java.util.Set;
 
 public abstract class BuffableValue<T, B extends Buff, V> {
 
-    private T object;
+    protected T object;
     protected V value;
     protected V buffedValue;
     protected Set<B> buffs = new HashSet<>();
@@ -50,6 +50,6 @@ public abstract class BuffableValue<T, B extends Buff, V> {
 
     @Override
     public String toString() {
-        return ""+buffedValue;
+        return "" + buffedValue;
     }
 }

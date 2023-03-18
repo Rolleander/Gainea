@@ -12,6 +12,10 @@ public class BuffableInt<T> extends BuffableValue<T, IntBuff, Integer> {
         recalc();
     }
 
+    public BuffableInt copy() {
+        return copy(object);
+    }
+
     public BuffableInt copy(T object) {
         BuffableInt copy = new BuffableInt(object, value);
         copy.minValue = this.minValue;

@@ -47,9 +47,9 @@ public class TurnBuilder {
         MultiValueMap<Location, Unit> attackableTo = new MultiValueMap<>();
         player.getUnits().stream().filter(Unit::isControllable).forEach(unit -> {
             List<Location> walkableLocations = unit.getLocation().getConnectedLocations().stream().filter(unit::canMoveTo).collect(Collectors.toList());
+            List<Location> attackableLocations = walkableLocations.stream().filter(it -> PlayerUtils.hasHostileArmy(player, it)).collect(Collectors.toList());
+            walkableLocations.removeAll(attackableLocations);
             if (unit.hasRemainingAttack()) {
-                List<Location> attackableLocations = walkableLocations.stream().filter(it -> PlayerUtils.hasHostileArmy(player, it)).collect(Collectors.toList());
-                walkableLocations.removeAll(attackableLocations);
                 attackableLocations.forEach(it -> attackableTo.put(it, unit));
             }
             if (unit.hasRemainingMove()) {

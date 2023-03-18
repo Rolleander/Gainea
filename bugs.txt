@@ -7,9 +7,6 @@ spion karte wurd zu kurz angezeigt
 
 karten steal update client ...
 
-wenn nur bewegen statt angreifen darf man nicht auf besetzes feld
- (echse greift an, verliert und läuft dann auf das besetzte feld)
-
  bot stackt nur noch :(
 
  hai kann nicht schiffe rückwärts drauf wenn kontrolliert (aber runter?!)
