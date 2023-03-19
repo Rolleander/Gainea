@@ -48,7 +48,7 @@ public class CardAction extends AbstractActionHandler<NT_Action_Card, CardAction
         playedCard.player = player.getServerPlayer().getId();
         playedCard.card = card.nt();
         reactionResult.sendGameUpdate(playedCard);
-        player.getCardHandler().discardCard(card);
+        player.getCardHandler().getCards().remove(card);
         ProcessingUtils.pause(PLAY_CARD_DELAY);
         card.play(actionHandlers);
         game.getUpdateReceiver().playedCard(card);

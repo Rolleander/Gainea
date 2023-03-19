@@ -3,6 +3,7 @@ package com.broll.gainea.server.core.player;
 import com.broll.gainea.net.NT_Card;
 import com.broll.gainea.net.NT_Event_OtherPlayerReceivedCard;
 import com.broll.gainea.net.NT_Event_ReceivedCard;
+import com.broll.gainea.net.NT_Event_RemoveCard;
 import com.broll.gainea.server.core.GameContainer;
 import com.broll.gainea.server.core.actions.optional.CardAction;
 import com.broll.gainea.server.core.cards.Card;
@@ -47,7 +48,11 @@ public class CardHandler {
     }
 
     public void discardCard(Card card) {
-        this.cards.remove(card);
+        if (this.cards.remove(card)) {
+            NT_Event_RemoveCard nt = new NT_Event_RemoveCard();
+            nt.card = card.nt();
+            player.getServerPlayer().sendTCP(nt);
+        }
     }
 
     public int getCardCount() {

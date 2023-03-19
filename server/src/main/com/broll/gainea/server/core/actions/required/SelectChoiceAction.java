@@ -7,6 +7,7 @@ import com.broll.gainea.server.core.actions.ActionContext;
 import com.broll.gainea.server.core.actions.RequiredActionContext;
 import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.player.Player;
+import com.broll.gainea.server.core.utils.PlayerUtils;
 import com.broll.networklib.server.impl.LobbyPlayer;
 
 import org.slf4j.Logger;
@@ -74,19 +75,17 @@ public class SelectChoiceAction extends AbstractActionHandler<NT_Action_SelectCh
     }
 
     public Player selectOtherPlayer(Player player, String message) {
-        Log.debug("Select other player action");
-        List<Player> players = game.getActivePlayers();
-        Context context = build(players.stream().filter(it -> it != player).map(Player::getServerPlayer).map(LobbyPlayer::getName).collect(Collectors.toList()));
+        return selectPlayer(player, PlayerUtils.getOtherPlayers(game, player).collect(Collectors.toList()), message);
+    }
+
+    public Player selectPlayer(Player player, List<Player> options, String message) {
+        Log.debug("Select player action");
+        Context context = build(options.stream().map(Player::getServerPlayer).map(LobbyPlayer::getName).collect(Collectors.toList()));
         context.selectingPlayer = player;
-        int selectingIndex = players.indexOf(context.selectingPlayer);
         actionHandlers.getReactionActions().requireAction(player, new RequiredActionContext<>(context, message));
         Log.trace("Wait for select choice reaction");
         processingBlock.waitFor(player);
-        int selectedOption = context.selectedOption;
-        if (selectedOption >= selectingIndex) {
-            selectedOption++; //skip selecting player
-        }
-        return players.get(selectedOption);
+        return options.get(context.selectedOption);
     }
 
     private void assureNotEmpty(List choices) {

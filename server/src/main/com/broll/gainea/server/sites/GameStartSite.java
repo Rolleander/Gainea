@@ -156,6 +156,7 @@ public class GameStartSite extends GameSite {
             placeUnit();
         } else {
             //all start units placed, start first turn
+            ProcessingUtils.MAX_PAUSE *= 3;
             nextTurn();
             getLobby().getData().setGameRoundsStarted(true);
         }

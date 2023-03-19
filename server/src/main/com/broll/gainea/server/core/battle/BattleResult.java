@@ -12,9 +12,14 @@ public class BattleResult extends BattleContext {
 
     private boolean retreated;
 
+    private boolean attackersWon;
+    private boolean defendersWon;
+
     public BattleResult(boolean retreated, BattleContext context) {
         super(context.attackers, context.defenders);
         this.retreated = retreated;
+        this.attackersWon = !retreated && hasSurvivingAttackers() && !hasSurvivingDefenders();
+        this.defendersWon = retreated || (hasSurvivingDefenders() && !hasSurvivingAttackers());
     }
 
     public List<Player> getWinningPlayers() {
@@ -46,11 +51,11 @@ public class BattleResult extends BattleContext {
     }
 
     public boolean attackersWon() {
-        return !retreated && hasSurvivingAttackers() && !hasSurvivingDefenders();
+        return attackersWon;
     }
 
     public boolean defendersWon() {
-        return retreated || (hasSurvivingDefenders() && !hasSurvivingAttackers());
+        return defendersWon;
     }
 
     private List<Player> getWinnerOwners() {
@@ -141,5 +146,5 @@ public class BattleResult extends BattleContext {
         }
         return null;
     }
-    
+
 }

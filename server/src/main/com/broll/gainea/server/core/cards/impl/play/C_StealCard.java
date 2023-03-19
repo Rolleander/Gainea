@@ -1,8 +1,8 @@
 package com.broll.gainea.server.core.cards.impl.play;
 
-import com.broll.gainea.net.NT_Event_RemoveCard;
 import com.broll.gainea.server.core.cards.Card;
 import com.broll.gainea.server.core.player.Player;
+import com.broll.gainea.server.core.utils.PlayerUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,22 +15,20 @@ public class C_StealCard extends Card {
 
     @Override
     public boolean isPlayable() {
-        return true;
+        return !getStealTargets().isEmpty();
+    }
+
+    private List<Player> getStealTargets() {
+        return PlayerUtils.getOtherPlayers(game, owner).filter(it -> !it.getCardHandler().getCards().isEmpty()).collect(Collectors.toList());
     }
 
     @Override
     protected void play() {
-        Player player = selectHandler.selectOtherPlayer(owner, "Welchen Spieler bekehren?");
+        Player player = selectHandler.selectPlayer(owner, getStealTargets(), "Welchen Spieler bekehren?");
         List<Card> cards = player.getCardHandler().getCards();
-        if (!cards.isEmpty()) {
-            Card card = cards.get(selectHandler.selectObject("Wählt eine Karte", cards.stream().map(Card::nt).collect(Collectors.toList())));
-            player.getCardHandler().discardCard(card);
-            owner.getCardHandler().receiveCard(card);
-            //update stolen player to remove his card
-            NT_Event_RemoveCard nt = new NT_Event_RemoveCard();
-            nt.card = card.nt();
-            player.getServerPlayer().sendTCP(nt);
-        }
+        Card card = cards.get(selectHandler.selectObject("Wählt eine Karte", cards.stream().map(Card::nt).collect(Collectors.toList())));
+        player.getCardHandler().discardCard(card);
+        owner.getCardHandler().receiveCard(card);
     }
 
 }

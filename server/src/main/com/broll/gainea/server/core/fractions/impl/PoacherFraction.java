@@ -35,12 +35,7 @@ public class PoacherFraction extends Fraction {
     @Override
     public void killedMonster(Monster monster) {
         super.killedMonster(monster);
-        //recruit monster in player army
-        monster.heal();
-        monster.setOwner(owner);
-        game.getObjects().remove(monster);
-        owner.getUnits().add(monster);
-        UnitControl.update(game, Lists.newArrayList(monster));
+        UnitControl.recruit(game, owner, Lists.newArrayList(monster));
     }
 
     @Override

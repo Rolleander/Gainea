@@ -2,10 +2,10 @@ package com.broll.gainea.server.core.cards.impl.play;
 
 import com.broll.gainea.server.core.cards.Card;
 import com.broll.gainea.server.core.objects.Unit;
-import com.broll.gainea.server.core.utils.GameUtils;
 import com.broll.gainea.server.core.utils.PlayerUtils;
 import com.broll.gainea.server.core.utils.SelectionUtils;
 import com.broll.gainea.server.core.utils.UnitControl;
+import com.google.common.collect.Lists;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,10 +29,6 @@ public class C_TakeOver extends Card {
     @Override
     protected void play() {
         Unit unit = SelectionUtils.selectUnit(game, owner, "Welche Einheit soll übernommen werden?", getTargets());
-        unit.getOwner().getUnits().remove(unit);
-        owner.getUnits().add(unit);
-        unit.setOwner(owner);
-        UnitControl.move(game, unit, PlayerUtils.getCommander(owner).get().getLocation());
-        GameUtils.sendUpdate(game, game.nt());
+        UnitControl.recruit(game, owner, Lists.newArrayList(unit), PlayerUtils.getCommander(owner).get().getLocation());
     }
 }

@@ -16,6 +16,7 @@ import com.broll.gainea.server.core.objects.monster.Monster;
 import com.broll.gainea.server.core.player.Player;
 import com.google.common.collect.Lists;
 
+import org.apache.commons.collections4.ListUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -202,6 +203,39 @@ public class UnitControl {
             move(game, units, target);
         } else {
             game.getBattleHandler().startBattle(units, targetUnits);
+        }
+    }
+
+    public static void recruit(GameContainer game, Player newOwner, List<Unit> units) {
+        recruit(game, newOwner, units, null);
+    }
+    
+    public static void recruit(GameContainer game, Player newOwner, List<Unit> units, Location newLocation) {
+        List<Unit> recruit = units.stream().filter(it -> it.getOwner() != newOwner).collect(Collectors.toList());
+        if (recruit.isEmpty()) {
+            return;
+        }
+        List<Unit> moveUnits = recruit.stream().filter(it -> it.isAlive() && newLocation != null &&
+                it.getLocation() != newLocation).collect(Collectors.toList());
+        List<Unit> updateUnits = ListUtils.subtract(recruit, moveUnits);
+        recruit.forEach(it -> {
+            Player previousOwner = it.getOwner();
+            if (previousOwner == null) {
+                game.getObjects().remove(it);
+            } else {
+                previousOwner.getUnits().remove(it);
+            }
+            newOwner.getUnits().add(it);
+            if (it.isDead()) {
+                it.heal();
+            }
+        });
+        if (!moveUnits.isEmpty()) {
+            move(game, moveUnits, newLocation);
+        }
+        if (!updateUnits.isEmpty()) {
+            updateUnits.forEach(it -> it.setLocation(newLocation));
+            update(game, updateUnits);
         }
     }
 
