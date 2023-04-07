@@ -1,7 +1,6 @@
 package com.broll.gainea.client.game;
 
 import com.broll.gainea.client.ui.ingame.map.MapObjectRender;
-import com.broll.gainea.client.ui.ingame.unit.UnitRender;
 import com.broll.gainea.net.NT_BoardObject;
 import com.broll.gainea.net.NT_Unit;
 import com.broll.gainea.server.core.map.Location;
@@ -10,7 +9,6 @@ import org.apache.commons.collections4.map.MultiValueMap;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -48,10 +46,12 @@ public class MapObjectContainer {
         this.objectRenders.clear();
         update.stream().forEach(o -> {
             Location location = game.getMap().getLocation(o.location);
-            MapObjectRender render = MapObjectRender.createRender(game.getContainer(), game.getContainer().ui.skin, o);
-            render.selectionListener();
-            this.objectRenders.put(location, render);
-            renders.add(render);
+            if (location != null) {
+                MapObjectRender render = MapObjectRender.createRender(game.getContainer(), game.getContainer().ui.skin, o);
+                render.selectionListener();
+                this.objectRenders.put(location, render);
+                renders.add(render);
+            }
         });
         objectRenders.keySet().stream().distinct().forEach(this::arrange);
         renders.sort((r1, r2) -> Float.compare(r1.getY(), r2.getY()));
