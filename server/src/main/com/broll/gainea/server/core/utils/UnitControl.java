@@ -209,7 +209,7 @@ public class UnitControl {
     public static void recruit(GameContainer game, Player newOwner, List<Unit> units) {
         recruit(game, newOwner, units, null);
     }
-    
+
     public static void recruit(GameContainer game, Player newOwner, List<Unit> units, Location newLocation) {
         List<Unit> recruit = units.stream().filter(it -> it.getOwner() != newOwner).collect(Collectors.toList());
         if (recruit.isEmpty()) {
@@ -226,15 +226,21 @@ public class UnitControl {
                 previousOwner.getUnits().remove(it);
             }
             newOwner.getUnits().add(it);
+            it.setOwner(newOwner);
             if (it.isDead()) {
                 it.heal();
+            }
+            if (it instanceof Monster) {
+                ((Monster) it).removeActionTimer();
             }
         });
         if (!moveUnits.isEmpty()) {
             move(game, moveUnits, newLocation);
         }
         if (!updateUnits.isEmpty()) {
-            updateUnits.forEach(it -> it.setLocation(newLocation));
+            if (newLocation != null) {
+                updateUnits.forEach(it -> it.setLocation(newLocation));
+            }
             update(game, updateUnits);
         }
     }
