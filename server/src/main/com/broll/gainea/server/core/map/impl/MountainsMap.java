@@ -20,13 +20,14 @@ public class MountainsMap extends ExpansionFactory {
 
     public MountainsMap() {
         super(ExpansionType.MOUNTAINS);
-        setBaseCoordinates(-1.05f,1.08f);
+        setBaseCoordinates(-1.05f, 1.08f);
     }
 
     @Override
     public String getTexture() {
-        return "expansion_4.png";
+        return "expansion_3.png";
     }
+
     @Override
     protected void init() {
 

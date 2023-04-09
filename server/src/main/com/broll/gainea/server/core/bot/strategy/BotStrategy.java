@@ -69,9 +69,12 @@ public class BotStrategy {
             strategizeUnit(goal, unit);
             return;
         }
-        GoalStrategy goal = goalStrategies.stream().filter(it -> !it.getTargetLocations().isEmpty())
-                .findFirst().orElse(getFallbackStrategy());
-        strategizeUnit(goal, unit);
+        goals = goalStrategies.stream().filter(it -> !it.getTargetLocations().isEmpty()).collect(Collectors.toList());
+        if (goals.isEmpty()) {
+            strategizeUnit(fallbackStrategy, unit);
+        } else {
+            strategizeUnit(RandomUtils.pickRandom(goals), unit);
+        }
     }
 
     private void strategizeUnit(GoalStrategy goal, Unit unit) {
