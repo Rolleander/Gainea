@@ -9,6 +9,8 @@ import com.broll.gainea.server.core.objects.Unit;
 import com.broll.gainea.server.core.player.Player;
 
 import org.apache.commons.lang3.tuple.MutablePair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,6 +20,7 @@ import java.util.stream.Collectors;
 
 public class BotStrategy {
 
+    private final static Logger Log = LoggerFactory.getLogger(BotStrategy.class);
     private StrategyConstants constants;
     private GameContainer game;
     private Player player;
@@ -53,37 +56,39 @@ public class BotStrategy {
         return goalStrategies;
     }
 
-    private void strategizeNewUnits() {
+    private void updateUnitStrategies() {
         for (Unit unit : player.getUnits()) {
-            if (!strategizedUnits.containsKey(unit)) {
+            GoalStrategy strategy = strategizedUnits.get(unit);
+            if (strategy == null || strategy.getTargetLocations().isEmpty()) {
                 strategizeUnit(unit);
             }
         }
     }
 
     private void strategizeUnit(Unit unit) {
-        List<GoalStrategy> goals = goalStrategies.stream().filter(GoalStrategy::requiresMoreUnits).collect(Collectors.toList());
-        if (!goals.isEmpty()) {
-            GoalStrategy goal = goals.get(BotUtils.getLowestScoreIndex(goals,
+        List<GoalStrategy> targetGoals = goalStrategies.stream().filter(it -> !it.getTargetLocations().isEmpty()).collect(Collectors.toList());
+        List<GoalStrategy> needyGoals = targetGoals.stream().filter(GoalStrategy::requiresMoreUnits).collect(Collectors.toList());
+        if (!needyGoals.isEmpty()) {
+            GoalStrategy goal = needyGoals.get(BotUtils.getLowestScoreIndex(needyGoals,
                     it -> it.getClosestDistance(unit, unit.getLocation())));
             strategizeUnit(goal, unit);
             return;
         }
-        goals = goalStrategies.stream().filter(it -> !it.getTargetLocations().isEmpty()).collect(Collectors.toList());
-        if (goals.isEmpty()) {
+        if (targetGoals.isEmpty()) {
             strategizeUnit(fallbackStrategy, unit);
         } else {
-            strategizeUnit(RandomUtils.pickRandom(goals), unit);
+            strategizeUnit(RandomUtils.pickRandom(targetGoals), unit);
         }
     }
 
     private void strategizeUnit(GoalStrategy goal, Unit unit) {
+        Log.trace("Strategize " + unit + " to goal " + goal);
         goal.strategizeUnit(unit);
         strategizedUnits.put(unit, goal);
     }
 
     public void prepareTurn() {
-        strategizeNewUnits();
+        updateUnitStrategies();
         goalStrategies.forEach(goal -> {
             List<Unit> deadUnits = goal.getUnits().stream().filter(Unit::isDead).collect(Collectors.toList());
             deadUnits.forEach(unit -> {

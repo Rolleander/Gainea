@@ -16,6 +16,7 @@ import com.broll.gainea.server.core.bot.impl.BotAttack;
 import com.broll.gainea.server.core.bot.strategy.BotStrategy;
 import com.broll.gainea.server.core.bot.strategy.StrategyConstants;
 import com.broll.gainea.server.core.player.Player;
+import com.broll.gainea.server.core.utils.MessageUtils;
 import com.broll.gainea.server.core.utils.ProcessingUtils;
 import com.broll.gainea.server.init.LobbyData;
 import com.broll.gainea.server.init.PlayerData;
@@ -51,6 +52,7 @@ public class BotPlayerSite extends BotSite<PlayerData> {
 
     @PackageReceiver
     public void turnActions(NT_PlayerTurnActions turn) {
+        Log.trace(getBot() + " turn");
         strategy.prepareTurn();
         sendServer(botActionHandler.createBestReaction(turn));
     }
@@ -79,6 +81,8 @@ public class BotPlayerSite extends BotSite<PlayerData> {
     @PackageReceiver
     public void newGoal(NT_Event_ReceivedGoal nt) {
         strategy.synchronizeGoalStrategies();
+        GameContainer game = ((LobbyData) getBot().getServerLobby().getData()).getGame();
+        MessageUtils.gameLog(game, getBot().getName() + " " + nt.goal.description);
     }
 
     @PackageReceiver

@@ -17,7 +17,6 @@ import java.util.Map;
 
 public class BotActionHandler {
     private final static Logger Log = LoggerFactory.getLogger(BotActionHandler.class);
-
     private final static String PACKAGE_PATH = "com.broll.gainea.server.core.bot.impl";
     private GameContainer game;
     private Player bot;

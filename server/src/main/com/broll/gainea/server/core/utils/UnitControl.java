@@ -37,6 +37,7 @@ public class UnitControl {
     }
 
     public static void move(GameContainer game, List<? extends MapObject> units, Location location) {
+        if (units.isEmpty()) return;
         Log.trace("UnitControl: move units [" + units.size() + "] to " + location);
         units.forEach(unit -> GameUtils.place(unit, location));
         NT_Event_MovedObject movedObject = new NT_Event_MovedObject();

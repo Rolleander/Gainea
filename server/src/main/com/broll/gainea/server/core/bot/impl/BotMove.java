@@ -11,6 +11,8 @@ import com.broll.gainea.server.core.objects.Unit;
 import com.broll.gainea.server.core.utils.LocationUtils;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,7 +25,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 public class BotMove extends BotOptionalAction<NT_Action_Move, BotMove.MoveOption> {
-
+    private final static Logger Log = LoggerFactory.getLogger(BotMove.class);
     private final static int MOVE_SCORE = 10;
 
 
@@ -44,6 +46,7 @@ public class BotMove extends BotOptionalAction<NT_Action_Move, BotMove.MoveOptio
                 return move;
             }
         }
+        Log.trace("no goal strategies for moving units");
         return null;
     }
 
@@ -58,7 +61,7 @@ public class BotMove extends BotOptionalAction<NT_Action_Move, BotMove.MoveOptio
         List<Location> unitTargets = getPathTargets(units, goalStrategy);
         int distance = Integer.MAX_VALUE;
         List<Unit> moveTogether = new ArrayList<>();
-        for (int i = 0; i < units.size(); i++) {
+        for (int i = 0; i < unitTargets.size(); i++) {
             Unit unit = units.get(i);
             Location unitTarget = unitTargets.get(i);
             if (unitTarget == null || unitTarget == unit.getLocation()) {
@@ -93,6 +96,7 @@ public class BotMove extends BotOptionalAction<NT_Action_Move, BotMove.MoveOptio
 
     private Location createPath(Unit unit, GoalStrategy goalStrategy) {
         Location target = provideNextTarget(unit, goalStrategy);
+        Log.trace("Set target for " + unit + " to " + target);
         if (target != null) {
             strategy.getMoveTargets().put(unit, target);
         }
@@ -105,6 +109,7 @@ public class BotMove extends BotOptionalAction<NT_Action_Move, BotMove.MoveOptio
             return targets.iterator().next();
         }
         if (targets.isEmpty()) {
+            Log.trace(goalStrategy + " has no targets...");
             return null;
         }
         Map<Location, AtomicInteger> targetCounts = new HashMap<>();

@@ -19,7 +19,6 @@ import java.util.stream.Collectors;
 
 public class GoalStrategy {
 
-    public final static int IGNORE_OPTIONS = -1;
     private Goal goal;
     private Player player;
     private GameContainer game;
@@ -28,7 +27,6 @@ public class GoalStrategy {
     private Set<Location> targetLocations = new HashSet<>();
     private IPrepareStrategy prepareStrategy;
     private int requiredUnits;
-    private float score = -1;
     private BotStrategy strategy;
 
     private boolean spreadUnits = true;
@@ -136,5 +134,13 @@ public class GoalStrategy {
 
     public BotStrategy getBotStrategy() {
         return strategy;
+    }
+
+    @Override
+    public String toString() {
+        if (goal != null) {
+            return goal.getText();
+        }
+        return "fallbackstrategy";
     }
 }

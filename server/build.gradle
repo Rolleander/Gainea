@@ -5,6 +5,11 @@ sourceCompatibility = 1.8
 
 sourceSets.main.java.srcDirs = ["src/main"]
 sourceSets.main.resources.srcDir file("src/resources")
+sourceSets.test.java.srcDirs = ["src/test"]
+
+test {
+    useJUnitPlatform()
+}
 
 task runServer(type: JavaExec) {
     group = "Execution"

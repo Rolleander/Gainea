@@ -132,11 +132,15 @@ public final class LocationUtils {
     }
 
     private static Function<Location, List<Location>> routes(MapObject object) {
-        return location -> location.getConnectedLocations().stream().filter(object::canMoveTo).collect(Collectors.toList());
+        return location -> {
+            object.setLocation(location);
+            return location.getConnectedLocations().stream().filter(object::canMoveTo).collect(Collectors.toList());
+        };
     }
 
     public static int getWalkingDistance(MapObject object, Location from, Location to) {
-        List<Location> visited = new ArrayList<>();
+        Location originalLocation = object.getLocation();
+        List<Location> visited = Lists.newArrayList(from);
         List<Location> remaining;
         Function<Location, List<Location>> routes = routes(object);
         int distance = 0;
@@ -148,6 +152,7 @@ public final class LocationUtils {
             distance++;
             for (Location area : remaining) {
                 if (area == to) {
+                    object.setLocation(originalLocation);
                     return distance;
                 }
             }
@@ -155,24 +160,8 @@ public final class LocationUtils {
             remaining = remaining.stream().flatMap(it -> routes.apply(it).stream()).collect(Collectors.toList());
             remaining.removeAll(visited);
         } while (!remaining.isEmpty());
+        object.setLocation(originalLocation);
         return -1;
-    }
-
-    public static List<Location> getWalkableLocations(MapObject object, Location from, int maxSteps) {
-        List<Location> visited = new ArrayList<>();
-        List<Location> remaining;
-        Function<Location, List<Location>> routes = routes(object);
-        int distance = 0;
-        remaining = routes.apply(from);
-        while (!remaining.isEmpty() && distance < maxSteps) {
-            distance++;
-            visited.addAll(remaining);
-            remaining = remaining.stream().flatMap(it -> routes.apply(it).stream()).collect(Collectors.toList());
-            remaining.removeAll(visited);
-        }
-        visited.addAll(remaining);
-        visited.remove(from);
-        return visited;
     }
 
     public static List<Location> getConnectedLocations(Location location, int maxDistance) {
