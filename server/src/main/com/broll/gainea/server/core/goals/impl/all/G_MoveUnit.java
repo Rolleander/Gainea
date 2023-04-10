@@ -80,7 +80,6 @@ public class G_MoveUnit extends CustomOccupyGoal {
             updateProgression(distance);
             success();
         } else {
-            //todo: stimmt noch nicht bei mehreren einheiten?
             int closestDistance = walkingUnits.stream().map(it -> LocationUtils.getWalkingDistance(it, it.getLocation(), to)).reduce(distance, Math::min);
             updateProgression(distance - closestDistance);
         }

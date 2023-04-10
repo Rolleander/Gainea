@@ -2,6 +2,7 @@ package com.broll.gainea.server.core.goals.impl.all;
 
 import com.broll.gainea.misc.RandomUtils;
 import com.broll.gainea.server.core.GameContainer;
+import com.broll.gainea.server.core.bot.BotUtils;
 import com.broll.gainea.server.core.bot.strategy.GoalStrategy;
 import com.broll.gainea.server.core.goals.GoalDifficulty;
 import com.broll.gainea.server.core.goals.RoundGoal;
@@ -61,6 +62,9 @@ public class G_OccupyRounds extends RoundGoal {
 
     @Override
     public void botStrategy(GoalStrategy strategy) {
-        //todo
+        strategy.setPrepareStrategy(() -> {
+            strategy.updateTargets(BotUtils.huntOtherPlayersTargets(player, game));
+            strategy.setRequiredUnits(3);
+        });
     }
 }

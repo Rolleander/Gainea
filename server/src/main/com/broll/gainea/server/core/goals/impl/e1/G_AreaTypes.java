@@ -8,7 +8,13 @@ import com.broll.gainea.server.core.map.ExpansionType;
 import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.utils.LocationUtils;
 
+import org.apache.commons.collections4.ListUtils;
+
+import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class G_AreaTypes extends CustomOccupyGoal {
 
@@ -33,8 +39,21 @@ public class G_AreaTypes extends CustomOccupyGoal {
         }
     }
 
+    private Stream<Location> getUnoccupiedOfType(AreaType type) {
+        List<Location> areas = game.getMap().getExpansion(ExpansionType.GAINEA).getAllAreas().stream()
+                .filter(it -> it.getType() == type).collect(Collectors.toList());
+        List<Location> controlled = areas.stream().filter(it -> it.getInhabitants().stream().anyMatch(unit -> unit.getOwner() == player)).collect(Collectors.toList());
+        if (controlled.size() >= 2) {
+            return Stream.of();
+        }
+        return ListUtils.subtract(areas, controlled).stream();
+    }
+
     @Override
     public void botStrategy(GoalStrategy strategy) {
-        //todo
+        strategy.setPrepareStrategy(() -> {
+            Set<Location> targets = Arrays.stream(TYPES).flatMap(this::getUnoccupiedOfType).collect(Collectors.toSet());
+            strategy.updateTargets(targets);
+        });
     }
 }

@@ -9,5 +9,4 @@ karten steal update client ...  -> retest
 
  hai kann nicht schiffe rückwärts drauf wenn kontrolliert (aber runter?!)
 
-bots stacken manchmal nur noch
 

@@ -44,7 +44,7 @@ public class MapContainer {
         return areas;
     }
 
-    public List<Ship> getAllShips(){
+    public List<Ship> getAllShips() {
         List<Ship> ships = new ArrayList<>();
         expansions.forEach(e -> e.getAllShips().forEach(ships::add));
         return ships;
@@ -64,6 +64,12 @@ public class MapContainer {
         List<Continent> continents = new ArrayList<>();
         expansions.forEach(e -> e.getContents().stream().filter(it -> it instanceof Continent).map(it -> (Continent) it).forEach(continents::add));
         return continents;
+    }
+
+    public List<AreaCollection> getAllContainers() {
+        List<AreaCollection> containers = new ArrayList<>();
+        expansions.forEach(e -> e.getContents().forEach(containers::add));
+        return containers;
     }
 
     public Area getArea(AreaID id) {
