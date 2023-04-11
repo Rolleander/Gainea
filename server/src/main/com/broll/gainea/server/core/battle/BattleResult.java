@@ -147,4 +147,12 @@ public class BattleResult extends BattleContext {
         return null;
     }
 
+    public List<Player> getKillingPlayers(Unit unit) {
+        if (isAttacking(unit)) {
+            return getDefendingPlayers();
+        } else if (isDefending(unit)) {
+            return Lists.newArrayList(getAttackingPlayer());
+        }
+        return new ArrayList<>();
+    }
 }

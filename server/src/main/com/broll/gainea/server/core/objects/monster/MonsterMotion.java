@@ -5,23 +5,23 @@ import com.broll.gainea.server.core.map.Location;
 import com.broll.gainea.server.core.map.Ship;
 import com.broll.gainea.server.core.utils.LocationUtils;
 
-import java.util.function.Function;
+import java.util.function.BiFunction;
 
 public enum MonsterMotion {
 
-    TERRESTRIAL(to -> !(to instanceof Ship) && !LocationUtils.isAreaType(to, AreaType.LAKE)),
-    AIRBORNE(to -> true),
-    AQUARIAN(to -> (to instanceof Ship) || LocationUtils.isAreaType(to, AreaType.LAKE)),
-    AMPHIBIAN(to -> (to instanceof Ship) || !LocationUtils.isAreaType(to, AreaType.DESERT));
+    TERRESTRIAL((from, to) -> !(to instanceof Ship) && !(from instanceof Ship) && !LocationUtils.isAreaType(to, AreaType.LAKE)),
+    AIRBORNE((from, to) -> true),
+    AQUARIAN((from, to) -> (to instanceof Ship) || LocationUtils.isAreaType(to, AreaType.LAKE)),
+    AMPHIBIAN((from, to) -> (to instanceof Ship) || !LocationUtils.isAreaType(to, AreaType.DESERT));
 
-    private Function<Location, Boolean> canMove;
+    private BiFunction<Location, Location, Boolean> canMove;
 
-    MonsterMotion(Function<Location, Boolean> canMove) {
+    MonsterMotion(BiFunction<Location, Location, Boolean> canMove) {
         this.canMove = canMove;
     }
 
-    public boolean canMoveTo(Location location) {
-        return location.isTraversable() && this.canMove.apply(location);
+    public boolean canMoveTo(Location currentLocation, Location newLocation) {
+        return newLocation.isTraversable() && this.canMove.apply(currentLocation, newLocation);
     }
 
 }

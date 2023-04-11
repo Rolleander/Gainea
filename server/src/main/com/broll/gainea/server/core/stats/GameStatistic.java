@@ -21,6 +21,10 @@ public class GameStatistic extends GameUpdateReceiverAdapter {
 
     @Override
     public void roundStarted() {
+        registerRound();
+    }
+
+    public void registerRound() {
         this.turnStatistics.add(calcTurnStatistic());
     }
 

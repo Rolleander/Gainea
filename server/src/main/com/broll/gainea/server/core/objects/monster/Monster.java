@@ -62,7 +62,7 @@ public class Monster extends Unit {
 
     @Override
     public boolean canMoveTo(Location to) {
-        boolean canMove = motion.canMoveTo(to);
+        boolean canMove = motion.canMoveTo(getLocation(), to);
         if (!canMove && owner != null) {
             //allow controlled monsters to walk with the players army
             return super.canMoveTo(to);

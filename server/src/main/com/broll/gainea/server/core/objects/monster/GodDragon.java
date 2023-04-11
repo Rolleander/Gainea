@@ -16,7 +16,7 @@ public class GodDragon extends Monster {
     @Override
     public void onDeath(BattleResult throughBattle) {
         if (throughBattle != null) {
-            throughBattle.getWinningPlayers().forEach(p -> p.getGoalHandler().addPoints(1));
+            throughBattle.getKillingPlayers(this).forEach(p -> p.getGoalHandler().addPoints(1));
         }
     }
 }

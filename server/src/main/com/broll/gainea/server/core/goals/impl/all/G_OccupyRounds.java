@@ -8,6 +8,7 @@ import com.broll.gainea.server.core.goals.GoalDifficulty;
 import com.broll.gainea.server.core.goals.RoundGoal;
 import com.broll.gainea.server.core.map.AreaCollection;
 import com.broll.gainea.server.core.map.Location;
+import com.broll.gainea.server.core.map.Ship;
 import com.broll.gainea.server.core.objects.MapObject;
 import com.broll.gainea.server.core.player.Player;
 
@@ -38,14 +39,15 @@ public class G_OccupyRounds extends RoundGoal {
 
     @Override
     public void moved(List<MapObject> units, Location location) {
-        if (units.stream().anyMatch(object -> object.getOwner() != null && object.getOwner() != player) && location.getContainer() == container) {
+        if (location.getContainer() == container && !(location instanceof Ship) &&
+                units.stream().anyMatch(object -> object.getOwner() != null && object.getOwner() != player)) {
             resetRounds();
         }
     }
 
     @Override
     public void spawned(MapObject object, Location location) {
-        if (object.getOwner() != null && object.getOwner() != player && location.getContainer() == container) {
+        if (location.getContainer() == container && !(location instanceof Ship) && object.getOwner() != null && object.getOwner() != player) {
             resetRounds();
         }
     }

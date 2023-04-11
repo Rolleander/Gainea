@@ -10,6 +10,7 @@ import com.broll.gainea.server.core.objects.monster.GodDragon;
 import com.google.common.collect.Sets;
 
 import java.util.HashSet;
+import java.util.stream.Stream;
 
 public class G_Goddrake extends Goal {
 
@@ -19,11 +20,13 @@ public class G_Goddrake extends Goal {
 
     @Override
     public void battleResult(BattleResult result) {
-        if (result.isWinner(player)) {
-            if (result.getLoserUnits().stream().anyMatch(it -> it instanceof GodDragon && it.isDead())) {
-                success();
-            }
-        }
+        Stream.concat(result.getAttackers().stream(), result.getDefenders().stream())
+                .filter(it -> it instanceof GodDragon && it.getOwner() == null)
+                .forEach(godDragon -> {
+                    if (result.getKillingPlayers(godDragon).contains(player)) {
+                        success();
+                    }
+                });
     }
 
     @Override

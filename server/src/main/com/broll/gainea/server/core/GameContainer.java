@@ -121,7 +121,10 @@ public class GameContainer {
 
     public void end() {
         Log.trace("Gamend called");
-        gameOver = true;
+        if (!gameOver) {
+            statistic.registerRound();
+            gameOver = true;
+        }
     }
 
     public NT_ReconnectGame reconnect(Player player) {
