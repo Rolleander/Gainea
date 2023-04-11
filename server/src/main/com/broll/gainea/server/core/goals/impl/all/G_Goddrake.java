@@ -15,7 +15,7 @@ import java.util.stream.Stream;
 public class G_Goddrake extends Goal {
 
     public G_Goddrake() {
-        super(GoalDifficulty.EASY, "Töte den Götterdrachen");
+        super(GoalDifficulty.EASY, "Töte den Götterdrachen im Kampf");
     }
 
     @Override

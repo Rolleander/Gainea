@@ -62,7 +62,7 @@ public class BattleSimulation {
         return winsBattle(units, PlayerUtils.getHostileArmy(owner, location));
     }
 
-    private static boolean winsBattle(List<Unit> attackers, List<Unit> defenders) {
+    public static boolean winsBattle(List<Unit> attackers, List<Unit> defenders) {
         UnitSimulationWrapper simulationWrapper = new UnitSimulationWrapper(attackers, defenders);
         while (attackers.stream().anyMatch(Unit::isAlive) && defenders.stream().anyMatch(Unit::isAlive)) {
             BattleContext context = new BattleContext(attackers, defenders);

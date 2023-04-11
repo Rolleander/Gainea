@@ -70,6 +70,10 @@ public class Monster extends Unit {
         return canMove;
     }
 
+    public boolean mightAttackSoon() {
+        return actionTimer == 1 && behavior != MonsterBehavior.RESIDENT && behavior != MonsterBehavior.FRIENDLY;
+    }
+
     protected boolean isBehaviorActive() {
         if (owner == null) {
             return true;

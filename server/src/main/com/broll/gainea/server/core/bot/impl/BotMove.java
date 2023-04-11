@@ -6,7 +6,9 @@ import com.broll.gainea.net.NT_Unit;
 import com.broll.gainea.server.core.bot.BotOptionalAction;
 import com.broll.gainea.server.core.bot.BotUtils;
 import com.broll.gainea.server.core.bot.strategy.GoalStrategy;
+import com.broll.gainea.server.core.bot.strategy.LocationDanger;
 import com.broll.gainea.server.core.map.Location;
+import com.broll.gainea.server.core.objects.MapObject;
 import com.broll.gainea.server.core.objects.Unit;
 import com.broll.gainea.server.core.utils.LocationUtils;
 
@@ -26,7 +28,7 @@ import java.util.stream.Collectors;
 
 public class BotMove extends BotOptionalAction<NT_Action_Move, BotMove.MoveOption> {
     private final static Logger Log = LoggerFactory.getLogger(BotMove.class);
-    private final static int MOVE_SCORE = 10;
+    public final static int MOVE_SCORE = 10;
 
 
     @Override
@@ -61,16 +63,35 @@ public class BotMove extends BotOptionalAction<NT_Action_Move, BotMove.MoveOptio
         List<Location> unitTargets = getPathTargets(units, goalStrategy);
         int distance = Integer.MAX_VALUE;
         List<Unit> moveTogether = new ArrayList<>();
+        Location moveFrom = null;
+        boolean flee = false;
+        Map<Location, Double> annihilationChances = new HashMap<>();
+        units.stream().map(MapObject::getLocation).distinct().forEach(location ->
+                annihilationChances.put(location, LocationDanger.getAnnihilationChance(bot, location)));
         for (int i = 0; i < unitTargets.size(); i++) {
             Unit unit = units.get(i);
             Location unitTarget = unitTargets.get(i);
-            if (unitTarget == null || unitTarget == unit.getLocation()) {
-                continue;
+            if (!flee) {
+                double annihilationChance = annihilationChances.get(unit.getLocation());
+                if (annihilationChance >= 0.9) {
+                    flee = true;
+                }
             }
-            int currentTargetDistance = LocationUtils.getWalkingDistance(unit, unit.getLocation(), unitTarget);
-            int moveTargetDistance = LocationUtils.getWalkingDistance(unit, to, unitTarget);
-            if (moveTargetDistance < currentTargetDistance) {
+            if (!flee) {
+                if ((unitTarget == null || unitTarget == unit.getLocation())) {
+                    continue;
+                }
+                int currentTargetDistance = LocationUtils.getWalkingDistance(unit, unit.getLocation(), unitTarget);
+                int moveTargetDistance = LocationUtils.getWalkingDistance(unit, to, unitTarget);
+                if (moveTargetDistance > currentTargetDistance) {
+                    continue;
+                }
                 distance = Math.min(moveTargetDistance, distance);
+            }
+            if (moveFrom == null) {
+                moveFrom = unit.getLocation();
+            }
+            if (unit.getLocation() == moveFrom) {
                 moveTogether.add(unit);
             }
         }
@@ -78,7 +99,11 @@ public class BotMove extends BotOptionalAction<NT_Action_Move, BotMove.MoveOptio
             return null;
         }
         int[] unitIds = Arrays.stream(nt_units).mapToInt(it -> it.id).toArray();
-        MoveOption moveOption = new MoveOption(Math.max(MOVE_SCORE - distance, 1));
+        int score = Math.max(MOVE_SCORE - distance, 1);
+        if (flee) {
+            score = LocationDanger.getFleeToScore(bot, to);
+        }
+        MoveOption moveOption = new MoveOption(score);
         moveOption.location = to;
         moveOption.moveUnits = moveTogether.stream().mapToInt(it -> ArrayUtils.indexOf(unitIds, it.getId())).toArray();
         return moveOption;
@@ -133,6 +158,7 @@ public class BotMove extends BotOptionalAction<NT_Action_Move, BotMove.MoveOptio
         return BotUtils.getLowestScoreEntry(new ArrayList<>(targetCounts.entrySet()),
                 it -> it.getValue().get()).getKey();
     }
+
 
     public static class MoveOption extends BotOption {
         private int[] moveUnits;
