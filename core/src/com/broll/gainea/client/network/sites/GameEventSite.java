@@ -68,6 +68,8 @@ public class GameEventSite extends AbstractGameSite {
         logWindow().log(text.text);
         if (text.type == NT_Event_TextInfo.TYPE_MESSAGE_DISPLAY) {
             MessageUtils.showCenterMessage(game, text.text);
+        } else if (text.type == NT_Event_TextInfo.TYPE_CONFIRM_MESSAGE) {
+            MessageUtils.showConfirmMessage(game, text.text);
         }
     }
 

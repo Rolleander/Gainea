@@ -1,12 +1,10 @@
 
-fraktionsauswahl hängt
+fraktionsauswahl hängt?
 
 chatwindow reset new message on click
 
-spion karte wurd zu kurz angezeigt
+spion karte wurd zu kurz angezeigt  ->  retest
 
 karten steal update client ...  -> retest
-
- hai kann nicht schiffe rückwärts drauf wenn kontrolliert (aber runter?!)
 
 

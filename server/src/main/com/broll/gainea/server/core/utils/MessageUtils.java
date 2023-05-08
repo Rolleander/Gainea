@@ -10,19 +10,26 @@ public final class MessageUtils {
         NT_Event_TextInfo info = new NT_Event_TextInfo();
         info.type = NT_Event_TextInfo.TYPE_MESSAGE_LOG;
         info.text = text;
-        GameUtils.sendUpdate(game,info);
+        GameUtils.sendUpdate(game, info);
     }
 
     public static void displayMessage(GameContainer game, String text) {
         NT_Event_TextInfo info = new NT_Event_TextInfo();
         info.type = NT_Event_TextInfo.TYPE_MESSAGE_DISPLAY;
         info.text = text;
-        GameUtils.sendUpdate(game,info);
+        GameUtils.sendUpdate(game, info);
     }
 
-    public static void displayMessage(GameContainer game, Player forPlayer, String text) {
+    public static void displayMessage(Player forPlayer, String text) {
         NT_Event_TextInfo info = new NT_Event_TextInfo();
         info.type = NT_Event_TextInfo.TYPE_MESSAGE_DISPLAY;
+        info.text = text;
+        forPlayer.getServerPlayer().sendTCP(info);
+    }
+
+    public static void displayConfirmMessage(Player forPlayer, String text) {
+        NT_Event_TextInfo info = new NT_Event_TextInfo();
+        info.type = NT_Event_TextInfo.TYPE_CONFIRM_MESSAGE;
         info.text = text;
         forPlayer.getServerPlayer().sendTCP(info);
     }

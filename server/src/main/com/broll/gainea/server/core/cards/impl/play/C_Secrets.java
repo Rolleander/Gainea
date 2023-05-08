@@ -26,13 +26,13 @@ public class C_Secrets extends Card {
         String name = player.getServerPlayer().getName();
         String text = name + "'s Ziele: \n";
         for (Goal goal : goals) {
-            text += " - " + goal.getText() + " ( " +goal.getDifficulty().getPoints()+"P "  + goal.getRestrictionInfo() + ")\n";
+            text += " - " + goal.getText() + " ( " + goal.getDifficulty().getPoints() + "P " + goal.getRestrictionInfo() + ")\n";
         }
         text += name + "'s Aktionskarten: \n";
         for (Card card : cards) {
             text += " - " + card.getTitle() + "\n";
         }
-        MessageUtils.displayMessage(game, owner, text);
+        MessageUtils.displayConfirmMessage(owner, text);
     }
 
 }
