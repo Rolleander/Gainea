@@ -7,6 +7,8 @@ import com.google.common.collect.Lists;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class BattleResult extends BattleContext {
 
@@ -151,7 +153,7 @@ public class BattleResult extends BattleContext {
         if (isAttacking(unit)) {
             return getDefendingPlayers();
         } else if (isDefending(unit)) {
-            return Lists.newArrayList(getAttackingPlayer());
+            return Lists.newArrayList(getAttackingPlayer()).stream().filter(Objects::nonNull).collect(Collectors.toList());
         }
         return new ArrayList<>();
     }

@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class ShadowFraction extends Fraction {
-    private static float SUMMON_CHANCE = 0.35f;
+    private static float SUMMON_CHANCE = 0.4f;
 
     public ShadowFraction() {
         super(FractionType.SHADOW);
