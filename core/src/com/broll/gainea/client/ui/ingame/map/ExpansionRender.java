@@ -36,7 +36,7 @@ public class ExpansionRender extends Actor {
         this.expansion = expansion;
         texture = game.assets.get("textures/" + textureName, Texture.class);
         shipTexture = new TextureRegion(game.assets.get("textures/ship.png", Texture.class));
-        Coordinates coords = expansion.getCoordinates();
+        Coordinates coords = expansion.coordinates;
         this.setBounds(coords.getDisplayX() - SIZE / 2, coords.getDisplayY() - SIZE / 2, SIZE, SIZE);
     }
 
@@ -58,12 +58,12 @@ public class ExpansionRender extends Actor {
     private final static int SHIP_D = 15;
 
     private void drawShip(Batch batch, Ship ship) {
-        float x = ship.getCoordinates().getDisplayX();
-        float y = ship.getCoordinates().getDisplayY();
-        float tx = ship.getTo().getCoordinates().getDisplayX();
-        float ty = ship.getTo().getCoordinates().getDisplayY();
-        float fx = ship.getFrom().getCoordinates().getDisplayX();
-        float fy = ship.getFrom().getCoordinates().getDisplayY();
+        float x = ship.coordinates.getDisplayX();
+        float y = ship.coordinates.getDisplayY();
+        float tx = ship.to.coordinates.getDisplayX();
+        float ty = ship.to.coordinates.getDisplayY();
+        float fx = ship.from.coordinates.getDisplayX();
+        float fy = ship.from.coordinates.getDisplayY();
         float angleTo = (float) Math.toDegrees(MathUtils.atan2(ty - y, tx - x)) - 90;
         float angleFrom = (float) Math.toDegrees(MathUtils.atan2(y - fy, x - fx)) - 90;
         float diff = ((angleTo - angleFrom + 180 + 360) % 360) - 180;
@@ -72,7 +72,7 @@ public class ExpansionRender extends Actor {
         //		float scaleX, float scaleY, float rotation
         //        batch.draw();
         //
-        float hop = (float) (Math.sin(shipAnimation+ship.getNumber()) * 5);
+        float hop = (float) (Math.sin(shipAnimation+ ship.number) * 5);
 
         batch.draw(shipTexture, x - SHIP_SIZE / 2, y - SHIP_SIZE / 2+SHIP_D +hop, SHIP_SIZE / 2, SHIP_SIZE / 2-SHIP_D, SHIP_SIZE, SHIP_SIZE, 1, 1, angle);
 //        batch.draw(shipTexture, x -100, y-100);

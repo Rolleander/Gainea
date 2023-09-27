@@ -13,7 +13,7 @@ public class MapScrollUtils {
         float miny = 100000;
         float maxy = -100000;
         for (int location : locations) {
-            Coordinates coords = game.state.getMap().getLocation(location).getCoordinates();
+            Coordinates coords = game.state.getMap().getLocation(location).coordinates;
             float cx = coords.getDisplayX();
             float cy = coords.getDisplayY();
             maxx = Math.max(cx, maxx);

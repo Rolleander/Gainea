@@ -30,15 +30,15 @@ public class ExpansionDebugRender extends Actor {
     }
 
     public void render(ShapeRenderer shape) {
-        expansion.getContents().forEach(content -> {
-            content.getAreas().forEach(area -> renderArea(area, shape));
-            content.getShips().forEach(ship -> renderShip(ship, shape));
+        expansion.contents.forEach(content -> {
+            content.areas.forEach(area -> renderArea(area, shape));
+            content.ships.forEach(ship -> renderShip(ship, shape));
         });
     }
 
     private void renderArea(Area location, ShapeRenderer shape) {
-        float x = this.getX() + location.getCoordinates().getDisplayX();
-        float y = this.getY() + location.getCoordinates().getDisplayY();
+        float x = this.getX() + location.coordinates.getDisplayX();
+        float y = this.getY() + location.coordinates.getDisplayY();
         float r = 25;
         shape.begin(ShapeRenderer.ShapeType.Filled);
         shape.setColor(Color.RED);
@@ -48,8 +48,8 @@ public class ExpansionDebugRender extends Actor {
     }
 
     private void renderShip(Ship location, ShapeRenderer shape) {
-        float x = this.getX() + location.getCoordinates().getDisplayX();
-        float y = this.getY() + location.getCoordinates().getDisplayY();
+        float x = this.getX() + location.coordinates.getDisplayX();
+        float y = this.getY() + location.coordinates.getDisplayY();
         float r = 25;
         shape.begin(ShapeRenderer.ShapeType.Filled);
         shape.setColor(Color.BROWN);
@@ -59,11 +59,11 @@ public class ExpansionDebugRender extends Actor {
     }
 
     private void renderConnections(Location location, Collection<Location> connections, ShapeRenderer shape) {
-        float x = this.getX() + location.getCoordinates().getDisplayX();
-        float y = this.getY() + location.getCoordinates().getDisplayY();
+        float x = this.getX() + location.coordinates.getDisplayX();
+        float y = this.getY() + location.coordinates.getDisplayY();
         connections.forEach(loc -> {
-            float tx = this.getX() + loc.getCoordinates().getDisplayX();
-            float ty = this.getY() + loc.getCoordinates().getDisplayY();
+            float tx = this.getX() + loc.coordinates.getDisplayX();
+            float ty = this.getY() + loc.coordinates.getDisplayY();
             shape.begin(ShapeRenderer.ShapeType.Line);
             shape.setColor(Color.BLACK);
             shape.line(x, y, tx, ty);

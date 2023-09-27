@@ -40,8 +40,8 @@ public class UnitSelectionWindow {
         window.top();
         window.add(LabelUtils.label(skin, location.toString())).row();
         if (location instanceof Area) {
-            AreaCollection container = location.getContainer();
-            String name = container.getName();
+            AreaCollection container = location.container;
+            String name = container.name;
             if (container instanceof Island) {
                 name = "Insel: " + name;
             } else if (container instanceof Continent) {

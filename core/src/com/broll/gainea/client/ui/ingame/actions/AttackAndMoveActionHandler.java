@@ -60,16 +60,16 @@ public class AttackAndMoveActionHandler {
     }
 
     private void createMapAction(Location from, Location to, Object nt_action, List<NT_Unit> units, int type, ActionListener listener) {
-        MapAction action = new MapAction(game, type, to.getNumber(), listener);
+        MapAction action = new MapAction(game, type, to.number, listener);
         action.setAction(nt_action);
         action.setUnits(units);
         mapActions.add(action);
-        Coordinates toC = to.getCoordinates();
-        Coordinates fromC = from.getCoordinates();
+        Coordinates toC = to.coordinates;
+        Coordinates fromC = from.coordinates;
         action.setPosition(toC.getDisplayX(), toC.getDisplayY());
         float angle = MathUtils.atan2(toC.getDisplayY() - fromC.getDisplayY(), toC.getDisplayX() - fromC.getDisplayX());
         action.setRotation((float) Math.toDegrees(angle - Math.PI / 2));
-        action.setFromTo(from.getNumber(), to.getNumber());
+        action.setFromTo(from.number, to.number);
         ActionTrail trail = new ActionTrail(game, type, toC, fromC);
         game.gameStage.addActor(trail);
         action.setTrail(trail);

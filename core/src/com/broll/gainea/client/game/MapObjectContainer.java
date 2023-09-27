@@ -77,8 +77,8 @@ public class MapObjectContainer {
 
     private void arrange(Location location, Collection<MapObjectRender> objects, MultiValueMap<Integer, MapObjectRender> stacks) {
         int stackCount = stacks.keySet().size();
-        float x = location.getCoordinates().getDisplayX();
-        float y = location.getCoordinates().getDisplayY();
+        float x = location.coordinates.getDisplayX();
+        float y = location.coordinates.getDisplayY();
         if (stackCount == 1) {
             //place directly on location center, no other stacks
             arrangeStack(location, x, y, objects);

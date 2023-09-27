@@ -162,7 +162,7 @@ public class BattleHandler {
             TableUtils.consumeClicks(this);
             int backgroundNr = 0;
             if (location instanceof Area) {
-                backgroundNr = ((Area) location).getType().ordinal() + 1;
+                backgroundNr = ((Area) location).type.ordinal() + 1;
             }
             setBackground(new TextureRegionDrawable(TextureUtils.battleBackground(game, backgroundNr)));
             attackerRenders = attackers.stream().map(it -> (UnitRender) MapObjectRender.createRender(game, skin, it)).sorted((a, b) -> Integer.compare(a.getRank(), b.getRank())).collect(Collectors.toList());

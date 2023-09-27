@@ -86,7 +86,7 @@ public class LobbyScreen extends Screen {
                 lobbyTable.add(info(" "));
             }
             lobbyTable.add(label(player.getName()));
-            lobbyTable.add(new Image(TextureUtils.unitIcon(game, fraction.createCommander().getIcon()))).size(41).spaceRight(10);
+            lobbyTable.add(new Image(TextureUtils.unitIcon(game, fraction.createCommander().icon))).size(41).spaceRight(10);
             if (player == lobby.getMyPlayer()) {
                 this.playerFraction = fraction;
                 if (fratcionBox.getSelectedIndex() != settings.fraction) {
@@ -101,7 +101,7 @@ public class LobbyScreen extends Screen {
                 CheckBox playerReady = new CheckBox("Bereit", skin);
                 playerReady.setChecked(settings.ready);
                 playerReady.setDisabled(true);
-                lobbyTable.add(info(fraction.getType().getName()));
+                lobbyTable.add(info(fraction.type.getName()));
                 lobbyTable.add(playerReady).right().expandX();
                 if (lobby.getOwner() == lobby.getMyPlayer()) {
                     ImageButton button = new ImageButton(new TextureRegionDrawable(TextureUtils.icon(game, 3)));
@@ -153,7 +153,7 @@ public class LobbyScreen extends Screen {
                 AudioPlayer.playSound("button.ogg");
                 if (ArrayUtils.contains(takenFractions, selectBox.getSelectedIndex())) {
                     //fraction taken, reset selection
-                    selectBox.setSelectedIndex(playerFraction.getType().ordinal());
+                    selectBox.setSelectedIndex(playerFraction.type.ordinal());
                 } else {
                     NT_PlayerChangeFraction changeFraction = new NT_PlayerChangeFraction();
                     changeFraction.fraction = selectBox.getSelectedIndex();

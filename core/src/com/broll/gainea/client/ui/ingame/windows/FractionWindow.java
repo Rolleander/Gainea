@@ -27,10 +27,10 @@ public class FractionWindow extends MenuWindow {
         Table content = new Table(skin);
         add(content).top().expand().fill().space(10);
         List<Fraction> fractions = Arrays.stream(FractionType.values()).map(FractionType::create).collect(Collectors.toList());
-        fractions.sort((f1, f2) -> f1.getType().compareTo(f2.getType()));
+        fractions.sort((f1, f2) -> f1.type.compareTo(f2.type));
         fractions.forEach(fraction -> {
             Table button = new Table(skin);
-            button.add(LabelUtils.info(skin, fraction.getType().getName()));
+            button.add(LabelUtils.info(skin, fraction.type.getName()));
             list.add(button).left().spaceBottom(5).row();
             button.addListener(new ClickListener() {
                 @Override
@@ -50,16 +50,16 @@ public class FractionWindow extends MenuWindow {
         table.left();
         table.pad(5);
         table.padLeft(20);
-        table.add(LabelUtils.title(skin, fraction.getType().getName())).left().row();
+        table.add(LabelUtils.title(skin, fraction.type.getName())).left().row();
         Table t = new Table();
         t.add(LabelUtils.info(skin, "Kommandant")).left();
         t.add(unit(fraction.createCommander())).left().spaceLeft(50).row();
         t.add(LabelUtils.info(skin, "Soldaten")).left();
         t.add(unit(fraction.createSoldier())).left().spaceLeft(50).row();
         table.add(t).left().row();
-        FractionDescription description = fraction.getDescription();
+        FractionDescription description = fraction.description;
         int w = 450;
-        table.add(LabelUtils.autoWrap(LabelUtils.info(skin, description.getGeneral()), w)).left().spaceTop(20).padBottom(20).width(w).row();
+        table.add(LabelUtils.autoWrap(LabelUtils.info(skin, description.general), w)).left().spaceTop(20).padBottom(20).width(w).row();
         description.getPlus().forEach(text -> table.add(new IconLabel(game, 4, text)).left().spaceTop(10).row());
         description.getContra().forEach(text -> table.add(new IconLabel(game, 5, text)).left().spaceTop(10).row());
         return table;

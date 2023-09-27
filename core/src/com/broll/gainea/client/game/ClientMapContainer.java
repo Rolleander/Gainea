@@ -30,7 +30,7 @@ public class ClientMapContainer extends MapContainer {
 
     private void initRenders(Gainea game, ExpansionSetting setting) {
         this.renders = initSet.stream().map(it -> {
-            ExpansionRender render = new ExpansionRender(it.getLeft().getTexture());
+            ExpansionRender render = new ExpansionRender(it.getLeft().texture);
             render.init(game, it.getRight());
             return render;
         }).collect(Collectors.toList());

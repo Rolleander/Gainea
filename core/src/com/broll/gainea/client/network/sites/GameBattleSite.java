@@ -43,12 +43,12 @@ public class GameBattleSite extends AbstractGameSite {
         battleIntention = new MapAction(game, 1, battle.toLocation, null);
         Location from = game.state.getMap().getLocation(battle.fromLocation);
         Location to = game.state.getMap().getLocation(battle.toLocation);
-        Coordinates toC = to.getCoordinates();
-        Coordinates fromC = from.getCoordinates();
+        Coordinates toC = to.coordinates;
+        Coordinates fromC = from.coordinates;
         battleIntention.setPosition(toC.getDisplayX(), toC.getDisplayY());
         float angle = MathUtils.atan2(toC.getDisplayY() - fromC.getDisplayY(), toC.getDisplayX() - fromC.getDisplayX());
         battleIntention.setRotation((float) Math.toDegrees(angle - Math.PI / 2));
-        battleIntention.setFromTo(from.getNumber(), to.getNumber());
+        battleIntention.setFromTo(from.number, to.number);
         battleIntentionTrail = new ActionTrail(game, 1, toC, fromC);
         game.gameStage.addActor(battleIntentionTrail);
         battleIntention.setTrail(battleIntentionTrail);

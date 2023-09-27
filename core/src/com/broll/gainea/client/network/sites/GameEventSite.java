@@ -126,7 +126,7 @@ public class GameEventSite extends AbstractGameSite {
             Location location = game.state.getMap().getLocation(object.location);
             MoveToAction action = new MoveToAction();
             action.setDuration(1);
-            action.setPosition(location.getCoordinates().getDisplayX(), location.getCoordinates().getDisplayY() + render.getStackHeight());
+            action.setPosition(location.coordinates.getDisplayX(), location.coordinates.getDisplayY() + render.getStackHeight());
             if (first) {
                 render.addAction(Actions.sequence(action, Actions.run(() -> {
                     //walking done

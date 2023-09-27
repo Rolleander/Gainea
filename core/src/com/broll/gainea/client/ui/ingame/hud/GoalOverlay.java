@@ -116,8 +116,8 @@ public class GoalOverlay extends Table {
             Location location = game.state.getMap().getLocation(locationNumber);
             setVisible(true);
             setSize(SIZE, SIZE);
-            setX(location.getCoordinates().getDisplayX());
-            setY(location.getCoordinates().getDisplayY());
+            setX(location.coordinates.getDisplayX());
+            setY(location.coordinates.getDisplayY());
             setZIndex(1000);
         }
 

@@ -43,7 +43,7 @@ public class MenuUnit extends Table {
             }
             table.add(stars).left().row();
             if (unit.owner == NT_Unit.NO_OWNER) {
-                String behavior = MonsterBehavior.values()[((NT_Monster) unit).behavior].getLabel();
+                String behavior = MonsterBehavior.values()[((NT_Monster) unit).behavior].label;
                 table.add(LabelUtils.info(skin, behavior)).center().spaceBottom(5).row();
             }
         }
