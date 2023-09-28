@@ -1,11 +1,7 @@
 package com.broll.gainea.server.core.map
 
-import com.broll.gainea.server.init.ExpansionSettingimport
-
-java.util.function.Consumerimport java.util.stream.Collectors
 open class MapContainer(val expansionSetting: ExpansionSetting?) {
-    var expansions: List<Expansion?>? = null
-        protected set
+    val expansions = mutableListOf<Expansion>()
     private val locations: MutableMap<Int, Location?> = HashMap()
 
     init {
@@ -14,30 +10,28 @@ open class MapContainer(val expansionSetting: ExpansionSetting?) {
     }
 
     protected open fun init(setting: ExpansionSetting?) {
-        expansions = MapFactory.createRenderless(setting)
+        expansions += MapFactory.createRenderless(setting)
     }
 
-    fun getLocation(number: Int): Location? {
-        return locations[number]
-    }
+    fun getLocation(number: Int) = locations[number]!!
 
     val activeExpansionTypes: List<ExpansionType?>
         get() = expansions!!.stream().map { obj: Expansion? -> obj.getType() }.collect(Collectors.toList())
-    val allAreas: List<Area?>
+    val allAreas: List<Area>
         get() {
             val areas: MutableList<Area?> = ArrayList()
             expansions!!.forEach(Consumer { e: Expansion? -> e.getContents().stream().map { obj: AreaCollection? -> obj.getAreas() }.forEach { collection: List<Area?>? -> areas.addAll(collection!!) } })
             return areas
         }
-    val allLocations: List<Location?>
+    val allLocations: List<Location>
         get() {
             val areas: MutableList<Location?> = ArrayList()
             expansions!!.forEach(Consumer { e: Expansion? -> e.getAllLocations().forEach(Consumer { e: Location? -> areas.add(e) }) })
             return areas
         }
-    val allShips: List<Ship?>
+    val allShips: List<Ship>
         get() {
-            val ships: MutableList<Ship?> = ArrayList()
+            val ships: MutableList<Ship> = ArrayList()
             expansions!!.forEach(Consumer { e: Expansion? -> e.getAllShips().forEach(Consumer { e: Ship? -> ships.add(e) }) })
             return ships
         }

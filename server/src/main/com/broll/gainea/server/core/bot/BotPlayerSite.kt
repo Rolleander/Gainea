@@ -1,31 +1,43 @@
 package com.broll.gainea.server.core.bot
 
-import com.broll.gainea.net.NT_Battle_Reactionimport
+import com.broll.gainea.net.NT_Battle_Reaction
+import com.broll.gainea.net.NT_Battle_Start
+import com.broll.gainea.net.NT_Battle_Update
+import com.broll.gainea.net.NT_EndTurn
+import com.broll.gainea.net.NT_Event_FinishedGoal
+import com.broll.gainea.net.NT_Event_ReceivedGoal
+import com.broll.gainea.net.NT_LoadedGame
+import com.broll.gainea.net.NT_PlayerAction
+import com.broll.gainea.net.NT_PlayerTurnActions
+import com.broll.gainea.net.NT_StartGame
+import com.broll.gainea.server.core.battle.BattleHandler
+import com.broll.gainea.server.core.bot.impl.BotAttack
+import com.broll.gainea.server.core.bot.strategy.BotStrategy
+import com.broll.gainea.server.core.bot.strategy.StrategyConstants
+import com.broll.gainea.server.core.utils.ProcessingUtils
+import com.broll.gainea.server.init.LobbyData
+import com.broll.gainea.server.init.PlayerData
+import com.broll.networklib.PackageReceiver
+import com.broll.networklib.server.impl.BotSite
+import org.slf4j.LoggerFactory
 
-com.broll.gainea.net.NT_Battle_Startimport com.broll.gainea.net.NT_Battle_Updateimport com.broll.gainea.net.NT_EndTurnimport com.broll.gainea.net.NT_Event_FinishedGoalimport com.broll.gainea.net.NT_Event_ReceivedGoalimport com.broll.gainea.net.NT_LoadedGameimport com.broll.gainea.net.NT_PlayerActionimport com.broll.gainea.net.NT_PlayerTurnActionsimport com.broll.gainea.net.NT_StartGameimport com.broll.gainea.server.core.bot.impl .BotAttackimport com.broll.gainea.server.core.bot.strategy.BotStrategyimport com.broll.gainea.server.core.bot.strategy.StrategyConstantsimport com.broll.gainea.server.core.utils.ProcessingUtilsimport com.broll.gainea.server.init.LobbyDataimport com.broll.gainea.server.init.PlayerDataimport com.broll.networklib.PackageReceiverimport com.broll.networklib.server.impl .BotSite com.broll.gainea.server.core.battle.BattleHandler
-import com.broll.networklib.server.LobbyServerCLI
-import com.broll.networklib.server.LobbyServerCLI.CliCommand
-import com.broll.networklib.server.ICLIExecutor
-import kotlin.Throws
-import com.broll.networklib.server.ILobbyServerListenerimport
-
-org.slf4j.LoggerFactory
-class BotPlayerSite : BotSite<PlayerData?>() {
-    private var botActionHandler: BotActionHandler? = null
+class BotPlayerSite : BotSite<PlayerData>() {
+    private lateinit var botActionHandler: BotActionHandler
     private var allowRetreat = false
-    private var strategy: BotStrategy? = null
+    private lateinit var strategy: BotStrategy
+
     @PackageReceiver
-    fun gameStart(start: NT_StartGame?) {
+    fun gameStart(start: NT_StartGame) {
         Log.info(bot.toString() + " Bot send loaded Game!")
         sendServer(NT_LoadedGame())
-        val game = (bot.serverLobby.data as LobbyData).game
-        val player = bot.data.getGamePlayer()
+        val game = (bot.serverLobby.data as LobbyData).game!!
+        val player = bot.data.gamePlayer!!
         strategy = BotStrategy(game, player, StrategyConstants())
-        botActionHandler = BotActionHandler(game, player, strategy!!)
+        botActionHandler = BotActionHandler(game, player, strategy)
     }
 
     @PackageReceiver
-    fun endTurn(nt: NT_EndTurn?) {
+    fun endTurn(nt: NT_EndTurn) {
         //can only end turn, does not wait
         sendServer(NT_EndTurn())
     }
@@ -33,13 +45,13 @@ class BotPlayerSite : BotSite<PlayerData?>() {
     @PackageReceiver
     fun turnActions(turn: NT_PlayerTurnActions) {
         Log.trace("$bot turn")
-        strategy!!.prepareTurn()
-        sendServer(botActionHandler!!.createBestReaction(turn))
+        strategy.prepareTurn()
+        sendServer(botActionHandler.createBestReaction(turn))
     }
 
     @PackageReceiver
     fun handleAction(requiredAction: NT_PlayerAction) {
-        sendServer(botActionHandler!!.react(requiredAction.action))
+        sendServer(botActionHandler.react(requiredAction.action))
     }
 
     @PackageReceiver
@@ -49,9 +61,9 @@ class BotPlayerSite : BotSite<PlayerData?>() {
 
     @PackageReceiver
     fun battleUpdate(update: NT_Battle_Update) {
-        ProcessingUtils.pause(BattleHandler.Companion.getAnimationDelay(update.attackerRolls.size, update.defenderRolls.size))
+        ProcessingUtils.pause(BattleHandler.getAnimationDelay(update.attackerRolls.size, update.defenderRolls.size))
         if (allowRetreat) {
-            val attack = botActionHandler!!.getActionHandler(BotAttack::class.java) as BotAttack
+            val attack = botActionHandler.getActionHandler(BotAttack::class.java)
             val nt = NT_Battle_Reaction()
             nt.keepAttacking = attack.keepAttacking(update)
             sendServer(nt)
@@ -59,14 +71,14 @@ class BotPlayerSite : BotSite<PlayerData?>() {
     }
 
     @PackageReceiver
-    fun newGoal(nt: NT_Event_ReceivedGoal?) {
-        strategy!!.synchronizeGoalStrategies()
+    fun newGoal(nt: NT_Event_ReceivedGoal) {
+        strategy.synchronizeGoalStrategies()
     }
 
     @PackageReceiver
     fun finishedGoal(nt: NT_Event_FinishedGoal) {
         if (nt.player == bot.id) {
-            strategy!!.synchronizeGoalStrategies()
+            strategy.synchronizeGoalStrategies()
         }
     }
 

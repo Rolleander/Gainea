@@ -1,20 +1,19 @@
 package com.broll.gainea.server.core.map
 
-java.util.ArrayList
 abstract class AreaCollection {
-    var expansion: Expansion? = null
+    lateinit var expansion: Expansion
         private set
-    @JvmField
-    var areas: List<Area?> = ArrayList()
-    @JvmField
-    var ships: MutableList<Ship?> = ArrayList()
-    @JvmField
+
+    val areas = mutableListOf<Area>()
+
+    val ships = mutableListOf<Ship>()
+
     var name: String? = null
-    fun init(container: Expansion?) {
+    fun init(container: Expansion) {
         expansion = container
     }
 
-    fun getArea(id: AreaID): Area? {
-        return areas.stream().filter { it: Area? -> it.getId() === id }.findFirst().orElse(null)
-    }
+    fun getArea(id: AreaID) =
+            areas.firstOrNull { it.id == id }
+
 }

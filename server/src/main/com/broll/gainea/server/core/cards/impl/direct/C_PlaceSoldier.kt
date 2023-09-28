@@ -1,10 +1,10 @@
 package com.broll.gainea.server.core.cards.impl.direct
 
-import com.broll.gainea.server.core.cards.DirectlyPlayedCardimport
+import com.broll.gainea.server.core.cards.DirectlyPlayedCard
+import com.broll.gainea.server.core.utils.PlayerUtils
 
-com.broll.gainea.server.core.player.Playerimport com.broll.gainea.server.core.utils.PlayerUtils
 class C_PlaceSoldier : DirectlyPlayedCard(7, "Verstärkung", "Jeder Spieler platziert einen Soldat") {
     override fun play() {
-        PlayerUtils.iteratePlayers(game!!, 1000) { player: Player? -> placeUnitHandler!!.placeSoldier(player) }
+        PlayerUtils.iteratePlayers(game, 1000) { player -> placeUnitHandler.placeSoldier(player) }
     }
 }

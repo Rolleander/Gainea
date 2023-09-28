@@ -53,7 +53,7 @@ class VikingFraction : Fraction(FractionType.VIKINGS) {
 
     private class VikingSoldier(owner: Player?) : Soldier(owner) {
         override fun canMoveTo(to: Location?): Boolean {
-            return to!!.isTraversable
+            return to!!.traversable
         }
     }
 }

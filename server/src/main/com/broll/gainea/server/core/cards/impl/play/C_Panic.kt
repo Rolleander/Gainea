@@ -1,8 +1,8 @@
 package com.broll.gainea.server.core.cards.impl.play
 
-import com.broll.gainea.server.core.cards.Cardimport
+import com.broll.gainea.server.core.cards.Card
+import com.broll.gainea.server.core.utils.UnitControl
 
-com.broll.gainea.server.core.map.Areaimport com.broll.gainea.server.core.map.Locationimport com.broll.gainea.server.core.objects.MapObjectimport com.broll.gainea.server.core.utils.UnitControlimport com.google.common.collect.Listsimport java.util.Collectionsimport java.util.stream.Collectors
 class C_Panic : Card(46, "Massenpanik", "Wählt ein Land mit mindestens einer Einheit. Alle Einheiten des gewählten Ortes werden auf angrenzende Orte verteilt.") {
     init {
         drawChance = 0.9f
@@ -12,16 +12,14 @@ class C_Panic : Card(46, "Massenpanik", "Wählt ein Land mit mindestens einer Ei
         get() = true
 
     override fun play() {
-        val locations = game.map.allAreas.stream().filter { it: Area? -> !it.getInhabitants().isEmpty() }.collect(Collectors.toList())
-        if (!locations.isEmpty()) {
-            val source = selectHandler!!.selectLocation("Wählt einen Zielort für die Panik", locations)
-            val inhabitants: List<MapObject?> = ArrayList(source.inhabitants)
-            val neighbours: List<Location?> = ArrayList(source.connectedLocations)
-            Collections.shuffle(neighbours)
+        val locations = game.map.allAreas.filter { it.inhabitants.isNotEmpty() }
+        if (locations.isNotEmpty()) {
+            val source = selectHandler.selectLocation("Wählt einen Zielort für die Panik", locations)
+            val neighbours = source.connectedLocations.toList().shuffled()
             var index = 0
-            for (`object` in inhabitants) {
+            for (inhabitant in source.inhabitants.toList()) {
                 val target = neighbours[index]
-                UnitControl.move(game!!, Lists.newArrayList(`object`), target)
+                UnitControl.move(game, inhabitant, target)
                 index++
                 if (index >= neighbours.size) {
                     index = 0

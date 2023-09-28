@@ -21,7 +21,6 @@ import org.apache.commons.lang3.ArrayUtils
 import java.util.Collections
 import java.util.function.Function
 import java.util.stream.Collectors
-import java.util.stream.Stream
 
 object LocationUtils {
     fun getLocationNumbers(locations: Collection<Location?>?): ShortArray {
@@ -42,8 +41,8 @@ object LocationUtils {
         return false
     }
 
-    fun filterByType(locations: List<Location?>?, vararg type: AreaType?): Stream<Area?> {
-        return locations!!.stream().filter { it: Location? -> isAreaType(it, *type) }.map { it: Location? -> it as Area? }
+    fun filterByType(locations: List<Location>, vararg type: AreaType): List<Area> {
+        return locations.filter { isAreaType(it, *type) }.map { it as Area }
     }
 
     fun getControlledLocationsIn(player: Player, expansionType: ExpansionType): List<Location?> {
@@ -77,19 +76,19 @@ object LocationUtils {
         }
     }
 
-    fun getWildMonsterLocations(game: GameContainer): List<Location?> {
+    fun getWildMonsterLocations(game: GameContainer): List<Location> {
         return game.objects.stream().filter { it: MapObject? -> it is Monster }.map { obj: MapObject? -> obj.getLocation() }.distinct().collect(Collectors.toList())
     }
 
-    fun getMonsters(location: Location?): List<Monster?> {
+    fun getMonsters(location: Location): List<Monster> {
         return location.getInhabitants().stream().filter { it: MapObject? -> it is Monster }.map { it: MapObject? -> it as Monster? }.collect(Collectors.toList())
     }
 
-    fun getUnits(location: Location?): List<Unit?> {
+    fun getUnits(location: Location): List<Unit> {
         return location.getInhabitants().stream().filter { it: MapObject? -> it is Unit }.map { it: MapObject? -> it as Unit? }.collect(Collectors.toList())
     }
 
-    fun getRandomFree(locations: List<Location?>?): Location? {
+    fun getRandomFree(locations: List<Location>): Location {
         val free = locations!!.stream().filter { obj: Location? -> obj!!.isFree }.collect(Collectors.toList())
         return RandomUtils.pickRandom(free)
     }
@@ -152,7 +151,7 @@ object LocationUtils {
         return -1
     }
 
-    fun getConnectedLocations(location: Location?, maxDistance: Int): List<Location?> {
+    fun getConnectedLocations(location: Location, maxDistance: Int): List<Location> {
         val visited: MutableList<Location?> = ArrayList()
         var remaining: MutableList<Location?> = Lists.newArrayList(location)
         var distance = 0

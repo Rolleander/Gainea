@@ -1,21 +1,20 @@
 package com.broll.gainea.server.core.bot.impl
 
-import com.broll.gainea.net.NT_Actionimport
+import com.broll.gainea.misc.RandomUtils
+import com.broll.gainea.net.NT_Action
+import com.broll.gainea.net.NT_Action_SelectChoice
+import com.broll.gainea.net.NT_Goal
+import com.broll.gainea.net.NT_Reaction
+import com.broll.gainea.net.NT_Unit
+import com.broll.gainea.server.core.bot.BotAction
+import com.broll.gainea.server.core.bot.BotUtils
+import com.broll.gainea.server.core.goals.Goal
+import com.broll.gainea.server.core.map.Location
+import com.broll.gainea.server.core.objects.Unit
+import org.slf4j.LoggerFactory
 
-com.broll.gainea.net.NT_Action_SelectChoiceimport com.broll.gainea.net.NT_Goalimport com.broll.gainea.net.NT_Reactionimport com.broll.gainea.net.NT_Unitimport com.broll.gainea.server.core.bot.BotActionimport com.broll.gainea.server.core.bot.BotUtilsimport com.broll.gainea.server.core.goals.Goal com.broll.gainea.misc.RandomUtils
-import com.broll.gainea.server.init.ServerSetup
-import com.broll.gainea.server.ServerStatisticimport
-
-com.broll.gainea.server.core.map.Locationimport com.broll.gainea.server.core.objects.Unit
-import com.broll.networklib.server.LobbyServerCLI
-import com.broll.networklib.server.LobbyServerCLI.CliCommand
-import com.broll.networklib.server.ICLIExecutor
-import kotlin.Throws
-import com.broll.networklib.server.ILobbyServerListenerimport
-
-org.slf4j.LoggerFactoryimport java.lang.Exceptionimport java.util.ArrayDequeimport java.util.Arraysimport java.util.Queueimport java.util.function.Functionimport java.util.stream.Collectors
 class BotSelect : BotAction<NT_Action_SelectChoice>() {
-    private val chooseOption: Queue<Selection?> = ArrayDeque()
+    private val chooseOption = ArrayDeque<Selection>()
     override fun react(action: NT_Action_SelectChoice, reaction: NT_Reaction) {
         val option = pollChooseOption()
         if (option != null) {
@@ -33,22 +32,22 @@ class BotSelect : BotAction<NT_Action_SelectChoice>() {
         }
     }
 
-    override val actionClass: Class<out NT_Action?>?
+    override val actionClass: Class<out NT_Action>
         get() = NT_Action_SelectChoice::class.java
 
-    fun selectText(selection: SelectProvider<String?>?): TextSelection {
+    fun selectText(selection: (List<String>) -> String): TextSelection {
         return TextSelection(selection)
     }
 
-    fun selectUnit(selection: SelectProvider<Unit?>): UnitSelection {
+    fun selectUnit(selection: (List<Unit>) -> Unit): UnitSelection {
         return UnitSelection(selection)
     }
 
-    fun selectGoal(selection: SelectProvider<Goal?>): GoalSelection {
+    fun selectGoal(selection: (List<Goal>) -> Goal): GoalSelection {
         return GoalSelection(selection)
     }
 
-    fun selectLocation(selection: SelectProvider<Location?>): LocationSelection {
+    fun selectLocation(selection: (List<Location>) -> Location): LocationSelection {
         return LocationSelection(selection)
     }
 
@@ -60,17 +59,14 @@ class BotSelect : BotAction<NT_Action_SelectChoice>() {
         chooseOption.clear()
     }
 
-    fun nextChooseOption(option: Selection?) {
-        chooseOption.offer(option)
+    fun nextChooseOption(option: Selection) {
+        chooseOption.add(option)
     }
 
-    private fun pollChooseOption(): Selection? {
-        return chooseOption.poll()
+    private fun pollChooseOption(): Selection {
+        return chooseOption.last()
     }
 
-    interface SelectProvider<O> {
-        fun select(options: List<O>?): O
-    }
 
     interface Selection {
         fun select(action: NT_Action_SelectChoice): Int
@@ -82,9 +78,9 @@ class BotSelect : BotAction<NT_Action_SelectChoice>() {
         }
     }
 
-    private open class ObjectSelection<O> internal constructor(provider: SelectProvider<O?>, mapper: Function<Any, O?>) : Selection {
-        private val provider: SelectProvider<O>
-        private val mapper: Function<Any, O>
+    open class ObjectSelection<O> internal constructor(provider: (List<O>) -> O, mapper: (Any) -> O) : Selection {
+        private val provider: (List<O>) -> O
+        private val mapper: (Any) -> O
 
         init {
             this.provider = provider
@@ -92,21 +88,21 @@ class BotSelect : BotAction<NT_Action_SelectChoice>() {
         }
 
         override fun select(action: NT_Action_SelectChoice): Int {
-            val options = Arrays.stream(action.objectChoices).map { it: Any -> mapper.apply(it) }.collect(Collectors.toList())
-            return options.indexOf(provider.select(options))
+            val options = action.objectChoices.map { mapper(it) }
+            return options.indexOf(provider(options))
         }
     }
 
-    inner class TextSelection(private val provider: SelectProvider<String>) : Selection {
+    inner class TextSelection(private val provider: (List<String>) -> String) : Selection {
         override fun select(action: NT_Action_SelectChoice): Int {
-            val options = Arrays.asList(*action.choices)
-            return options.indexOf(provider.select(options))
+            val options = action.choices.toList()
+            return options.indexOf(provider(options))
         }
     }
 
-    inner class LocationSelection internal constructor(provider: SelectProvider<Location?>) : ObjectSelection<Location?>(provider, Function { it: Any -> game.map.getLocation(it as Int) })
-    inner class UnitSelection internal constructor(provider: SelectProvider<Unit?>) : ObjectSelection<Unit?>(provider, Function { it: Any -> BotUtils.getObject(game!!, it as NT_Unit) })
-    inner class GoalSelection internal constructor(provider: SelectProvider<Goal?>) : ObjectSelection<Goal?>(provider, Function { it: Any -> BotUtils.getGoal(game!!, it as NT_Goal) })
+    inner class LocationSelection internal constructor(provider: (List<Location>) -> Location) : ObjectSelection<Location>(provider, { game.map.getLocation(it as Int) })
+    inner class UnitSelection internal constructor(provider: (List<Unit>) -> Unit) : ObjectSelection<Unit>(provider, { BotUtils.getObject(game, it as NT_Unit) })
+    inner class GoalSelection internal constructor(provider: (List<Goal>) -> Goal) : ObjectSelection<Goal>(provider, { BotUtils.getGoal(game, it as NT_Goal) })
     companion object {
         private val Log = LoggerFactory.getLogger(BotSelect::class.java)
     }

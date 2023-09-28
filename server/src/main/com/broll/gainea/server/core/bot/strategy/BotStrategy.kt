@@ -1,39 +1,34 @@
 package com.broll.gainea.server.core.bot.strategy
 
-import com.broll.gainea.server.core.GameContainerimport
+import com.broll.gainea.misc.RandomUtils
+import com.broll.gainea.server.core.GameContainer
+import com.broll.gainea.server.core.bot.BotUtils
+import com.broll.gainea.server.core.map.Location
+import com.broll.gainea.server.core.objects.Unit
+import com.broll.gainea.server.core.player.Player
+import org.apache.commons.lang3.tuple.MutablePair
+import org.slf4j.LoggerFactory
 
-com.broll.gainea.server.core.bot.BotUtilsimport com.broll.gainea.server.core.goals.Goalimport org.apache.commons.lang3.tuple.MutablePair com.broll.gainea.misc.RandomUtils
-import com.broll.gainea.server.init.ServerSetup
-import com.broll.gainea.server.ServerStatisticimport
-
-com.broll.gainea.server.core.map.Locationimport com.broll.gainea.server.core.objects.Unitimport com.broll.gainea.server.core.player.Player
-import com.broll.networklib.server.LobbyServerCLI
-import com.broll.networklib.server.LobbyServerCLI.CliCommand
-import com.broll.networklib.server.ICLIExecutor
-import kotlin.Throws
-import com.broll.networklib.server.ILobbyServerListenerimport
-
-org.slf4j.LoggerFactoryimport java.util.ArrayListimport java.util.HashMapimport java.util.function.Consumerimport java.util.function.Functionimport java.util.stream.Collectors
-class BotStrategy(private val game: GameContainer?, private val player: Player?, val constants: StrategyConstants) {
-    private val goalStrategies: MutableList<GoalStrategy?> = ArrayList()
-    private val strategizedUnits: MutableMap<Unit?, GoalStrategy?> = HashMap()
-    val moveTargets: MutableMap<Unit?, Location?> = HashMap()
-    val fallbackStrategy: GoalStrategy?
+class BotStrategy(private val game: GameContainer, private val player: Player, val constants: StrategyConstants) {
+    private val goalStrategies = mutableListOf<GoalStrategy>()
+    private val strategizedUnits = HashMap<Unit, GoalStrategy>()
+    val moveTargets = HashMap<Unit, Location>()
+    val fallbackStrategy: GoalStrategy
 
     init {
         fallbackStrategy = FallbackStrategy.create(this, player, game, constants)
     }
 
-    fun getStrategy(unit: Unit?): GoalStrategy? {
+    fun getStrategy(unit: Unit): GoalStrategy? {
         return strategizedUnits[unit]
     }
 
-    fun getGoalStrategies(): List<GoalStrategy?> {
+    fun getGoalStrategies(): List<GoalStrategy> {
         return goalStrategies
     }
 
     private fun updateUnitStrategies() {
-        for (unit in player.getUnits()) {
+        for (unit in player.units) {
             val strategy = strategizedUnits[unit]
             if (strategy == null || strategy.targetLocations.isEmpty()) {
                 strategizeUnit(unit)
@@ -41,12 +36,12 @@ class BotStrategy(private val game: GameContainer?, private val player: Player?,
         }
     }
 
-    private fun strategizeUnit(unit: Unit?) {
-        val targetGoals = goalStrategies.stream().filter { it: GoalStrategy? -> !it.getTargetLocations().isEmpty() }.collect(Collectors.toList())
-        val needyGoals = targetGoals.stream().filter { obj: GoalStrategy? -> obj!!.requiresMoreUnits() }.collect(Collectors.toList())
-        if (!needyGoals.isEmpty()) {
+    private fun strategizeUnit(unit: Unit) {
+        val targetGoals = goalStrategies.filter { it.targetLocations.isNotEmpty() }
+        val needyGoals = targetGoals.filter { it.requiresMoreUnits() }
+        if (needyGoals.isNotEmpty()) {
             val goal = needyGoals[BotUtils.getLowestScoreIndex(needyGoals
-            ) { it: GoalStrategy? -> it!!.getClosestDistance(unit, unit.getLocation()) }]
+            ) { it.getClosestDistance(unit, unit.location) }]
             strategizeUnit(goal, unit)
             return
         }
@@ -57,64 +52,65 @@ class BotStrategy(private val game: GameContainer?, private val player: Player?,
         }
     }
 
-    private fun strategizeUnit(goal: GoalStrategy?, unit: Unit?) {
+    private fun strategizeUnit(goal: GoalStrategy, unit: Unit) {
         Log.trace("Strategize $unit to goal $goal")
-        goal!!.strategizeUnit(unit)
+        goal.strategizeUnit(unit)
         strategizedUnits[unit] = goal
     }
 
     fun prepareTurn() {
         updateUnitStrategies()
-        goalStrategies.forEach(Consumer { goal: GoalStrategy? ->
-            val deadUnits = goal.getUnits().stream().filter { obj: Unit? -> obj!!.isDead }.collect(Collectors.toList())
-            deadUnits.forEach(Consumer { unit: Unit? ->
+
+        goalStrategies.forEach { goal ->
+            val deadUnits = goal.units.filter { unit -> unit.isDead }
+            deadUnits.forEach { unit ->
                 strategizedUnits.remove(unit)
                 moveTargets.remove(unit)
-            })
-            goal.getUnits().removeAll(deadUnits)
-            goal!!.prepare()
-        })
+            }
+            goal.units.removeAll(deadUnits)
+            goal.prepare()
+        }
     }
 
     fun synchronizeGoalStrategies() {
-        val goals = player.getGoalHandler().goals
-        goals!!.forEach(Consumer { goal: Goal? ->
-            if (goalStrategies.stream().noneMatch { it: GoalStrategy? -> it.getGoal() === goal }) {
+        val goals = player.goalHandler.goals
+        goals.forEach { goal ->
+            if (goalStrategies.none { it.goal === goal }) {
                 goalStrategies.add(GoalStrategy(this, goal, player, game, constants))
             }
-        })
+        }
         for (strategy in goalStrategies) {
-            if (!goals!!.contains(strategy.getGoal())) {
+            if (!goals.contains(strategy.goal)) {
                 clearGoal(strategy)
             }
         }
     }
 
-    fun restrategizeUnits(goal: GoalStrategy?) {
-        goal.getUnits().forEach(Consumer { it: Unit? ->
+    fun restrategizeUnits(goal: GoalStrategy) {
+        goal.units.forEach {
             strategizedUnits.remove(it)
             moveTargets.remove(it)
-        })
-        goal.getUnits().clear()
+        }
+        goal.units.clear()
     }
 
-    private fun clearGoal(goal: GoalStrategy?) {
+    private fun clearGoal(goal: GoalStrategy) {
         goalStrategies.remove(goal)
         restrategizeUnits(goal)
     }
 
-    fun chooseUnitPlace(unit: Unit?, locations: List<Location?>?): Int {
-        if (unit.getOwner() !== player) {
-            return RandomUtils.random(0, locations!!.size - 1)
+    fun chooseUnitPlace(unit: Unit, locations: List<Location>): Int {
+        if (unit.owner !== player) {
+            return RandomUtils.random(0, locations.size - 1)
         }
-        val goals = goalStrategies.stream().filter { obj: GoalStrategy? -> obj!!.requiresMoreUnits() }.collect(Collectors.toList())
+        val goals = goalStrategies.filter { it.requiresMoreUnits() }
         if (goals.isEmpty()) {
-            return RandomUtils.random(0, locations!!.size - 1)
+            return RandomUtils.random(0, locations.size - 1)
         }
-        val scores: MutableMap<Location?, MutablePair<GoalStrategy?, Int>> = HashMap()
-        locations!!.forEach(Consumer { it: Location? -> scores[it] = MutablePair.of(null, Int.MAX_VALUE) })
-        goals.forEach(Consumer { it: GoalStrategy? -> it!!.scoreLocations(unit, scores) })
-        val (key, value) = BotUtils.getLowestScoreEntry<Map.Entry<Location, MutablePair<GoalStrategy, Int>>>(ArrayList<Map.Entry<Location?, MutablePair<GoalStrategy?, Int>>>(scores.entries), Function<Map.Entry<Location?, MutablePair<GoalStrategy?, Int>>, Int> { (_, value): Map.Entry<Location?, MutablePair<GoalStrategy?, Int>> -> value.getRight() })
+        val scores = HashMap<Location, MutablePair<GoalStrategy?, Int>>()
+        locations.forEach { scores[it] = MutablePair.of(null, Int.MAX_VALUE) }
+        goals.forEach { it.scoreLocations(unit, scores) }
+        val (key, value) = BotUtils.getLowestScoreEntry(scores.entries.toList()) { it.value.right }
         val option = locations.indexOf(key)
         var strategy = value.key
         if (strategy == null) {

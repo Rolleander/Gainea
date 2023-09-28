@@ -1,19 +1,15 @@
 package com.broll.gainea.server.core.actions
 
-import com.broll.gainea.net.NT_Action
 import com.broll.gainea.net.NT_PlayerTurnActions
 import com.broll.gainea.server.core.GameContainer
 import com.broll.gainea.server.core.actions.optional.AttackAction
 import com.broll.gainea.server.core.actions.optional.CardAction
 import com.broll.gainea.server.core.actions.optional.MoveUnitAction
-import com.broll.gainea.server.core.cards.Card
 import com.broll.gainea.server.core.map.Location
 import com.broll.gainea.server.core.objects.Unit
 import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.core.utils.PlayerUtils
 import org.apache.commons.collections4.map.MultiValueMap
-import java.util.function.Consumer
-import java.util.stream.Collectors
 
 class TurnBuilder(private val game: GameContainer, private val actionHandlers: ActionHandlers) {
     fun build(player: Player): NT_PlayerTurnActions {
@@ -33,22 +29,22 @@ class TurnBuilder(private val game: GameContainer, private val actionHandlers: A
         val moveHandler = actionHandlers.getHandler(MoveUnitAction::class.java)
         val moveableTo = MultiValueMap<Location, Unit>()
         val attackableTo = MultiValueMap<Location, Unit>()
-        player.units.filter { it.isControllable && it.location!=null }.forEach { unit->
+        player.units.filter { it.controllable && it.location != null }.forEach { unit ->
             val walkableLocations = unit.location!!.connectedLocations.filter { unit.canMoveTo(it) }.toMutableList()
-            val attackableLocations =  walkableLocations.filter { PlayerUtils.hasHostileArmy(player, it) }
+            val attackableLocations = walkableLocations.filter { PlayerUtils.hasHostileArmy(player, it) }
             walkableLocations.removeAll(attackableLocations)
             if (unit.hasRemainingAttack()) {
-                attackableLocations.forEach { attackableTo.put(it,unit) }
+                attackableLocations.forEach { attackableTo.put(it, unit) }
             }
             if (unit.hasRemainingMove()) {
-                walkableLocations.forEach { moveableTo.put(it,unit) }
+                walkableLocations.forEach { moveableTo.put(it, unit) }
             }
         }
         moveableTo.keys.forEach {
-            actions+= moveHandler.move(moveableTo.getCollection(it).toList(),it)
+            actions += moveHandler.move(moveableTo.getCollection(it).toList(), it)
         }
         attackableTo.keys.forEach {
-            actions+=attackHandler.attack(attackableTo.getCollection(it).toList(), it)
+            actions += attackHandler.attack(attackableTo.getCollection(it).toList(), it)
         }
         return actions
     }

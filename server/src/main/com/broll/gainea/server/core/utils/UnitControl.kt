@@ -26,11 +26,11 @@ object UnitControl {
     private const val MOVE_PAUSE = 1500
     private const val SPAWN_PAUSE = 1500
     private const val DAMAGE_PAUSE = 1000
-    fun move(game: GameContainer, unit: MapObject?, location: Location?) {
+    fun move(game: GameContainer, unit: MapObject, location: Location) {
         move(game, Lists.newArrayList(unit), location)
     }
 
-    fun move(game: GameContainer, units: List<MapObject?>?, location: Location?) {
+    fun move(game: GameContainer, units: List<MapObject>, location: Location) {
         if (units!!.isEmpty()) return
         Log.trace("UnitControl: move units [" + units.size + "] to " + location)
         units.forEach { unit: MapObject -> GameUtils.place(unit, location) }
@@ -41,7 +41,7 @@ object UnitControl {
         ProcessingUtils.pause(MOVE_PAUSE)
     }
 
-    fun kill(game: GameContainer, unit: Unit?) {
+    fun kill(game: GameContainer, unit: Unit) {
         damage(game, unit, Int.MAX_VALUE, null)
     }
 
@@ -69,8 +69,8 @@ object UnitControl {
         GameUtils.sendUpdate(game, nt)
     }
 
-    @JvmOverloads
-    fun heal(game: GameContainer?, unit: Unit, heal: Int, consumer: Consumer<NT_Event_FocusObject?>? = null) {
+
+    fun heal(game: GameContainer?, unit: Unit, heal: Int = 1, consumer: Consumer<NT_Event_FocusObject?>? = null) {
         var heal = heal
         Log.trace("UnitControl: heal unit $unit for $heal")
         heal = Math.max(unit.maxHealth.value - unit.health.value, heal)
@@ -84,7 +84,7 @@ object UnitControl {
     }
 
     @JvmOverloads
-    fun damage(game: GameContainer, unit: Unit?, damage: Int, consumer: Consumer<NT_Event_FocusObject?>? = null) {
+    fun damage(game: GameContainer, unit: Unit?, damage: Int = 1, consumer: Consumer<NT_Event_FocusObject?>? = null) {
         var damage = damage
         Log.trace("UnitControl: damage unit $unit for $damage")
         //dont overkill
@@ -169,7 +169,7 @@ object UnitControl {
         }
     }
 
-    fun conquer(game: GameContainer, units: List<Unit?>?, target: Location?) {
+    fun conquer(game: GameContainer, units: List<Unit>, target: Location) {
         val owner = PlayerUtils.getOwner(units)
         val targetUnits: List<Unit?>?
         targetUnits = if (owner == null) {

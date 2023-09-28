@@ -13,6 +13,6 @@ enum class MonsterMotion(private val canMove: BiFunction<Location?, Location?, B
     AMPHIBIAN(BiFunction { from: Location?, to: Location? -> to is Ship || !LocationUtils.isAreaType(to, AreaType.DESERT) });
 
     fun canMoveTo(currentLocation: Location?, newLocation: Location?): Boolean {
-        return newLocation!!.isTraversable && canMove.apply(currentLocation, newLocation)
+        return newLocation!!.traversable && canMove.apply(currentLocation, newLocation)
     }
 }

@@ -8,22 +8,22 @@ import com.broll.gainea.server.core.objects.buffs.BuffableInt
 import com.broll.gainea.server.core.objects.buffs.IntBuff
 import com.broll.gainea.server.core.player.Player
 
-abstract class Unit(owner: Player?) : MapObject(owner) {
-    var maxHealth: BuffableInt<MapObject?>? = BuffableInt(this, 0)
-        private set
-    var power: BuffableInt<MapObject?>? = BuffableInt(this, 0)
-        private set
-    var health: BuffableInt<MapObject?>? = BuffableInt(this, 0)
-        private set
-    var attacksPerTurn: BuffableInt<MapObject?>? = BuffableInt(this, 1) //default 1 attack
-        private set
-    var numberPlus: BuffableInt<MapObject?>? = BuffableInt(this, 0)
-        private set
+abstract class Unit(owner: Player) : MapObject(owner) {
+    var maxHealth: BuffableInt<MapObject> = BuffableInt(this, 0)
+
+    var power: BuffableInt<MapObject> = BuffableInt(this, 0)
+
+    var health: BuffableInt<MapObject> = BuffableInt(this, 0)
+
+    var attacksPerTurn: BuffableInt<MapObject> = BuffableInt(this, 1) //default 1 attack
+
+    var numberPlus: BuffableInt<MapObject> = BuffableInt(this, 0)
+
     private var attackCount = 0
     var isMoveOrAttackRestriction = true //usually units can only attack or move in one turn
     private var attacked = false
     private var moved = false
-    var isControllable = true
+    var controllable = true
         protected set
     private var type = NT_Unit.TYPE_MALE.toInt()
     var kills = 0
@@ -31,9 +31,9 @@ abstract class Unit(owner: Player?) : MapObject(owner) {
     private var justSpawned = true
 
     init {
-        health!!.setMinValue(0)
-        maxHealth!!.setMinValue(1)
-        power!!.setMinValue(0)
+        health.setMinValue(0)
+        maxHealth.setMinValue(1)
+        power.setMinValue(0)
     }
 
     override fun turnStart() {
@@ -78,15 +78,6 @@ abstract class Unit(owner: Player?) : MapObject(owner) {
         setHealth(health)
     }
 
-    override fun getMovesPerTurn(): BuffableInt<MapObject?>? {
-        return super.getMovesPerTurn()
-    }
-
-    override var owner: Player?
-        get() = owner
-        set(owner) {
-            this.owner = owner
-        }
 
     @JvmOverloads
     fun takeDamage(damage: Int = 1): Boolean {
@@ -108,20 +99,20 @@ abstract class Unit(owner: Player?) : MapObject(owner) {
         get() = !isDead
 
     fun heal() {
-        health!!.value = maxHealth.getRootValue()
+        health!!.value = maxHealth.rootValue
     }
 
     fun setHealth(health: Int) {
-        this.health!!.value = health
-        maxHealth!!.value = health
+        this.health.value = health
+        maxHealth.value = health
     }
 
     fun changeHealth(change: Int) {
-        health!!.addValue(change)
-        maxHealth!!.addValue(change)
+        health.addValue(change)
+        maxHealth.addValue(change)
     }
 
-    fun overwriteHealth(health: BuffableInt<MapObject?>?) {
+    fun overwriteHealth(health: BuffableInt<MapObject>) {
         this.health = health
     }
 

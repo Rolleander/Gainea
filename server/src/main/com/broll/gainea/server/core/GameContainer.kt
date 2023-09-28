@@ -16,6 +16,7 @@ import com.broll.gainea.server.core.objects.MapEffect
 import com.broll.gainea.server.core.objects.MapObject
 import com.broll.gainea.server.core.objects.buffs.BuffProcessor
 import com.broll.gainea.server.core.objects.monster.MonsterFactory
+import com.broll.gainea.server.core.player.NeutralPlayer
 import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.core.player.PlayerFactory
 import com.broll.gainea.server.core.processing.GameUpdateReceiverProxy
@@ -28,10 +29,11 @@ import com.broll.networklib.server.impl.ServerLobby
 import org.slf4j.LoggerFactory
 
 class GameContainer(val lobby: ServerLobby<LobbyData, PlayerData>) {
+    val neutralPlayer = NeutralPlayer(this)
     val map: MapContainer
     val allPlayers: List<Player>
     val objects = mutableListOf<MapObject>()
-    val effects  = mutableListOf<MapEffect>()
+    val effects = mutableListOf<MapEffect>()
     private val actions = HashMap<Int, ActionContext<*>>()
     var rounds = 1
         private set

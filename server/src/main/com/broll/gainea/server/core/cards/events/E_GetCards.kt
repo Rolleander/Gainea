@@ -1,10 +1,10 @@
 package com.broll.gainea.server.core.cards.events
 
-import com.broll.gainea.server.core.cards.EventCardimport
+import com.broll.gainea.server.core.cards.EventCard
 
-com.broll.gainea.server.core.player.Playerimport java.util.function.Consumer
+
 class E_GetCards : EventCard(35, "Markttag", "Jeder Spieler erhält eine Karte") {
     override fun play() {
-        game.activePlayers.forEach(Consumer { player: Player? -> player.getCardHandler().receiveCard(game.cardStorage.randomPlayableCard) })
+        game.activePlayers.forEach { it.cardHandler.receiveCard(game.cardStorage.getRandomPlayableCard()) }
     }
 }

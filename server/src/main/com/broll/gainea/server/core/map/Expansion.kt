@@ -5,23 +5,24 @@ import java.util.stream.Collectors
 class Expansion {
     @JvmField
     var coordinates: Coordinates? = null
+
     @JvmField
     var contents: List<AreaCollection?> = ArrayList()
     var type: ExpansionType? = null
-    val allLocations: List<Location?>
+    val allLocations: List<Location>
         get() {
             val locations: MutableList<Location?> = ArrayList()
             contents.stream().map { obj: AreaCollection? -> obj.getAreas() }.forEach { collection: List<Area?>? -> locations.addAll(collection!!) }
             contents.stream().map { obj: AreaCollection? -> obj.getShips() }.forEach { collection: List<Ship?>? -> locations.addAll(collection!!) }
             return locations
         }
-    val allAreas: List<Area?>
+    val allAreas: List<Area>
         get() {
             val locations: MutableList<Area?> = ArrayList()
             contents.stream().map { obj: AreaCollection? -> obj.getAreas() }.forEach { collection: List<Area?>? -> locations.addAll(collection!!) }
             return locations
         }
-    val allShips: List<Ship?>
+    val allShips: List<Ship>
         get() {
             val locations: MutableList<Ship?> = ArrayList()
             contents.stream().map { obj: AreaCollection? -> obj.getShips() }.forEach { collection: List<Ship?>? -> locations.addAll(collection!!) }

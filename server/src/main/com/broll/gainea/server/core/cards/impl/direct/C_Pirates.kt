@@ -1,16 +1,18 @@
 package com.broll.gainea.server.core.cards.impl.direct
 
-import com.broll.gainea.misc.RandomUtilsimport
+import com.broll.gainea.misc.RandomUtils
+import com.broll.gainea.server.core.cards.DirectlyPlayedCard
+import com.broll.gainea.server.core.objects.Soldier
+import com.broll.gainea.server.core.utils.LocationUtils
+import com.broll.gainea.server.core.utils.UnitControl.spawn
 
-com.broll.gainea.server.core.cards.DirectlyPlayedCardimport com.broll.gainea.server.core.map.Shipimport com.broll.gainea.server.core.objects.Soldierimport com.broll.gainea.server.core.utils.LocationUtilsimport java.util.Collectionsimport java.util.stream.Collectors
 class C_Pirates : DirectlyPlayedCard(38, "Piraten!", "Piraten befallen zufällige unbesetzte Schiffe") {
     init {
         drawChance = 0.8f
     }
 
     override fun play() {
-        val freeShips = game.map.allShips.stream().filter { obj: Ship? -> LocationUtils.noControlledUnits() }.collect(Collectors.toList())
-        Collections.shuffle(freeShips)
+        val freeShips = game.map.allShips.filter { LocationUtils.noControlledUnits(it) }.shuffled()
         val count = RandomUtils.random(2, 3)
         for (i in 0 until Math.min(count, freeShips.size)) {
             val pirate = Soldier(null)

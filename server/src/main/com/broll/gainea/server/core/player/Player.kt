@@ -1,16 +1,14 @@
 package com.broll.gainea.server.core.player
 
 import com.broll.gainea.net.NT_Player
-import com.broll.gainea.net.NT_Unit
 import com.broll.gainea.server.core.GameContainer
 import com.broll.gainea.server.core.fractions.Fraction
 import com.broll.gainea.server.core.map.Location
 import com.broll.gainea.server.core.objects.Unit
 import com.broll.gainea.server.init.PlayerData
 import com.broll.networklib.server.impl.LobbyPlayer
-import java.util.stream.Collectors
 
-class Player(game: GameContainer, val fraction: Fraction, val serverPlayer: LobbyPlayer<PlayerData>) {
+open class Player(game: GameContainer, val fraction: Fraction, val serverPlayer: LobbyPlayer<PlayerData>) {
     val units = mutableListOf<Unit>()
     val goalHandler: GoalHandler
     val cardHandler: CardHandler
@@ -52,7 +50,7 @@ class Player(game: GameContainer, val fraction: Fraction, val serverPlayer: Lobb
     }
 
     val controlledLocations: List<Location>
-        get() =  units.mapNotNull { it.location }
+        get() = units.mapNotNull { it.location }
 
     fun nt(): NT_Player {
         val player = NT_Player()

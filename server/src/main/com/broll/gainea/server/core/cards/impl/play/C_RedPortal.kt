@@ -1,8 +1,10 @@
 package com.broll.gainea.server.core.cards.impl.play
 
-import com.broll.gainea.net.NT_BoardEffectimport
+import com.broll.gainea.net.NT_BoardEffect
+import com.broll.gainea.server.core.cards.Card
+import com.broll.gainea.server.core.objects.MapEffect
+import com.broll.gainea.server.core.objects.buffs.TimedEffect
 
-com.broll.gainea.server.core.cards.Cardimport com.broll.gainea.server.core.map.Areaimport com.broll.gainea.server.core.objects.MapEffectimport com.broll.gainea.server.core.objects.buffs.TimedEffectimport java.util.stream.Collectors
 class C_RedPortal : Card(1, "Dunkles Portal",
         "Wählt zwei freie Gebiete von der gleichen Karte. Stellt ein Portal zwischen diesen Gebieten für " + ROUNDS + " Runden her.") {
     init {
@@ -13,28 +15,28 @@ class C_RedPortal : Card(1, "Dunkles Portal",
         get() = true
 
     override fun play() {
-        val from = selectHandler!!.selectLocation("Wähle den Startort für das Portal", game.map.allAreas.stream().filter { obj: Area? -> obj!!.isFree }.collect(Collectors.toList()))
-        val startPortal = MapEffect(NT_BoardEffect.EFFECT_PORTAL, "", from)
-        MapEffect.Companion.spawn(game!!, startPortal)
-        val to = selectHandler!!.selectLocation("Wähle den Zielort für das Portal", from.container.expansion.allAreas.stream()
-                .filter { it: Area? -> it!!.isFree && it !== from && !from.connectedLocations.contains(it) }.collect(Collectors.toList()))
-        if (to != null) {
-            val endPortal = MapEffect(NT_BoardEffect.EFFECT_PORTAL, "", to)
-            MapEffect.Companion.spawn(game!!, endPortal)
-            from.connectedLocations.add(to)
-            to.connectedLocations.add(from)
-            TimedEffect.Companion.forPlayerRounds(game!!, owner, ROUNDS, object : TimedEffect() {
-                override fun unregister() {
-                    super.unregister()
-                    MapEffect.Companion.despawn(game!!, startPortal)
-                    MapEffect.Companion.despawn(game!!, endPortal)
-                    from.connectedLocations.remove(to)
-                    to.connectedLocations.remove(from)
-                }
-            })
-        } else {
-            MapEffect.Companion.despawn(game!!, startPortal)
+        val from = selectHandler.selectLocation("Wähle den Startort für das Portal", game.map.allAreas.filter { it.isFree })
+        val toLocations = from.container.expansion.allAreas
+                .filter { it.isFree && it !== from && !from.connectedLocations.contains(it) }
+        if (toLocations.isEmpty()) {
+            return;
         }
+        val startPortal = MapEffect(NT_BoardEffect.EFFECT_PORTAL, "", from)
+        MapEffect.spawn(game, startPortal)
+        val to = selectHandler.selectLocation("Wähle den Zielort für das Portal", toLocations)
+        val endPortal = MapEffect(NT_BoardEffect.EFFECT_PORTAL, "", to)
+        MapEffect.spawn(game, endPortal)
+        from.connectedLocations.add(to)
+        to.connectedLocations.add(from)
+        TimedEffect.forPlayerRounds(game, owner, ROUNDS, object : TimedEffect() {
+            override fun unregister() {
+                super.unregister()
+                MapEffect.despawn(game, startPortal)
+                MapEffect.despawn(game, endPortal)
+                from.connectedLocations.remove(to)
+                to.connectedLocations.remove(from)
+            }
+        })
     }
 
     companion object {

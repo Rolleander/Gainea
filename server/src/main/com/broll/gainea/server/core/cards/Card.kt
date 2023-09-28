@@ -1,37 +1,34 @@
 package com.broll.gainea.server.core.cards
 
 import com.broll.gainea.net.NT_Card
-import com.broll.gainea.net.NT_Cardimport
-
-com.broll.gainea.server.core.GameContainerimport com.broll.gainea.server.core.actions.ActionHandlersimport com.broll.gainea.server.core.actions.required.PlaceUnitActionimport com.broll.gainea.server.core.actions.required.SelectChoiceAction com.broll.gainea.server.core.player.Player
-import com.broll.networklib.server.LobbyServerCLI
-import com.broll.networklib.server.LobbyServerCLI.CliCommand
-import com.broll.networklib.server.ICLIExecutor
-import kotlin.Throws
-import com.broll.networklib.server.ILobbyServerListener
+import com.broll.gainea.server.core.GameContainer
+import com.broll.gainea.server.core.actions.ActionHandlers
+import com.broll.gainea.server.core.actions.required.PlaceUnitAction
+import com.broll.gainea.server.core.actions.required.SelectChoiceAction
+import com.broll.gainea.server.core.player.Player
 
 abstract class Card(val picture: Int, val title: String, val text: String) {
-    protected var game: GameContainer? = null
-    protected var owner: Player? = null
     var id = 0
         private set
-    protected var actions: ActionHandlers? = null
-    protected var placeUnitHandler: PlaceUnitAction? = null
-    protected var selectHandler: SelectChoiceAction? = null
+    protected lateinit var game: GameContainer
+    protected lateinit var owner: Player
+    protected lateinit var actions: ActionHandlers
+    protected lateinit var placeUnitHandler: PlaceUnitAction
+    protected lateinit var selectHandler: SelectChoiceAction
     var drawChance = 1f
         protected set
 
-    fun init(game: GameContainer?, owner: Player?, id: Int) {
+    fun init(game: GameContainer, owner: Player, id: Int) {
         this.game = game
         this.owner = owner
         this.id = id
     }
 
     abstract val isPlayable: Boolean
-    fun play(actionHandlers: ActionHandlers?) {
+    fun play(actionHandlers: ActionHandlers) {
         actions = actionHandlers
-        placeUnitHandler = actions!!.getHandler(PlaceUnitAction::class.java)
-        selectHandler = actions!!.getHandler(SelectChoiceAction::class.java)
+        placeUnitHandler = actions.getHandler(PlaceUnitAction::class.java)
+        selectHandler = actions.getHandler(SelectChoiceAction::class.java)
         play()
     }
 

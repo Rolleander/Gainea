@@ -1,10 +1,11 @@
 package com.broll.gainea.server.core.cards.impl.direct
 
-import com.broll.gainea.server.core.cards.DirectlyPlayedCardimport
+import com.broll.gainea.server.core.cards.DirectlyPlayedCard
+import com.broll.gainea.server.core.objects.Unit
+import com.broll.gainea.server.core.utils.UnitControl.heal
 
-com.broll.gainea.server.core.objects.MapObjectimport com.broll.gainea.server.core.objects.Unit
 class C_HealingWave : DirectlyPlayedCard(64, "Kristallenergie", "Heilt alle neutralen Einheiten") {
     override fun play() {
-        game.objects.stream().filter { it: MapObject? -> it is Unit }.map<Unit?> { it: MapObject? -> it as Unit? }.filter { obj: Unit? -> obj!!.isHurt }.forEach { unit: Unit? -> heal(game, unit, 10000) }
+        game.objects.filterIsInstance(Unit::class.java).filter { it.isHurt }.forEach { heal(game, it, 10000) }
     }
 }

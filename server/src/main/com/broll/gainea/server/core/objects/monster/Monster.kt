@@ -3,8 +3,9 @@ package com.broll.gainea.server.core.objects.monster
 import com.broll.gainea.net.NT_Monster
 import com.broll.gainea.server.core.map.Location
 import com.broll.gainea.server.core.objects.Unit
+import com.broll.gainea.server.core.player.Player
 
-open class Monster : Unit(null) {
+open class Monster(owner: Player) : Unit(owner) {
     private var behavior = MonsterBehavior.RESIDENT
     private var activity: MonsterActivity? = MonsterActivity.SOMETIMES
     private var motion = MonsterMotion.TERRESTRIAL

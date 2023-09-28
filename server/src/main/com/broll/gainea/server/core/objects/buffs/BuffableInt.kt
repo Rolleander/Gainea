@@ -10,7 +10,7 @@ class BuffableInt<T>(target: T, value: Int) : BuffableValue<T, Int, IntBuff>(tar
     }
 
     @JvmOverloads
-    fun copy(target: T): BuffableInt<*> {
+    fun copy(target: T): BuffableInt<T> {
         val copy = BuffableInt(target, this.value)
         copy.minValue = minValue
         copy.maxValue = maxValue

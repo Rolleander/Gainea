@@ -7,18 +7,18 @@ import com.broll.gainea.server.core.map.Ship
 import com.broll.gainea.server.core.objects.buffs.BuffableInt
 import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.core.processing.GameUpdateReceiverAdapter
-import java.util.stream.Collectors
 
-abstract class MapObject @JvmOverloads constructor(var owner: Player? = null) : GameUpdateReceiverAdapter() {
+abstract class MapObject(var owner: Player) : GameUpdateReceiverAdapter() {
     protected var game: GameContainer? = null
-    var location: Location? = null
+    lateinit var location: Location
     var id = 0
         private set
     var icon = 0
     var name: String? = null
     var scale = 1f
     protected var moveCount = 0
-    protected var movesPerTurn = BuffableInt(this, 1) //default 1 move
+    var movesPerTurn = BuffableInt(this, 1) //default 1 move
+
     fun init(game: GameContainer?) {
         id = game!!.newObjectId()
         this.game = game
@@ -29,19 +29,16 @@ abstract class MapObject @JvmOverloads constructor(var owner: Player? = null) : 
     }
 
     open fun hasRemainingMove(): Boolean {
-        return moveCount < movesPerTurn.value!!
+        return moveCount < movesPerTurn.getValue()
     }
 
     open fun moved() {
         moveCount++
     }
 
-    open fun getMovesPerTurn(): BuffableInt<MapObject?>? {
-        return movesPerTurn
-    }
 
     open fun canMoveTo(to: Location): Boolean {
-        if (!to.isTraversable) {
+        if (!to.traversable) {
             return false
         }
         if (to is Ship) {
@@ -58,7 +55,7 @@ abstract class MapObject @JvmOverloads constructor(var owner: Player? = null) : 
     }
 
     val moveTargets: List<Location?>
-        get() = location.getConnectedLocations().stream().filter { to: Location? -> canMoveTo(to) }.collect(Collectors.toList())
+        get() = location.connectedLocations.filter { canMoveTo(it) }
 
     open fun nt(): NT_BoardObject {
         val `object` = NT_BoardObject()
@@ -71,9 +68,7 @@ abstract class MapObject @JvmOverloads constructor(var owner: Player? = null) : 
         `object`.name = name
         `object`.icon = icon.toShort()
         `object`.size = scale * 30
-        if (location != null) {
-            `object`.location = location!!.number.toShort()
-        }
+        `object`.location = location.number.toShort()
     }
 
     override fun toString(): String {

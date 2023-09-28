@@ -1,11 +1,10 @@
 package com.broll.gainea.server.core.map
 
 java.util.HashSet
-class Area(val id: AreaID) : Location() {
-    override val connectedLocations: MutableSet<Location?> = HashSet()
-    @JvmField
-    var type: AreaType? = null
-    var name: String? = null
+class Area(val id: AreaID,    val type: AreaType,
+           val name: String) : Location() {
+    override val connectedLocations: MutableSet<Location> = HashSet()
+
 
     fun addAdjacentLocation(location: Location?) {
         connectedLocations.add(location)

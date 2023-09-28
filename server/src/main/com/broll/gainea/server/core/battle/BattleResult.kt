@@ -3,128 +3,110 @@ package com.broll.gainea.server.core.battle
 import com.broll.gainea.server.core.map.Location
 import com.broll.gainea.server.core.objects.Unit
 import com.broll.gainea.server.core.player.Player
-import com.google.common.collect.Lists
-import java.util.Objects
-import java.util.stream.Collectors
 
-class BattleResult(private val retreated: Boolean, context: BattleContext?) : BattleContext(context!!.attackers, context.defenders) {
-    private val attackersWon: Boolean
-    private val defendersWon: Boolean
+class BattleResult(val retreated: Boolean, context: BattleContext) : BattleContext(context.attackers, context.defenders) {
+    val attackersWon: Boolean
+    val defendersWon: Boolean
 
     init {
         attackersWon = !retreated && hasSurvivingAttackers() && !hasSurvivingDefenders()
         defendersWon = retreated || hasSurvivingDefenders() && !hasSurvivingAttackers()
     }
 
-    val winningPlayers: List<Player?>?
+    val winningPlayers: List<Player>
         get() = getNonNeutralOwners(winnerOwners)
-    val losingPlayers: List<Player?>?
+    val losingPlayers: List<Player>
         get() = getNonNeutralOwners(loserOwners)
 
-    fun isWinner(player: Player?): Boolean {
-        return winnerOwners.contains(player)
-    }
+    fun isWinner(player: Player) = winnerOwners.contains(player)
 
-    fun isLoser(player: Player?): Boolean {
-        return loserOwners.contains(player)
-    }
+
+    fun isLoser(player: Player) = loserOwners.contains(player)
 
     val isNeutralWinner: Boolean
         get() = isNeutralOwner(winnerOwners)
     val isNeutralLoser: Boolean
         get() = isNeutralOwner(loserOwners)
-    val attackerEndLocation: Location?
-        get() = if (attackersWon()) getLocation() else getSourceLocation()
+    val attackerEndLocation: Location
+        get() = if (attackersWon) location else sourceLocation
 
-    fun attackersWon(): Boolean {
-        return attackersWon
-    }
-
-    fun defendersWon(): Boolean {
-        return defendersWon
-    }
-
-    private val winnerOwners: List<Player?>
-        private get() {
-            if (attackersWon()) {
-                return Lists.newArrayList(attackingPlayer)
-            } else if (defendersWon()) {
+    private val winnerOwners: List<Player>
+        get() {
+            if (attackersWon) {
+                return listOf(attackingPlayer)
+            } else if (defendersWon) {
                 return defendingPlayers
             }
-            return ArrayList()
+            return listOf()
         }
-    private val loserOwners: List<Player?>
-        private get() {
-            if (attackersWon()) {
+    private val loserOwners: List<Player>
+        get() {
+            if (attackersWon) {
                 return defendingPlayers
-            } else if (defendersWon()) {
-                return Lists.newArrayList(attackingPlayer)
+            } else if (defendersWon) {
+                return listOf(attackingPlayer)
             }
-            return ArrayList()
+            return listOf()
         }
-
-    fun attackerRetreated(): Boolean {
-        return retreated
-    }
 
     val isDraw: Boolean
-        get() = !attackersWon() && !defendersWon()
-    val winnerUnits: List<Unit?>?
+        get() = !attackersWon && !defendersWon
+    val winnerUnits: List<Unit>
         get() {
-            if (attackersWon()) {
-                return getAttackers()
-            } else if (defendersWon()) {
-                return getDefenders()
+            if (attackersWon) {
+                return attackers
+            } else if (defendersWon) {
+                return defenders
             }
-            return ArrayList()
+            return listOf()
         }
-    val loserUnits: List<Unit?>?
+    val loserUnits: List<Unit>
         get() {
-            if (attackersWon()) {
-                return getDefenders()
-            } else if (defendersWon()) {
-                return getAttackers()
+            if (attackersWon) {
+                return defenders
+            } else if (defendersWon) {
+                return attackers
             }
-            return ArrayList()
+            return listOf()
         }
-    val winnerSurvivingUnits: List<Unit?>?
+    val winnerSurvivingUnits: List<Unit>
         get() {
-            if (attackersWon()) {
+            if (attackersWon) {
                 return aliveAttackers
-            } else if (defendersWon()) {
+            } else if (defendersWon) {
                 return aliveDefenders
             }
-            return ArrayList()
+            return listOf()
         }
-    val loserSurvivingUnits: List<Unit?>?
+    val loserSurvivingUnits: List<Unit>
         get() {
-            if (attackersWon()) {
+            if (attackersWon) {
                 return aliveDefenders
-            } else if (defendersWon()) {
+            } else if (defendersWon) {
                 return aliveAttackers
             }
-            return ArrayList()
+            return listOf()
         }
-    val winnerDeadUnits: List<Unit?>?
+    val winnerDeadUnits: List<Unit>
         get() {
-            if (attackersWon()) {
+            if (attackersWon) {
                 return killedAttackers
-            } else if (defendersWon()) {
+            } else if (defendersWon) {
                 return killedDefenders
             }
-            return ArrayList()
+            return listOf()
         }
-    val loserDeadUnits: List<Unit?>?
+    val loserDeadUnits: List<Unit>
         get() {
-            if (attackersWon()) {
+            if (attackersWon) {
                 return killedDefenders
-            } else if (defendersWon()) {
+            } else if (defendersWon) {
                 return killedAttackers
             }
-            return ArrayList()
+            return listOf()
         }
 
-    fun getEndLocation(player: Player?): Location? {
+    fun getEndLocation(player: Player): Location? {
         if (isAttacker(player)) {
             return attackerEndLocation
         } else if (isDefender(player)) {
@@ -133,12 +115,12 @@ class BattleResult(private val retreated: Boolean, context: BattleContext?) : Ba
         return null
     }
 
-    fun getKillingPlayers(unit: Unit?): List<Player?>? {
+    fun getKillingPlayers(unit: Unit): List<Player> {
         if (isAttacking(unit)) {
             return getDefendingPlayers()
         } else if (isDefending(unit)) {
-            return Lists.newArrayList(getAttackingPlayer()).stream().filter { obj: Player? -> Objects.nonNull(obj) }.collect(Collectors.toList())
+            return listOfNotNull(attackingPlayer)
         }
-        return ArrayList()
+        return listOf()
     }
 }

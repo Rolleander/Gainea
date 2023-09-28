@@ -1,8 +1,9 @@
 package com.broll.gainea.server.core.cards.impl.play
 
-import com.broll.gainea.server.core.cards.Cardimport
+import com.broll.gainea.server.core.cards.Card
+import com.broll.gainea.server.core.utils.SelectionUtils.selectPlayerUnit
+import com.broll.gainea.server.core.utils.UnitControl
 
-com.broll.gainea.server.core.map.Locationimport com.broll.gainea.server.core.objects.Unitimport com.broll.gainea.server.core.utils.UnitControlimport java.util.stream.Collectors
 class C_RescueFlight : Card(73, "Luftrettung", "Bewegt eine eurer Einheiten auf ein beliebiges freies Feld") {
     init {
         drawChance = 0.3f
@@ -12,8 +13,8 @@ class C_RescueFlight : Card(73, "Luftrettung", "Bewegt eine eurer Einheiten auf 
         get() = true
 
     override fun play() {
-        val unit: Unit = selectPlayerUnit(game, owner, "Welche Einheit soll bewegt werden?")
-        val target = selectHandler!!.selectLocation("Wohin bewegen?", game.map.allLocations.stream().filter { obj: Location? -> obj!!.isFree }.collect(Collectors.toList()))
-        UnitControl.move(game!!, unit, target)
+        val unit = selectPlayerUnit(game, owner, "Welche Einheit soll bewegt werden?") ?: return
+        val target = selectHandler.selectLocation("Wohin bewegen?", game.map.allLocations.filter { it.isFree })
+        UnitControl.move(game, unit, target)
     }
 }

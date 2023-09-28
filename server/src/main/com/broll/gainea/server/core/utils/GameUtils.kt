@@ -6,7 +6,6 @@ import com.broll.gainea.server.core.objects.MapObject
 import com.broll.gainea.server.core.objects.Unit
 import com.broll.gainea.server.core.objects.monster.Monster
 import com.broll.gainea.server.core.player.Player
-import java.util.stream.Collectors
 
 object GameUtils {
     fun isGameEnd(game: GameContainer): Boolean {
@@ -46,9 +45,8 @@ object GameUtils {
         game.getReactionHandler().actionHandlers.reactionActions.sendGameUpdate(update)
     }
 
-    fun getUnits(objects: List<MapObject?>?): List<Unit?> {
-        return objects!!.stream().filter { it: MapObject? -> it is Unit }.map { it: MapObject? -> it as Unit? }.collect(Collectors.toList())
-    }
+    fun getAllUnits(game: GameContainer) = listOf(getUnits(game.objects), game.activePlayers.flatMap { it.units }).flatten()
+    fun getUnits(objects: List<MapObject>) = objects.filterIsInstance(Unit::class.java)
 
     fun remove(game: GameContainer, `object`: MapObject?): Boolean {
         val owner = `object`.getOwner()

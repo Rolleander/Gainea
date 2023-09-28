@@ -1,8 +1,11 @@
 package com.broll.gainea.server.core.cards.impl.play
 
-import com.broll.gainea.net.NT_Eventimport
+import com.broll.gainea.net.NT_Event
+import com.broll.gainea.server.core.cards.Card
+import com.broll.gainea.server.core.objects.buffs.BuffType
+import com.broll.gainea.server.core.objects.buffs.GlobalBuff
+import com.broll.gainea.server.core.objects.buffs.IntBuff
 
-com.broll.gainea.server.core.cards.Cardimport com.broll.gainea.server.core.objects.Unitimport com.broll.gainea.server.core.objects.buffs.BuffTypeimport com.broll.gainea.server.core.objects.buffs.GlobalBuffimport com.broll.gainea.server.core.objects.buffs.IntBuffimport java.util.function.Consumer
 class C_Speed : Card(21, "Friedliche Eroberung", "Eure Einheiten können diesen Zug ein zusätzliches Feld bewegt werden. Während dieses Zuges könnt ihr nicht angreifen.") {
     init {
         drawChance = 0.7f
@@ -14,8 +17,8 @@ class C_Speed : Card(21, "Friedliche Eroberung", "Eure Einheiten können diesen 
     override fun play() {
         val buffSpeed = IntBuff(BuffType.ADD, 1)
         val buffNoAttaks = IntBuff(BuffType.SET, 0)
-        GlobalBuff.Companion.createForPlayer(game!!, owner, buffSpeed, Consumer<Unit?> { unit: Unit? -> unit!!.movesPerTurn!!.addBuff(buffSpeed) }, NT_Event.EFFECT_BUFF)
-        GlobalBuff.Companion.createForPlayer(game!!, owner, buffNoAttaks, Consumer<Unit?> { unit: Unit? -> unit.getAttacksPerTurn().addBuff(buffNoAttaks) }, NT_Event.EFFECT_DEBUFF)
+        GlobalBuff.createForPlayer(game, owner, buffSpeed, { it.movesPerTurn.addBuff(buffSpeed) }, NT_Event.EFFECT_BUFF)
+        GlobalBuff.createForPlayer(game, owner, buffNoAttaks, { it.attacksPerTurn.addBuff(buffNoAttaks) }, NT_Event.EFFECT_DEBUFF)
         game.buffProcessor.timeoutBuff(buffSpeed, 1)
         game.buffProcessor.timeoutBuff(buffNoAttaks, 1)
     }

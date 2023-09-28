@@ -1,59 +1,66 @@
 package com.broll.gainea.server.core.bot.impl
 
-import com.broll.gainea.net.NT_Actionimport
+import com.broll.gainea.net.NT_Action
+import com.broll.gainea.net.NT_Action_Attack
+import com.broll.gainea.net.NT_Battle_Update
+import com.broll.gainea.net.NT_Reaction
+import com.broll.gainea.net.NT_Unit
+import com.broll.gainea.server.core.bot.BotOptionalAction
+import com.broll.gainea.server.core.bot.BotUtils
+import com.broll.gainea.server.core.bot.strategy.BattleSimulation
+import com.broll.gainea.server.core.map.Location
+import com.broll.gainea.server.core.objects.Unit
+import com.broll.gainea.server.core.utils.LocationUtils
+import org.apache.commons.lang3.ArrayUtils
 
-com.broll.gainea.net.NT_Action_Attackimport com.broll.gainea.net.NT_Battle_Updateimport com.broll.gainea.net.NT_Reactionimport com.broll.gainea.net.NT_Unitimport com.broll.gainea.server.core.bot.BotOptionalActionimport com.broll.gainea.server.core.bot.BotUtilsimport com.broll.gainea.server.core.bot.impl .BotAttack.AttackOptionimport com.broll.gainea.server.core.bot.strategy.BattleSimulationimport com.broll.gainea.server.core.bot.strategy.GoalStrategyimport com.broll.gainea.server.core.map.Locationimport com.broll.gainea.server.core.objects.Unitimport com.broll.gainea.server.core.utils.LocationUtilsimport org.apache.commons.lang3.ArrayUtilsimport java.util.Arraysimport java.util.stream.Collectors
-class BotAttack : BotOptionalAction<NT_Action_Attack, AttackOption?>() {
+class BotAttack : BotOptionalAction<NT_Action_Attack, BotAttack.AttackOption>() {
     override fun score(action: NT_Action_Attack): AttackOption? {
         val location = BotUtils.getLocation(game!!, action.location.toInt())
         val usableUnits = usableUnits(action.units)
         val fightType = getFighType(location)
         val winChance = getRequiredWinChance(fightType)
-        val unitIds = Arrays.stream(action.units).mapToInt { it: NT_Unit -> it.id.toInt() }.toArray()
-        val attackFromOptions = usableUnits.stream().map { obj: Unit? -> obj.getLocation() }.distinct().collect(Collectors.toList())
+        val unitIds = action.units.map { it.id }.toTypedArray()
+        val attackFromOptions = usableUnits.map { it.location!! }.toTypedArray()
         for (attackFrom in attackFromOptions) {
-            val groupedUnits = usableUnits.stream().filter { it: Unit? -> it.getLocation() === attackFrom }.collect(Collectors.toList())
+            val groupedUnits = usableUnits.filter { it.location === attackFrom }
             if (groupedUnits.isEmpty()) {
                 continue
             }
             val fighters = BattleSimulation.calculateRequiredFighters(location, groupedUnits, winChance)
             if (fighters != null) {
-                val option = AttackOption(((3 - fightType) * 5).toFloat())
-                option.type = fightType
-                option.location = location
-                option.attackUnits = fighters.stream().mapToInt { it: Unit? -> ArrayUtils.indexOf(unitIds, it.getId()) }.toArray()
-                return option
+                return AttackOption(score = ((3 - fightType) * 5).toFloat(), fighters.map { ArrayUtils.indexOf(unitIds, it.id) }.toIntArray(),
+                        fightType, location)
             }
         }
         return null
     }
 
     override fun react(action: NT_Action_Attack, reaction: NT_Reaction) {
-        reaction.options = selectedOption.attackUnits
+        reaction.options = selectedOption!!.attackUnits
     }
 
-    override val actionClass: Class<out NT_Action?>?
+    override val actionClass: Class<out NT_Action>
         get() = NT_Action_Attack::class.java
 
     fun keepAttacking(update: NT_Battle_Update): Boolean {
-        val attackers = BotUtils.getObjects(game!!, update.attackers)
-        val defenders = BotUtils.getObjects(game!!, update.defenders)
-        if (attackers!!.stream().noneMatch { obj: Unit? -> obj!!.isAlive } || defenders!!.stream().noneMatch { obj: Unit? -> obj!!.isAlive }) {
+        val attackers = BotUtils.getObjects(game, update.attackers)
+        val defenders = BotUtils.getObjects(game, update.defenders)
+        if (attackers.none { it.isAlive } || defenders.none { it.isAlive }) {
             return false
         }
-        val winChance = getRequiredWinChance(selectedOption.type)
+        val winChance = getRequiredWinChance(selectedOption!!.type)
         return BattleSimulation.calculateCurrentWinChance(attackers, defenders) >= winChance
     }
 
-    private fun usableUnits(ntUnits: Array<NT_Unit>): List<Unit?> {
-        val units = BotUtils.getObjects(game!!, ntUnits)
-        return units!!.stream().filter { it: Unit? ->
-            if (strategy.moveTargets[it] === it.getLocation()) {
+    private fun usableUnits(ntUnits: Array<NT_Unit>): List<Unit> {
+        val units = BotUtils.getObjects(game, ntUnits)
+        return units.filter {
+            if (strategy.moveTargets[it] === it.location) {
                 return@filter false
             }
-            val goalStrategy = strategy!!.getStrategy(it) ?: return@filter true
+            val goalStrategy = strategy.getStrategy(it) ?: return@filter true
             goalStrategy.allowFighting(it)
-        }.collect(Collectors.toList())
+        }
     }
 
     private fun getRequiredWinChance(fightType: Int): Float {
@@ -62,26 +69,25 @@ class BotAttack : BotOptionalAction<NT_Action_Attack, AttackOption?>() {
             FIGHT_PLAYER -> return strategy.constants.winchanceForPlayerFight
             FIGHT_WILD -> return strategy.constants.winchanceForWildFight
         }
-        return 0
+        return 0F
     }
 
-    private fun getFighType(location: Location?): Int {
+    private fun getFighType(location: Location): Int {
         if (isTargetLocation(location)) {
             return FIGHT_TARGET
         }
-        return if (!LocationUtils.getMonsters(location).isEmpty()) {
+        return if (LocationUtils.getMonsters(location).isNotEmpty()) {
             FIGHT_WILD
         } else FIGHT_PLAYER
     }
 
-    private fun isTargetLocation(location: Location?): Boolean {
-        return strategy!!.goalStrategies.stream().flatMap { it: GoalStrategy? -> it.getTargetLocations().stream() }.anyMatch { it: Location? -> it === location }
-    }
+    private fun isTargetLocation(location: Location) = strategy.getGoalStrategies().flatMap { it.targetLocations }.any { it === location }
 
-    class AttackOption(score: Float) : BotOption(score) {
-        val attackUnits: IntArray
-        val type = 0
-        val location: Location? = null
+    class AttackOption(score: Float,
+                       val attackUnits: IntArray,
+                       val type: Int = 0,
+                       val location: Location) : BotOption(score) {
+
         override fun toString(): String {
             return "attack " + location + " with " + attackUnits.size + " units"
         }

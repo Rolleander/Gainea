@@ -11,15 +11,15 @@ import com.broll.gainea.server.core.player.Player
 import org.apache.commons.lang3.mutable.MutableBoolean
 
 abstract class GameUpdateReceiverAdapter : IGameUpdateReceiver {
-    override fun battleIntention(context: BattleContext?, cancelFight: MutableBoolean) {}
-    override fun battleBegin(context: BattleContext?, rollManipulator: RollManipulator?) {}
+    override fun battleIntention(context: BattleContext, cancelFight: MutableBoolean) {}
+    override fun battleBegin(context: BattleContext, rollManipulator: RollManipulator) {}
     override fun battleResult(result: BattleResult) {}
-    override fun playedCard(card: Card?) {}
-    override fun moved(units: List<MapObject?>?, location: Location?) {}
+    override fun playedCard(card: Card) {}
+    override fun moved(units: List<MapObject>, location: Location) {}
     override fun spawned(`object`: MapObject, location: Location) {}
-    override fun damaged(unit: Unit?, damage: Int) {}
+    override fun damaged(unit: Unit, damage: Int) {}
     override fun earnedStars(player: Player, stars: Int) {}
     override fun turnStarted(player: Player) {}
     override fun roundStarted() {}
-    override fun killed(unit: Unit?, throughBattle: BattleResult?) {}
+    override fun killed(unit: Unit, throughBattle: BattleResult?) {}
 }

@@ -1,8 +1,13 @@
 package com.broll.gainea.server.core.cards.impl.play
 
-import com.broll.gainea.net.NT_Eventimport
+import com.broll.gainea.net.NT_Event
+import com.broll.gainea.server.core.cards.Card
+import com.broll.gainea.server.core.objects.Unit
+import com.broll.gainea.server.core.objects.buffs.BuffType
+import com.broll.gainea.server.core.objects.buffs.IntBuff
+import com.broll.gainea.server.core.utils.PlayerUtils
+import com.broll.gainea.server.core.utils.UnitControl
 
-com.broll.gainea.server.core.cards.Cardimport com.broll.gainea.server.core.objects.MapObjectimport com.broll.gainea.server.core.objects.Unitimport com.broll.gainea.server.core.objects.buffs.BuffTypeimport com.broll.gainea.server.core.objects.buffs.IntBuffimport com.broll.gainea.server.core.utils.PlayerUtilsimport com.broll.gainea.server.core.utils.UnitControlimport java.util.function.Consumer
 class C_Rooting : Card(63, "Schattenfesseln", "Wählt eine feindliche Truppe. Diese kann sich für " + DURATION + " Runden nicht bewegen.") {
     init {
         drawChance = 0.7f
@@ -12,15 +17,15 @@ class C_Rooting : Card(63, "Schattenfesseln", "Wählt eine feindliche Truppe. Di
         get() = true
 
     override fun play() {
-        val location = selectHandler!!.selectLocation("Ziel für Schattenfesseln wählen", ArrayList(PlayerUtils.getHostileLocations(game!!, owner)))
-        val units: List<MapObject?> = ArrayList(location.inhabitants)
+        val location = selectHandler.selectLocation("Ziel für Schattenfesseln wählen", PlayerUtils.getHostileLocations(game, owner).toList())
+        val units = location.inhabitants.toList()
         val rootDebuff = IntBuff(BuffType.SET, 0)
-        units.forEach(Consumer { unit: MapObject? ->
-            unit!!.movesPerTurn!!.addBuff(rootDebuff)
-            if (unit is Unit) {
-                unit.attacksPerTurn.addBuff(rootDebuff)
+        units.forEach {
+            it.movesPerTurn.addBuff(rootDebuff)
+            if (it is Unit) {
+                it.attacksPerTurn.addBuff(rootDebuff)
             }
-        })
+        }
         UnitControl.focus(game, units, NT_Event.EFFECT_DEBUFF)
         game.buffProcessor.timeoutBuff(rootDebuff, DURATION)
     }

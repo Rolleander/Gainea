@@ -3,27 +3,26 @@ package com.broll.gainea.server.core.battle
 import com.broll.gainea.server.core.map.Location
 import com.broll.gainea.server.core.objects.Unit
 import com.broll.gainea.server.core.player.Player
+import com.broll.gainea.server.core.player.isNeutral
 import com.broll.gainea.server.core.utils.PlayerUtils
-import java.util.Objects
-import java.util.stream.Collectors
 
-open class BattleContext(var attackers: List<Unit?>?, var defenders: List<Unit?>?) {
-    var location: Location?
+open class BattleContext(var attackers: List<Unit>, var defenders: List<Unit>) {
+    var location: Location
         protected set
-    var sourceLocation: Location?
+    var sourceLocation: Location
         protected set
-    var attackingPlayer: Player?
+    var attackingPlayer: Player
         protected set
-    protected var defendingPlayers: List<Player?>
+    protected var defendingPlayers: List<Player>
 
     init {
-        location = defenders!![0].getLocation()
-        sourceLocation = attackers!![0].getLocation()
+        location = defenders[0].location!!
+        sourceLocation = attackers[0].location!!
         attackingPlayer = PlayerUtils.getOwner(attackers)
-        defendingPlayers = defenders!!.stream().map { obj: Unit? -> obj.getOwner() }.distinct().collect(Collectors.toList())
+        defendingPlayers = defenders.map { it.owner }.distinct()
     }
 
-    fun getLocation(player: Player?): Location? {
+    fun getLocation(player: Player): Location? {
         if (isAttacker(player)) {
             return sourceLocation
         } else if (isDefender(player)) {
@@ -32,95 +31,84 @@ open class BattleContext(var attackers: List<Unit?>?, var defenders: List<Unit?>
         return null
     }
 
-    val aliveAttackers: List<Unit?>
-        get() = attackers!!.stream().filter { obj: Unit? -> obj!!.isAlive }.collect(Collectors.toList())
-    val aliveDefenders: List<Unit?>
-        get() = defenders!!.stream().filter { obj: Unit? -> obj!!.isAlive }.collect(Collectors.toList())
-    val killedAttackers: List<Unit?>
-        get() = attackers!!.stream().filter { obj: Unit? -> obj!!.isDead }.collect(Collectors.toList())
-    val killedDefenders: List<Unit?>
-        get() = defenders!!.stream().filter { obj: Unit? -> obj!!.isDead }.collect(Collectors.toList())
+    val aliveAttackers: List<Unit>
+        get() = attackers.filter { it.isAlive }
+    val aliveDefenders: List<Unit>
+        get() = defenders.filter { it.isAlive }
+    val killedAttackers: List<Unit>
+        get() = attackers.filter { it.isDead }
+    val killedDefenders: List<Unit>
+        get() = defenders.filter { it.isDead }
 
-    fun hasSurvivingAttackers(): Boolean {
-        return !aliveAttackers.isEmpty()
-    }
+    fun hasSurvivingAttackers() = aliveAttackers.isNotEmpty()
 
-    fun hasSurvivingDefenders(): Boolean {
-        return !aliveDefenders.isEmpty()
-    }
+    fun hasSurvivingDefenders() = aliveDefenders.isNotEmpty()
 
-    fun getFightingArmy(unit: Unit?): List<Unit?> {
+    fun getFightingArmy(unit: Unit): List<Unit> {
         if (isAttacking(unit)) {
             return aliveAttackers
         } else if (isDefending(unit)) {
             return aliveDefenders
         }
-        return ArrayList()
+        return listOf()
     }
 
-    fun getUnits(player: Player): List<Unit?> {
+    fun getUnits(player: Player): List<Unit> {
         if (isAttacker(player)) {
-            return attackers!!.stream().filter { it: Unit? -> it.getOwner() === player }.collect(Collectors.toList())
+            return attackers.filter { it.owner == player }
         } else if (isDefender(player)) {
-            return defenders!!.stream().filter { it: Unit? -> it.getOwner() === player }.collect(Collectors.toList())
+            return defenders.filter { it.owner == player }
         }
-        return ArrayList()
+        return listOf()
     }
 
-    fun getOpposingUnits(player: Player?): List<Unit?>? {
+    fun getOpposingUnits(player: Player): List<Unit> {
         if (isAttacker(player)) {
             return defenders
         } else if (isDefender(player)) {
             return attackers
         }
-        return ArrayList()
+        return listOf()
     }
 
-    fun getOpposingFightingArmy(unit: Unit?): List<Unit?> {
+    fun getOpposingFightingArmy(unit: Unit): List<Unit> {
         if (isAttacking(unit)) {
             return aliveDefenders
         } else if (isDefending(unit)) {
             return aliveAttackers
         }
-        return ArrayList()
+        return listOf()
     }
 
-    fun isParticipating(player: Player?): Boolean {
-        return isAttacker(player) || isDefender(player)
-    }
+    fun isParticipating(player: Player) = isAttacker(player) || isDefender(player)
 
-    fun isAttacker(player: Player?): Boolean {
-        return attackingPlayer === player
-    }
 
-    fun isAttacking(unit: Unit?): Boolean {
-        return attackers!!.contains(unit)
-    }
+    fun isAttacker(player: Player) = attackingPlayer === player
 
-    fun isDefending(unit: Unit?): Boolean {
-        return defenders!!.contains(unit)
-    }
 
-    fun isDefender(player: Player?): Boolean {
-        return defendingPlayers.contains(player)
-    }
+    fun isAttacking(unit: Unit) = attackers.contains(unit)
+
+
+    fun isDefending(unit: Unit) = defenders.contains(unit)
+
+
+    fun isDefender(player: Player) = defendingPlayers.contains(player)
+
 
     val isNeutralAttacker: Boolean
-        get() = attackingPlayer == null
+        get() = attackingPlayer.isNeutral()
     val isNeutralDefender: Boolean
         get() = isNeutralOwner(defendingPlayers)
     val isNeutralParticipant: Boolean
         get() = isNeutralAttacker || isNeutralDefender
 
-    protected fun isNeutralOwner(players: List<Player?>): Boolean {
-        return players.size == 1 && players[0] == null
+    protected fun isNeutralOwner(players: List<Player>): Boolean {
+        return players.size == 1 && players[0].isNeutral()
     }
 
-    protected fun getNonNeutralOwners(owners: List<Player?>): List<Player?> {
-        return owners.stream().filter { obj: Player? -> Objects.nonNull(obj) }.collect(Collectors.toList())
-    }
+    protected fun getNonNeutralOwners(owners: List<Player>) = owners.filterNot { it.isNeutral() }
 
-    fun getDefendingPlayers(): List<Player?> {
-        return getNonNeutralOwners(defendingPlayers)
-    }
+    fun getDefendingPlayers() =
+            getNonNeutralOwners(defendingPlayers)
+
 }

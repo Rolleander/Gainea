@@ -6,12 +6,12 @@ import java.util.Collections
 import java.util.function.Consumer
 import java.util.stream.Collectors
 
-class RollResult(context: BattleContext?, units: List<Unit?>?) {
-    private val rolls: MutableList<Roll?>
+class RollResult(context: BattleContext, units: List<Unit>) {
+    val rolls: MutableList<Roll>
 
     init {
-        rolls = units!!.stream().flatMap { unit: Unit? ->
-            unit!!.calcFightingPower(context)!!.roll()
+        rolls = units.stream().flatMap { unit: Unit ->
+            unit.calcFightingPower(context)!!.roll()
                     .stream().map { value: Int -> Roll(unit, value) }
         }.collect(Collectors.toList())
         sort()

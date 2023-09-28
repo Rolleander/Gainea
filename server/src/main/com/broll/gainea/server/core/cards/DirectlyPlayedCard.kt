@@ -6,9 +6,9 @@ abstract class DirectlyPlayedCard(picture: Int, title: String, text: String) : C
     override val isPlayable: Boolean
         get() = true
 
-    override fun nt(): NT_Card? {
+    override fun nt(): NT_Card {
         val nt = super.nt()
-        nt!!.playable = false
+        nt.playable = false
         return nt
     }
 }

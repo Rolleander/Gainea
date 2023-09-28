@@ -12,7 +12,7 @@ class FightingPower(var diceCount: Int) {
     var numberPlus = 0
         private set
 
-    constructor(unit: Unit) : this(unit.power.value)
+    constructor(unit: Unit) : this(unit.power.getValue())
 
     fun changeDiceNumber(count: Int): FightingPower {
         diceCount += count
