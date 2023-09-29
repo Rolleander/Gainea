@@ -6,64 +6,64 @@ import com.broll.gainea.server.core.objects.MapObject
 import com.broll.gainea.server.core.objects.Unit
 import com.broll.gainea.server.core.objects.monster.Monster
 import com.broll.gainea.server.core.player.Player
+import com.broll.gainea.server.core.player.isNeutral
 
 object GameUtils {
     fun isGameEnd(game: GameContainer): Boolean {
-        val maxScore = game.allPlayers.stream().mapToInt { it: Player? -> it.getGoalHandler().score }.max().asInt
+        val maxScore = game.allPlayers.maxOf { it.goalHandler.score }
         val round = game.rounds
         val roundLimit = game.gameSettings.roundLimit
         val scoreLimit = game.gameSettings.pointLimit
-        val roundLimitReached = roundLimit > 0 && round > roundLimit
-        val scoreLimitReached = scoreLimit > 0 && maxScore >= scoreLimit
-        var end: Boolean
-        end = if (scoreLimit > 0 && roundLimit > 0) {
+        val roundLimitReached = roundLimit in 1..<round
+        val scoreLimitReached = scoreLimit in 1..maxScore
+        if (noActivePlayersRemaining(game)) {
+            return true
+        }
+        return if (scoreLimit > 0 && roundLimit > 0) {
             roundLimitReached && scoreLimitReached
         } else {
             roundLimitReached || scoreLimitReached
         }
-        if (noActivePlayersRemaining(game)) {
-            end = true
-        }
-        return end
     }
 
-    fun noActivePlayersRemaining(game: GameContainer?): Boolean {
-        return game.getActivePlayers().isEmpty() ||
-                game.getActivePlayers().stream().allMatch { it: Player? -> it.getServerPlayer().isBot }
-    }
+    fun noActivePlayersRemaining(game: GameContainer) =
+            game.activePlayers.isEmpty() || game.activePlayers.all { it.serverPlayer.isBot }
 
-    fun sendUpdate(game: GameContainer, player: Player, update: Any?, updateForOtherPlayers: Any?) {
+
+    fun sendUpdate(game: GameContainer, player: Player, update: Any, updateForOtherPlayers: Any) {
         player.serverPlayer.sendTCP(update)
         sendUpdateExceptFor(game, updateForOtherPlayers, player)
     }
 
-    fun sendUpdateExceptFor(game: GameContainer, update: Any?, exceptPlayer: Player?) {
-        game.activePlayers.stream().filter { p: Player? -> p !== exceptPlayer }.forEach { p: Player? -> p.getServerPlayer().sendTCP(update) }
+    fun sendUpdateExceptFor(game: GameContainer, update: Any, exceptPlayer: Player) {
+        game.activePlayers.filter { it !== exceptPlayer }.forEach { it.serverPlayer.sendTCP(update) }
     }
 
-    fun sendUpdate(game: GameContainer?, update: Any?) {
-        game.getReactionHandler().actionHandlers.reactionActions.sendGameUpdate(update)
+    fun sendUpdate(game: GameContainer, update: Any) {
+        game.reactionHandler.actionHandlers.reactionActions.sendGameUpdate(update)
     }
 
     fun getAllUnits(game: GameContainer) = listOf(getUnits(game.objects), game.activePlayers.flatMap { it.units }).flatten()
     fun getUnits(objects: List<MapObject>) = objects.filterIsInstance(Unit::class.java)
 
-    fun remove(game: GameContainer, `object`: MapObject?): Boolean {
-        val owner = `object`.getOwner()
-        `object`.getLocation().inhabitants.remove(`object`)
-        val removed: Boolean
-        removed = owner?.units?.remove(`object`) ?: game.objects.remove(`object`)
+    fun remove(game: GameContainer, target: MapObject): Boolean {
+        target.location.inhabitants.remove(target)
+        target.owner
+        val removed = if (target.owner.isNeutral()) {
+            game.objects.remove(target)
+        } else {
+            target.owner.units.remove(target)
+        }
         if (removed) {
-            game.updateReceiver.unregister(`object`)
+            game.updateReceiver.unregister(target)
         }
         return removed
     }
 
-    fun place(`object`: MapObject, location: Location?) {
-        val previous = `object`.location
-        previous?.inhabitants?.remove(`object`)
-        `object`.location = location
-        location.getInhabitants().add(`object`)
+    fun place(target: MapObject, location: Location) {
+        target.location.inhabitants.remove(target)
+        target.location = location
+        location.inhabitants += target
     }
 
     fun getTotalStartMonsters(game: GameContainer): Int {
@@ -72,7 +72,6 @@ object GameUtils {
         return expansions * monstersPerExpansion
     }
 
-    fun getCurrentMonsters(game: GameContainer): Int {
-        return game.objects.stream().filter { it: MapObject? -> it is Monster }.count().toInt()
-    }
+    fun countNeutralMonsters(game: GameContainer) = game.objects.count { it is Monster }
+
 }

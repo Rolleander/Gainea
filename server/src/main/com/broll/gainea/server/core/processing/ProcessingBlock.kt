@@ -9,19 +9,19 @@ import java.util.concurrent.TimeoutException
 
 class ProcessingBlock {
     private var future: CompletableFuture<*>? = null
-    fun waitFor(player: Player?) {
+    fun waitFor(player: Player) {
         var recheck: Boolean
         do {
             recheck = false
             try {
                 future = CompletableFuture<Any?>()
-                future.get(INACTIVE_CHECK_INTERVAL.toLong(), TimeUnit.MILLISECONDS)
+                future!!.get(INACTIVE_CHECK_INTERVAL.toLong(), TimeUnit.MILLISECONDS)
             } catch (e: InterruptedException) {
                 Log.error("Failed waiting for processing block", e)
             } catch (e: ExecutionException) {
                 Log.error("Failed waiting for processing block", e)
             } catch (e: TimeoutException) {
-                recheck = player!!.active
+                recheck = player.active
             }
         } while (recheck)
     }

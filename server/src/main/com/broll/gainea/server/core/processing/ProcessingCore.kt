@@ -14,7 +14,9 @@ import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
 
-class ProcessingCore(private val game: GameContainer, private val finishedProcessingListener: Runnable, lobby: ServerLobby<LobbyData, PlayerData>) {
+class ProcessingCore(private val game: GameContainer,
+                     private val finishedProcessingListener: Runnable,
+                     lobby: ServerLobby<LobbyData, PlayerData>) {
     private val executor: ScheduledExecutorService
     private val parallelExecutor: ScheduledExecutorService
     private var lastFuture: ScheduledFuture<*>? = null
@@ -86,7 +88,7 @@ class ProcessingCore(private val game: GameContainer, private val finishedProces
     }
 
     private inner class RunnableWrapper(var runnable: Runnable,
-                                        var delay : Int = 0 ) : Runnable {
+                                        var delay: Int = 0) : Runnable {
 
         override fun run() {
             try {

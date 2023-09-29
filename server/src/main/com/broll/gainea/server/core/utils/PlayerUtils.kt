@@ -7,7 +7,6 @@ import com.broll.gainea.server.core.objects.Soldier
 import com.broll.gainea.server.core.objects.Unit
 import com.broll.gainea.server.core.player.Player
 import java.util.function.Consumer
-import java.util.stream.Collectors
 
 object PlayerUtils {
     fun iteratePlayers(game: GameContainer, pauseBetween: Int, consumer: Consumer<Player>) {
@@ -20,44 +19,31 @@ object PlayerUtils {
         }
     }
 
-    fun isCommanderAlive(player: Player?): Boolean {
-        return getCommander(player).isPresent
-    }
+    fun isCommanderAlive(player: Player) = getCommander(player) != null
 
     fun getOtherPlayers(game: GameContainer, player: Player) = game.allPlayers.filter { it !== player }
 
 
     fun getCommander(player: Player) = player.units.filterIsInstance(Soldier::class.java).find { it.isCommander }
 
-    fun isCommander(unit: Unit?): Boolean {
-        return unit is Soldier && unit.isCommander
-    }
+    fun isCommander(unit: Unit) = unit is Soldier && unit.isCommander
 
-    fun getUnits(player: Player, location: Location): List<Unit> {
-        return player.getUnits().stream().filter { it: Unit? -> it.getLocation() === location }.collect(Collectors.toList())
-    }
+    fun getUnits(player: Player, location: Location) =
+            location.units.filter { it.owner == player }
 
-    fun getHostileArmy(player: Player?, location: Location): List<Unit> {
-        return location.getInhabitants().stream().filter { inhabitant: MapObject? -> isHostile(player, inhabitant) }
-                .map { o: MapObject? -> o as Unit? }.collect(Collectors.toList())
-    }
+    fun getHostileArmy(player: Player, location: Location) =
+            location.units.filter { isHostile(player, it) }
 
-    private fun isHostile(player: Player?, `object`: MapObject?): Boolean {
-        return if (`object` is Unit) {
-            player.getFraction().isHostile(`object`)
-        } else false
-    }
+    private fun isHostile(player: Player, obj: MapObject) =
+            if (obj is Unit) {
+                player.fraction.isHostile(obj)
+            } else false
 
-    fun hasHostileArmy(player: Player?, location: Location?): Boolean {
-        return location.getInhabitants().stream().anyMatch { inhabitant: MapObject? -> isHostile(player, inhabitant) }
-    }
 
-    fun getHostileLocations(game: GameContainer, player: Player): Set<Location> {
-        val locations: MutableSet<Location?> = HashSet()
-        getOtherPlayers(game, player).map { obj: Player? -> obj.getControlledLocations() }.forEach { collection: List<Location?>? -> locations.addAll(collection!!) }
-        locations.removeIf { location: Location? -> getHostileArmy(player, location).isEmpty() }
-        return locations
-    }
+    fun hasHostileArmy(player: Player, location: Location) = getHostileArmy(player, location).isNotEmpty()
+
+    fun getHostileLocations(game: GameContainer, player: Player) =
+            getOtherPlayers(game, player).flatMap { it.controlledLocations }.filter { hasHostileArmy(player, it) }
 
     fun getOwner(units: List<Unit>) = units.first().owner
 }

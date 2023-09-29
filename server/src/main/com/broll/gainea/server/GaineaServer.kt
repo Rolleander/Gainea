@@ -2,11 +2,7 @@ package com.broll.gainea.server
 
 import com.broll.gainea.NetworkSetup
 import com.broll.gainea.server.core.GameContainer
-import com.broll.gainea.server.core.cards.Card
-import com.broll.gainea.server.core.goals.Goal
-import com.broll.gainea.server.core.map.Location
 import com.broll.gainea.server.core.objects.MapObject
-import com.broll.gainea.server.core.objects.Unit
 import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.init.LobbyData
 import com.broll.gainea.server.init.PlayerData
@@ -16,9 +12,7 @@ import com.broll.networklib.server.LobbyGameServer
 import com.broll.networklib.server.LobbyServerCLI
 import com.broll.networklib.server.LobbyServerCLI.CliCommand
 import org.slf4j.LoggerFactory
-import java.util.Optional
 import java.util.function.Consumer
-import java.util.stream.Collectors
 
 class GaineaServer(version: String) {
     private val server: LobbyGameServer<LobbyData, PlayerData>
@@ -45,9 +39,9 @@ class GaineaServer(version: String) {
             }
             val id = options[0].toInt()
             val picId = options[1].toInt()
-            getGame(id)?.let {game->
-                game.cardStorage.allCards.find { card->card.picture == picId }?.let {
-                    card -> game.currentPlayer.cardHandler.receiveCard(card)
+            getGame(id)?.let { game ->
+                game.cardStorage.allCards.find { card -> card.picture == picId }?.let { card ->
+                    game.currentPlayer.cardHandler.receiveCard(card)
                 }
             }
         }
@@ -77,7 +71,7 @@ class GaineaServer(version: String) {
             val id = options[0].toInt()
             getGame(id)?.let { game ->
                 val settings = game.gameSettings
-                print("> Game Settings: Map:" + settings.expansionSetting.getName() + " Goals:" + settings.goalTypes.name + " PointLimit:" + settings.pointLimit + " MonsterCount:" + settings.monsterCount
+                print("> Game Settings: Map:" + settings.expansionSetting.getName() + " Goals:" + settings.goalTypes.goalName + " PointLimit:" + settings.pointLimit + " MonsterCount:" + settings.monsterCount
                         + " StartGoals:" + settings.startGoals + " StartLocations:" + settings.startLocations)
                 print("> Round:" + game.rounds + " Turn:" + (game.currentTurn + 1) + "/" + game.allPlayers.size + " Player:" + if (game.currentTurn >= 0) game.currentPlayer.serverPlayer.name else "None")
                 print("> State: ProcessingCore.Busy=" + game.processingCore.isBusy + " BattleHandler.Active=" + game.battleHandler.isBattleActive)
@@ -90,7 +84,7 @@ class GaineaServer(version: String) {
                     print(">> Cards (" + player.cardHandler.cards.size + "): " + player.cardHandler.cards.joinToString { "," })
                     print(">> Controlled Locations: [" + player.controlledLocations.joinToString { "," } + "]")
                     print(">> Objects [" + player.units.size + "]:")
-                    player.units.forEach{ print(">>> " +it.toString()) }
+                    player.units.forEach { print(">>> " + it.toString()) }
                 })
             }
         }

@@ -14,7 +14,7 @@ class C_RescueFlight : Card(73, "Luftrettung", "Bewegt eine eurer Einheiten auf 
 
     override fun play() {
         val unit = selectPlayerUnit(game, owner, "Welche Einheit soll bewegt werden?") ?: return
-        val target = selectHandler.selectLocation("Wohin bewegen?", game.map.allLocations.filter { it.isFree })
+        val target = selectHandler.selectLocation("Wohin bewegen?", game.map.allLocations.filter { it.free })
         UnitControl.move(game, unit, target)
     }
 }

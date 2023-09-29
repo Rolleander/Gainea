@@ -5,9 +5,8 @@ import com.broll.gainea.net.NT_Event_BoardEffect
 import com.broll.gainea.server.core.GameContainer
 import com.broll.gainea.server.core.map.Location
 import com.broll.gainea.server.core.utils.GameUtils
-import java.util.Arrays
 
-class MapEffect(private val type: Int, private val info: String, location: Location?) {
+class MapEffect(private val type: Int, private val info: String, location: Location) {
     private var x = 0f
     private var y = 0f
     private var id = 0
@@ -25,9 +24,9 @@ class MapEffect(private val type: Int, private val info: String, location: Locat
         game.effects.remove(this)
     }
 
-    fun place(location: Location?) {
-        x = location.getCoordinates().displayX
-        y = location.getCoordinates().displayY
+    fun place(location: Location) {
+        x = location.coordinates.displayX
+        y = location.coordinates.displayY
     }
 
     fun nt(): NT_BoardEffect {
@@ -46,7 +45,7 @@ class MapEffect(private val type: Int, private val info: String, location: Locat
                 effect.add(game)
             }
             val nt = NT_Event_BoardEffect()
-            nt.effects = Arrays.stream<MapEffect>(effects).map<NT_BoardEffect> { obj: MapEffect -> obj.nt() }.toArray<NT_BoardEffect> { _Dummy_.__Array__() }
+            nt.effects = effects.map { it.nt() }.toTypedArray()
             GameUtils.sendUpdate(game, nt)
         }
 

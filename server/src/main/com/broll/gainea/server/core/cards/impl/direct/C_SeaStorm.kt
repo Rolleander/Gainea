@@ -8,11 +8,11 @@ import com.broll.gainea.server.core.utils.UnitControl
 class C_SeaStorm : DirectlyPlayedCard(74, "Seesturm", "Alle Schiffe wechseln ihre Besetzer zufällig mit anderen Schiffen der gleichen Karte") {
     override fun play() {
         game.map.expansions.forEach { expansion ->
-            val fullShips = expansion.allShips.filter { !it.isFree }
+            val fullShips = expansion.allShips.filter { !it.free }
             val shipWithUnits = fullShips.map { it.inhabitants }
             fullShips.forEach { it.inhabitants.clear() }
             shipWithUnits.forEach { units ->
-                val newShip: Location = RandomUtils.pickRandom(expansion.allShips.filter { it.isFree })
+                val newShip: Location = RandomUtils.pickRandom(expansion.allShips.filter { it.free })
                 UnitControl.move(game, units.toList(), newShip)
             }
         }

@@ -222,7 +222,7 @@ public class LobbyScreen extends Screen {
         ready = playerReady();
         fratcionBox = fractionSelectBox();
         expansions = lobbySettingsBox(NT_UpdateLobbySettings.SETTING_EXPANSIONS, i -> i, Arrays.stream(ExpansionSetting.values()).map(ExpansionSetting::getName).toArray(String[]::new));
-        goals = lobbySettingsBox(NT_UpdateLobbySettings.SETTING_GOAL_TYPES, i -> i, Arrays.stream(GoalTypes.values()).map(GoalTypes::getName).toArray(String[]::new));
+        goals = lobbySettingsBox(NT_UpdateLobbySettings.SETTING_GOAL_TYPES, i -> i, Arrays.stream(GoalTypes.values()).map(GoalTypes::getGoalName).toArray(String[]::new));
         points = lobbySettingsBox(NT_UpdateLobbySettings.SETTING_POINT_LIMIT, i -> i, zeroNumbers(20));
         startGoals = lobbySettingsBox(NT_UpdateLobbySettings.SETTING_START_GOALS, i -> i + 1, numbers(6));
         startLocations = lobbySettingsBox(NT_UpdateLobbySettings.SETTING_START_LOCATIONS, i -> i + 1, numbers(10));

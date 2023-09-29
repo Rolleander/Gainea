@@ -14,7 +14,7 @@ class C_TeleportGate : Card(56, "Teleporter", "Teleportiert eine eurer Armeen au
 
     override fun play() {
         val from = selectHandler.selectLocation("Welche Armee soll teleportiert werden?", owner.controlledLocations)
-        val locations = from.container.expansion.allAreas.filter { it.isFree }
+        val locations = from.container.expansion.allAreas.filter { it.free }
         val target = selectHandler.selectLocation("Wohin?", locations)
         UnitControl.move(game, PlayerUtils.getUnits(owner, from), target)
     }

@@ -7,6 +7,7 @@ import com.broll.gainea.server.core.battle.FightingPower
 import com.broll.gainea.server.core.objects.buffs.BuffableInt
 import com.broll.gainea.server.core.objects.buffs.IntBuff
 import com.broll.gainea.server.core.player.Player
+import com.broll.gainea.server.core.player.isNeutral
 
 abstract class Unit(owner: Player) : MapObject(owner) {
     var maxHealth: BuffableInt<MapObject> = BuffableInt(this, 0)
@@ -59,9 +60,9 @@ abstract class Unit(owner: Player) : MapObject(owner) {
     }
 
     open fun onDeath(throughBattle: BattleResult?) {}
-    open fun calcFightingPower(context: BattleContext): FightingPower {
-        return FightingPower(this).changeNumberPlus(numberPlus!!.value!!)
-    }
+    open fun calcFightingPower(context: BattleContext) =
+            FightingPower(this).changeNumberPlus(numberPlus.value)
+
 
     override fun moved() {
         super.moved()
@@ -79,27 +80,26 @@ abstract class Unit(owner: Player) : MapObject(owner) {
     }
 
 
-    @JvmOverloads
     fun takeDamage(damage: Int = 1): Boolean {
         val aliveBefore = alive
-        health!!.addValue(-damage)
+        health.addValue(-damage)
         return aliveBefore && dead
     }
 
     fun heal(heal: Int) {
-        health!!.addValue(heal)
-        if (health!!.value!! > maxHealth!!.value!!) {
+        health.addValue(heal)
+        if (health.value > maxHealth.value) {
             heal()
         }
     }
 
     val dead: Boolean
-        get() = health!!.value!! <= 0
+        get() = health.value <= 0
     val alive: Boolean
         get() = !dead
 
     fun heal() {
-        health!!.value = maxHealth.rootValue
+        health.value = maxHealth.rootValue
     }
 
     fun setHealth(health: Int) {
@@ -117,24 +117,24 @@ abstract class Unit(owner: Player) : MapObject(owner) {
     }
 
     fun setPower(power: Int) {
-        this.power!!.value = power
+        this.power.value = power
     }
 
     fun addHealthBuff(buff: IntBuff) {
-        health!!.addBuff(buff)
-        maxHealth!!.addBuff(buff)
+        health.addBuff(buff)
+        maxHealth.addBuff(buff)
     }
 
     fun clearBuffs() {
-        power!!.clearBuffs()
-        health!!.clearBuffs()
-        maxHealth!!.clearBuffs()
-        attacksPerTurn!!.clearBuffs()
+        power.clearBuffs()
+        health.clearBuffs()
+        maxHealth.clearBuffs()
+        attacksPerTurn.clearBuffs()
         movesPerTurn.clearBuffs()
     }
 
     val battleStrength: Int
-        get() = power!!.value!! + health!!.value!!
+        get() = power.value + health.value
 
     override fun nt(): NT_Unit {
         val unit = NT_Unit()
@@ -144,18 +144,18 @@ abstract class Unit(owner: Player) : MapObject(owner) {
 
     protected fun fillBattleObject(unit: NT_Unit) {
         fillObject(unit)
-        unit.health = health!!.value!!.toShort()
-        unit.maxHealth = maxHealth!!.value!!.toShort()
-        unit.power = power!!.value!!.toShort()
+        unit.health = health.value.toShort()
+        unit.maxHealth = maxHealth.value.toShort()
+        unit.power = power.value.toShort()
         unit.type = type.toByte()
         unit.kills = kills.toShort()
-        if (owner != null) {
+        if (!owner.isNeutral()) {
             unit.owner = owner.serverPlayer.id.toShort()
         }
     }
 
-    val isHurt: Boolean
-        get() = health!!.value!! < maxHealth!!.value!!
+    val hurt: Boolean
+        get() = health.value < maxHealth.value
 
     fun setType(type: Int) {
         this.type = type
@@ -176,15 +176,15 @@ abstract class Unit(owner: Player) : MapObject(owner) {
 
     companion object {
         fun copy(from: Unit, to: Unit) {
-            to.maxHealth = from.maxHealth!!.copy(to)
-            to.power = from.power!!.copy(to)
-            to.health = from.health!!.copy(to)
+            to.maxHealth = from.maxHealth.copy(to)
+            to.power = from.power.copy(to)
+            to.health = from.health.copy(to)
             to.owner = from.owner
             to.attackCount = from.attackCount
             to.moveCount = from.moveCount
-            to.attacksPerTurn = from.attacksPerTurn!!.copy(to)
+            to.attacksPerTurn = from.attacksPerTurn.copy(to)
             to.movesPerTurn = from.movesPerTurn.copy(to)
-            to.numberPlus = from.numberPlus!!.copy(to)
+            to.numberPlus = from.numberPlus.copy(to)
             to.isMoveOrAttackRestriction = from.isMoveOrAttackRestriction
             to.icon = from.icon
             to.location = from.location

@@ -13,6 +13,6 @@ class C_MoveMonster : Card(57, "Herdentrieb", "Wählt ein Monster und bewegt es 
     override fun play() {
         val monster: Unit = selectWildMonster(game, "Wählt ein Monster das bewegt werden soll")
                 ?: return
-        UnitControl.move(game, monster, selectHandler.selectLocation("Wählt das Reiseziel", game.map.allAreas.filter { it.isFree }))
+        UnitControl.move(game, monster, selectHandler.selectLocation("Wählt das Reiseziel", game.map.allAreas.filter { it.free }))
     }
 }

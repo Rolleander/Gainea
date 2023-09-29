@@ -35,11 +35,11 @@ class ActionHandlers(private val game: GameContainer, val reactionActions: React
         handlers2[handler.javaClass] = handler
     }
 
-    fun <T : NT_Action?> getHandlerForAction(actionClass: Class<T>): AbstractActionHandler<T, *> {
-        return handlers.get(actionClass)
+    fun <T : NT_Action> getHandlerForAction(actionClass: Class<T>): AbstractActionHandler<T, ActionContext<T>>? {
+        return handlers.get(actionClass) as AbstractActionHandler<T, ActionContext<T>>?
     }
 
-    fun <T : AbstractActionHandler<*, *>?> getHandler(handlerClass: Class<T>): T {
+    fun <T : AbstractActionHandler<*, *>> getHandler(handlerClass: Class<T>): T {
         return handlers2[handlerClass] as T
     }
 }

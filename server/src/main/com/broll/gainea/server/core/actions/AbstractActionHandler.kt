@@ -6,7 +6,7 @@ import com.broll.gainea.server.core.GameContainer
 import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.core.processing.ProcessingBlock
 
-abstract class AbstractActionHandler<T : NT_Action?, C> {
+abstract class AbstractActionHandler<T : NT_Action, C : ActionContext<T>> {
     protected lateinit var game: GameContainer
     protected lateinit var player: Player
     protected lateinit var reactionResult: ReactionActions

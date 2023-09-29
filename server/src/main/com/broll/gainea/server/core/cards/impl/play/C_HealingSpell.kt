@@ -8,6 +8,6 @@ class C_HealingSpell : Card(62, "Lichtbeschwörung", "Heilt alle eure Einheiten"
         get() = true
 
     override fun play() {
-        owner.units.filter { it.isHurt }.forEach { heal(game, it, 10000) }
+        owner.units.filter { it.hurt }.forEach { heal(game, it, 10000) }
     }
 }

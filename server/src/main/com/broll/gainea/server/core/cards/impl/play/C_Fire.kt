@@ -12,7 +12,7 @@ class C_Fire : Card(75, "Drachenfeuer", "Wählt ein unbesetztes Gebiet (ausser S
     override val isPlayable: Boolean
         get() = targets.isNotEmpty()
     private val targets: List<Location>
-        get() = game.map.allAreas.filter { LocationUtils.isAreaType(it, AreaType.LAKE) && it.isFree }
+        get() = game.map.allAreas.filter { LocationUtils.isAreaType(it, AreaType.LAKE) && it.free }
 
     override fun play() {
         val target = selectHandler.selectLocation(owner, "Welches Gebiet blockieren?", targets)

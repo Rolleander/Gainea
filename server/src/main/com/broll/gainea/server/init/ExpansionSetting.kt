@@ -2,7 +2,7 @@ package com.broll.gainea.server.init
 
 import com.broll.gainea.server.core.map.ExpansionType
 
-enum class ExpansionSetting(private override val name: String, val maps: Array<ExpansionType>) {
+enum class ExpansionSetting(private val expansionName: String, val maps: Array<ExpansionType>) {
     BASIC_GAME("Gainea", arrayOf(ExpansionType.GAINEA)),
     BOG("Eisländer", arrayOf(ExpansionType.ICELANDS)),
     ICE("Sumpf", arrayOf(ExpansionType.BOGLANDS)),
@@ -15,6 +15,6 @@ enum class ExpansionSetting(private override val name: String, val maps: Array<E
     FULL("Alle", ExpansionType.entries.toTypedArray());
 
     fun getName(): String {
-        return name + " (" + maps.size + " - " + (maps.size * 2 + 1) + " Spieler)"
+        return expansionName + " (" + maps.size + " - " + (maps.size * 2 + 1) + " Spieler)"
     }
 }

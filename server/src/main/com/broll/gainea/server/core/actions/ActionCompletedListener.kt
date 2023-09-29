@@ -1,5 +1,7 @@
 package com.broll.gainea.server.core.actions
 
-interface ActionCompletedListener<T : ActionContext<*>?> {
+import com.broll.gainea.net.NT_Action
+
+interface ActionCompletedListener<T : ActionContext<NT_Action>> {
     fun completed(context: T)
 }

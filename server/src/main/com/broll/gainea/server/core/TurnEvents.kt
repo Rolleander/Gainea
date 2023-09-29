@@ -13,7 +13,7 @@ class TurnEvents(private val game: GameContainer) : GameUpdateReceiverAdapter() 
         val nt = NT_PlayerWait()
         nt.playersTurn = -1
         game.reactionHandler.actionHandlers.reactionActions.sendGameUpdate(nt)
-        EventCard.Companion.run(event, game)
+        EventCard.run(event, game)
     }
 
     override fun roundStarted() {
@@ -23,14 +23,14 @@ class TurnEvents(private val game: GameContainer) : GameUpdateReceiverAdapter() 
         }
         if (turn >= SPAWN_TURNS_START) {
             if (turn % SPAWN_GODDRAKE_TURNS == 0) {
-                if (!E_SpawnGoddrake.Companion.isGoddrakeAlive(game)) {
+                if (!E_SpawnGoddrake.isGoddrakeAlive(game)) {
                     turnEvent(E_SpawnGoddrake::class.java)
                     return
                 }
             }
             if (turn % SPAWN_MONSTER_TURNS == 0) {
                 val totalAtStart = GameUtils.getTotalStartMonsters(game)
-                val currentMonsters = GameUtils.getCurrentMonsters(game)
+                val currentMonsters = GameUtils.countNeutralMonsters(game)
                 val missing = totalAtStart - currentMonsters
                 if (missing > 0) {
                     turnEvent(E_SpawnMonster::class.java)

@@ -16,7 +16,7 @@ class C_MoveEnemy : Card(19, "Überläufer", "Versetzt eine feindliche Truppe au
     override fun play() {
         val location = selectHandler.selectLocation("Armee wählen", PlayerUtils.getHostileLocations(game, owner).toList())
         val units = location.inhabitants.stream().collect(Collectors.toList())
-        val targets = location.container.areas.filter { it.isFree }
+        val targets = location.container.areas.filter { it.free }
         if (targets.isNotEmpty()) {
             val target = selectHandler.selectLocation("Zielort wählen", targets)
             UnitControl.move(game, units, target)

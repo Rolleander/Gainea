@@ -5,18 +5,17 @@ import com.broll.gainea.server.core.fractions.FractionType
 import com.broll.gainea.server.core.player.Player
 import com.broll.networklib.server.impl.ILobbyData
 
-class PlayerData : ILobbyData {
-    var fraction: FractionType? = null
-    var gamePlayer: Player? = null
-        private set
+class PlayerData(var fraction: FractionType) : ILobbyData {
+    lateinit var gamePlayer: Player
     var isReady = false
-    fun joinedGame(gamePlayer: Player?) {
+    fun joinedGame(gamePlayer: Player) {
         this.gamePlayer = gamePlayer
+        gamePlayer.fraction
     }
 
     override fun nt(): NT_PlayerSettings {
         val playerSettings = NT_PlayerSettings()
-        playerSettings.fraction = fraction!!.ordinal
+        playerSettings.fraction = fraction.ordinal
         playerSettings.ready = isReady
         return playerSettings
     }

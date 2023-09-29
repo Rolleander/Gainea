@@ -1,23 +1,20 @@
 package com.broll.gainea.server.core.actions
 
+import com.broll.gainea.net.NT_Action
 import com.broll.gainea.net.NT_EndTurn
 import com.broll.gainea.net.NT_GameOver
 import com.broll.gainea.net.NT_Reaction
 import com.broll.gainea.server.core.GameContainer
 import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.core.utils.GameUtils
-import com.broll.gainea.server.init.PlayerData
 import org.slf4j.LoggerFactory
 import java.util.Collections
-import java.util.function.Consumer
 
 class ReactionHandler(private val game: GameContainer, val actionHandlers: ActionHandlers) {
-    private val requiredActions = Collections.synchronizedMap(HashMap<RequiredActionContext<*>, RequiredAction>())
+    private val requiredActions = Collections.synchronizedMap(HashMap<RequiredActionContext<NT_Action>, RequiredAction>())
     private var gameStopped = false
-    fun requireAction(target: Player?, context: RequiredActionContext<*>) {
-        val action = RequiredAction()
-        action.player = target
-        action.context = context
+    fun requireAction(target: Player, context: RequiredActionContext<NT_Action>) {
+        val action = RequiredAction(context, target)
         game.pushAction(context)
         requiredActions[context] = action
     }
@@ -55,17 +52,17 @@ class ReactionHandler(private val game: GameContainer, val actionHandlers: Actio
         GameUtils.sendUpdate(game, gameOver)
         game.statistic.sendStatistic()
         val lobby = game.lobby
-        lobby!!.data.game = null
+        lobby.data.game = null
         lobby.unlock()
-        lobby.realPlayers.forEach(Consumer { p: com.broll.networklib.server.impl.Player<PlayerData?> -> p.data.setReady(false) })
+        lobby.realPlayers.forEach { it.data.isReady = false }
         lobby.sendLobbyUpdate()
     }
 
     private fun continueTurn() {
         val activePlayer = game.currentPlayer
         val turn = game.turnBuilder.build(activePlayer)
-        Log.trace("Continue " + activePlayer + " turn [" + turn!!.actions.size + " optional actions]")
-        if (turn.actions.size == 0) {
+        Log.trace("Continue " + activePlayer + " turn [" + turn.actions.size + " optional actions]")
+        if (turn.actions.isEmpty()) {
             //no more actions available, player can only end turn
             activePlayer.serverPlayer.sendTCP(NT_EndTurn())
         } else {
@@ -73,10 +70,12 @@ class ReactionHandler(private val game: GameContainer, val actionHandlers: Actio
         }
     }
 
-    fun playerReconnected(player: Player?) {
+    fun playerReconnected(player: Player) {
         Log.info(player.toString() + " reconnected to game")
         //re send required actions for this player
-        requiredActions.values.stream().filter { ra: RequiredAction -> ra.player === player }.findFirst().ifPresent { requiredAction: RequiredAction -> player.getServerPlayer().sendTCP(requiredAction.context!!.nt()) }
+        requiredActions.values.firstOrNull { it.player === player }?.let {
+            player.serverPlayer.sendTCP(it.context.nt())
+        }
         if (game.isPlayersTurn(player) && !game.processingCore.isBusy && !game.battleHandler.isBattleActive) {
             //resend remaining optional actions
             tryContinueTurn()
@@ -84,11 +83,9 @@ class ReactionHandler(private val game: GameContainer, val actionHandlers: Actio
     }
 
     @Synchronized
-    fun hasRequiredActionFor(player: Player?): Boolean {
-        return requiredActions.values.stream().anyMatch { ra: RequiredAction -> ra.player === player }
-    }
+    fun hasRequiredActionFor(player: Player) = requiredActions.values.any { it.player == player }
 
-    fun handle(gamePlayer: Player?, actionContext: ActionContext<*>?, reaction: NT_Reaction) {
+    fun handle(gamePlayer: Player, actionContext: ActionContext<NT_Action>, reaction: NT_Reaction) {
         if (game.battleHandler.isBattleActive) {
             //ignore reactions while fight is going on
             Log.warn("Ignore player reaction because of fight!")
@@ -107,10 +104,10 @@ class ReactionHandler(private val game: GameContainer, val actionHandlers: Actio
             val ra = requiredActions[actionContext]
             if (ra != null) {
                 if (gamePlayer === ra.player) {
-                    handleReaction(gamePlayer, ra.context.getActionContext(), reaction)
+                    handleReaction(gamePlayer, ra.context.actionContext, reaction)
                     //consume required action
                     requiredActions.remove(actionContext)
-                    game.consumeAction(ra.context.getAction().actionId)
+                    game.consumeAction(ra.context.action.actionId)
                 } else {
                     Log.warn("Ingore required reaction because its sent by the wrong player")
                 }
@@ -120,14 +117,13 @@ class ReactionHandler(private val game: GameContainer, val actionHandlers: Actio
         }
     }
 
-    private fun handleReaction(gamePlayer: Player?, actionContext: ActionContext<*>?, reaction: NT_Reaction) {
-        val action = actionContext.getAction()
-        val customHandler = actionContext.getCustomHandler()
-        val completionListener = actionContext.getCompletionListener()
+    private fun handleReaction(gamePlayer: Player, actionContext: ActionContext<NT_Action>, reaction: NT_Reaction) {
+        val action = actionContext.action
+        val customHandler = actionContext.customHandler
         if (customHandler != null) {
             customHandler.handleReaction(actionContext, reaction)
         } else {
-            val actionHandler: AbstractActionHandler<*, *>? = actionHandlers.getHandlerForAction(action!!.javaClass)
+            val actionHandler = actionHandlers.getHandlerForAction(action.javaClass)
             if (actionHandler != null) {
                 actionHandler.update(gamePlayer)
                 actionHandler.handleReaction(actionContext, action, reaction)
@@ -135,14 +131,14 @@ class ReactionHandler(private val game: GameContainer, val actionHandlers: Actio
                 Log.error("No actionHandler found for action $action")
             }
         }
-        completionListener?.completed(actionContext)
-        game.consumeAction(action!!.actionId)
+        actionContext.completionListener?.completed(actionContext)
+        game.consumeAction(action.actionId)
     }
 
-    private inner class RequiredAction {
-        var context: RequiredActionContext<*>? = null
-        var player: Player? = null
-    }
+    private inner class RequiredAction(
+            val context: RequiredActionContext<NT_Action>,
+            val player: Player
+    )
 
     companion object {
         private val Log = LoggerFactory.getLogger(ReactionHandler::class.java)

@@ -29,7 +29,7 @@ class TurnBuilder(private val game: GameContainer, private val actionHandlers: A
         val moveHandler = actionHandlers.getHandler(MoveUnitAction::class.java)
         val moveableTo = MultiValueMap<Location, Unit>()
         val attackableTo = MultiValueMap<Location, Unit>()
-        player.units.filter { it.controllable && it.location != null }.forEach { unit ->
+        player.units.filter { it.controllable }.forEach { unit ->
             val walkableLocations = unit.location!!.connectedLocations.filter { unit.canMoveTo(it) }.toMutableList()
             val attackableLocations = walkableLocations.filter { PlayerUtils.hasHostileArmy(player, it) }
             walkableLocations.removeAll(attackableLocations)

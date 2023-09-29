@@ -2,9 +2,9 @@ package com.broll.gainea.server.core.stats
 
 import com.broll.gainea.net.NT_RoundStatistic
 
-class TurnStatistic {
-    var players: Array<PlayerStatistic>
-    fun get(): NT_RoundStatistic {
+class TurnStatistic(val players: List<PlayerStatistic>) {
+
+    fun nt(): NT_RoundStatistic {
         val nt = NT_RoundStatistic()
         nt.fightingPower = ShortArray(players.size)
         nt.locations = ByteArray(players.size)

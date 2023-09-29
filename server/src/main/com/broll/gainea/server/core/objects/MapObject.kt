@@ -9,7 +9,7 @@ import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.core.processing.GameUpdateReceiverAdapter
 
 abstract class MapObject(var owner: Player) : GameUpdateReceiverAdapter() {
-    protected var game: GameContainer? = null
+    protected lateinit var game: GameContainer
     lateinit var location: Location
     var id = 0
         private set
@@ -19,8 +19,8 @@ abstract class MapObject(var owner: Player) : GameUpdateReceiverAdapter() {
     protected var moveCount = 0
     var movesPerTurn = BuffableInt(this, 1) //default 1 move
 
-    fun init(game: GameContainer?) {
-        id = game!!.newObjectId()
+    fun init(game: GameContainer) {
+        id = game.newObjectId()
         this.game = game
     }
 
@@ -28,9 +28,8 @@ abstract class MapObject(var owner: Player) : GameUpdateReceiverAdapter() {
         moveCount = 0
     }
 
-    open fun hasRemainingMove(): Boolean {
-        return moveCount < movesPerTurn.getValue()
-    }
+    open fun hasRemainingMove() = moveCount < movesPerTurn.value
+
 
     open fun moved() {
         moveCount++
@@ -54,7 +53,7 @@ abstract class MapObject(var owner: Player) : GameUpdateReceiverAdapter() {
         return true
     }
 
-    val moveTargets: List<Location?>
+    val moveTargets: List<Location>
         get() = location.connectedLocations.filter { canMoveTo(it) }
 
     open fun nt(): NT_BoardObject {

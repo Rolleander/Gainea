@@ -12,7 +12,7 @@ class C_Pirates : DirectlyPlayedCard(38, "Piraten!", "Piraten befallen zufällig
     }
 
     override fun play() {
-        val freeShips = game.map.allShips.filter { LocationUtils.noControlledUnits(it) }.shuffled()
+        val freeShips = game.map.allShips.filter { LocationUtils.noPlayerUnits(it) }.shuffled()
         val count = RandomUtils.random(2, 3)
         for (i in 0 until Math.min(count, freeShips.size)) {
             val pirate = Soldier(null)

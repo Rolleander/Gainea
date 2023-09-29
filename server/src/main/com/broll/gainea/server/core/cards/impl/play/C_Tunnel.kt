@@ -14,7 +14,7 @@ class C_Tunnel : Card(77, "Tunnelgräber", "Bewegt eine Truppe auf ein beliebige
         val from = selectHandler.selectLocation("Wählt eine Truppe", owner.controlledLocations)
         val units = PlayerUtils.getUnits(owner, from)
         val targets = LocationUtils.getConnectedLocations(from, DISTANCE)
-                .filter { it.isFree && it !is Ship }
+                .filter { it.free && it !is Ship }
         val to = selectHandler.selectLocation("Wählt das Reiseziel", targets)
         UnitControl.move(game, units, to)
     }

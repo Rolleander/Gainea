@@ -10,31 +10,30 @@ import com.broll.gainea.server.core.objects.Unit
 import com.broll.gainea.server.core.player.Player
 import org.apache.commons.lang3.mutable.MutableBoolean
 import org.slf4j.LoggerFactory
-import java.util.function.Consumer
 
 class GameUpdateReceiverProxy : IGameUpdateReceiver {
-    private val receivers = LinkedHashSet<IGameUpdateReceiver?>()
-    private val removed: MutableList<IGameUpdateReceiver?> = ArrayList()
+    private val receivers = LinkedHashSet<IGameUpdateReceiver>()
+    private val removed = mutableListOf<IGameUpdateReceiver>()
     private var nestLevel = 0
-    fun register(receiver: IGameUpdateReceiver?) {
+    fun register(receiver: IGameUpdateReceiver) {
         receivers.add(receiver)
         removed.remove(receiver)
         Log.trace("Receiver added to proxy [total: " + receivers.size + "] (" + receiver + ")")
     }
 
-    fun unregister(receiver: IGameUpdateReceiver?) {
+    fun unregister(receiver: IGameUpdateReceiver) {
         receivers.remove(receiver)
         removed.add(receiver)
         Log.trace("Receiver removed from proxy [total: " + receivers.size + "] (" + receiver + ")")
     }
 
-    private fun run(receiverCall: Consumer<IGameUpdateReceiver?>) {
+    private fun run(receiverCall: (IGameUpdateReceiver) -> kotlin.Unit) {
         nestLevel++
-        val iterator: Iterator<IGameUpdateReceiver?> = LinkedHashSet(receivers).iterator()
+        val iterator = LinkedHashSet(receivers).iterator()
         while (iterator.hasNext()) {
             val receiver = iterator.next()
             if (isNotRemoved(receiver)) {
-                receiverCall.accept(receiver)
+                receiverCall(receiver)
             }
         }
         nestLevel--
@@ -47,49 +46,31 @@ class GameUpdateReceiverProxy : IGameUpdateReceiver {
         return !removed.contains(receiver)
     }
 
-    override fun battleIntention(context: BattleContext?, cancelFight: MutableBoolean) {
-        run { receiver: IGameUpdateReceiver? -> receiver!!.battleIntention(context, cancelFight) }
-    }
+    override fun battleIntention(context: BattleContext, cancelFight: MutableBoolean) =
+            run { it.battleIntention(context, cancelFight) }
 
-    override fun battleBegin(context: BattleContext?, rollManipulator: RollManipulator?) {
-        run { receiver: IGameUpdateReceiver? -> receiver!!.battleBegin(context, rollManipulator) }
-    }
 
-    override fun battleResult(result: BattleResult) {
-        run { receiver: IGameUpdateReceiver? -> receiver!!.battleResult(result) }
-    }
+    override fun battleBegin(context: BattleContext, rollManipulator: RollManipulator) =
+            run { it.battleBegin(context, rollManipulator) }
 
-    override fun playedCard(card: Card?) {
-        run { receiver: IGameUpdateReceiver? -> receiver!!.playedCard(card) }
-    }
+    override fun battleResult(result: BattleResult) =
+            run { it.battleResult(result) }
 
-    override fun moved(units: List<MapObject?>?, location: Location?) {
-        run { receiver: IGameUpdateReceiver? -> receiver!!.moved(units, location) }
-    }
+    override fun playedCard(card: Card) = run { it.playedCard(card) }
 
-    override fun spawned(`object`: MapObject, location: Location) {
-        run { receiver: IGameUpdateReceiver? -> receiver!!.spawned(`object`, location) }
-    }
+    override fun moved(units: List<MapObject>, location: Location) = run { it.moved(units, location) }
 
-    override fun damaged(unit: Unit?, damage: Int) {
-        run { receiver: IGameUpdateReceiver? -> receiver!!.damaged(unit, damage) }
-    }
+    override fun spawned(mapObject: MapObject, location: Location) = run { it.spawned(mapObject, location) }
 
-    override fun killed(unit: Unit?, throughBattle: BattleResult?) {
-        run { receiver: IGameUpdateReceiver? -> receiver!!.killed(unit, throughBattle) }
-    }
+    override fun damaged(unit: Unit, damage: Int) = run { it.damaged(unit, damage) }
 
-    override fun earnedStars(player: Player, stars: Int) {
-        run { receiver: IGameUpdateReceiver? -> receiver!!.earnedStars(player, stars) }
-    }
+    override fun killed(unit: Unit, throughBattle: BattleResult?) = run { it.killed(unit, throughBattle) }
 
-    override fun turnStarted(player: Player) {
-        run { receiver: IGameUpdateReceiver? -> receiver!!.turnStarted(player) }
-    }
+    override fun earnedStars(player: Player, stars: Int) = run { it.earnedStars(player, stars) }
 
-    override fun roundStarted() {
-        run { obj: IGameUpdateReceiver? -> obj!!.roundStarted() }
-    }
+    override fun turnStarted(player: Player) = run { it.turnStarted(player) }
+
+    override fun roundStarted() = run { it.roundStarted() }
 
     companion object {
         private val Log = LoggerFactory.getLogger(GameUpdateReceiverProxy::class.java)

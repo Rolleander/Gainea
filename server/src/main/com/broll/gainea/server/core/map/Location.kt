@@ -15,7 +15,7 @@ abstract class Location(val coordinates: Coordinates) {
     val inhabitants = mutableSetOf<MapObject>()
     val connectedLocations = mutableSetOf<Location>()
 
-    val isFree: Boolean
+    val free: Boolean
         get() = inhabitants.isEmpty() && traversable
     val walkableNeighbours: List<Location>
         get() = connectedLocations.filter { it.traversable }.filter {

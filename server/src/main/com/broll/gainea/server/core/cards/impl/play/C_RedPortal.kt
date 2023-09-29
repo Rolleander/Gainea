@@ -15,9 +15,9 @@ class C_RedPortal : Card(1, "Dunkles Portal",
         get() = true
 
     override fun play() {
-        val from = selectHandler.selectLocation("Wähle den Startort für das Portal", game.map.allAreas.filter { it.isFree })
+        val from = selectHandler.selectLocation("Wähle den Startort für das Portal", game.map.allAreas.filter { it.free })
         val toLocations = from.container.expansion.allAreas
-                .filter { it.isFree && it !== from && !from.connectedLocations.contains(it) }
+                .filter { it.free && it !== from && !from.connectedLocations.contains(it) }
         if (toLocations.isEmpty()) {
             return;
         }

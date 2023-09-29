@@ -159,7 +159,7 @@ class GameContainer(val lobby: ServerLobby<LobbyData, PlayerData>) {
         if (GameUtils.noActivePlayersRemaining(this)) {
             return null
         }
-        if (currentTurn >= allPlayers!!.size) {
+        if (currentTurn >= allPlayers.size) {
             currentTurn = 0
             rounds++
             if (GameUtils.isGameEnd(this)) {

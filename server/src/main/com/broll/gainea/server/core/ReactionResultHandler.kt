@@ -1,5 +1,6 @@
 package com.broll.gainea.server.core
 
+import com.broll.gainea.net.NT_Action
 import com.broll.gainea.net.NT_PlayerTurnStart
 import com.broll.gainea.net.NT_PlayerWait
 import com.broll.gainea.server.core.actions.ActionContext
@@ -16,8 +17,8 @@ import com.broll.networklib.server.impl.ServerLobby
 import org.slf4j.LoggerFactory
 import java.util.function.Consumer
 
-class ReactionResultHandler(private val game: GameContainer, private val lobby: ServerLobby<LobbyData?, PlayerData?>) : ReactionActions {
-    override fun sendGameUpdate(update: Any?) {
+class ReactionResultHandler(private val game: GameContainer, private val lobby: ServerLobby<LobbyData, PlayerData>) : ReactionActions {
+    override fun sendGameUpdate(update: Any) {
         lobby.sendToAllTCP(update)
     }
 
@@ -83,10 +84,10 @@ class ReactionResultHandler(private val game: GameContainer, private val lobby: 
         sendGameUpdate(game.nt())
     }
 
-    override fun requireAction(player: Player?, action: RequiredActionContext<*>): ActionContext<*> {
+    override fun requireAction(player: Player, action: RequiredActionContext<NT_Action>): ActionContext<NT_Action> {
         Log.trace("Require action for " + player + " : " + action.action)
         game.reactionHandler.requireAction(player, action)
-        player.getServerPlayer().sendTCP(action.nt())
+        player.serverPlayer.sendTCP(action.nt())
         if (action.messageForOtherPlayer != null) {
             GameUtils.sendUpdateExceptFor(game, action.messageForOtherPlayer, player)
         }
