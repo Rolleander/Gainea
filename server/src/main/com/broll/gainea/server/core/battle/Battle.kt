@@ -31,8 +31,8 @@ open class Battle(private val attackers: List<Unit>,
                 dealDamage(result, block, defenders, attackers)
             }
         }
-        val deadAttackers = attackers.filter { it.isDead }
-        val deadDefenders = defenders.filter { it.isDead }
+        val deadAttackers = attackers.filter { it.dead }
+        val deadDefenders = defenders.filter { it.dead }
         result.killed(deadAttackers, deadDefenders)
         return result
     }
@@ -52,6 +52,6 @@ open class Battle(private val attackers: List<Unit>,
         result.damage(source, target, lethal)
     }
 
-    private fun getDamageTarget(targetUnits: List<Unit>) = targetUnits.filter { it.isAlive }.shuffled().minByOrNull { it.power.getValue() }
+    private fun getDamageTarget(targetUnits: List<Unit>) = targetUnits.filter { it.alive }.shuffled().minByOrNull { it.power.getValue() }
 
 }

@@ -1,6 +1,6 @@
 package com.broll.gainea.server.core.map
 
-abstract class AreaCollection {
+abstract class AreaCollection(val name: String) {
     lateinit var expansion: Expansion
         private set
 
@@ -8,7 +8,7 @@ abstract class AreaCollection {
 
     val ships = mutableListOf<Ship>()
 
-    var name: String? = null
+     
     fun init(container: Expansion) {
         expansion = container
     }

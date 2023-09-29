@@ -2,7 +2,7 @@ package com.broll.gainea.server.core.goals
 
 import com.broll.gainea.server.core.player.Player
 
-abstract class RoundGoal(difficulty: GoalDifficulty, text: String?, private val roundTarget: Int) : Goal(difficulty, text) {
+abstract class RoundGoal(difficulty: GoalDifficulty, text: String, private val roundTarget: Int) : Goal(difficulty, text) {
     private var rounds = 0
     private var turns = 0
 
@@ -21,16 +21,16 @@ abstract class RoundGoal(difficulty: GoalDifficulty, text: String?, private val 
 
     protected fun progressRound() {
         turns = 0
-        roundTarget++
+        rounds++
         updateProgression(roundTarget)
-        if (roundTarget >= roundTarget) {
+        if (rounds >= roundTarget) {
             success()
         }
     }
 
     protected fun resetRounds() {
         turns = 0
-        roundTarget = 0
+        rounds = 0
         updateProgression(roundTarget)
     }
 }

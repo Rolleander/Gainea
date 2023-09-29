@@ -20,19 +20,19 @@ class GuardsFraction : Fraction(FractionType.GUARDS) {
         return desc
     }
 
-    override fun calcFightingPower(soldier: Soldier, context: BattleContext?): FightingPower? {
+    override fun calcFightingPower(soldier: Soldier, context: BattleContext): FightingPower {
         val power = super.calcFightingPower(soldier, context)
-        if (context!!.isAttacking(soldier)) {
-            power!!.changeNumberPlus(-1)
+        if (context.isAttacking(soldier)) {
+            power.changeNumberPlus(-1)
         } else {
-            power!!.withLowestNumber(3)
+            power.withLowestNumber(3)
         }
         return power
     }
 
     override fun createSoldier(): Soldier {
         val soldier: Soldier = GuardSoldier(owner)
-        soldier.setStats(Fraction.Companion.SOLDIER_POWER, Fraction.Companion.SOLDIER_HEALTH)
+        soldier.setStats(SOLDIER_POWER, SOLDIER_HEALTH)
         soldier.name = "Gardistenwache"
         soldier.icon = 19
         return soldier
@@ -41,19 +41,19 @@ class GuardsFraction : Fraction(FractionType.GUARDS) {
     override fun createCommander(): Soldier {
         val commander: Soldier = GuardSoldier(owner)
         commander.isCommander = true
-        commander.setStats(Fraction.Companion.COMMANDER_POWER, Fraction.Companion.COMMANDER_HEALTH)
+        commander.setStats(COMMANDER_POWER, COMMANDER_HEALTH)
         commander.name = "Elitegardist"
         commander.icon = 15
         return commander
     }
 
-    private class GuardSoldier(owner: Player?) : Soldier(owner) {
+    private class GuardSoldier(owner: Player) : Soldier(owner) {
         private var buff: IntBuff? = null
         private var lastLocation: Location? = null
         override fun turnStart() {
             if (location === lastLocation) {
                 buff = IntBuff(BuffType.ADD, 1)
-                numberPlus.addBuff(buff)
+                numberPlus.addBuff(buff!!)
             } else {
                 lastLocation = location
                 clearBuff()
@@ -68,8 +68,8 @@ class GuardsFraction : Fraction(FractionType.GUARDS) {
             }
         }
 
-        override fun calcFightingPower(context: BattleContext?): FightingPower? {
-            if (context!!.isAttacking(this)) {
+        override fun calcFightingPower(context: BattleContext): FightingPower {
+            if (context.isAttacking(this)) {
                 clearBuff()
             }
             return super.calcFightingPower(context)

@@ -20,7 +20,7 @@ class LizardFraction : Fraction(FractionType.LIZARDS) {
         return desc
     }
 
-    override fun prepareTurn(actionHandlers: ActionHandlers?) {
+    override fun prepareTurn(actionHandlers: ActionHandlers) {
         turns++
         if (turns >= SPAWN_TURN || owner.controlledLocations.isEmpty()) {
             //spawn  soldier
@@ -29,9 +29,9 @@ class LizardFraction : Fraction(FractionType.LIZARDS) {
         }
     }
 
-    override fun powerMutatorArea(power: FightingPower?, area: Area?) {
+    override fun powerMutatorArea(power: FightingPower, area: Area) {
         if (LocationUtils.isAreaType(area, AreaType.SNOW)) {
-            power!!.changeNumberPlus(-1)
+            power.changeNumberPlus(-1)
         }
     }
 

@@ -1,28 +1,32 @@
 package com.broll.gainea.server.core.goals.impl.all
 
-import com.broll.gainea.misc.RandomUtilsimport
+import com.broll.gainea.server.core.GameContainer
+import com.broll.gainea.server.core.battle.BattleResult
+import com.broll.gainea.server.core.bot.BotUtils
+import com.broll.gainea.server.core.bot.strategy.GoalStrategy
+import com.broll.gainea.server.core.goals.Goal
+import com.broll.gainea.server.core.goals.GoalDifficulty
+import com.broll.gainea.server.core.objects.Unit
+import com.broll.gainea.server.core.player.Player
 
-com.broll.gainea.server.core.GameContainerimport com.broll.gainea.server.core.battle.BattleResultimport com.broll.gainea.server.core.bot.BotUtilsimport com.broll.gainea.server.core.bot.strategy.GoalStrategyimport com.broll.gainea.server.core.goals.Goalimport com.broll.gainea.server.core.goals.GoalDifficultyimport com.broll.gainea.server.core.objects.Unitimport com.broll.gainea.server.core.player.Playerimport java.util.stream.Collectors
 class G_KillPlayer : Goal(GoalDifficulty.MEDIUM, "") {
-    private var target: Player? = null
-    override fun init(game: GameContainer, player: Player?): Boolean {
-        target = RandomUtils.pickRandom(game.activePlayers.stream().filter { it: Player? -> it !== player && !it.getUnits().isEmpty() }.collect(Collectors.toList()))
-        if (target == null) {
-            return false
-        }
-        text = target.getServerPlayer().name + " darf keine Einheiten mehr besitzen"
-        difficulty = if (target.getUnits().size >= 8) GoalDifficulty.HARD else GoalDifficulty.MEDIUM
+    private lateinit var target: Player
+    override fun init(game: GameContainer, player: Player): Boolean {
+        target = game.activePlayers.filter { it !== player && it.units.isNotEmpty() }.randomOrNull()
+                ?: return false
+        text = target.serverPlayer.name + " darf keine Einheiten mehr besitzen"
+        difficulty = if (target.units.size >= 8) GoalDifficulty.HARD else GoalDifficulty.MEDIUM
         return super.init(game, player)
     }
 
-    override fun killed(unit: Unit?, throughBattle: BattleResult?) {
-        if (unit.getOwner() === target) {
+    override fun killed(unit: Unit, throughBattle: BattleResult?) {
+        if (unit.owner === target) {
             check()
         }
     }
 
     override fun check() {
-        if (target.getUnits().isEmpty()) {
+        if (target.units.isEmpty()) {
             success()
         }
     }
@@ -31,7 +35,7 @@ class G_KillPlayer : Goal(GoalDifficulty.MEDIUM, "") {
         strategy.isSpreadUnits = false
         strategy.setPrepareStrategy {
             strategy.updateTargets(BotUtils.huntPlayerTargets(target))
-            strategy.setRequiredUnits(target.getUnits().size + 1)
+            strategy.setRequiredUnits(target.units.size + 1)
         }
     }
 }

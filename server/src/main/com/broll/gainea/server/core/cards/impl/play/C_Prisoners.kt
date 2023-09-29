@@ -19,7 +19,7 @@ class C_Prisoners : Card(20, "Kriegsgefangene", "Rekrutiert alle besiegte feindl
         TimedEffect.forCurrentTurn(game, object : TimedEffect() {
             override fun battleResult(result: BattleResult) {
                 if (result.isWinner(owner)) {
-                    val killedSoldiers = result.getOpposingUnits(owner).filter { it is Soldier && it.isDead && !PlayerUtils.isCommander(it) }
+                    val killedSoldiers = result.getOpposingUnits(owner).filter { it is Soldier && it.dead && !PlayerUtils.isCommander(it) }
                     UnitControl.recruit(game, owner, killedSoldiers, result.getEndLocation(owner))
                     unregister()
                 }

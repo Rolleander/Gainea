@@ -54,23 +54,23 @@ object ShipUtils {
         return from.getContainer().expansion === expansion
     }
 
-    fun connects(ship: Ship?, from: Area, to: Area): Boolean {
+    fun connects(ship: Ship, from: Area, to: Area): Boolean {
         return startsFrom(ship, from) && leadsTo(ship, to)
     }
 
-    fun connects(ship: Ship?, from: AreaCollection, to: AreaCollection?): Boolean {
+    fun connects(ship: Ship, from: AreaCollection, to: AreaCollection?): Boolean {
         return startsFrom(ship, from) && leadsTo(ship, to)
     }
 
-    fun connects(ship: Ship?, from: Expansion, to: Expansion): Boolean {
+    fun connects(ship: Ship, from: Expansion, to: Expansion): Boolean {
         return startsFrom(ship, from) && leadsTo(ship, to)
     }
 
-    fun getAllShips(from: AreaCollection?, to: AreaCollection?): List<Ship?> {
+    fun getAllShips(from: AreaCollection, to: AreaCollection): List<Ship> {
         return from.getShips().stream().filter { it: Ship? -> leadsTo(it, to) }.collect(Collectors.toList())
     }
 
-    fun getAllShips(fromAndTo: AreaCollection?): List<Ship?> {
+    fun getAllShips(fromAndTo: AreaCollection): List<Ship> {
         val ships: MutableList<Ship?> = ArrayList()
         ships.addAll(fromAndTo.getShips())
         fromAndTo.getExpansion().contents.stream().filter { it: AreaCollection? -> it !== fromAndTo }.forEach { collection: AreaCollection? -> ships.addAll(getAllShips(collection, fromAndTo)) }

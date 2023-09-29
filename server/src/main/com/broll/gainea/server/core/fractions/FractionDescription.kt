@@ -1,8 +1,8 @@
 package com.broll.gainea.server.core.fractions
 
-class FractionDescription(@JvmField val general: String) {
-    private val plus: MutableList<String> = ArrayList()
-    private val contra: MutableList<String> = ArrayList()
+class FractionDescription(val general: String) {
+    private val plus = mutableListOf<String>()
+    private val contra = mutableListOf<String>()
     operator fun plus(strength: String) {
         plus.add(strength)
     }

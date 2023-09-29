@@ -2,29 +2,37 @@ package com.broll.gainea.server.core.fractions
 
 import com.broll.gainea.server.core.fractions.impl.BarbarianFraction
 import com.broll.gainea.server.core.fractions.impl.DruidsFraction
+import com.broll.gainea.server.core.fractions.impl.FireFraction
+import com.broll.gainea.server.core.fractions.impl.GuardsFraction
+import com.broll.gainea.server.core.fractions.impl.KnightsFraction
 import com.broll.gainea.server.core.fractions.impl.LizardFraction
 import com.broll.gainea.server.core.fractions.impl.MercenaryFraction
+import com.broll.gainea.server.core.fractions.impl.MonkFraction
+import com.broll.gainea.server.core.fractions.impl.PoacherFraction
+import com.broll.gainea.server.core.fractions.impl.RangerFraction
+import com.broll.gainea.server.core.fractions.impl.SamuraiFraction
 import com.broll.gainea.server.core.fractions.impl.ShadowFraction
+import com.broll.gainea.server.core.fractions.impl.VikingFraction
 import com.broll.gainea.server.core.fractions.impl.WaterFraction
-import java.util.function.Supplier
 
-enum class FractionType(override val name: String, private val factory: Supplier<Fraction>) {
-    SHADOW("Schatten", Supplier<Fraction> { ShadowFraction() }),
-    BARBARIANS("Barbaren", Supplier<Fraction> { BarbarianFraction() }),
-    VIKINGS("Wikinger", Supplier<Fraction> { VikingFraction() }),
-    DRUIDS("Druiden", Supplier<Fraction> { DruidsFraction() }),
-    KNIGHTS("Kreuzritter", Supplier<Fraction> { KnightsFraction() }),
-    SAMURAI("Samurai", Supplier<Fraction> { SamuraiFraction() }),
-    MONKS("Mönche", Supplier<Fraction> { MonkFraction() }),
-    POACHER("Wilderer", Supplier<Fraction> { PoacherFraction() }),
-    RANGER("Waldläufer", Supplier<Fraction> { RangerFraction() }),
-    MERCENARY("Söldner", Supplier<Fraction> { MercenaryFraction() }),
-    GUARDS("Königsgarde", Supplier<Fraction> { GuardsFraction() }),
-    FIRE("Feuermagier", Supplier<Fraction> { FireFraction() }),
-    WATER("Wassermagier", Supplier<Fraction> { WaterFraction() }),
-    LIZARDS("Echsenvolk", Supplier<Fraction> { LizardFraction() });
+
+enum class FractionType(val displayName: String, private val factory: () -> Fraction) {
+    SHADOW("Schatten", { ShadowFraction() }),
+    BARBARIANS("Barbaren", { BarbarianFraction() }),
+    VIKINGS("Wikinger", { VikingFraction() }),
+    DRUIDS("Druiden", { DruidsFraction() }),
+    KNIGHTS("Kreuzritter", { KnightsFraction() }),
+    SAMURAI("Samurai", { SamuraiFraction() }),
+    MONKS("Mönche", { MonkFraction() }),
+    POACHER("Wilderer", { PoacherFraction() }),
+    RANGER("Waldläufer", { RangerFraction() }),
+    MERCENARY("Söldner", { MercenaryFraction() }),
+    GUARDS("Königsgarde", { GuardsFraction() }),
+    FIRE("Feuermagier", { FireFraction() }),
+    WATER("Wassermagier", { WaterFraction() }),
+    LIZARDS("Echsenvolk", { LizardFraction() });
 
     fun create(): Fraction {
-        return factory.get()
+        return factory()
     }
 }

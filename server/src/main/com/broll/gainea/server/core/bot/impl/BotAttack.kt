@@ -45,7 +45,7 @@ class BotAttack : BotOptionalAction<NT_Action_Attack, BotAttack.AttackOption>() 
     fun keepAttacking(update: NT_Battle_Update): Boolean {
         val attackers = BotUtils.getObjects(game, update.attackers)
         val defenders = BotUtils.getObjects(game, update.defenders)
-        if (attackers.none { it.isAlive } || defenders.none { it.isAlive }) {
+        if (attackers.none { it.alive } || defenders.none { it.alive }) {
             return false
         }
         val winChance = getRequiredWinChance(selectedOption!!.type)

@@ -5,21 +5,17 @@ import com.broll.gainea.server.core.battle.BattleResult
 import com.broll.gainea.server.core.bot.strategy.GoalStrategy
 import com.broll.gainea.server.core.goals.Goal
 import com.broll.gainea.server.core.goals.GoalDifficulty
-import com.broll.gainea.server.core.map.Area
 import com.broll.gainea.server.core.map.Continent
 import com.broll.gainea.server.core.objects.Unit
 import com.broll.gainea.server.core.objects.monster.Monster
 import com.broll.gainea.server.core.player.Player
+import com.broll.gainea.server.core.player.isNeutral
 import com.broll.gainea.server.core.utils.LocationUtils
-import java.util.Collections
-import java.util.stream.Collectors
 
 class G_KillAllMonsters : Goal(GoalDifficulty.MEDIUM, "") {
-    private var continent: Continent? = null
-    override fun init(game: GameContainer, player: Player?): Boolean {
-        val continets = game.map.allContinents
-        Collections.shuffle(continets)
-        for (continent in continets!!) {
+    private lateinit var continent: Continent
+    override fun init(game: GameContainer, player: Player): Boolean {
+        for (continent in game.map.allContinents.shuffled()) {
             this.continent = continent
             val monsterCount = monsterCount
             if (monsterCount >= 2) {
@@ -33,8 +29,7 @@ class G_KillAllMonsters : Goal(GoalDifficulty.MEDIUM, "") {
     }
 
     private val monsterCount: Int
-        private get() = continent.getAreas().stream().flatMap { it: Area? -> LocationUtils.getMonsters(it).stream() }
-                .filter { it: Monster? -> it.getOwner() == null }.filter { obj: Monster? -> obj!!.isAlive }.count().toInt()
+        get() = continent.areas.flatMap { LocationUtils.getMonsters(it) }.count { it.owner.isNeutral() && it.alive }
 
     override fun check() {
         if (monsterCount == 0) {
@@ -42,8 +37,8 @@ class G_KillAllMonsters : Goal(GoalDifficulty.MEDIUM, "") {
         }
     }
 
-    override fun killed(unit: Unit?, throughBattle: BattleResult?) {
-        if (unit is Monster && unit.getOwner() == null) {
+    override fun killed(unit: Unit, throughBattle: BattleResult?) {
+        if (unit is Monster && unit.owner.isNeutral()) {
             check()
         }
     }
@@ -51,9 +46,9 @@ class G_KillAllMonsters : Goal(GoalDifficulty.MEDIUM, "") {
     override fun botStrategy(strategy: GoalStrategy) {
         strategy.isSpreadUnits = false
         strategy.setPrepareStrategy {
-            val monsters = continent.getAreas().stream().flatMap { it: Area? -> LocationUtils.getMonsters(it).stream() }.collect(Collectors.toList())
-            val stars = monsters.stream().mapToInt { it: Monster? -> it.getStars() }.sum()
-            strategy.updateTargets(monsters.stream().map { obj: Monster? -> obj.getLocation() }.collect(Collectors.toSet()))
+            val monsters = continent.areas.flatMap { LocationUtils.getMonsters(it) }
+            val stars = monsters.sumOf { it.stars }
+            strategy.updateTargets(monsters.map { it.location }.toSet())
             strategy.setRequiredUnits(stars)
         }
     }

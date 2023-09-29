@@ -1,9 +1,13 @@
 package com.broll.gainea.server.core.map.impl
 
-import com.broll.gainea.server.core.map.AreaIDimport
+import com.broll.gainea.server.core.map.AreaID
+import com.broll.gainea.server.core.map.AreaType
+import com.broll.gainea.server.core.map.ContinentID
+import com.broll.gainea.server.core.map.ExpansionFactory
+import com.broll.gainea.server.core.map.ExpansionType
+import com.broll.gainea.server.core.map.IslandID
 
-com.broll.gainea.server.core.map.AreaTypeimport com.broll.gainea.server.core.map.ContinentIDimport com.broll.gainea.server.core.map.ExpansionFactoryimport com.broll.gainea.server.core.map.ExpansionTypeimport com.broll.gainea.server.core.map.IslandID
-class BoglandMap : ExpansionFactory(ExpansionType.BOGLANDS) {
+class BoglandMap : ExpansionFactory(ExpansionType.BOGLANDS, "expansion_2.png") {
     enum class Continents : ContinentID {
         GOMIX,
         TOD
@@ -43,11 +47,8 @@ class BoglandMap : ExpansionFactory(ExpansionType.BOGLANDS) {
     }
 
     init {
-        setBaseCoordinates(-0.25f, 0.9f)
+        baseCoordinates.set(-0.25f, 0.9f)
     }
-
-    override val texture: String
-        get() = "expansion_2.png"
 
     override fun init() {
         gomix()
@@ -59,7 +60,7 @@ class BoglandMap : ExpansionFactory(ExpansionType.BOGLANDS) {
     }
 
     private fun gomix() {
-        continent(Continents.GOMIX, "Gomix", list(
+        continent(Continents.GOMIX, "Gomix", listOf(
                 area(Areas.SUED_OST_PLATTE, "Süd Ost Platte", AreaType.PLAINS, 17.6f, 27.6f),
                 area(Areas.SUED_WEST_PLATTE, "Süd West Platte", AreaType.SNOW, 32.4f, 33.5f),
                 area(Areas.TODESSCHLAMM, "Todes-Schlamm", AreaType.BOG, 23.9f, 38.5f),
@@ -92,7 +93,7 @@ class BoglandMap : ExpansionFactory(ExpansionType.BOGLANDS) {
     }
 
     private fun tod() {
-        continent(Continents.TOD, "Tod", list(
+        continent(Continents.TOD, "Tod", listOf(
                 area(Areas.SCHAEDELTEICH, "Schädelteil", AreaType.BOG, 61.7f, 24.9f),
                 area(Areas.LEBLSOER_GIPFEL, "Lebloser Gipfel", AreaType.MOUNTAIN, 67.7f, 22.4f),
                 area(Areas.TROCKENSCHAEDEL, "Trockenschädel", AreaType.DESERT, 76.2f, 40.8f),
@@ -111,13 +112,13 @@ class BoglandMap : ExpansionFactory(ExpansionType.BOGLANDS) {
     }
 
     private fun todesinsel() {
-        island(Islands.TODESINSEL, "Todesinsel", list(
+        island(Islands.TODESINSEL, "Todesinsel", listOf(
                 area(Areas.TODESINSEL, "Todesinsel", AreaType.BOG, 39.1f, 16.2f)
         ))
     }
 
     private fun kleinspalt() {
-        island(Islands.KLEINSPALT, "Kleinspalt", list(
+        island(Islands.KLEINSPALT, "Kleinspalt", listOf(
                 area(Areas.OBERE_INSEL, "Obere Insel", AreaType.PLAINS, 60f, 60f),
                 area(Areas.UNTERE_INSEL, "Untere Insel", AreaType.PLAINS, 56.3f, 67.4f)
         ))
@@ -125,7 +126,7 @@ class BoglandMap : ExpansionFactory(ExpansionType.BOGLANDS) {
     }
 
     private fun stachelinsel() {
-        island(Islands.STACHELINSEL, "Stachelinsel", list(
+        island(Islands.STACHELINSEL, "Stachelinsel", listOf(
                 area(Areas.SCHRECKENHORN, "Schreckenhorn", AreaType.BOG, 42.9f, 81.3f),
                 area(Areas.ZOMBIESUMPF, "Zombiesumpf", AreaType.BOG, 64.3f, 78.7f),
                 area(Areas.STACHELWUESTE, "Stachelwüste", AreaType.DESERT, 55.1f, 83.8f)
@@ -148,7 +149,7 @@ class BoglandMap : ExpansionFactory(ExpansionType.BOGLANDS) {
         ship(Areas.TODESINSEL, Areas.SUED_WEST_PLATTE, 32.7f, 23.8f)
     }
 
-    override fun connectWithExpansion(expansion: ExpansionFactory?) {
+    override fun connectWithExpansion(expansion: ExpansionFactory) {
         if (expansion is GaineaMap) {
             ships(Areas.STACHELWUESTE, GaineaMap.Areas.KUESTENGEBIET, floatArrayOf(67f, 71.8f, 70.5f), floatArrayOf(88.3f, 91.9f, 98.4f))
         }

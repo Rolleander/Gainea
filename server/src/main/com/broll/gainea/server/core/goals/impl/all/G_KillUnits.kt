@@ -1,9 +1,13 @@
 package com.broll.gainea.server.core.goals.impl.all
 
-import com.broll.gainea.server.core.battle.BattleResultimport
+import com.broll.gainea.server.core.battle.BattleResult
+import com.broll.gainea.server.core.bot.BotUtils
+import com.broll.gainea.server.core.bot.strategy.GoalStrategy
+import com.broll.gainea.server.core.goals.Goal
+import com.broll.gainea.server.core.goals.GoalDifficulty
+import com.broll.gainea.server.core.objects.Soldier
 
-com.broll.gainea.server.core.bot.BotUtilsimport com.broll.gainea.server.core.bot.strategy.GoalStrategyimport com.broll.gainea.server.core.goals.Goalimport com.broll.gainea.server.core.goals.GoalDifficultyimport com.broll.gainea.server.core.objects.Soldierimport com.broll.gainea.server.core.objects.Unit
-open class G_KillUnits @JvmOverloads constructor(difficulty: GoalDifficulty = GoalDifficulty.EASY, private val killTarget: Int = 6) : Goal(difficulty, "Vernichte $killTarget Soldaten anderer Spieler durch Kämpfe") {
+open class G_KillUnits(difficulty: GoalDifficulty = GoalDifficulty.EASY, private val killTarget: Int = 6) : Goal(difficulty, "Vernichte $killTarget Soldaten anderer Spieler durch Kämpfe") {
     private var kills = 0
 
     init {
@@ -11,18 +15,16 @@ open class G_KillUnits @JvmOverloads constructor(difficulty: GoalDifficulty = Go
     }
 
     override fun battleResult(result: BattleResult) {
-        if (result.isAttacker(player)) {
-            killTarget += result.killedDefenders.stream().filter { it: Unit? -> it is Soldier }.count().toInt()
-            check()
-        } else if (result.isDefender(player)) {
-            killTarget += result.killedAttackers.stream().filter { it: Unit? -> it is Soldier }.count().toInt()
+        val killed = result.getOpposingUnits(player).count { it is Soldier && it.dead }
+        if (killed > 0) {
+            kills += killed
             check()
         }
     }
 
     override fun check() {
         updateProgression(killTarget)
-        if (killTarget >= killTarget) {
+        if (kills >= killTarget) {
             success()
         }
     }
@@ -30,8 +32,8 @@ open class G_KillUnits @JvmOverloads constructor(difficulty: GoalDifficulty = Go
     override fun botStrategy(strategy: GoalStrategy) {
         strategy.isSpreadUnits = false
         strategy.setPrepareStrategy {
-            strategy.updateTargets(BotUtils.huntOtherPlayersTargets(player!!, game!!))
-            strategy.setRequiredUnits(killTarget - killTarget)
+            strategy.updateTargets(BotUtils.huntOtherPlayersTargets(player, game))
+            strategy.setRequiredUnits(killTarget - kills)
         }
     }
 }

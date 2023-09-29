@@ -1,9 +1,11 @@
 package com.broll.gainea.server.core.goals.impl.all
 
-import com.broll.gainea.server.core.battle.BattleResultimport
+import com.broll.gainea.server.core.battle.BattleResult
+import com.broll.gainea.server.core.bot.strategy.GoalStrategy
+import com.broll.gainea.server.core.goals.Goal
+import com.broll.gainea.server.core.goals.GoalDifficulty
 
-com.broll.gainea.server.core.bot.strategy.GoalStrategyimport com.broll.gainea.server.core.goals.Goalimport com.broll.gainea.server.core.goals.GoalDifficultyimport com.broll.gainea.server.core.objects.Unitimport com.broll.gainea.server.core.player.Playerimport java.util.stream.Collectors
-open class G_WinBattles @JvmOverloads constructor(difficulty: GoalDifficulty = GoalDifficulty.MEDIUM, private val winTarget: Int = 6) : Goal(difficulty, "Gewinne $winTarget Schlachten gegen andere Spieler") {
+open class G_WinBattles(difficulty: GoalDifficulty = GoalDifficulty.MEDIUM, private val winTarget: Int = 6) : Goal(difficulty, "Gewinne $winTarget Schlachten gegen andere Spieler") {
     private var wins = 0
 
     init {
@@ -12,14 +14,14 @@ open class G_WinBattles @JvmOverloads constructor(difficulty: GoalDifficulty = G
 
     override fun battleResult(result: BattleResult) {
         if (result.isWinner(player) && !result.isNeutralLoser) {
-            winTarget++
+            wins++
             check()
         }
     }
 
     override fun check() {
         updateProgression(winTarget)
-        if (winTarget >= winTarget) {
+        if (wins >= winTarget) {
             success()
         }
     }
@@ -27,10 +29,10 @@ open class G_WinBattles @JvmOverloads constructor(difficulty: GoalDifficulty = G
     override fun botStrategy(strategy: GoalStrategy) {
         strategy.isSpreadUnits = false
         strategy.setPrepareStrategy {
-            val locations = game.allPlayers.stream().filter { it: Player? -> it !== player }
-                    .flatMap { it: Player? -> it.getUnits().stream() }.map { obj: Unit? -> obj.getLocation() }.collect(Collectors.toSet())
+            val locations = game.allPlayers.filter { it !== player }
+                    .flatMap { it.units }.map { it.location }.toSet()
             strategy.updateTargets(locations)
-            strategy.setRequiredUnits((winTarget - winTarget) * 3)
+            strategy.setRequiredUnits((winTarget - wins) * 3)
         }
     }
 }

@@ -1,3 +1,3 @@
 package com.broll.gainea.server.core.map
 
-class Continent(val id: ContinentID) : AreaCollection()
+class Continent(name: String, val id: ContinentID) : AreaCollection(name)

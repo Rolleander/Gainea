@@ -16,8 +16,8 @@ open class BattleContext(var attackers: List<Unit>, var defenders: List<Unit>) {
     protected var defendingPlayers: List<Player>
 
     init {
-        location = defenders[0].location!!
-        sourceLocation = attackers[0].location!!
+        location = defenders[0].location
+        sourceLocation = attackers[0].location
         attackingPlayer = PlayerUtils.getOwner(attackers)
         defendingPlayers = defenders.map { it.owner }.distinct()
     }
@@ -32,13 +32,13 @@ open class BattleContext(var attackers: List<Unit>, var defenders: List<Unit>) {
     }
 
     val aliveAttackers: List<Unit>
-        get() = attackers.filter { it.isAlive }
+        get() = attackers.filter { it.alive }
     val aliveDefenders: List<Unit>
-        get() = defenders.filter { it.isAlive }
+        get() = defenders.filter { it.alive }
     val killedAttackers: List<Unit>
-        get() = attackers.filter { it.isDead }
+        get() = attackers.filter { it.dead }
     val killedDefenders: List<Unit>
-        get() = defenders.filter { it.isDead }
+        get() = defenders.filter { it.dead }
 
     fun hasSurvivingAttackers() = aliveAttackers.isNotEmpty()
 

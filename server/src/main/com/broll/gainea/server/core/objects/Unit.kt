@@ -59,7 +59,7 @@ abstract class Unit(owner: Player) : MapObject(owner) {
     }
 
     open fun onDeath(throughBattle: BattleResult?) {}
-    open fun calcFightingPower(context: BattleContext?): FightingPower? {
+    open fun calcFightingPower(context: BattleContext): FightingPower {
         return FightingPower(this).changeNumberPlus(numberPlus!!.value!!)
     }
 
@@ -81,9 +81,9 @@ abstract class Unit(owner: Player) : MapObject(owner) {
 
     @JvmOverloads
     fun takeDamage(damage: Int = 1): Boolean {
-        val aliveBefore = isAlive
+        val aliveBefore = alive
         health!!.addValue(-damage)
-        return aliveBefore && isDead
+        return aliveBefore && dead
     }
 
     fun heal(heal: Int) {
@@ -93,10 +93,10 @@ abstract class Unit(owner: Player) : MapObject(owner) {
         }
     }
 
-    val isDead: Boolean
+    val dead: Boolean
         get() = health!!.value!! <= 0
-    val isAlive: Boolean
-        get() = !isDead
+    val alive: Boolean
+        get() = !dead
 
     fun heal() {
         health!!.value = maxHealth.rootValue

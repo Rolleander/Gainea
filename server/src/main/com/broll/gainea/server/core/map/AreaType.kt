@@ -1,6 +1,6 @@
 package com.broll.gainea.server.core.map
 
-enum class AreaType(override val name: String) {
+enum class AreaType(val typeName: String) {
     PLAINS("Steppe"),
     DESERT("Wüste"),
     LAKE("See"),

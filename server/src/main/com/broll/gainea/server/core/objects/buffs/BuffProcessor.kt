@@ -7,8 +7,6 @@ import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.core.processing.GameUpdateReceiverAdapter
 import com.broll.gainea.server.core.utils.UnitControl
 import org.apache.commons.collections4.map.MultiValueMap
-import java.util.function.Consumer
-import java.util.stream.Collectors
 
 class BuffProcessor(private val game: GameContainer) : GameUpdateReceiverAdapter() {
     private var currentTurnCount = 0
@@ -33,10 +31,10 @@ class BuffProcessor(private val game: GameContainer) : GameUpdateReceiverAdapter
         buff.remove()
         gloabalBuffs.remove(buff)
         //check if any unit died because of removal of buffs
-        val update= mutableListOf<MapObject>()
+        val update = mutableListOf<MapObject>()
         for (target in affectedObjects) {
             if (target is Unit) {
-                if (target.isDead) {
+                if (target.dead) {
                     UnitControl.kill(game, target)
                 } else {
                     update.add(target)
@@ -54,21 +52,21 @@ class BuffProcessor(private val game: GameContainer) : GameUpdateReceiverAdapter
     fun addGlobalBuff(globalBuff: GlobalBuff, effect: Int) {
         gloabalBuffs[globalBuff.buff] = globalBuff
         //apply directly to all existing units for the targets
-        globalBuff.targets.forEach {player->
-           val units = game.objects.filterIsInstance(Unit::class.java).filter { it.owner==player }
-            units.forEach{globalBuff.apply(it)}
+        globalBuff.targets.forEach { player ->
+            val units = game.objects.filterIsInstance(Unit::class.java).filter { it.owner == player }
+            units.forEach { globalBuff.apply(it) }
             UnitControl.update(game, units)
         }
-        if(globalBuff.forNeutral){
-            val units =  game.objects.filterIsInstance(Unit::class.java).filterNot { it.owner==null }
-            units.forEach{globalBuff.apply(it)}
+        if (globalBuff.forNeutral) {
+            val units = game.objects.filterIsInstance(Unit::class.java).filterNot { it.owner == null }
+            units.forEach { globalBuff.apply(it) }
             UnitControl.update(game, units)
         }
     }
 
     fun applyGlobalBuffs(unit: Unit) =
-        gloabalBuffs.values.filter { it.targets.contains(unit.owner) || (it.forNeutral && unit.owner==null) }.forEach {
-            it.apply(unit)
-        }
+            gloabalBuffs.values.filter { it.targets.contains(unit.owner) || (it.forNeutral && unit.owner == null) }.forEach {
+                it.apply(unit)
+            }
 
 }

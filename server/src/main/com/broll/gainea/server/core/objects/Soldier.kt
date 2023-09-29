@@ -16,7 +16,7 @@ open class Soldier(owner: Player) : Unit(owner) {
         }
     }
 
-    override fun calcFightingPower(context: BattleContext?): FightingPower? {
+    override fun calcFightingPower(context: BattleContext): FightingPower {
         return if (fraction == null) {
             super.calcFightingPower(context)
         } else fraction!!.calcFightingPower(this, context)

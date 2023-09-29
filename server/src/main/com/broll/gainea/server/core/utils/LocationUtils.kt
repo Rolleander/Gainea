@@ -45,7 +45,7 @@ object LocationUtils {
         return locations.filter { isAreaType(it, *type) }.map { it as Area }
     }
 
-    fun getControlledLocationsIn(player: Player, expansionType: ExpansionType): List<Location?> {
+    fun getControlledLocationsIn(player: Player, expansionType: ExpansionType): List<Location> {
         return player.controlledLocations.stream().filter { it: Location? -> it.getContainer().expansion.type == expansionType }.collect(Collectors.toList())
     }
 
@@ -88,7 +88,7 @@ object LocationUtils {
         return location.getInhabitants().stream().filter { it: MapObject? -> it is Unit }.map { it: MapObject? -> it as Unit? }.collect(Collectors.toList())
     }
 
-    fun getRandomFree(locations: List<Location>): Location {
+    fun getRandomFree(locations: List<Location>): Location? {
         val free = locations!!.stream().filter { obj: Location? -> obj!!.isFree }.collect(Collectors.toList())
         return RandomUtils.pickRandom(free)
     }

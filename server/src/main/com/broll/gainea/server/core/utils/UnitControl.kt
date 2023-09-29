@@ -90,7 +90,7 @@ object UnitControl {
         //dont overkill
         damage = Math.min(unit.getHealth().value, damage)
         unit!!.takeDamage(damage)
-        val lethal = unit.isDead
+        val lethal = unit.dead
         if (lethal) {
             //remove unit
             val removed = GameUtils.remove(game, unit)
@@ -190,14 +190,14 @@ object UnitControl {
         if (recruit.isEmpty()) {
             return
         }
-        val moveUnits = recruit.stream().filter { it: Unit? -> it!!.isAlive && newLocation != null && it.location !== newLocation }.collect(Collectors.toList())
+        val moveUnits = recruit.stream().filter { it: Unit? -> it!!.alive && newLocation != null && it.location !== newLocation }.collect(Collectors.toList())
         val updateUnits = ListUtils.subtract(recruit, moveUnits)
         recruit.forEach(Consumer { it: Unit? ->
             val previousOwner = it.getOwner()
             previousOwner?.units?.remove(it) ?: game.objects.remove(it)
             newOwner.units.add(it)
             it.setOwner(newOwner)
-            if (it!!.isDead) {
+            if (it!!.dead) {
                 it.heal()
             }
             if (it is Monster) {

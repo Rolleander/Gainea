@@ -6,9 +6,8 @@ import com.broll.gainea.server.core.fractions.Fraction
 import com.broll.gainea.server.core.fractions.FractionDescription
 import com.broll.gainea.server.core.fractions.FractionType
 import com.broll.gainea.server.core.objects.Soldier
-import com.broll.gainea.server.core.objects.Unit
 import com.broll.gainea.server.core.objects.monster.Monster
-import com.google.common.collect.Lists
+import com.broll.gainea.server.core.utils.UnitControl.recruit
 
 class PoacherFraction : Fraction(FractionType.POACHER) {
     override fun description(): FractionDescription {
@@ -18,22 +17,22 @@ class PoacherFraction : Fraction(FractionType.POACHER) {
         return desc
     }
 
-    override fun calcFightingPower(soldier: Soldier, context: BattleContext?): FightingPower? {
+    override fun calcFightingPower(soldier: Soldier, context: BattleContext): FightingPower {
         val power = super.calcFightingPower(soldier, context)
-        if (context!!.getOpposingFightingArmy(soldier).stream().noneMatch { it: Unit? -> it is Monster }) {
-            power!!.changeNumberPlus(-1)
+        if (context.getOpposingFightingArmy(soldier).none { it is Monster }) {
+            power.changeNumberPlus(-1)
         }
         return power
     }
 
-    override fun killedMonster(monster: Monster?) {
+    override fun killedMonster(monster: Monster) {
         super.killedMonster(monster)
-        recruit(game, owner, Lists.newArrayList<Unit?>(monster))
+        recruit(game, owner, listOf(monster))
     }
 
     override fun createSoldier(): Soldier {
         val soldier = Soldier(owner)
-        soldier.setStats(Fraction.Companion.SOLDIER_POWER, Fraction.Companion.SOLDIER_HEALTH)
+        soldier.setStats(SOLDIER_POWER, SOLDIER_HEALTH)
         soldier.name = "Wilderer"
         soldier.icon = 42
         return soldier

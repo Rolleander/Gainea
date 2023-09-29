@@ -1,3 +1,3 @@
 package com.broll.gainea.server.core.map
 
-class Island(val id: IslandID) : AreaCollection()
+class Island(name: String, val id: IslandID) : AreaCollection(name)

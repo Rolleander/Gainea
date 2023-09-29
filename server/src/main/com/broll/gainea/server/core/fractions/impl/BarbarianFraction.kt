@@ -11,6 +11,7 @@ import com.broll.gainea.server.core.objects.Soldier
 import com.broll.gainea.server.core.objects.Unit
 import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.core.utils.PlayerUtils
+import com.broll.gainea.server.core.utils.UnitControl.spawn
 
 class BarbarianFraction : Fraction(FractionType.BARBARIANS) {
     private var turns = 0
@@ -23,27 +24,27 @@ class BarbarianFraction : Fraction(FractionType.BARBARIANS) {
         return desc
     }
 
-    override fun calcFightingPower(soldier: Soldier, context: BattleContext?): FightingPower? {
+    override fun calcFightingPower(soldier: Soldier, context: BattleContext): FightingPower {
         val power = super.calcFightingPower(soldier, context)
-        val army = context!!.getFightingArmy(soldier)
-        if (army!!.stream().noneMatch { unit: Unit? -> isPlainBarbarianSoldier(unit) }) {
-            power!!.changeNumberPlus(-1)
+        val army = context.getFightingArmy(soldier)
+        if (army.none { isPlainBarbarianSoldier(it) }) {
+            power.changeNumberPlus(-1)
         }
-        if (army.stream().anyMatch { obj: Unit? -> PlayerUtils.isCommander() }
-                && army.stream().anyMatch { it: Unit? -> it is BarbarianBrother }) {
-            power!!.changeNumberPlus(1)
+        if (army.any { PlayerUtils.isCommander(it) }
+                && army.any { it is BarbarianBrother }) {
+            power.changeNumberPlus(1)
         }
         return power
     }
 
-    private fun isPlainBarbarianSoldier(unit: Unit?): Boolean {
+    private fun isPlainBarbarianSoldier(unit: Unit): Boolean {
         return unit is Soldier && !unit.isCommander &&
                 unit !is BarbarianBrother && unit.fraction === this
     }
 
     override fun createSoldier(): Soldier {
         val soldier = Soldier(owner)
-        soldier.setStats(Fraction.Companion.SOLDIER_POWER, Fraction.Companion.SOLDIER_HEALTH)
+        soldier.setStats(SOLDIER_POWER, SOLDIER_HEALTH)
         soldier.name = "Barbarenrkieger"
         soldier.icon = 103
         return soldier
@@ -52,16 +53,16 @@ class BarbarianFraction : Fraction(FractionType.BARBARIANS) {
     override fun createCommander(): Soldier {
         val commander = Soldier(owner)
         commander.isCommander = true
-        commander.setStats(Fraction.Companion.COMMANDER_POWER, Fraction.Companion.COMMANDER_HEALTH)
+        commander.setStats(COMMANDER_POWER, COMMANDER_HEALTH)
         commander.name = "Barbarenanführer"
         commander.icon = 45
         return commander
     }
 
-    override fun prepareTurn(actionHandlers: ActionHandlers?) {
+    override fun prepareTurn(actionHandlers: ActionHandlers) {
         super.prepareTurn(actionHandlers)
         if (turns == SUMMON_TURN) {
-            if (brother == null || brother!!.isDead) {
+            if (brother == null || brother!!.dead) {
                 summon()
             }
         } else {
@@ -70,13 +71,13 @@ class BarbarianFraction : Fraction(FractionType.BARBARIANS) {
     }
 
     private fun summon() {
-        PlayerUtils.getCommander(owner).ifPresent { commander: Soldier? ->
+        PlayerUtils.getCommander(owner)?.let {
             brother = BarbarianBrother(owner)
-            spawn(game, brother, commander.getLocation())
+            spawn(game, brother!!, it.location)
         }
     }
 
-    private inner class BarbarianBrother(owner: Player?) : Soldier(owner) {
+    private inner class BarbarianBrother(owner: Player) : Soldier(owner) {
         init {
             setStats(2, 3)
             name = "Zweite Hand"

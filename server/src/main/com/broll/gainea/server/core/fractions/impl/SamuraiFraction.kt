@@ -18,12 +18,12 @@ class SamuraiFraction : Fraction(FractionType.SAMURAI) {
         return desc
     }
 
-    override fun calcFightingPower(soldier: Soldier, context: BattleContext?): FightingPower? {
+    override fun calcFightingPower(soldier: Soldier, context: BattleContext): FightingPower {
         val power = super.calcFightingPower(soldier, context)
-        if (context!!.isAttacker(owner)) {
-            power!!.changeNumberPlus(1)
+        if (context.isAttacker(owner)) {
+            power.changeNumberPlus(1)
         } else {
-            power!!.withHighestNumber(5)
+            power.withHighestNumber(5)
         }
         if (LocationUtils.isAreaType(context.location, AreaType.MOUNTAIN)) {
             power.changeNumberPlus(1)
@@ -33,7 +33,7 @@ class SamuraiFraction : Fraction(FractionType.SAMURAI) {
 
     override fun createSoldier(): Soldier {
         val soldier = Soldier(owner)
-        soldier.setStats(Fraction.Companion.SOLDIER_POWER, Fraction.Companion.SOLDIER_HEALTH)
+        soldier.setStats(SOLDIER_POWER, SOLDIER_HEALTH)
         soldier.name = "Samurai"
         soldier.icon = 111
         return soldier
@@ -42,7 +42,7 @@ class SamuraiFraction : Fraction(FractionType.SAMURAI) {
     override fun createCommander(): Soldier {
         val commander = Soldier(owner)
         commander.isCommander = true
-        commander.setStats(Fraction.Companion.COMMANDER_POWER, Fraction.Companion.COMMANDER_HEALTH)
+        commander.setStats(COMMANDER_POWER, COMMANDER_HEALTH)
         commander.name = "Ronin"
         commander.icon = 113
         return commander

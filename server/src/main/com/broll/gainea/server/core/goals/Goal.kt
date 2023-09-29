@@ -11,22 +11,20 @@ import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.core.processing.GameUpdateReceiverAdapter
 import com.broll.gainea.server.core.utils.GameUtils
 import com.broll.gainea.server.core.utils.ProcessingUtils
-import java.util.Arrays
-import java.util.stream.Collectors
 
-abstract class Goal(var difficulty: GoalDifficulty, var text: String?) : GameUpdateReceiverAdapter() {
-    protected var locations: List<Location> = ArrayList()
+abstract class Goal(var difficulty: GoalDifficulty, var text: String) : GameUpdateReceiverAdapter() {
+    protected val locations = mutableListOf<Location>()
     var restrictionInfo: String? = null
         private set
     var id = 0
         private set
     private var progression = 0
     private var progressionGoal = NT_Goal.NO_PROGRESSION_GOAL
-    private var requiredExpansions: Array<ExpansionType>?
-    protected var game: GameContainer? = null
-    protected var player: Player? = null
+    private val requiredExpansions = mutableListOf<ExpansionType>()
+    protected lateinit var game: GameContainer
+    protected lateinit var player: Player
     private var finished = false
-    open fun init(game: GameContainer, player: Player?): Boolean {
+    open fun init(game: GameContainer, player: Player): Boolean {
         this.game = game
         this.player = player
         id = game.newObjectId()
@@ -37,44 +35,38 @@ abstract class Goal(var difficulty: GoalDifficulty, var text: String?) : GameUpd
         progressionGoal = goal
     }
 
-    protected fun setCustomRestrictionInfo(restrictionInfo: String?) {
+    protected fun setCustomRestrictionInfo(restrictionInfo: String) {
         this.restrictionInfo = restrictionInfo
     }
 
     protected fun setExpansionRestriction(vararg expansions: ExpansionType) {
-        requiredExpansions = expansions
-        restrictionInfo = Arrays.stream(expansions).map { obj: ExpansionType -> obj.getName() }.collect(Collectors.joining(","))
+        requiredExpansions.clear()
+        requiredExpansions += expansions
+        restrictionInfo = expansions.map { it.expansionName }.joinToString { "," }
     }
 
     protected open fun validForGame(): Boolean {
-        if (requiredExpansions == null) {
+        if (requiredExpansions.isEmpty()) {
             return true
         }
-        val activeExpansions = game.getMap().activeExpansionTypes
-        for (type in requiredExpansions!!) {
-            if (!activeExpansions!!.contains(type)) {
-                //required expansion of goal is not active in this game
-                return false
-            }
-        }
-        return true
+        return game.map.activeExpansionTypes.containsAll(requiredExpansions)
     }
 
     @Synchronized
     protected fun success() {
         if (!finished) {
-            player.getGoalHandler().removeGoal(this)
+            player.goalHandler.removeGoal(this)
             val nt = NT_Event_FinishedGoal()
             nt.sound = "fanfare.ogg"
-            nt.player = player.getServerPlayer().id
+            nt.player = player.serverPlayer.id
             nt.goal = nt()
             GameUtils.sendUpdate(game, nt)
             ProcessingUtils.pause(4000)
-            player.getGoalHandler().addPoints(difficulty.points)
+            player.goalHandler.addPoints(difficulty.points)
             finished = true
-            if (!game!!.isGameOver) {
+            if (!game.isGameOver) {
                 //give new goal to player
-                game.getGoalStorage().assignNewRandomGoal(player)
+                game.goalStorage.assignNewRandomGoal(player)
             }
         }
     }
@@ -84,8 +76,8 @@ abstract class Goal(var difficulty: GoalDifficulty, var text: String?) : GameUpd
             this.progression = progression
             val nt = NT_GoalProgression()
             nt.progression = progression
-            nt.index = player.getGoalHandler().goals.indexOf(this)
-            player.getServerPlayer().sendTCP(nt)
+            nt.index = player.goalHandler.goals.indexOf(this)
+            player.serverPlayer.sendTCP(nt)
         }
     }
 
@@ -98,7 +90,7 @@ abstract class Goal(var difficulty: GoalDifficulty, var text: String?) : GameUpd
         goal.restriction = restrictionInfo
         goal.progression = progression
         goal.progressionGoal = progressionGoal
-        goal.locations = locations.stream().mapToInt { obj: Location -> obj.number }.toArray()
+        goal.locations = locations.map { it.number }.toIntArray()
         return goal
     }
 

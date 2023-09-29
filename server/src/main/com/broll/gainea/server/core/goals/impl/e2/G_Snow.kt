@@ -1,8 +1,12 @@
 package com.broll.gainea.server.core.goals.impl.e2
 
-import com.broll.gainea.server.core.bot.strategy.GoalStrategyimport
+import com.broll.gainea.server.core.bot.strategy.GoalStrategy
+import com.broll.gainea.server.core.goals.CustomOccupyGoal
+import com.broll.gainea.server.core.goals.GoalDifficulty
+import com.broll.gainea.server.core.map.AreaType
+import com.broll.gainea.server.core.map.ExpansionType
+import com.broll.gainea.server.core.utils.LocationUtils
 
-com.broll.gainea.server.core.goals.CustomOccupyGoalimport com.broll.gainea.server.core.goals.GoalDifficultyimport com.broll.gainea.server.core.map.Areaimport com.broll.gainea.server.core.map.AreaTypeimport com.broll.gainea.server.core.map.ExpansionTypeimport com.broll.gainea.server.core.map.Locationimport com.broll.gainea.server.core.utils.LocationUtilsimport java.util.stream.Collectors
 class G_Snow : CustomOccupyGoal(GoalDifficulty.EASY, "Erobere " + COUNT + " Schneegebiete") {
     init {
         setExpansionRestriction(ExpansionType.ICELANDS)
@@ -10,7 +14,8 @@ class G_Snow : CustomOccupyGoal(GoalDifficulty.EASY, "Erobere " + COUNT + " Schn
     }
 
     override fun check() {
-        val count = LocationUtils.getControlledLocationsIn(player!!, ExpansionType.ICELANDS).stream().filter { it: Location? -> LocationUtils.isAreaType(it, AreaType.SNOW) }.count().toInt()
+        val count = LocationUtils.getControlledLocationsIn(player, ExpansionType.ICELANDS)
+                .count { LocationUtils.isAreaType(it, AreaType.SNOW) }
         updateProgression(count)
         if (count >= COUNT) {
             success()
@@ -19,7 +24,7 @@ class G_Snow : CustomOccupyGoal(GoalDifficulty.EASY, "Erobere " + COUNT + " Schn
 
     override fun botStrategy(strategy: GoalStrategy) {
         strategy.setRequiredUnits(COUNT)
-        strategy.updateTargets(game.map.allAreas.stream().filter { it: Area? -> it.getType() == AreaType.SNOW }.collect(Collectors.toSet()))
+        strategy.updateTargets(game.map.allAreas.filter { it.type == AreaType.SNOW }.toSet())
     }
 
     companion object {

@@ -13,40 +13,39 @@ import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.core.processing.GameUpdateReceiverAdapter
 import com.broll.gainea.server.core.utils.LocationUtils
 
-abstract class Fraction(@JvmField val type: FractionType) : GameUpdateReceiverAdapter() {
-    @JvmField
+abstract class Fraction(val type: FractionType) : GameUpdateReceiverAdapter() {
     val description: FractionDescription
-    protected var game: GameContainer? = null
-    protected var owner: Player? = null
+    protected lateinit var game: GameContainer
+    protected lateinit var owner: Player
 
     init {
         description = description()
     }
 
     protected abstract fun description(): FractionDescription
-    fun init(game: GameContainer?, owner: Player?) {
+    fun init(game: GameContainer, owner: Player) {
         this.game = game
         this.owner = owner
     }
 
-    open fun prepareTurn(actionHandlers: ActionHandlers?) {
+    open fun prepareTurn(actionHandlers: ActionHandlers) {
         //default place one new soldier on an occupied location
-        val spawnLocations = owner.getControlledLocations()
-        if (spawnLocations!!.isEmpty()) {
+        val spawnLocations = owner.controlledLocations.toMutableSet()
+        if (spawnLocations.isEmpty()) {
             //player has no more controlled locations. give him a random free one
-            val location = LocationUtils.getRandomFree(game.getMap().allAreas)
+            val location = LocationUtils.getRandomFree(game.map.allAreas)
                     ?: //no more free locations, just skip
                     return
-            spawnLocations!!.add(location)
+            spawnLocations.add(location)
         }
-        val placeUnitAction = actionHandlers!!.getHandler(PlaceUnitAction::class.java)
-        placeUnitAction!!.placeSoldier(owner, spawnLocations)
+        val placeUnitAction = actionHandlers.getHandler(PlaceUnitAction::class.java)
+        placeUnitAction.placeSoldier(owner, spawnLocations.toList())
     }
 
-    open fun turnStarted(actionHandlers: ActionHandlers?) {}
-    open fun killedMonster(monster: Monster?) {
+    open fun turnStarted(actionHandlers: ActionHandlers) {}
+    open fun killedMonster(monster: Monster) {
         //receive random card as bounty
-        owner.getCardHandler().drawRandomCard()
+        owner.cardHandler.drawRandomCard()
     }
 
     fun isHostile(unit: Unit): Boolean {
@@ -55,20 +54,20 @@ abstract class Fraction(@JvmField val type: FractionType) : GameUpdateReceiverAd
 
     abstract fun createSoldier(): Soldier
     abstract fun createCommander(): Soldier
-    open fun calcFightingPower(soldier: Soldier, context: BattleContext?): FightingPower? {
+    open fun calcFightingPower(soldier: Soldier, context: BattleContext): FightingPower {
         val power = FightingPower(soldier)
-        if (context!!.location is Area) {
+        if (context.location is Area) {
             powerMutatorArea(power, context.location as Area)
         }
         return power
     }
 
-    protected open fun powerMutatorArea(power: FightingPower?, area: Area?) {}
+    protected open fun powerMutatorArea(power: FightingPower, area: Area) {}
 
     companion object {
-        protected const val SOLDIER_HEALTH = 1
-        protected const val SOLDIER_POWER = 1
-        protected const val COMMANDER_HEALTH = 3
-        protected const val COMMANDER_POWER = 3
+        const val SOLDIER_HEALTH = 1
+        const val SOLDIER_POWER = 1
+        const val COMMANDER_HEALTH = 3
+        const val COMMANDER_POWER = 3
     }
 }

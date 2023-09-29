@@ -11,6 +11,7 @@ import com.broll.gainea.server.core.fractions.FractionType
 import com.broll.gainea.server.core.map.Ship
 import com.broll.gainea.server.core.objects.Soldier
 import com.broll.gainea.server.core.player.Player
+import com.broll.gainea.server.core.utils.UnitControl.spawn
 
 class DruidsFraction : Fraction(FractionType.DRUIDS) {
     override fun description(): FractionDescription {
@@ -20,17 +21,17 @@ class DruidsFraction : Fraction(FractionType.DRUIDS) {
         return desc
     }
 
-    override fun calcFightingPower(soldier: Soldier, context: BattleContext?): FightingPower? {
+    override fun calcFightingPower(soldier: Soldier, context: BattleContext): FightingPower {
         val power = super.calcFightingPower(soldier, context)
-        if (context!!.location is Ship) {
-            power!!.changeNumberPlus(-1)
+        if (context.location is Ship) {
+            power.changeNumberPlus(-1)
         }
         return power
     }
 
     override fun createSoldier(): Soldier {
         val soldier: Soldier = DruidSoldier(owner)
-        soldier.setStats(Fraction.Companion.SOLDIER_POWER, Fraction.Companion.SOLDIER_HEALTH)
+        soldier.setStats(SOLDIER_POWER, SOLDIER_HEALTH)
         soldier.name = "Druidin"
         soldier.icon = 110
         soldier.setType(NT_Unit.TYPE_FEMALE.toInt())
@@ -40,29 +41,29 @@ class DruidsFraction : Fraction(FractionType.DRUIDS) {
     override fun createCommander(): Soldier {
         val commander: Soldier = DruidSoldier(owner)
         commander.isCommander = true
-        commander.setStats(Fraction.Companion.COMMANDER_POWER, Fraction.Companion.COMMANDER_HEALTH)
+        commander.setStats(COMMANDER_POWER, COMMANDER_HEALTH)
         commander.name = "Druidenhaupt Zerus"
         commander.icon = 102
         return commander
     }
 
-    private inner class DruidSoldier(owner: Player?) : Soldier(owner) {
+    private inner class DruidSoldier(owner: Player) : Soldier(owner) {
         override fun onDeath(throughBattle: BattleResult?) {
             if (RandomUtils.randomBoolean(SPAWN_CHANCE)) {
-                val tree: Tree = Tree(getOwner())
+                val tree = Tree(owner)
                 spawn(game, tree, location)
             }
         }
     }
 
-    private inner class Tree(owner: Player?) : Soldier(owner) {
+    private inner class Tree(owner: Player) : Soldier(owner) {
         init {
             setStats(1, 2)
             name = "Wurzelgolem"
             icon = 99
             //cant move or attack
             attacksPerTurn.value = 0
-            getMovesPerTurn()!!.value = 0
+            movesPerTurn.value = 0
         }
     }
 

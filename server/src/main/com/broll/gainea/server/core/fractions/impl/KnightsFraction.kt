@@ -18,26 +18,26 @@ class KnightsFraction : Fraction(FractionType.KNIGHTS) {
         return desc
     }
 
-    override fun calcFightingPower(soldier: Soldier, context: BattleContext?): FightingPower? {
+    override fun calcFightingPower(soldier: Soldier, context: BattleContext): FightingPower {
         val power = super.calcFightingPower(soldier, context)
-        val army = context!!.getFightingArmy(soldier)
+        val army = context.getFightingArmy(soldier)
         val opponents = context.getOpposingFightingArmy(soldier)
-        if (army!!.size < opponents!!.size) {
+        if (army.size < opponents.size) {
             // smaller army +1 Z
-            power!!.changeNumberPlus(1)
+            power.changeNumberPlus(1)
         } else if (army.size == 1 && opponents.size == 1) {
             //1v1  +2 Z
-            power!!.changeNumberPlus(2)
+            power.changeNumberPlus(2)
         }
         if (LocationUtils.isAreaType(context.location, AreaType.BOG, AreaType.LAKE)) {
-            power!!.changeNumberPlus(-1)
+            power.changeNumberPlus(-1)
         }
         return power
     }
 
     override fun createSoldier(): Soldier {
         val soldier = Soldier(owner)
-        soldier.setStats(Fraction.Companion.SOLDIER_POWER, Fraction.Companion.SOLDIER_HEALTH)
+        soldier.setStats(SOLDIER_POWER, SOLDIER_HEALTH)
         soldier.name = "Kreuzritter"
         soldier.icon = 11
         return soldier
@@ -46,7 +46,7 @@ class KnightsFraction : Fraction(FractionType.KNIGHTS) {
     override fun createCommander(): Soldier {
         val commander = Soldier(owner)
         commander.isCommander = true
-        commander.setStats(Fraction.Companion.COMMANDER_POWER, Fraction.Companion.COMMANDER_HEALTH)
+        commander.setStats(COMMANDER_POWER, COMMANDER_HEALTH)
         commander.name = "Kreuzritterchampion"
         commander.icon = 7
         return commander

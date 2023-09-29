@@ -6,39 +6,35 @@ import com.broll.gainea.server.core.actions.ActionHandlers
 import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.init.GoalTypes
 import org.slf4j.LoggerFactory
-import java.util.Collections
-import java.util.function.Function
 import java.util.stream.Collectors
 
-class GoalStorage(private val game: GameContainer, private val actionHandlers: ActionHandlers, goalTypes: GoalTypes?) {
-    private var goalClasses: List<Class<out Goal>?>? = null
-    private val loader: PackageLoader<Goal>
-    private val goalTypes: GoalTypes?
-
+class GoalStorage(private val game: GameContainer,
+                  private val actionHandlers: ActionHandlers,
+                  private val goalTypes: GoalTypes) {
+    private val goalClasses = mutableListOf<Class<out Goal>>()
+    private val loader: PackageLoader<Goal> = PackageLoader(Goal::class.java, PACKAGE_PATH)
+    
     init {
-        loader = PackageLoader(Goal::class.java, PACKAGE_PATH)
-        this.goalTypes = goalTypes
         initGoals()
     }
 
     private fun initGoals() {
-        goalClasses = loader.classes.stream().collect(Collectors.toList())
-        Collections.shuffle(goalClasses)
+        goalClasses.clear()
+        goalClasses += loader.classes.stream().collect(Collectors.toList())
+        goalClasses.shuffle()
     }
 
-    fun assignNewRandomGoal(player: Player?) {
-        assignNewGoal(player) { goal: Goal? -> true }
+    fun assignNewRandomGoal(player: Player) {
+        assignNewGoal(player) { true }
     }
 
-    fun assignNewGoal(player: Player?, difficulty: GoalDifficulty) {
-        assignNewGoal(player) { goal: Goal -> goal.getDifficulty() == difficulty }
+    fun assignNewGoal(player: Player, difficulty: GoalDifficulty) {
+        assignNewGoal(player) { it.difficulty == difficulty }
     }
 
-    fun getAnyGoals(player: Player?, count: Int): List<Goal> {
-        val goals: MutableList<Goal> = ArrayList()
-        val goalClasses = loader.classes.stream().collect(Collectors.toList())
-        Collections.shuffle(goalClasses)
-        for (clazz in goalClasses) {
+    fun getAnyGoals(player: Player, count: Int): List<Goal> {
+        val goals = mutableListOf<Goal>()
+        for (clazz in loader.classes.shuffled()) {
             val goal = loader.instantiate(clazz)
             if (goal.init(game, player)) {
                 goals.add(goal)
@@ -50,18 +46,19 @@ class GoalStorage(private val game: GameContainer, private val actionHandlers: A
         return goals
     }
 
-    fun assignNewGoal(player: Player?, condition: Function<Goal, Boolean>) {
-        val goal = getGoal(player, condition)
-        player.getGoalHandler().newGoal(goal)
+    fun assignNewGoal(player: Player, condition: (Goal) -> Boolean) {
+        getGoal(player, condition)?.let {
+            player.goalHandler.newGoal(it)
+        }
     }
 
-    private fun getGoal(player: Player?, condition: Function<Goal, Boolean>): Goal? {
+    private fun getGoal(player: Player, condition: (Goal) -> Boolean): Goal? {
         var goal = newGoal(player, condition)
         if (goal != null) {
             return goal
         } else {
             //no goal found for condition
-            if (goalClasses!!.isEmpty()) {
+            if (goalClasses.isEmpty()) {
                 //refresh goals
                 initGoals()
                 //try again to find one
@@ -78,12 +75,12 @@ class GoalStorage(private val game: GameContainer, private val actionHandlers: A
         return null
     }
 
-    private fun newGoal(forPlayer: Player?, condition: Function<Goal, Boolean>): Goal? {
-        for (clazz in goalClasses!!) {
+    private fun newGoal(forPlayer: Player, condition: (Goal) -> Boolean): Goal? {
+        for (clazz in goalClasses) {
             val goal = loader.instantiate(clazz)
-            if (goalTypes!!.contains(goal.getDifficulty())) {
+            if (goalTypes.contains(goal.difficulty)) {
                 if (goal.init(game, forPlayer)) {
-                    if (condition.apply(goal)) {
+                    if (condition(goal)) {
                         goalClasses.remove(clazz)
                         return goal
                     }

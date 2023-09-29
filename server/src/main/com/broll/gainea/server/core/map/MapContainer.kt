@@ -1,73 +1,46 @@
 package com.broll.gainea.server.core.map
 
-open class MapContainer(val expansionSetting: ExpansionSetting?) {
+import com.broll.gainea.server.init.ExpansionSetting
+
+open class MapContainer(val expansionSetting: ExpansionSetting) {
     val expansions = mutableListOf<Expansion>()
-    private val locations: MutableMap<Int, Location?> = HashMap()
+    private val locations: MutableMap<Int, Location> = HashMap()
 
     init {
         init(expansionSetting)
-        expansions!!.stream().flatMap { it: Expansion? -> it.getAllLocations().stream() }.forEach { l: Location? -> locations[l.getNumber()] = l }
+        expansions.flatMap { it.allLocations }.forEach { locations[it.number] = it }
     }
 
-    protected open fun init(setting: ExpansionSetting?) {
+    protected open fun init(setting: ExpansionSetting) {
         expansions += MapFactory.createRenderless(setting)
     }
 
     fun getLocation(number: Int) = locations[number]!!
 
-    val activeExpansionTypes: List<ExpansionType?>
-        get() = expansions!!.stream().map { obj: Expansion? -> obj.getType() }.collect(Collectors.toList())
+    val activeExpansionTypes: List<ExpansionType>
+        get() = expansions.map { it.type }
+
     val allAreas: List<Area>
-        get() {
-            val areas: MutableList<Area?> = ArrayList()
-            expansions!!.forEach(Consumer { e: Expansion? -> e.getContents().stream().map { obj: AreaCollection? -> obj.getAreas() }.forEach { collection: List<Area?>? -> areas.addAll(collection!!) } })
-            return areas
-        }
+        get() = expansions.flatMap { it.allAreas }
+
     val allLocations: List<Location>
-        get() {
-            val areas: MutableList<Location?> = ArrayList()
-            expansions!!.forEach(Consumer { e: Expansion? -> e.getAllLocations().forEach(Consumer { e: Location? -> areas.add(e) }) })
-            return areas
-        }
+        get() = expansions.flatMap { it.allLocations }
     val allShips: List<Ship>
-        get() {
-            val ships: MutableList<Ship> = ArrayList()
-            expansions!!.forEach(Consumer { e: Expansion? -> e.getAllShips().forEach(Consumer { e: Ship? -> ships.add(e) }) })
-            return ships
-        }
+        get() = expansions.flatMap { it.allShips }
 
-    fun getExpansion(type: ExpansionType): Expansion? {
-        return expansions!!.stream().filter { it: Expansion? -> it.getType() == type }.findFirst().orElse(null)
-    }
+    val allIslands: List<Island>
+        get() = expansions.flatMap { it.islands }
+    val allContinents: List<Continent>
+        get() = expansions.flatMap { it.continents }
 
-    val allIslands: List<Island?>
-        get() {
-            val islands: MutableList<Island?> = ArrayList()
-            expansions!!.forEach(Consumer { e: Expansion? -> e.getContents().stream().filter { it: AreaCollection? -> it is Island }.map { it: AreaCollection? -> it as Island? }.forEach { e: Island? -> islands.add(e) } })
-            return islands
-        }
-    val allContinents: List<Continent?>
-        get() {
-            val continents: MutableList<Continent?> = ArrayList()
-            expansions!!.forEach(Consumer { e: Expansion? -> e.getContents().stream().filter { it: AreaCollection? -> it is Continent }.map { it: AreaCollection? -> it as Continent? }.forEach { e: Continent? -> continents.add(e) } })
-            return continents
-        }
-    val allContainers: List<AreaCollection?>
-        get() {
-            val containers: MutableList<AreaCollection?> = ArrayList()
-            expansions!!.forEach(Consumer { e: Expansion? -> e.getContents().forEach(Consumer { e: AreaCollection? -> containers.add(e) }) })
-            return containers
-        }
+    val allContainers: List<AreaCollection>
+        get() = expansions.flatMap { it.contents }
 
-    fun getArea(id: AreaID): Area? {
-        return allAreas.stream().filter { it: Area? -> it.getId() === id }.findFirst().orElse(null)
-    }
+    fun getExpansion(type: ExpansionType) = expansions.find { it.type == type }
 
-    fun getIsland(id: IslandID): Island? {
-        return allIslands.stream().filter { it: Island? -> it.getId() === id }.findFirst().orElse(null)
-    }
+    fun getArea(id: AreaID) = allAreas.find { it.id == id }
 
-    fun getContinent(id: ContinentID): Continent? {
-        return allContinents.stream().filter { it: Continent? -> it.getId() === id }.findFirst().orElse(null)
-    }
+    fun getIsland(id: IslandID) = allIslands.find { it.id == id }
+
+    fun getContinent(id: ContinentID) = allContinents.find { it.id == id }
 }

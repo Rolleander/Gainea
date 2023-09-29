@@ -62,7 +62,7 @@ class BotStrategy(private val game: GameContainer, private val player: Player, v
         updateUnitStrategies()
 
         goalStrategies.forEach { goal ->
-            val deadUnits = goal.units.filter { unit -> unit.isDead }
+            val deadUnits = goal.units.filter { unit -> unit.dead }
             deadUnits.forEach { unit ->
                 strategizedUnits.remove(unit)
                 moveTargets.remove(unit)

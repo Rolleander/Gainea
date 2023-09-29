@@ -1,9 +1,13 @@
 package com.broll.gainea.server.core.map.impl
 
-import com.broll.gainea.server.core.map.AreaIDimport
+import com.broll.gainea.server.core.map.AreaID
+import com.broll.gainea.server.core.map.AreaType
+import com.broll.gainea.server.core.map.ContinentID
+import com.broll.gainea.server.core.map.ExpansionFactory
+import com.broll.gainea.server.core.map.ExpansionType
+import com.broll.gainea.server.core.map.IslandID
 
-com.broll.gainea.server.core.map.AreaTypeimport com.broll.gainea.server.core.map.ContinentIDimport com.broll.gainea.server.core.map.ExpansionFactoryimport com.broll.gainea.server.core.map.ExpansionTypeimport com.broll.gainea.server.core.map.IslandID
-class IcelandMap : ExpansionFactory(ExpansionType.ICELANDS) {
+class IcelandMap : ExpansionFactory(ExpansionType.ICELANDS, "expansion_1.png") {
     enum class Continents : ContinentID {
         TERON,
         SEISM,
@@ -45,11 +49,9 @@ class IcelandMap : ExpansionFactory(ExpansionType.ICELANDS) {
     }
 
     init {
-        setBaseCoordinates(-0.82f, 0.235f)
+        baseCoordinates.set(-0.82f, 0.235f)
     }
 
-    override val texture: String
-        get() = "expansion_1.png"
 
     override fun init() {
         teron()
@@ -63,7 +65,7 @@ class IcelandMap : ExpansionFactory(ExpansionType.ICELANDS) {
     }
 
     private fun teron() {
-        continent(Continents.TERON, "Teron", list(
+        continent(Continents.TERON, "Teron", listOf(
                 area(Areas.KAPEIS, "Kap Eis", AreaType.SNOW, 44.8f, 14.1f),
                 area(Areas.TERGEBIRGE, "Tergebirge", AreaType.MOUNTAIN, 59.9f, 17.4f),
                 area(Areas.KAELTESTEPPE, "Kältesteppe", AreaType.SNOW, 56f, 24f),
@@ -86,7 +88,7 @@ class IcelandMap : ExpansionFactory(ExpansionType.ICELANDS) {
     }
 
     private fun seism() {
-        continent(Continents.SEISM, "Seism", list(
+        continent(Continents.SEISM, "Seism", listOf(
                 area(Areas.SCHNEEWALD, "Schneewald", AreaType.SNOW, 24.6f, 33.2f),
                 area(Areas.SCHNEEBERG, "Schneeberg", AreaType.MOUNTAIN, 28.1f, 25.8f),
                 area(Areas.SCHNEEFELDER, "Schneefelder", AreaType.SNOW, 42.1f, 38.1f),
@@ -100,7 +102,7 @@ class IcelandMap : ExpansionFactory(ExpansionType.ICELANDS) {
     }
 
     private fun totem() {
-        continent(Continents.TOTEM, "Totem", list(
+        continent(Continents.TOTEM, "Totem", listOf(
                 area(Areas.TOTEM, "Totem", AreaType.SNOW, 23.8f, 65.1f),
                 area(Areas.WEISSESMEER, "Weißes Meer", AreaType.LAKE, 21.4f, 53.6f),
                 area(Areas.GRUENESMEER, "Grünes Meer", AreaType.PLAINS, 23.5f, 73.3f)
@@ -110,7 +112,7 @@ class IcelandMap : ExpansionFactory(ExpansionType.ICELANDS) {
     }
 
     private fun schell() {
-        island(Islands.SCHELL, "Schell", list(
+        island(Islands.SCHELL, "Schell", listOf(
                 area(Areas.SCHELLEIS, "Schell Eis", AreaType.SNOW, 35.1f, 60.6f),
                 area(Areas.GLETSCHER, "Gletscher", AreaType.MOUNTAIN, 38.9f, 65.2f)
         ))
@@ -118,13 +120,13 @@ class IcelandMap : ExpansionFactory(ExpansionType.ICELANDS) {
     }
 
     private fun pack() {
-        island(Islands.PACK, "Pack", list(
+        island(Islands.PACK, "Pack", listOf(
                 area(Areas.PACKEIS, "Pack Eis", AreaType.SNOW, 50f, 74.6f)
         ))
     }
 
     private fun kortod() {
-        island(Islands.KORTOD, "Kortod", list(
+        island(Islands.KORTOD, "Kortod", listOf(
                 area(Areas.KORTOD, "Kortod", AreaType.SNOW, 53.3f, 58.5f),
                 area(Areas.EISSEE, "Eis See", AreaType.LAKE, 59.2f, 58.6f)
         ))
@@ -132,7 +134,7 @@ class IcelandMap : ExpansionFactory(ExpansionType.ICELANDS) {
     }
 
     private fun scholl() {
-        island(Islands.SCHOLL, "Scholl", list(
+        island(Islands.SCHOLL, "Scholl", listOf(
                 area(Areas.SCHOLL, "Scholl", AreaType.SNOW, 63.6f, 72.3f),
                 area(Areas.FREILAND, "Freiland", AreaType.PLAINS, 67.7f, 80.1f),
                 area(Areas.GLETSCHERPFUETZE, "Gletscherpfütze", AreaType.LAKE, 69f, 71.8f)
@@ -165,7 +167,7 @@ class IcelandMap : ExpansionFactory(ExpansionType.ICELANDS) {
         ship(Areas.SCHOLL, Areas.KORTOD, 63f, 66f)
     }
 
-    override fun connectWithExpansion(expansion: ExpansionFactory?) {
+    override fun connectWithExpansion(expansion: ExpansionFactory) {
         if (expansion is GaineaMap) {
             ships(Areas.GRASSUMPF, GaineaMap.Areas.UFERLAND, floatArrayOf(84.2f, 92.1f), floatArrayOf(45.1f, 48.2f))
             ships(Areas.FREILAND, GaineaMap.Areas.GROSSEWUESTE, floatArrayOf(76f, 83f, 91f, 100f), floatArrayOf(79f, 79.5f, 81f, 83f))

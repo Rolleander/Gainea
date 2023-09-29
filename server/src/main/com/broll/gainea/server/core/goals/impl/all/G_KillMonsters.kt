@@ -3,18 +3,15 @@ package com.broll.gainea.server.core.goals.impl.all
 import com.broll.gainea.server.core.bot.strategy.GoalStrategy
 import com.broll.gainea.server.core.goals.Goal
 import com.broll.gainea.server.core.goals.GoalDifficulty
-import com.broll.gainea.server.core.objects.MapObject
 import com.broll.gainea.server.core.objects.monster.Monster
 import com.broll.gainea.server.core.player.Player
-import java.util.stream.Collectors
 
-open class G_KillMonsters @JvmOverloads constructor(difficulty: GoalDifficulty = GoalDifficulty.EASY, stars: Int = 7) : Goal(difficulty, "Erledige Monster mit insgesamt $stars Sternen") {
-    private val starsTarget: Int
+open class G_KillMonsters(difficulty: GoalDifficulty = GoalDifficulty.EASY, private val starsTarget: Int = 7)
+    : Goal(difficulty, "Erledige Monster mit insgesamt $starsTarget Sternen") {
     private var stars = 0
 
     init {
-        setProgressionGoal(stars)
-        starsTarget = stars
+        setProgressionGoal(starsTarget)
     }
 
     override fun earnedStars(player: Player, stars: Int) {
@@ -34,7 +31,7 @@ open class G_KillMonsters @JvmOverloads constructor(difficulty: GoalDifficulty =
     override fun botStrategy(strategy: GoalStrategy) {
         strategy.isSpreadUnits = false
         strategy.setPrepareStrategy {
-            val locations = game.objects.stream().filter { it: MapObject? -> it is Monster }.map { obj: MapObject? -> obj.getLocation() }.collect(Collectors.toSet())
+            val locations = game.objects.filterIsInstance<Monster>().map { it.location }.toSet()
             strategy.updateTargets(locations)
             strategy.setRequiredUnits(starsTarget - stars)
         }

@@ -1,20 +1,20 @@
 package com.broll.gainea.server.core.map.impl
 
-import com.broll.gainea.server.core.map.AreaIDimport
+import com.broll.gainea.server.core.map.AreaID
+import com.broll.gainea.server.core.map.ContinentID
+import com.broll.gainea.server.core.map.ExpansionFactory
+import com.broll.gainea.server.core.map.ExpansionType
+import com.broll.gainea.server.core.map.IslandID
 
-com.broll.gainea.server.core.map.ContinentIDimport com.broll.gainea.server.core.map.ExpansionFactoryimport com.broll.gainea.server.core.map.ExpansionTypeimport com.broll.gainea.server.core.map.IslandID
-class MountainsMap : ExpansionFactory(ExpansionType.MOUNTAINS) {
+class MountainsMap : ExpansionFactory(ExpansionType.MOUNTAINS, "expansion_3.png") {
     enum class Continents : ContinentID
     enum class Islands : IslandID
     enum class Areas : AreaID
 
     init {
-        setBaseCoordinates(-1.05f, 1.08f)
+        baseCoordinates.set(-1.05f, 1.08f)
     }
 
-    override val texture: String
-        get() = "expansion_3.png"
-
     override fun init() {}
-    override fun connectWithExpansion(expansion: ExpansionFactory?) {}
+    override fun connectWithExpansion(expansion: ExpansionFactory) {}
 }

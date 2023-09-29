@@ -1,12 +1,9 @@
 package com.broll.gainea.server.core.map
 
-java.util.HashSet
-class Area(val id: AreaID,    val type: AreaType,
-           val name: String) : Location() {
-    override val connectedLocations: MutableSet<Location> = HashSet()
+class Area(val id: AreaID, val type: AreaType,
+           val name: String, coordinates: Coordinates) : Location(coordinates) {
 
-
-    fun addAdjacentLocation(location: Location?) {
+    fun addAdjacentLocation(location: Location) {
         connectedLocations.add(location)
         if (location is Area) {
             location.connectedLocations.add(this)
@@ -20,6 +17,6 @@ class Area(val id: AreaID,    val type: AreaType,
     }
 
     override fun toString(): String {
-        return name!!
+        return name
     }
 }

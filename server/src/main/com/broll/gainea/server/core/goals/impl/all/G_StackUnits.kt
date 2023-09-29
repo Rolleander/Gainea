@@ -1,33 +1,38 @@
 package com.broll.gainea.server.core.goals.impl.all
 
-import com.broll.gainea.misc.RandomUtilsimport
+import com.broll.gainea.server.core.bot.strategy.GoalStrategy
+import com.broll.gainea.server.core.goals.GoalDifficulty
+import com.broll.gainea.server.core.goals.OccupyGoal
+import com.broll.gainea.server.core.map.Area
+import com.broll.gainea.server.core.objects.Unit
 
-com.broll.gainea.server.core.GameContainerimport com.broll.gainea.server.core.bot.strategy.GoalStrategyimport com.broll.gainea.server.core.goals.CustomOccupyGoalimport com.broll.gainea.server.core.goals.GoalDifficultyimport com.broll.gainea.server.core.map.Areaimport com.broll.gainea.server.core.map.Locationimport com.broll.gainea.server.core.objects.MapObjectimport com.broll.gainea.server.core.objects.Unitimport com.broll.gainea.server.core.player.Playerimport com.google.common.collect.Sets
-class G_StackUnits : CustomOccupyGoal(GoalDifficulty.EASY, null) {
-    private var area: Area? = null
-    override fun init(game: GameContainer, player: Player?): Boolean {
-        this.game = game
-        this.player = player
-        area = RandomUtils.pickRandom(game.map.allAreas)
-        text = "Besetze " + area.getName() + " mit mindestens " + COUNT + " Einheiten"
-        setExpansionRestriction(area.getContainer().expansion.type)
-        setProgressionGoal(COUNT)
-        locations.add(area)
-        return true
+class G_StackUnits : OccupyGoal(GoalDifficulty.EASY, "") {
+    private lateinit var area: Area
+
+    init {
+        autoUpdateProgressions = false
+    }
+
+    override fun initOccupations() {
+        area = game.map.allAreas.random()
+        text = "Besetze " + area.name + " mit mindestens " + COUNT + " Einheiten"
+
+        condition(occupy(area), {
+            it.inhabitants.count { it.owner == player && it is Unit } >= COUNT
+        })
     }
 
     override fun check() {
-        val playerUnits = area.getInhabitants().stream().filter { it: MapObject -> it.owner === player && it is Unit }.count().toInt()
+        val playerUnits = area.inhabitants.count { it.owner === player && it is Unit }
         updateProgression(playerUnits)
-        if (playerUnits >= COUNT) {
-            success()
-        }
+        super.check()
     }
 
     override fun botStrategy(strategy: GoalStrategy) {
         strategy.setRequiredUnits(COUNT)
-        strategy.updateTargets(Sets.newHashSet<Location?>(area))
+        strategy.updateTargets(setOf(area))
     }
+
 
     companion object {
         private const val COUNT = 6

@@ -55,17 +55,17 @@ object BattleSimulation {
 
     fun winsBattle(attackers: List<Unit>, defenders: List<Unit>): Boolean {
         val simulationWrapper = UnitSimulationWrapper(attackers, defenders)
-        while (attackers.any { it.isAlive } && defenders.any { it.isAlive }) {
+        while (attackers.any { it.alive } && defenders.any { it.alive }) {
             val context = BattleContext(attackers, defenders)
             object : Battle(context,
-                    attackers.filter { it.isAlive },
-                    defenders.filter { it.isAlive }) {
+                    attackers.filter { it.alive },
+                    defenders.filter { it.alive }) {
                 override fun damage(result: FightResult, source: Unit, target: Unit) {
                     target.takeDamage()
                 }
             }.fight()
         }
-        val winner = attackers.any { it.isAlive }
+        val winner = attackers.any { it.alive }
         simulationWrapper.restore()
         return winner
     }

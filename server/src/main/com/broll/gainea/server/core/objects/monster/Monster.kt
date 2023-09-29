@@ -46,7 +46,7 @@ open class Monster(owner: Player) : Unit(owner) {
     }
 
     override fun roundStarted() {
-        if (actionTimer != NT_Monster.NO_ACTION_TIMER.toInt() && isAlive && isBehaviorActive && game.rounds > 1) {
+        if (actionTimer != NT_Monster.NO_ACTION_TIMER.toInt() && alive && isBehaviorActive && game.rounds > 1) {
             progressBehavior()
         }
     }

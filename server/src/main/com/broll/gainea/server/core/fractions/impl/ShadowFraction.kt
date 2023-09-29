@@ -13,8 +13,7 @@ import com.broll.gainea.server.core.objects.Soldier
 import com.broll.gainea.server.core.objects.Unit
 import com.broll.gainea.server.core.objects.monster.Monster
 import com.broll.gainea.server.core.utils.LocationUtils
-import java.util.function.Consumer
-import java.util.stream.Collectors
+import com.broll.gainea.server.core.utils.UnitControl.spawn
 
 class ShadowFraction : Fraction(FractionType.SHADOW) {
     override fun description(): FractionDescription {
@@ -25,8 +24,8 @@ class ShadowFraction : Fraction(FractionType.SHADOW) {
         return desc
     }
 
-    override fun killedMonster(monster: Monster?) {
-        if (LocationUtils.isAreaType(monster.getLocation(), AreaType.PLAINS)) {
+    override fun killedMonster(monster: Monster) {
+        if (LocationUtils.isAreaType(monster.location, AreaType.PLAINS)) {
             return
         }
         super.killedMonster(monster)
@@ -34,7 +33,7 @@ class ShadowFraction : Fraction(FractionType.SHADOW) {
 
     override fun createSoldier(): Soldier {
         val soldier = Soldier(owner)
-        soldier.setStats(Fraction.Companion.SOLDIER_POWER, Fraction.Companion.SOLDIER_HEALTH)
+        soldier.setStats(SOLDIER_POWER, SOLDIER_HEALTH)
         soldier.name = "Schatten"
         soldier.icon = 12
         return soldier
@@ -43,27 +42,27 @@ class ShadowFraction : Fraction(FractionType.SHADOW) {
     override fun createCommander(): Soldier {
         val commander = Soldier(owner)
         commander.isCommander = true
-        commander.setStats(Fraction.Companion.COMMANDER_POWER, Fraction.Companion.COMMANDER_HEALTH)
+        commander.setStats(COMMANDER_POWER, COMMANDER_HEALTH)
         commander.name = "Erznekromant Bal"
         commander.icon = 21
         return commander
     }
 
-    private fun summonSkeletons(killedEnemies: List<Unit>, location: Location?) {
-        killedEnemies.forEach(Consumer { it: Unit? ->
+    private fun summonSkeletons(killedEnemies: List<Unit>, location: Location) {
+        killedEnemies.forEach { _ ->
             if (RandomUtils.randomBoolean(SUMMON_CHANCE)) {
                 summon(location)
             }
-        })
+        }
     }
 
-    private fun summon(location: Location?) {
+    private fun summon(location: Location) {
         val skeleton: Soldier = object : Soldier(owner) {
-            override fun calcFightingPower(context: BattleContext?): FightingPower {
-                return super.calcFightingPower(context)!!.changeNumberPlus(-1)
+            override fun calcFightingPower(context: BattleContext): FightingPower {
+                return super.calcFightingPower(context).changeNumberPlus(-1)
             }
         }
-        skeleton.setStats(Fraction.Companion.SOLDIER_POWER, Fraction.Companion.SOLDIER_HEALTH)
+        skeleton.setStats(SOLDIER_POWER, SOLDIER_HEALTH)
         skeleton.icon = 94
         skeleton.name = "Skelett"
         spawn(game, skeleton, location)
@@ -71,8 +70,8 @@ class ShadowFraction : Fraction(FractionType.SHADOW) {
 
     override fun battleResult(result: BattleResult) {
         if (result.isParticipating(owner)) {
-            val spawnLocation = result.getEndLocation(owner)
-            val killedEnemies = result.getOpposingUnits(owner)!!.stream().filter { obj: Unit -> obj.isDead }.collect(Collectors.toList())
+            val spawnLocation = result.getEndLocation(owner)!!
+            val killedEnemies = result.getOpposingUnits(owner).filter { it.dead }
             summonSkeletons(killedEnemies, spawnLocation)
         }
     }

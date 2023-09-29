@@ -19,11 +19,11 @@ class MercenaryFraction : Fraction(FractionType.MERCENARY) {
         return desc
     }
 
-    override fun calcFightingPower(soldier: Soldier, context: BattleContext?): FightingPower? {
-        return super.calcFightingPower(soldier, context)!!.withHighestNumber(5).withLowestNumber(2)
+    override fun calcFightingPower(soldier: Soldier, context: BattleContext): FightingPower {
+        return super.calcFightingPower(soldier, context).withHighestNumber(5).withLowestNumber(2)
     }
 
-    override fun prepareTurn(actionHandlers: ActionHandlers?) {
+    override fun prepareTurn(actionHandlers: ActionHandlers) {
         super.prepareTurn(actionHandlers)
         turns++
         if (turns >= SPAWN_TURN) {
@@ -35,7 +35,7 @@ class MercenaryFraction : Fraction(FractionType.MERCENARY) {
 
     override fun createSoldier(): Soldier {
         val soldier = Soldier(owner)
-        soldier.setStats(Fraction.Companion.SOLDIER_POWER, Fraction.Companion.SOLDIER_HEALTH)
+        soldier.setStats(SOLDIER_POWER, SOLDIER_HEALTH)
         soldier.name = "Söldner"
         soldier.icon = ICONS[RandomUtils.random(ICONS.size - 1)]
         return soldier
@@ -44,7 +44,7 @@ class MercenaryFraction : Fraction(FractionType.MERCENARY) {
     override fun createCommander(): Soldier {
         val commander = Soldier(owner)
         commander.isCommander = true
-        commander.setStats(Fraction.Companion.COMMANDER_POWER, Fraction.Companion.COMMANDER_HEALTH)
+        commander.setStats(COMMANDER_POWER, COMMANDER_HEALTH)
         commander.name = "Söldnerkommandant"
         commander.icon = 5
         return commander

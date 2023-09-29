@@ -22,21 +22,21 @@ class VikingFraction : Fraction(FractionType.VIKINGS) {
         return desc
     }
 
-    override fun calcFightingPower(soldier: Soldier, context: BattleContext?): FightingPower? {
+    override fun calcFightingPower(soldier: Soldier, context: BattleContext): FightingPower {
         val power = super.calcFightingPower(soldier, context)
-        val location = context!!.location
+        val location = context.location
         if (location is Ship || LocationUtils.isAreaType(location, AreaType.SNOW)) {
-            power!!.changeNumberPlus(1)
+            power.changeNumberPlus(1)
         }
         if (LocationUtils.isAreaType(location, AreaType.DESERT)) {
-            power!!.changeNumberPlus(-2)
+            power.changeNumberPlus(-2)
         }
         return power
     }
 
     override fun createSoldier(): Soldier {
         val soldier: Soldier = VikingSoldier(owner)
-        soldier.setStats(Fraction.Companion.SOLDIER_POWER, Fraction.Companion.SOLDIER_HEALTH)
+        soldier.setStats(SOLDIER_POWER, SOLDIER_HEALTH)
         soldier.name = "Wikinger"
         soldier.icon = 106
         return soldier
@@ -45,15 +45,15 @@ class VikingFraction : Fraction(FractionType.VIKINGS) {
     override fun createCommander(): Soldier {
         val commander: Soldier = VikingSoldier(owner)
         commander.isCommander = true
-        commander.setStats(Fraction.Companion.COMMANDER_POWER, Fraction.Companion.COMMANDER_HEALTH)
+        commander.setStats(COMMANDER_POWER, COMMANDER_HEALTH)
         commander.name = "Jarl Olaf"
         commander.icon = 104
         return commander
     }
 
-    private class VikingSoldier(owner: Player?) : Soldier(owner) {
-        override fun canMoveTo(to: Location?): Boolean {
-            return to!!.traversable
+    private class VikingSoldier(owner: Player) : Soldier(owner) {
+        override fun canMoveTo(to: Location): Boolean {
+            return to.traversable
         }
     }
 }

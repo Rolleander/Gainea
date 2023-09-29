@@ -1,15 +1,17 @@
 package com.broll.gainea.server.core.goals.impl.all
 
-import com.broll.gainea.misc.RandomUtilsimport
+import com.broll.gainea.server.core.bot.strategy.GoalStrategy
+import com.broll.gainea.server.core.goals.CustomOccupyGoal
+import com.broll.gainea.server.core.goals.GoalDifficulty
+import com.broll.gainea.server.core.map.Ship
 
-com.broll.gainea.server.core.bot.strategy.GoalStrategyimport com.broll.gainea.server.core.goals.CustomOccupyGoalimport com.broll.gainea.server.core.goals.GoalDifficultyimport com.broll.gainea.server.core.map.AreaCollectionimport com.broll.gainea.server.core.map.Locationimport com.broll.gainea.server.core.map.Shipimport java.util.stream.Collectors
 class G_Spread : CustomOccupyGoal(GoalDifficulty.MEDIUM, "Kontrolliere Einheiten auf " + COUNT + " verschiedenen Landmassen") {
     init {
         setProgressionGoal(COUNT)
     }
 
     override fun check() {
-        val containers = player.controlledLocations.stream().filter { it: Location? -> it !is Ship }.map { obj: Location? -> obj.getContainer() }.distinct().count().toInt()
+        val containers = player.controlledLocations.filter { it !is Ship }.map { it.container }.distinct().count()
         updateProgression(containers)
         if (containers >= COUNT) {
             success()
@@ -17,9 +19,9 @@ class G_Spread : CustomOccupyGoal(GoalDifficulty.MEDIUM, "Kontrolliere Einheiten
     }
 
     override fun botStrategy(strategy: GoalStrategy) {
-        val areas = game.map.allContainers.stream().map { it: AreaCollection? -> RandomUtils.pickRandom(it.getAreas()) }.collect(Collectors.toSet())
+        val areas = game.map.allContainers.map { it.areas.random() }
         strategy.setRequiredUnits(COUNT)
-        strategy.updateTargets(areas)
+        strategy.updateTargets(areas.toSet())
     }
 
     companion object {

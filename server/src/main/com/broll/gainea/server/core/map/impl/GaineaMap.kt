@@ -1,9 +1,13 @@
 package com.broll.gainea.server.core.map.impl
 
-import com.broll.gainea.server.core.map.AreaIDimport
+import com.broll.gainea.server.core.map.AreaID
+import com.broll.gainea.server.core.map.AreaType
+import com.broll.gainea.server.core.map.ContinentID
+import com.broll.gainea.server.core.map.ExpansionFactory
+import com.broll.gainea.server.core.map.ExpansionType
+import com.broll.gainea.server.core.map.IslandID
 
-com.broll.gainea.server.core.map.AreaTypeimport com.broll.gainea.server.core.map.ContinentIDimport com.broll.gainea.server.core.map.ExpansionFactoryimport com.broll.gainea.server.core.map.ExpansionTypeimport com.broll.gainea.server.core.map.IslandID
-class GaineaMap : ExpansionFactory(ExpansionType.GAINEA) {
+class GaineaMap : ExpansionFactory(ExpansionType.GAINEA, "expansion_0.png") {
     enum class Continents : ContinentID {
         GAINEA,
         MOOR,
@@ -45,8 +49,6 @@ class GaineaMap : ExpansionFactory(ExpansionType.GAINEA) {
         MISTRAWUESTE
     }
 
-    override val texture: String
-        get() = "expansion_0.png"
 
     override fun init() {
         gainea()
@@ -59,7 +61,7 @@ class GaineaMap : ExpansionFactory(ExpansionType.GAINEA) {
     }
 
     private fun gainea() {
-        continent(Continents.GAINEA, "Gainea", list(
+        continent(Continents.GAINEA, "Gainea", listOf(
                 area(Areas.KUESTENGEBIET, "Küstengebiet", AreaType.PLAINS, 41.4f, 23.6f),
                 area(Areas.FELSWALD, "Felswald", AreaType.MOUNTAIN, 55.9f, 20.7f),
                 area(Areas.FELSENWUESTE, "Felsenwüste", AreaType.DESERT, 72.1f, 23.5f),
@@ -96,7 +98,7 @@ class GaineaMap : ExpansionFactory(ExpansionType.GAINEA) {
     }
 
     private fun moor() {
-        continent(Continents.MOOR, "Moor", list(
+        continent(Continents.MOOR, "Moor", listOf(
                 area(Areas.MOORKUESTE, "Moorküste", AreaType.PLAINS, 74.2f, 46.8f),
                 area(Areas.MOOR, "Moor", AreaType.PLAINS, 81.3f, 49.2f),
                 area(Areas.MOORWUESTE, "Moorwüste", AreaType.DESERT, 71.8f, 63.8f),
@@ -110,7 +112,7 @@ class GaineaMap : ExpansionFactory(ExpansionType.GAINEA) {
     }
 
     private fun zuba() {
-        continent(Continents.ZUBA, "Zuba", list(
+        continent(Continents.ZUBA, "Zuba", listOf(
                 area(Areas.GROSSES_FELSGEBIRGE, "Großes Feslgebirge", AreaType.MOUNTAIN, 25.2f, 24.4f),
                 area(Areas.UFERLAND, "Uferland", AreaType.PLAINS, 16.7f, 29.8f),
                 area(Areas.LANDSTRAND, "Landstrand", AreaType.PLAINS, 15f, 36.6f),
@@ -128,7 +130,7 @@ class GaineaMap : ExpansionFactory(ExpansionType.GAINEA) {
     }
 
     private fun vulkanInsel() {
-        island(Islands.VULKANINSEL, "Vulkaninsel", list(
+        island(Islands.VULKANINSEL, "Vulkaninsel", listOf(
                 area(Areas.VULKANINSEL, "Vulkaninsel", AreaType.PLAINS, 25.8f, 49.2f),
                 area(Areas.VULKANBERG, "Vulkanberg", AreaType.MOUNTAIN, 29.1f, 44.9f)
         ))
@@ -136,13 +138,13 @@ class GaineaMap : ExpansionFactory(ExpansionType.GAINEA) {
     }
 
     private fun totemInsel() {
-        island(Islands.TOTEMINSEL, "Toteminsel", list(
+        island(Islands.TOTEMINSEL, "Toteminsel", listOf(
                 area(Areas.TOTEMGEBIRGE, "Totemgebirge / Insel", AreaType.MOUNTAIN, 34.6f, 71.2f)
         ))
     }
 
     private fun mistraInsel() {
-        island(Islands.MISTRAINSEL, "Mistrainsel", list(
+        island(Islands.MISTRAINSEL, "Mistrainsel", listOf(
                 area(Areas.MISTRAWUESTE, "Mistra Insel / Wüste", AreaType.DESERT, 86.3f, 62.8f)
         ))
     }
@@ -167,7 +169,7 @@ class GaineaMap : ExpansionFactory(ExpansionType.GAINEA) {
         ship(Areas.MISTRAWUESTE, Areas.MOORWUESTE, 79.7f, 63.7f)
     }
 
-    override fun connectWithExpansion(expansion: ExpansionFactory?) {
+    override fun connectWithExpansion(expansion: ExpansionFactory) {
         if (expansion is IcelandMap) {
             ships(Areas.UFERLAND, IcelandMap.Areas.GRASSUMPF, floatArrayOf(8f, -0.5f), floatArrayOf(29.4f, 27.4f))
             ships(Areas.MANMAWUESTE, IcelandMap.Areas.SCHOLL, floatArrayOf(10.9f, 2.7f, -5.5f), floatArrayOf(45f, 46.5f, 48.1f))

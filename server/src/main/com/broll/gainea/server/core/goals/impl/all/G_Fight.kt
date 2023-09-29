@@ -1,8 +1,11 @@
 package com.broll.gainea.server.core.goals.impl.all
 
-import com.broll.gainea.server.core.battle.BattleResultimport
+import com.broll.gainea.server.core.battle.BattleResult
+import com.broll.gainea.server.core.bot.BotUtils
+import com.broll.gainea.server.core.bot.strategy.GoalStrategy
+import com.broll.gainea.server.core.goals.GoalDifficulty
+import com.broll.gainea.server.core.goals.RoundGoal
 
-com.broll.gainea.server.core.bot.BotUtilsimport com.broll.gainea.server.core.bot.strategy.GoalStrategyimport com.broll.gainea.server.core.goals.GoalDifficultyimport com.broll.gainea.server.core.goals.RoundGoal
 class G_Fight : RoundGoal(GoalDifficulty.EASY, "Sei für 5 aufeinanderfolgende Runden an Kämpfen beteiligt", 5) {
     private var fighting = false
     override fun battleResult(result: BattleResult) {
@@ -22,7 +25,7 @@ class G_Fight : RoundGoal(GoalDifficulty.EASY, "Sei für 5 aufeinanderfolgende R
 
     override fun botStrategy(strategy: GoalStrategy) {
         strategy.setPrepareStrategy {
-            strategy.updateTargets(BotUtils.huntOtherPlayersTargets(player!!, game!!))
+            strategy.updateTargets(BotUtils.huntOtherPlayersTargets(player, game))
             strategy.setRequiredUnits(5)
         }
     }
