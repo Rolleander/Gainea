@@ -17,6 +17,7 @@ class G_OccupyRounds : RoundGoal(GoalDifficulty.MEDIUM, "", ROUND_TARGET) {
 
     override fun init(game: Game, player: Player): Boolean {
         container = game.map.allContainers.random()
+        locations += container.areas
         text = "Sei für " + ROUND_TARGET + " Runden der einzige Spieler mit Einheiten auf " + container.name
         val containerSize = container.areas.size
         difficulty = if (containerSize <= 5) {

@@ -30,7 +30,6 @@ class BattleHandler(private val game: Game, private val reactionResult: Reaction
         isBattleActive = false
     }
 
-    @JvmOverloads
     fun startBattle(attackers: List<Unit>, defenders: List<Unit>, allowRetreat: Boolean = true) {
         if (!isBattleActive) {
             this.allowRetreat = allowRetreat
@@ -104,7 +103,7 @@ class BattleHandler(private val game: Game, private val reactionResult: Reaction
         return Battle(context.aliveAttackers, context.aliveDefenders, attackerRolls, defenderRolls).fight()
     }
 
-    private fun List<Unit>.toInfoString() = map { "${it.id} | ${it.name} ${it.power.value} ${it.health.value}" }.joinToString { ", " }
+    private fun List<Unit>.toInfoString() = map { "${it.id} | ${it.name} ${it.power.value} ${it.health.value}" }.joinToString(", ")
 
     private fun logContext(prefix: String) {
         Log.info(prefix + " Attackers: (" + context.aliveAttackers.toInfoString() + ")"
@@ -154,7 +153,7 @@ class BattleHandler(private val game: Game, private val reactionResult: Reaction
         var startNextRound = true
         if (allowRetreat) {
             //disconnect check
-            if (context.attackingPlayer.serverPlayer.isOnline) {
+            if (!context.attackingPlayer.isNeutral() && !context.attackingPlayer.serverPlayer.isOnline) {
                 //retreat cause offline
                 Log.info("Retreat from battle because attacking player is offline")
                 battleFinished(true)

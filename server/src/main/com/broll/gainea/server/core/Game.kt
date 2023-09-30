@@ -29,6 +29,7 @@ import com.broll.gainea.server.init.LobbyData
 import com.broll.gainea.server.init.PlayerData
 import com.broll.networklib.server.impl.ServerLobby
 import org.slf4j.LoggerFactory
+import java.util.concurrent.atomic.AtomicInteger
 
 class Game(val lobby: ServerLobby<LobbyData, PlayerData>) {
     val neutralPlayer = NeutralPlayer(this)
@@ -41,8 +42,8 @@ class Game(val lobby: ServerLobby<LobbyData, PlayerData>) {
         private set
     var currentTurn = -1
         private set
-    private var actionCounter = 0
-    private var boardObjectCounter = 0
+    private val actionCounter = AtomicInteger()
+    private val boardObjectCounter = AtomicInteger()
 
     lateinit var reactionHandler: ReactionHandler
 
@@ -84,17 +85,14 @@ class Game(val lobby: ServerLobby<LobbyData, PlayerData>) {
         cardStorage = CardStorage(this, actionHandlers)
     }
 
-    @Synchronized
-    fun newObjectId(): Int {
-        boardObjectCounter++
-        return boardObjectCounter
-    }
+
+    fun newObjectId() = boardObjectCounter.incrementAndGet()
 
     @Synchronized
     fun pushAction(action: ActionContext<out NT_Action>) {
-        action.action.actionId = actionCounter.toShort().toInt()
-        actions[actionCounter] = action
-        actionCounter++
+        val nr = actionCounter.incrementAndGet()
+        action.action.actionId = nr
+        actions[nr] = action
     }
 
     @Synchronized

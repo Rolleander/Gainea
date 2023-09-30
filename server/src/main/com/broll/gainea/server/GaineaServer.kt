@@ -80,9 +80,9 @@ class GaineaServer(version: String) {
                 game.allPlayers.forEach(Consumer { player: Player ->
                     print("> Player [" + player.toString() + " Points:" + player.goalHandler.score
                             + " Stars:" + player.goalHandler.stars + " Online=" + player.serverPlayer.isOnline + "]:")
-                    print(">> Goals (" + player.goalHandler.goals.size + "):" + player.goalHandler.goals.joinToString { "," })
-                    print(">> Cards (" + player.cardHandler.cards.size + "): " + player.cardHandler.cards.joinToString { "," })
-                    print(">> Controlled Locations: [" + player.controlledLocations.joinToString { "," } + "]")
+                    print(">> Goals (" + player.goalHandler.goals.size + "):" + player.goalHandler.goals.joinToString(","))
+                    print(">> Cards (" + player.cardHandler.cards.size + "): " + player.cardHandler.cards.joinToString(","))
+                    print(">> Controlled Locations: [" + player.controlledLocations.joinToString(",") + "]")
                     print(">> Objects [" + player.units.size + "]:")
                     player.units.forEach { print(">>> " + it.toString()) }
                 })

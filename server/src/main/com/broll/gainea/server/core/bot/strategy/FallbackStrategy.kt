@@ -8,7 +8,12 @@ import com.broll.gainea.server.core.player.Player
 
 object FallbackStrategy {
 
-    object FallbackGoal : Goal(difficulty = GoalDifficulty.EASY, text = "fallback") {
+    class FallbackGoal(game: Game, owner: Player) : Goal(difficulty = GoalDifficulty.EASY, text = "fallback") {
+
+        init {
+            init(game, owner)
+        }
+
         override fun check() {
         }
 
@@ -18,10 +23,11 @@ object FallbackStrategy {
     }
 
     fun create(botStrategy: BotStrategy, player: Player, game: Game, constants: StrategyConstants): GoalStrategy {
-        val strategy = GoalStrategy(botStrategy, FallbackGoal, player, game, constants)
+        val goal = FallbackGoal(game, player)
+        val strategy = GoalStrategy(botStrategy, goal, player, game, constants)
         strategy.setPrepareStrategy {
             //attack monsters
-            val locations = game.objects.filterIsInstance(Monster::class.java).mapNotNull { it.location }.toHashSet()
+            val locations = game.objects.filterIsInstance(Monster::class.java).map { it.location }.toSet()
             strategy.updateTargets(locations)
             strategy.setRequiredUnits(0)
         }

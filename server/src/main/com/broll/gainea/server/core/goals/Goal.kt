@@ -42,7 +42,7 @@ abstract class Goal(var difficulty: GoalDifficulty, var text: String) : GameUpda
     protected fun setExpansionRestriction(vararg expansions: ExpansionType) {
         requiredExpansions.clear()
         requiredExpansions += expansions
-        restrictionInfo = expansions.map { it.expansionName }.joinToString { "," }
+        restrictionInfo = expansions.map { it.expansionName }.joinToString(",")
     }
 
     protected open fun validForGame(): Boolean {

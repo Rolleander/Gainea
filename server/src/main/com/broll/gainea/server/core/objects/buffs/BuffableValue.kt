@@ -27,7 +27,5 @@ abstract class BuffableValue<T, V, B : Buff<V>>(val target: T, initValue: V) {
         buffs.clear()
     }
 
-    override fun toString(): String {
-        return "" + buffedValue
-    }
+    override fun toString() = value.toString()
 }

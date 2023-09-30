@@ -45,7 +45,7 @@ class BotMove : BotOptionalAction<NT_Action_Move, BotMove.MoveOption>() {
         var moveFrom: Location? = null
         var flee = false
         val annihilationChances = HashMap<Location, Double>()
-        units.map { it.location!! }.distinct().forEach {
+        units.map { it.location }.distinct().forEach {
             annihilationChances[it] = LocationDanger.getAnnihilationChance(bot, it)
         }
         for (i in unitTargets.indices) {
@@ -81,6 +81,7 @@ class BotMove : BotOptionalAction<NT_Action_Move, BotMove.MoveOption>() {
         if (moveTogether.isEmpty()) {
             return null
         }
+        //todo broken indexes somehwere?!
         val unitIds = nt_units.map { it.id }.toTypedArray()
         var score = Math.max(MOVE_SCORE - distance, 1)
         if (flee) {

@@ -7,7 +7,7 @@ class BuffableBoolean<T>(target: T, value: Boolean) : BuffableValue<T, Boolean, 
     }
 
     override fun recalc() {
-        buffedValue = value
+        buffedValue = rootValue
         for (buff in buffs) {
             buffedValue = buff.modifier
         }

@@ -19,7 +19,7 @@ class BuffableInt<T>(target: T, value: Int) : BuffableValue<T, Int, IntBuff>(tar
     }
 
     override fun recalc() {
-        buffedValue = value
+        buffedValue = rootValue
         for (buff in buffs) {
             val modifier = buff.modifier
             buffedValue = when (buff.type) {
