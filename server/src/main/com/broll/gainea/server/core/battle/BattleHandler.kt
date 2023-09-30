@@ -4,21 +4,22 @@ import com.broll.gainea.net.NT_Battle_Intention
 import com.broll.gainea.net.NT_Battle_Reaction
 import com.broll.gainea.net.NT_Battle_Start
 import com.broll.gainea.net.NT_Battle_Update
-import com.broll.gainea.server.core.GameContainer
+import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.actions.ReactionActions
 import com.broll.gainea.server.core.objects.Unit
 import com.broll.gainea.server.core.objects.monster.Monster
 import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.core.player.isNeutral
-import com.broll.gainea.server.core.utils.GameUtils
 import com.broll.gainea.server.core.utils.ProcessingUtils
-import com.broll.gainea.server.core.utils.UnitControl
+import com.broll.gainea.server.core.utils.UnitControl.move
+import com.broll.gainea.server.core.utils.remove
+import com.broll.gainea.server.core.utils.sendUpdate
 import org.apache.commons.lang3.mutable.MutableBoolean
 import org.slf4j.LoggerFactory
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ExecutionException
 
-class BattleHandler(private val game: GameContainer, private val reactionResult: ReactionActions) {
+class BattleHandler(private val game: Game, private val reactionResult: ReactionActions) {
     var isBattleActive = false
         private set
     private var keepAttacking: CompletableFuture<Boolean>? = null
@@ -103,7 +104,7 @@ class BattleHandler(private val game: GameContainer, private val reactionResult:
         return Battle(context.aliveAttackers, context.aliveDefenders, attackerRolls, defenderRolls).fight()
     }
 
-    private fun List<Unit>.toInfoString() = map { "${it.id} | ${it.name} ${it.power.getValue()} ${it.health.getValue()}" }.joinToString { ", " }
+    private fun List<Unit>.toInfoString() = map { "${it.id} | ${it.name} ${it.power.value} ${it.health.value}" }.joinToString { ", " }
 
     private fun logContext(prefix: String) {
         Log.info(prefix + " Attackers: (" + context.aliveAttackers.toInfoString() + ")"
@@ -189,18 +190,18 @@ class BattleHandler(private val game: GameContainer, private val reactionResult:
         val fallenUnits = mutableListOf<Unit>()
         fallenUnits.addAll(result.killedAttackers)
         fallenUnits.addAll(result.killedDefenders)
-        fallenUnits.forEach { GameUtils.remove(game, it) }
+        fallenUnits.forEach { game.remove(it) }
         fallenUnits.forEach { it.onDeath(result) }
         fallenUnits.forEach { updateReceiver.killed(it, result) }
         updateReceiver.battleResult(result)
         //if defenders lost, move surviving attackers to location
         if (result.attackersWon) {
-            UnitControl.move(game, result.aliveAttackers, result.location)
+            game.move(result.aliveAttackers, result.location)
         }
-        GameUtils.sendUpdate(game, game.nt())
+        game.sendUpdate(game.nt())
         //find dead monsters to give killing player rewards
         rewardKilledMonsters(result.attackingPlayer, result.killedDefenders)
-        result.getDefendingPlayers().forEach { rewardKilledMonsters(it, result.killedDefenders) }
+        result.getNonNeutralDefenders().forEach { rewardKilledMonsters(it, result.killedAttackers) }
     }
 
     private fun rewardKilledMonsters(killer: Player?, units: List<Unit>) {

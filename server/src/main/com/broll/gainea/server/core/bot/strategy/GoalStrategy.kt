@@ -1,18 +1,18 @@
 package com.broll.gainea.server.core.bot.strategy
 
-import com.broll.gainea.server.core.GameContainer
+import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.bot.BotUtils
 import com.broll.gainea.server.core.goals.Goal
 import com.broll.gainea.server.core.map.Location
 import com.broll.gainea.server.core.objects.Unit
 import com.broll.gainea.server.core.player.Player
-import com.broll.gainea.server.core.utils.PlayerUtils
+import com.broll.gainea.server.core.utils.getUnits
 import org.apache.commons.lang3.tuple.MutablePair
 
 class GoalStrategy(val botStrategy: BotStrategy,
                    val goal: Goal,
                    private val player: Player,
-                   private val game: GameContainer,
+                   private val game: Game,
                    private val constants: StrategyConstants) {
     val units = mutableListOf<Unit>()
     val targetLocations = mutableSetOf<Location>()
@@ -89,7 +89,7 @@ class GoalStrategy(val botStrategy: BotStrategy,
     }
 
     val lowesOccupations: Int
-        get() = targetLocations.minOf { PlayerUtils.getUnits(player, it).size }
+        get() = targetLocations.minOf { player.getUnits(it).size }
 
     override fun toString() = goal.toString()
 }

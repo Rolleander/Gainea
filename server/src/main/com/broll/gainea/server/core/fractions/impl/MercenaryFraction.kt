@@ -7,12 +7,17 @@ import com.broll.gainea.server.core.battle.FightingPower
 import com.broll.gainea.server.core.fractions.Fraction
 import com.broll.gainea.server.core.fractions.FractionDescription
 import com.broll.gainea.server.core.fractions.FractionType
+import com.broll.gainea.server.core.fractions.UnitDescription
 import com.broll.gainea.server.core.objects.Soldier
 
 class MercenaryFraction : Fraction(FractionType.MERCENARY) {
     private var turns = 0
     override fun description(): FractionDescription {
-        val desc = FractionDescription("")
+        val desc = FractionDescription(
+                "",
+                soldier = UnitDescription(name = "Söldner", icon = 2),
+                commander = UnitDescription(name = "Söldnerkommandant", icon = 5, power = 3, health = 3),
+        )
         desc.plus("Jeden zweiten Zug erhaltet Ihr einen weiteren Soldat")
         desc.plus("Minimale Zahl beim Würfeln ist 2")
         desc.contra("Maximale Zahl beim Würfeln ist 5")

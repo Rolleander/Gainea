@@ -9,6 +9,8 @@ import java.util.concurrent.atomic.AtomicInteger
 
 object MapFactory {
     private const val SIZE = 3120f
+
+    @JvmStatic
     fun create(settings: ExpansionSetting): List<Pair<ExpansionFactory, Expansion>> {
         val expansions = mutableListOf<ExpansionFactory>()
         for (type in settings.maps) {

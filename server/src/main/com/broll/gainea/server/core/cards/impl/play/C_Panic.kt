@@ -1,7 +1,7 @@
 package com.broll.gainea.server.core.cards.impl.play
 
 import com.broll.gainea.server.core.cards.Card
-import com.broll.gainea.server.core.utils.UnitControl
+import com.broll.gainea.server.core.utils.UnitControl.move
 
 class C_Panic : Card(46, "Massenpanik", "Wählt ein Land mit mindestens einer Einheit. Alle Einheiten des gewählten Ortes werden auf angrenzende Orte verteilt.") {
     init {
@@ -19,7 +19,7 @@ class C_Panic : Card(46, "Massenpanik", "Wählt ein Land mit mindestens einer Ei
             var index = 0
             for (inhabitant in source.inhabitants.toList()) {
                 val target = neighbours[index]
-                UnitControl.move(game, inhabitant, target)
+                game.move(inhabitant, target)
                 index++
                 if (index >= neighbours.size) {
                     index = 0

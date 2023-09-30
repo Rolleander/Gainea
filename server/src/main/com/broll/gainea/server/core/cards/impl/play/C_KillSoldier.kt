@@ -1,9 +1,9 @@
 package com.broll.gainea.server.core.cards.impl.play
 
 import com.broll.gainea.server.core.cards.Card
-import com.broll.gainea.server.core.utils.PlayerUtils
-import com.broll.gainea.server.core.utils.SelectionUtils
-import com.broll.gainea.server.core.utils.UnitControl
+import com.broll.gainea.server.core.utils.UnitControl.kill
+import com.broll.gainea.server.core.utils.isCommander
+import com.broll.gainea.server.core.utils.selectOtherPlayersUnit
 
 class C_KillSoldier : Card(34, "Scharfschütze", "Tötet eine beliebige feindliche Einheit (Außer Feldherr)") {
     init {
@@ -14,10 +14,9 @@ class C_KillSoldier : Card(34, "Scharfschütze", "Tötet eine beliebige feindlic
         get() = true
 
     override fun play() {
-        val unit = SelectionUtils.selectOtherPlayersUnit(game, owner, "Wählt eine Einheit aus die vernichtet werden soll"
-        ) { !PlayerUtils.isCommander(it) }
+        val unit = game.selectOtherPlayersUnit(owner, "Wählt eine Einheit aus die vernichtet werden soll") { !it.isCommander() }
         if (unit != null) {
-            UnitControl.kill(game, unit)
+            game.kill(unit)
         }
     }
 }

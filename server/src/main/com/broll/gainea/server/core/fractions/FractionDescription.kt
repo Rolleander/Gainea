@@ -1,6 +1,6 @@
 package com.broll.gainea.server.core.fractions
 
-class FractionDescription(val general: String) {
+class FractionDescription(val general: String, val soldier: UnitDescription, val commander: UnitDescription) {
     private val plus = mutableListOf<String>()
     private val contra = mutableListOf<String>()
     operator fun plus(strength: String) {

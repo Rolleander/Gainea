@@ -7,7 +7,7 @@ import com.broll.networklib.server.impl.ILobbyData
 
 class PlayerData(var fraction: FractionType) : ILobbyData {
     lateinit var gamePlayer: Player
-    var isReady = false
+    var ready = false
     fun joinedGame(gamePlayer: Player) {
         this.gamePlayer = gamePlayer
         gamePlayer.fraction
@@ -16,7 +16,7 @@ class PlayerData(var fraction: FractionType) : ILobbyData {
     override fun nt(): NT_PlayerSettings {
         val playerSettings = NT_PlayerSettings()
         playerSettings.fraction = fraction.ordinal
-        playerSettings.ready = isReady
+        playerSettings.ready = ready
         return playerSettings
     }
 }

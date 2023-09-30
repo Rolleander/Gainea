@@ -8,16 +8,18 @@ import com.broll.gainea.server.core.actions.ReactionActions
 import com.broll.gainea.server.core.actions.RequiredActionContext
 import com.broll.gainea.server.core.objects.Unit
 import com.broll.gainea.server.core.player.Player
-import com.broll.gainea.server.core.utils.GameUtils
-import com.broll.gainea.server.core.utils.MessageUtils
 import com.broll.gainea.server.core.utils.ProcessingUtils
+import com.broll.gainea.server.core.utils.displayMessage
+import com.broll.gainea.server.core.utils.gameLog
+import com.broll.gainea.server.core.utils.sendUpdate
+import com.broll.gainea.server.core.utils.sendUpdateExceptFor
 import com.broll.gainea.server.init.LobbyData
 import com.broll.gainea.server.init.PlayerData
 import com.broll.networklib.server.impl.ServerLobby
 import org.slf4j.LoggerFactory
 import java.util.function.Consumer
 
-class ReactionResultHandler(private val game: GameContainer, private val lobby: ServerLobby<LobbyData, PlayerData>) : ReactionActions {
+class ReactionResultHandler(private val game: Game, private val lobby: ServerLobby<LobbyData, PlayerData>) : ReactionActions {
     override fun sendGameUpdate(update: Any) {
         lobby.sendToAllTCP(update)
     }
@@ -33,7 +35,7 @@ class ReactionResultHandler(private val game: GameContainer, private val lobby: 
             }
             sendBoardUpdate()
             if (newRound) {
-                MessageUtils.gameLog(game, "-- Runde " + game.rounds + " --")
+                game.gameLog("-- Runde " + game.rounds + " --")
                 game.updateReceiver.roundStarted()
             }
             Log.info("Start next turn: " + player + " [Round " + game.rounds + " Turn " + (game.currentTurn + 1) + " / " + game.allPlayers.size + "]")
@@ -52,7 +54,7 @@ class ReactionResultHandler(private val game: GameContainer, private val lobby: 
             var delay = 0
             if (player.active) {
                 //send aussetzen info to all players
-                MessageUtils.displayMessage(game, player.serverPlayer.name + " muss aussetzen!")
+                game.displayMessage(player.serverPlayer.name + " muss aussetzen!")
                 delay = 3000
             }
             //auto start next round after delay
@@ -65,7 +67,7 @@ class ReactionResultHandler(private val game: GameContainer, private val lobby: 
         //send turnstart to player and wait to other players
         val wait = NT_PlayerWait()
         wait.playersTurn = player.serverPlayer.id
-        GameUtils.sendUpdate(game, player, NT_PlayerTurnStart(), wait)
+        game.sendUpdate(player, NT_PlayerTurnStart(), wait)
         ProcessingUtils.pause(1000)
         val fraction = player.fraction
         val actionsHandler = game.reactionHandler.actionHandlers
@@ -84,12 +86,12 @@ class ReactionResultHandler(private val game: GameContainer, private val lobby: 
         sendGameUpdate(game.nt())
     }
 
-    override fun requireAction(player: Player, action: RequiredActionContext<NT_Action>): ActionContext<NT_Action> {
+    override fun requireAction(player: Player, action: RequiredActionContext<out NT_Action>): ActionContext<out NT_Action> {
         Log.trace("Require action for " + player + " : " + action.action)
         game.reactionHandler.requireAction(player, action)
         player.serverPlayer.sendTCP(action.nt())
         if (action.messageForOtherPlayer != null) {
-            GameUtils.sendUpdateExceptFor(game, action.messageForOtherPlayer, player)
+            game.sendUpdateExceptFor(action.messageForOtherPlayer, player)
         }
         return action
     }

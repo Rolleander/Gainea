@@ -1,9 +1,9 @@
 package com.broll.gainea.server.core.cards.impl.direct
 
 import com.broll.gainea.server.core.cards.DirectlyPlayedCard
-import com.broll.gainea.server.core.utils.PlayerUtils
-import com.broll.gainea.server.core.utils.SelectionUtils
-import com.broll.gainea.server.core.utils.UnitControl
+import com.broll.gainea.server.core.utils.UnitControl.kill
+import com.broll.gainea.server.core.utils.iteratePlayers
+import com.broll.gainea.server.core.utils.selectPlayerUnit
 
 class C_KillOwnSoldier : DirectlyPlayedCard(24, "Opferritual", "Jeder Spieler muss eine eigene Einheit opfern.") {
     init {
@@ -11,10 +11,12 @@ class C_KillOwnSoldier : DirectlyPlayedCard(24, "Opferritual", "Jeder Spieler mu
     }
 
     override fun play() {
-        PlayerUtils.iteratePlayers(game, 500) { player ->
-            val unit = SelectionUtils.selectPlayerUnit(game, player, player, "Welche Einheit soll geopfert werden?") { true }
-            if (unit != null) {
-                UnitControl.kill(game, unit)
+        with(game) {
+            iteratePlayers(500) { player ->
+                val unit = selectPlayerUnit(player, player, "Welche Einheit soll geopfert werden?") { true }
+                if (unit != null) {
+                    kill(unit)
+                }
             }
         }
     }

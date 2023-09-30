@@ -1,7 +1,7 @@
 package com.broll.gainea.server
 
 import com.broll.gainea.NetworkSetup
-import com.broll.gainea.server.core.GameContainer
+import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.objects.MapObject
 import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.init.LobbyData
@@ -94,7 +94,7 @@ class GaineaServer(version: String) {
         println(text)
     }
 
-    private fun getGame(lobbyId: Int): GameContainer? {
+    private fun getGame(lobbyId: Int): Game? {
         val lobby = server.lobbyHandler.getLobby(lobbyId)
         if (lobby == null) {
             System.err.println("Lobby #$lobbyId not found!")

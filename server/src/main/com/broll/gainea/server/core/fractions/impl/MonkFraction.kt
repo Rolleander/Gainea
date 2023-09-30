@@ -6,18 +6,23 @@ import com.broll.gainea.server.core.battle.BattleContext
 import com.broll.gainea.server.core.fractions.Fraction
 import com.broll.gainea.server.core.fractions.FractionDescription
 import com.broll.gainea.server.core.fractions.FractionType
+import com.broll.gainea.server.core.fractions.UnitDescription
 import com.broll.gainea.server.core.objects.Soldier
 import com.broll.gainea.server.core.objects.monster.Monster
 import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.core.player.isNeutral
-import com.broll.gainea.server.core.utils.UnitControl
 import com.broll.gainea.server.core.utils.UnitControl.heal
+import com.broll.gainea.server.core.utils.UnitControl.move
 import org.apache.commons.lang3.mutable.MutableBoolean
 
 class MonkFraction : Fraction(FractionType.MONKS) {
     private var killedMonsters = 0
     override fun description(): FractionDescription {
-        val desc = FractionDescription("")
+        val desc = FractionDescription(
+                "",
+                soldier = UnitDescription(name = "Mönch", icon = 108),
+                commander = UnitDescription(name = "Großmeister Eron", icon = 107, power = 3, health = 3),
+        )
         desc.plus("Jede Runde erhält eine Einheit +1 Leben")
         desc.plus("Werden nicht von Monstern angegriffen")
         desc.contra("Jedes dritte besiegte Monster gibt keine Belohnung")
@@ -30,7 +35,7 @@ class MonkFraction : Fraction(FractionType.MONKS) {
         if (neutralMonsters.isNotEmpty() && defendingMonks.isNotEmpty()) {
             cancelFight.setTrue()
             //move monsters without battle
-            UnitControl.move(game, neutralMonsters, context.location)
+            game.move(neutralMonsters, context.location)
         }
     }
 
@@ -49,7 +54,7 @@ class MonkFraction : Fraction(FractionType.MONKS) {
             //inc life
             randomUnit.maxHealth.addValue(1)
             //heal
-            heal(game, randomUnit, 1)
+            game.heal(randomUnit, 1)
         }
         super.turnStarted(actionHandlers)
     }

@@ -14,7 +14,7 @@ abstract class ExpansionFactory(val type: ExpansionType, val texture: String) {
 
     private fun coord(x: Float, y: Float): Coordinates {
         val c = Coordinates(x / 100f, y / 100f)
-        c.shift(baseCoordinates.x, baseCoordinates.y)
+        c.shift(baseCoordinates.rootX, baseCoordinates.rootY)
         return c
     }
 

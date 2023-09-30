@@ -1,6 +1,6 @@
 package com.broll.gainea.server.core.goals.impl.all
 
-import com.broll.gainea.server.core.GameContainer
+import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.bot.BotUtils
 import com.broll.gainea.server.core.bot.strategy.GoalStrategy
 import com.broll.gainea.server.core.goals.GoalDifficulty
@@ -15,7 +15,7 @@ import com.broll.gainea.server.core.player.isNeutral
 class G_OccupyRounds : RoundGoal(GoalDifficulty.MEDIUM, "", ROUND_TARGET) {
     private lateinit var container: AreaCollection
 
-    override fun init(game: GameContainer, player: Player): Boolean {
+    override fun init(game: Game, player: Player): Boolean {
         container = game.map.allContainers.random()
         text = "Sei für " + ROUND_TARGET + " Runden der einzige Spieler mit Einheiten auf " + container.name
         val containerSize = container.areas.size

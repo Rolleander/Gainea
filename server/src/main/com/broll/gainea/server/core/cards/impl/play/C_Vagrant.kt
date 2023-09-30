@@ -15,6 +15,6 @@ class C_Vagrant : Card(0, "Einsamer Landstreicher", "Platziert einen neutralen V
         soldier.setStats(2, 2)
         val locations = game.map.allAreas.filter { it.free }
         val location = selectHandler.selectLocation("Standort für Vagabund festlegen", locations)
-        spawn(game, soldier, location)
+        game.spawn(soldier, location)
     }
 }

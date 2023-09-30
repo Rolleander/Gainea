@@ -8,6 +8,7 @@ import com.broll.gainea.server.core.battle.FightingPower
 import com.broll.gainea.server.core.fractions.Fraction
 import com.broll.gainea.server.core.fractions.FractionDescription
 import com.broll.gainea.server.core.fractions.FractionType
+import com.broll.gainea.server.core.fractions.UnitDescription
 import com.broll.gainea.server.core.map.Ship
 import com.broll.gainea.server.core.objects.Soldier
 import com.broll.gainea.server.core.player.Player
@@ -15,7 +16,11 @@ import com.broll.gainea.server.core.utils.UnitControl.spawn
 
 class DruidsFraction : Fraction(FractionType.DRUIDS) {
     override fun description(): FractionDescription {
-        val desc = FractionDescription("")
+        val desc = FractionDescription(
+                "",
+                soldier = UnitDescription(name = "Druidin", icon = 110),
+                commander = UnitDescription(name = "Druidenhaupt Zerus", icon = 102, power = 3, health = 3),
+        )
         desc.plus("Gefallene Einheiten können zu unbeweglichen Wurzelgolems (1/2) werden")
         desc.contra("Auf Schiffen -1 Zahl")
         return desc
@@ -51,7 +56,7 @@ class DruidsFraction : Fraction(FractionType.DRUIDS) {
         override fun onDeath(throughBattle: BattleResult?) {
             if (RandomUtils.randomBoolean(SPAWN_CHANCE)) {
                 val tree = Tree(owner)
-                spawn(game, tree, location)
+                game.spawn(tree, location)
             }
         }
     }

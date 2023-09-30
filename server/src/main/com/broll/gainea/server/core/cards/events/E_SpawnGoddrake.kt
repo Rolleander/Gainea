@@ -1,20 +1,21 @@
 package com.broll.gainea.server.core.cards.events
 
-import com.broll.gainea.server.core.GameContainer
+import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.cards.EventCard
 import com.broll.gainea.server.core.objects.monster.GodDragon
-import com.broll.gainea.server.core.utils.LocationUtils
-import com.broll.gainea.server.core.utils.UnitControl
+import com.broll.gainea.server.core.utils.UnitControl.spawn
+import com.broll.gainea.server.core.utils.getRandomFree
 
 class E_SpawnGoddrake : EventCard(59, "Gaineas Herrscher", "Der Götterdrache erscheint!") {
     override fun play() {
-        val dragon = GodDragon()
-        val location = LocationUtils.getRandomFree(game.map.allAreas)
-        UnitControl.spawn(game, dragon, location) { nt -> nt.sound = "goddrake.ogg" }
+        val dragon = GodDragon(game.neutralPlayer)
+        game.map.allAreas.getRandomFree()?.let {
+            game.spawn(dragon, it) { nt -> nt.sound = "goddrake.ogg" }
+        }
     }
 
     companion object {
-        fun isGoddrakeAlive(game: GameContainer): Boolean {
+        fun isGoddrakeAlive(game: Game): Boolean {
             return game.objects.any { it is GodDragon }
         }
     }

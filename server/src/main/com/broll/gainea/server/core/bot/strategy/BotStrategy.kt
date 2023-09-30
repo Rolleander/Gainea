@@ -1,7 +1,7 @@
 package com.broll.gainea.server.core.bot.strategy
 
 import com.broll.gainea.misc.RandomUtils
-import com.broll.gainea.server.core.GameContainer
+import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.bot.BotUtils
 import com.broll.gainea.server.core.map.Location
 import com.broll.gainea.server.core.objects.Unit
@@ -9,7 +9,7 @@ import com.broll.gainea.server.core.player.Player
 import org.apache.commons.lang3.tuple.MutablePair
 import org.slf4j.LoggerFactory
 
-class BotStrategy(private val game: GameContainer, private val player: Player, val constants: StrategyConstants) {
+class BotStrategy(private val game: Game, private val player: Player, val constants: StrategyConstants) {
     private val goalStrategies = mutableListOf<GoalStrategy>()
     private val strategizedUnits = HashMap<Unit, GoalStrategy>()
     val moveTargets = HashMap<Unit, Location>()

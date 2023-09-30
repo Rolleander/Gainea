@@ -6,14 +6,14 @@ import com.broll.gainea.net.NT_Action_Card
 import com.broll.gainea.net.NT_Action_Move
 import com.broll.gainea.net.NT_Action_PlaceUnit
 import com.broll.gainea.net.NT_Action_SelectChoice
-import com.broll.gainea.server.core.GameContainer
+import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.actions.optional.AttackAction
 import com.broll.gainea.server.core.actions.optional.CardAction
 import com.broll.gainea.server.core.actions.optional.MoveUnitAction
 import com.broll.gainea.server.core.actions.required.PlaceUnitAction
 import com.broll.gainea.server.core.actions.required.SelectChoiceAction
 
-class ActionHandlers(private val game: GameContainer, val reactionActions: ReactionActions) {
+class ActionHandlers(private val game: Game, val reactionActions: ReactionActions) {
     private val handlers: MutableMap<Class<out NT_Action>, AbstractActionHandler<*, *>> = HashMap()
     private val handlers2: MutableMap<Class<out AbstractActionHandler<*, *>>, AbstractActionHandler<*, *>> = HashMap()
 
@@ -35,8 +35,8 @@ class ActionHandlers(private val game: GameContainer, val reactionActions: React
         handlers2[handler.javaClass] = handler
     }
 
-    fun <T : NT_Action> getHandlerForAction(actionClass: Class<T>): AbstractActionHandler<T, ActionContext<T>>? {
-        return handlers.get(actionClass) as AbstractActionHandler<T, ActionContext<T>>?
+    fun <T : NT_Action> getHandlerForAction(actionClass: Class<T>): AbstractActionHandler<T, ActionContext<out T>>? {
+        return handlers.get(actionClass) as AbstractActionHandler<T, ActionContext<out T>>?
     }
 
     fun <T : AbstractActionHandler<*, *>> getHandler(handlerClass: Class<T>): T {

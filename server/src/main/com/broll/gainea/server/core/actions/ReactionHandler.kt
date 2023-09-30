@@ -4,16 +4,17 @@ import com.broll.gainea.net.NT_Action
 import com.broll.gainea.net.NT_EndTurn
 import com.broll.gainea.net.NT_GameOver
 import com.broll.gainea.net.NT_Reaction
-import com.broll.gainea.server.core.GameContainer
+import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.player.Player
-import com.broll.gainea.server.core.utils.GameUtils
+import com.broll.gainea.server.core.utils.noActivePlayersRemaining
+import com.broll.gainea.server.core.utils.sendUpdate
 import org.slf4j.LoggerFactory
 import java.util.Collections
 
-class ReactionHandler(private val game: GameContainer, val actionHandlers: ActionHandlers) {
-    private val requiredActions = Collections.synchronizedMap(HashMap<RequiredActionContext<NT_Action>, RequiredAction>())
+class ReactionHandler(private val game: Game, val actionHandlers: ActionHandlers) {
+    private val requiredActions = Collections.synchronizedMap(HashMap<RequiredActionContext<out NT_Action>, RequiredAction>())
     private var gameStopped = false
-    fun requireAction(target: Player, context: RequiredActionContext<NT_Action>) {
+    fun requireAction(target: Player, context: RequiredActionContext<out NT_Action>) {
         val action = RequiredAction(context, target)
         game.pushAction(context)
         requiredActions[context] = action
@@ -26,7 +27,7 @@ class ReactionHandler(private val game: GameContainer, val actionHandlers: Actio
     }
 
     private fun tryContinueTurn() {
-        if (GameUtils.noActivePlayersRemaining(game) || game.isGameOver) {
+        if (game.noActivePlayersRemaining() || game.isGameOver) {
             stopGame()
             return
         }
@@ -49,12 +50,12 @@ class ReactionHandler(private val game: GameContainer, val actionHandlers: Actio
         Log.trace("Process gameend")
         val gameOver = NT_GameOver()
         game.fillUpdate(gameOver)
-        GameUtils.sendUpdate(game, gameOver)
+        game.sendUpdate(gameOver)
         game.statistic.sendStatistic()
         val lobby = game.lobby
         lobby.data.game = null
         lobby.unlock()
-        lobby.realPlayers.forEach { it.data.isReady = false }
+        lobby.realPlayers.forEach { it.data.ready = false }
         lobby.sendLobbyUpdate()
     }
 
@@ -85,7 +86,7 @@ class ReactionHandler(private val game: GameContainer, val actionHandlers: Actio
     @Synchronized
     fun hasRequiredActionFor(player: Player) = requiredActions.values.any { it.player == player }
 
-    fun handle(gamePlayer: Player, actionContext: ActionContext<NT_Action>, reaction: NT_Reaction) {
+    fun handle(gamePlayer: Player, actionContext: ActionContext<out NT_Action>, reaction: NT_Reaction) {
         if (game.battleHandler.isBattleActive) {
             //ignore reactions while fight is going on
             Log.warn("Ignore player reaction because of fight!")
@@ -117,7 +118,7 @@ class ReactionHandler(private val game: GameContainer, val actionHandlers: Actio
         }
     }
 
-    private fun handleReaction(gamePlayer: Player, actionContext: ActionContext<NT_Action>, reaction: NT_Reaction) {
+    private fun handleReaction(gamePlayer: Player, actionContext: ActionContext<out NT_Action>, reaction: NT_Reaction) {
         val action = actionContext.action
         val customHandler = actionContext.customHandler
         if (customHandler != null) {
@@ -136,7 +137,7 @@ class ReactionHandler(private val game: GameContainer, val actionHandlers: Actio
     }
 
     private inner class RequiredAction(
-            val context: RequiredActionContext<NT_Action>,
+            val context: RequiredActionContext<out NT_Action>,
             val player: Player
     )
 

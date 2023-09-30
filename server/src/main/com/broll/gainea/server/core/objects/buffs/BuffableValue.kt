@@ -13,7 +13,7 @@ abstract class BuffableValue<T, V, B : Buff<V>>(val target: T, initValue: V) {
     protected var buffs = mutableSetOf<B>()
     fun addBuff(buff: B) {
         buffs.add(buff)
-        buff.register(this)
+        buff.register(this as BuffableValue<*, V, Buff<V>>)
         recalc()
     }
 

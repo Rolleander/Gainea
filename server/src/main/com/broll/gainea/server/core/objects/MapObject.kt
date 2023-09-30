@@ -1,16 +1,17 @@
 package com.broll.gainea.server.core.objects
 
 import com.broll.gainea.net.NT_BoardObject
-import com.broll.gainea.server.core.GameContainer
+import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.map.Location
 import com.broll.gainea.server.core.map.Ship
+import com.broll.gainea.server.core.map.SpawnLocation
 import com.broll.gainea.server.core.objects.buffs.BuffableInt
 import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.core.processing.GameUpdateReceiverAdapter
 
 abstract class MapObject(var owner: Player) : GameUpdateReceiverAdapter() {
-    protected lateinit var game: GameContainer
-    lateinit var location: Location
+    protected lateinit var game: Game
+    var location: Location = SpawnLocation
     var id = 0
         private set
     var icon = 0
@@ -19,7 +20,7 @@ abstract class MapObject(var owner: Player) : GameUpdateReceiverAdapter() {
     protected var moveCount = 0
     var movesPerTurn = BuffableInt(this, 1) //default 1 move
 
-    fun init(game: GameContainer) {
+    fun init(game: Game) {
         id = game.newObjectId()
         this.game = game
     }
@@ -57,17 +58,19 @@ abstract class MapObject(var owner: Player) : GameUpdateReceiverAdapter() {
         get() = location.connectedLocations.filter { canMoveTo(it) }
 
     open fun nt(): NT_BoardObject {
-        val `object` = NT_BoardObject()
-        fillObject(`object`)
-        return `object`
+        val obj = NT_BoardObject()
+        fillObject(obj)
+        return obj
     }
 
-    protected fun fillObject(`object`: NT_BoardObject) {
-        `object`.id = id.toShort()
-        `object`.name = name
-        `object`.icon = icon.toShort()
-        `object`.size = scale * 30
-        `object`.location = location.number.toShort()
+    protected fun fillObject(obj: NT_BoardObject) {
+        obj.id = id.toShort()
+        obj.name = name
+        obj.icon = icon.toShort()
+        obj.size = scale * 30
+        if (location != SpawnLocation) {
+            obj.location = location.number.toShort()
+        }
     }
 
     override fun toString(): String {

@@ -1,6 +1,6 @@
 package com.broll.gainea.server.core.goals.impl.all
 
-import com.broll.gainea.server.core.GameContainer
+import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.battle.BattleResult
 import com.broll.gainea.server.core.bot.BotUtils
 import com.broll.gainea.server.core.bot.strategy.GoalStrategy
@@ -11,7 +11,7 @@ import com.broll.gainea.server.core.player.Player
 
 class G_KillPlayer : Goal(GoalDifficulty.MEDIUM, "") {
     private lateinit var target: Player
-    override fun init(game: GameContainer, player: Player): Boolean {
+    override fun init(game: Game, player: Player): Boolean {
         target = game.activePlayers.filter { it !== player && it.units.isNotEmpty() }.randomOrNull()
                 ?: return false
         text = target.serverPlayer.name + " darf keine Einheiten mehr besitzen"

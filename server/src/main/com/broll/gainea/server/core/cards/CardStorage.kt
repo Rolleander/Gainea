@@ -2,11 +2,11 @@ package com.broll.gainea.server.core.cards
 
 import com.broll.gainea.misc.PackageLoader
 import com.broll.gainea.misc.RandomUtils
-import com.broll.gainea.server.core.GameContainer
+import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.actions.ActionHandlers
 import com.broll.gainea.server.core.player.Player
 
-class CardStorage(private val game: GameContainer, private val actionHandlers: ActionHandlers) {
+class CardStorage(private val game: Game, private val actionHandlers: ActionHandlers) {
     private val loader: PackageLoader<Card> = PackageLoader(Card::class.java, PACKAGE_PATH)
     private val drawChances: FloatArray
     private val totalDrawChances: Float
@@ -22,26 +22,26 @@ class CardStorage(private val game: GameContainer, private val actionHandlers: A
         player.cardHandler.receiveCard(card)
     }
 
-    fun getRandomCard() : Card{
-            var chanceSum = 0f
-            val chance = RandomUtils.random(0f, totalDrawChances)
-            for (i in drawChances.indices) {
-                if (chance <= chanceSum) {
-                    return loader.instantiate(i)
-                }
-                chanceSum += drawChances[i]
+    fun getRandomCard(): Card {
+        var chanceSum = 0f
+        val chance = RandomUtils.random(0f, totalDrawChances)
+        for (i in drawChances.indices) {
+            if (chance <= chanceSum) {
+                return loader.instantiate(i)
             }
-            return getRandomCard()
+            chanceSum += drawChances[i]
         }
-    fun getRandomPlayableCard(): Card
-         {
-            while (true) {
-                val card = getRandomCard()
-                if (card is DirectlyPlayedCard) {
-                    return card
-                }
+        return getRandomCard()
+    }
+
+    fun getRandomPlayableCard(): Card {
+        while (true) {
+            val card = getRandomCard()
+            if (card is DirectlyPlayedCard) {
+                return card
             }
         }
+    }
 
     fun getPlayableCards(count: Int): List<Card> {
         val classes = ArrayList(loader.classes)

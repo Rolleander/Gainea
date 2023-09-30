@@ -6,6 +6,6 @@ import com.broll.gainea.server.core.utils.UnitControl.heal
 
 class C_HealingWave : DirectlyPlayedCard(64, "Kristallenergie", "Heilt alle neutralen Einheiten") {
     override fun play() {
-        game.objects.filterIsInstance(Unit::class.java).filter { it.hurt }.forEach { heal(game, it, 10000) }
+        game.objects.filterIsInstance<Unit>().filter { it.hurt }.forEach { game.heal(it, 10000) }
     }
 }

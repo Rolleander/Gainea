@@ -6,13 +6,13 @@ import com.broll.gainea.server.core.map.AreaType
 import com.broll.gainea.server.core.map.Location
 import com.broll.gainea.server.core.objects.MapEffect
 import com.broll.gainea.server.core.objects.buffs.TimedEffect
-import com.broll.gainea.server.core.utils.LocationUtils
+import com.broll.gainea.server.core.utils.isAreaType
 
 class C_Fire : Card(75, "Drachenfeuer", "Wählt ein unbesetztes Gebiet (ausser Seen), dieses kann für " + ROUNDS + " Runden nicht besetzt werden.") {
     override val isPlayable: Boolean
         get() = targets.isNotEmpty()
     private val targets: List<Location>
-        get() = game.map.allAreas.filter { LocationUtils.isAreaType(it, AreaType.LAKE) && it.free }
+        get() = game.map.allAreas.filter { it.isAreaType(AreaType.LAKE) && it.free }
 
     override fun play() {
         val target = selectHandler.selectLocation(owner, "Welches Gebiet blockieren?", targets)

@@ -2,18 +2,18 @@ package com.broll.gainea.server.core.bot
 
 import com.broll.gainea.net.NT_Goal
 import com.broll.gainea.net.NT_Unit
-import com.broll.gainea.server.core.GameContainer
+import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.map.Location
 import com.broll.gainea.server.core.objects.Unit
 import com.broll.gainea.server.core.player.Player
-import com.broll.gainea.server.core.utils.LocationUtils
+import com.broll.gainea.server.core.utils.getWalkingDistance
 
 object BotUtils {
-    fun getLocation(game: GameContainer, id: Int) = game.map.getLocation(id)
+    fun getLocation(game: Game, id: Int) = game.map.getLocation(id)
 
-    fun getObjects(game: GameContainer, units: Array<NT_Unit>) = units.map { getObject(game, it) }
+    fun getObjects(game: Game, units: Array<NT_Unit>) = units.map { getObject(game, it) }
 
-    fun getObject(game: GameContainer, unit: NT_Unit): Unit {
+    fun getObject(game: Game, unit: NT_Unit): Unit {
         if (unit.owner == NT_Unit.NO_OWNER.toShort()) {
             for (`object` in game.objects) {
                 if (`object`.id == unit.id.toInt() && `object` is Unit) {
@@ -33,10 +33,10 @@ object BotUtils {
         throw RuntimeException("unknown object")
     }
 
-    fun getGoal(game: GameContainer, nt: NT_Goal) = game.allPlayers.flatMap { it.goalHandler.goals }.first { it.id == nt.id }
+    fun getGoal(game: Game, nt: NT_Goal) = game.allPlayers.flatMap { it.goalHandler.goals }.first { it.id == nt.id }
 
 
-    fun getLocations(game: GameContainer, options: ShortArray): List<Location> {
+    fun getLocations(game: Game, options: ShortArray): List<Location> {
         val locations: MutableList<Location> = ArrayList()
         for (id in options) {
             locations.add(getLocation(game, id.toInt()))
@@ -78,14 +78,14 @@ object BotUtils {
         return index
     }
 
-    fun getBestPath(player: Player, `object`: Unit?, fromOptions: Collection<Location>, to: Location): Pair<Location, Int> {
+    fun getBestPath(player: Player, obj: Unit, fromOptions: Collection<Location>, to: Location): Pair<Location, Int> {
         var distance = Int.MAX_VALUE
         var units = 0
         var location = fromOptions.iterator().next()
         for (from in fromOptions) {
-            val d = LocationUtils.getWalkingDistance(`object`, from, to)
-            val u = LocationUtils.getUnits(from).filter { it.owner === player }.count()
-            if (d != -1 && d < distance) {
+            val d = obj.getWalkingDistance(from, to)
+            val u = from.units.filter { it.owner === player }.count()
+            if (d != null && d < distance) {
                 distance = d
                 location = from
                 units = u
@@ -97,14 +97,14 @@ object BotUtils {
         return location to distance
     }
 
-    fun getBestPath(`object`: Unit, from: Location, toOptions: Collection<Location>): Pair<Location, Int> {
+    fun getBestPath(obj: Unit, from: Location, toOptions: Collection<Location>): Pair<Location, Int> {
         var distance = Int.MAX_VALUE
         var units = 0
-        var location = toOptions!!.iterator().next()
+        var location = toOptions.iterator().next()
         for (to in toOptions) {
-            val d = LocationUtils.getWalkingDistance(`object`, from, to)
-            val u = LocationUtils.getUnits(to).filter { it.owner === `object`.owner }.count()
-            if (d != -1 && d < distance) {
+            val d = obj.getWalkingDistance(from, to)
+            val u = to.units.filter { it.owner === obj.owner }.count()
+            if (d != null && d < distance) {
                 distance = d
                 location = to
             } else if (d == distance && u > units) {
@@ -115,7 +115,7 @@ object BotUtils {
         return location to distance
     }
 
-    fun huntOtherPlayersTargets(owner: Player, game: GameContainer) = game.allPlayers.filter { it !== owner }.flatMap { it.controlledLocations }.toHashSet()
+    fun huntOtherPlayersTargets(owner: Player, game: Game) = game.allPlayers.filter { it !== owner }.flatMap { it.controlledLocations }.toHashSet()
 
 
     fun huntPlayerTargets(player: Player) = player.controlledLocations.toHashSet()

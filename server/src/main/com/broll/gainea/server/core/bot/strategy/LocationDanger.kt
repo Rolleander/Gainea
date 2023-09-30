@@ -5,13 +5,13 @@ import com.broll.gainea.server.core.map.Location
 import com.broll.gainea.server.core.objects.Unit
 import com.broll.gainea.server.core.objects.monster.Monster
 import com.broll.gainea.server.core.player.Player
-import com.broll.gainea.server.core.utils.PlayerUtils
+import com.broll.gainea.server.core.utils.getUnits
 import org.apache.commons.collections4.map.MultiValueMap
 
 
 object LocationDanger {
     fun getFleeToScore(owner: Player, location: Location): Int {
-        val ownerPower = PlayerUtils.getUnits(owner, location).sumOf { it.battleStrength }
+        val ownerPower = owner.getUnits(location).sumOf { it.battleStrength }
         val surroundingEnemyPower = location.connectedLocations.flatMap { it.inhabitants }
                 .filterIsInstance(Unit::class.java)
                 .filter { it.canMoveTo(location) && it.owner !== owner }
@@ -33,7 +33,7 @@ object LocationDanger {
     }
 
     private fun getAnnihilationChance(to: Location, owner: Player, enemy: Player?, units: Collection<Unit>): Double {
-        val defenders = PlayerUtils.getUnits(owner, to)
+        val defenders = owner.getUnits(to)
         val attackers = units.filter { it.canMoveTo(to) }
         if (attackers.isEmpty()) {
             return 0.0

@@ -5,14 +5,14 @@ import com.broll.gainea.net.NT_Action
 import com.broll.gainea.net.NT_EndTurn
 import com.broll.gainea.net.NT_PlayerTurnActions
 import com.broll.gainea.net.NT_Reaction
-import com.broll.gainea.server.core.GameContainer
+import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.bot.strategy.BotStrategy
 import com.broll.gainea.server.core.player.Player
 import org.slf4j.LoggerFactory
 import java.util.function.Consumer
 
 
-class BotActionHandler(private val game: GameContainer, private val bot: Player, private val strategy: BotStrategy) {
+class BotActionHandler(private val game: Game, private val bot: Player, private val strategy: BotStrategy) {
     private val actions: MutableMap<Class<out NT_Action>, BotAction<NT_Action>> = HashMap()
     private val endTurnOption = EndTurnOption()
 

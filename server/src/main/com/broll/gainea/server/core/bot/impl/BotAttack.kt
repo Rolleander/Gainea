@@ -10,7 +10,7 @@ import com.broll.gainea.server.core.bot.BotUtils
 import com.broll.gainea.server.core.bot.strategy.BattleSimulation
 import com.broll.gainea.server.core.map.Location
 import com.broll.gainea.server.core.objects.Unit
-import com.broll.gainea.server.core.utils.LocationUtils
+import com.broll.gainea.server.core.utils.getMonsters
 import org.apache.commons.lang3.ArrayUtils
 
 class BotAttack : BotOptionalAction<NT_Action_Attack, BotAttack.AttackOption>() {
@@ -76,7 +76,7 @@ class BotAttack : BotOptionalAction<NT_Action_Attack, BotAttack.AttackOption>() 
         if (isTargetLocation(location)) {
             return FIGHT_TARGET
         }
-        return if (LocationUtils.getMonsters(location).isNotEmpty()) {
+        return if (location.getMonsters().isNotEmpty()) {
             FIGHT_WILD
         } else FIGHT_PLAYER
     }

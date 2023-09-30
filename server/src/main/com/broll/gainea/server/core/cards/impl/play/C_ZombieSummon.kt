@@ -18,7 +18,7 @@ class C_ZombieSummon : Card(78, "Rückkehr der Verdammten", "Ruft für die Anzah
             for (i in 0 until unit.kills) {
                 val zombie = Zombie()
                 zombie.owner = owner
-                spawn(game, zombie, unit.location)
+                game.spawn(zombie, unit.location)
             }
         }
     }
@@ -27,8 +27,8 @@ class C_ZombieSummon : Card(78, "Rückkehr der Verdammten", "Ruft für die Anzah
         init {
             controllable = false
             name = "Verdammter"
-            setBehavior(MonsterBehavior.RANDOM)
-            setActivity(MonsterActivity.OFTEN)
+            behavior = MonsterBehavior.RANDOM
+            activity = MonsterActivity.OFTEN
             setStats(1, 1)
             icon = 128
         }

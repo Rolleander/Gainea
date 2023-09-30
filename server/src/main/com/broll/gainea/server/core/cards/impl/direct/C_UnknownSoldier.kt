@@ -3,8 +3,8 @@ package com.broll.gainea.server.core.cards.impl.direct
 import com.broll.gainea.server.core.battle.BattleResult
 import com.broll.gainea.server.core.cards.DirectlyPlayedCard
 import com.broll.gainea.server.core.objects.Soldier
-import com.broll.gainea.server.core.utils.LocationUtils
 import com.broll.gainea.server.core.utils.UnitControl.spawn
+import com.broll.gainea.server.core.utils.getRandomFree
 
 class C_UnknownSoldier : DirectlyPlayedCard(67, "Mytseriöser Herausforderer", "Ein fremder Herausforderer taucht auf! Wer ihn besiegt erhält einen Siegespunkt.") {
     init {
@@ -12,10 +12,10 @@ class C_UnknownSoldier : DirectlyPlayedCard(67, "Mytseriöser Herausforderer", "
     }
 
     override fun play() {
-        val location = LocationUtils.getRandomFree(game.map.allAreas)
+        val location = game.map.allAreas.getRandomFree()
         if (location != null) {
             val soldier = Challenger()
-            spawn(game, soldier, location)
+            game.spawn(soldier, location)
         }
     }
 

@@ -6,14 +6,19 @@ import com.broll.gainea.server.core.battle.FightingPower
 import com.broll.gainea.server.core.fractions.Fraction
 import com.broll.gainea.server.core.fractions.FractionDescription
 import com.broll.gainea.server.core.fractions.FractionType
+import com.broll.gainea.server.core.fractions.UnitDescription
 import com.broll.gainea.server.core.map.AreaType
 import com.broll.gainea.server.core.objects.Soldier
 import com.broll.gainea.server.core.objects.monster.Monster
-import com.broll.gainea.server.core.utils.LocationUtils
+import com.broll.gainea.server.core.utils.isAreaType
 
 class RangerFraction : Fraction(FractionType.RANGER) {
     override fun description(): FractionDescription {
-        val desc = FractionDescription("")
+        val desc = FractionDescription(
+                "",
+                soldier = UnitDescription(name = "Waldläuferin", icon = 114),
+                commander = UnitDescription(name = "Elfenschützin", icon = 115, power = 3, health = 3),
+        )
         desc.plus("Gegen Monster +1 Zahl")
         desc.contra("Auf Schnee und Wüste -1 Zahl")
         return desc
@@ -24,7 +29,7 @@ class RangerFraction : Fraction(FractionType.RANGER) {
         if (context.getOpposingFightingArmy(soldier).any { it is Monster }) {
             power.changeNumberPlus(1)
         }
-        if (LocationUtils.isAreaType(context.location, AreaType.SNOW, AreaType.DESERT)) {
+        if (context.location.isAreaType(AreaType.SNOW, AreaType.DESERT)) {
             power.changeNumberPlus(-1)
         }
         return power

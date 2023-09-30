@@ -15,7 +15,7 @@ class BotPlace : BotAction<NT_Action_PlaceUnit>() {
         }
         val handler = game.reactionHandler.actionHandlers.getHandler(PlaceUnitAction::class.java)
         val locations = BotUtils.getLocations(game, action.possibleLocations)
-        val index = strategy!!.chooseUnitPlace(handler.unitToPlace, locations)
+        val index = strategy.chooseUnitPlace(handler.unitToPlace!!, locations)
         reaction.option = index
     }
 

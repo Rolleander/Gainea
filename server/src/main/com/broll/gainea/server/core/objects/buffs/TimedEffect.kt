@@ -1,11 +1,11 @@
 package com.broll.gainea.server.core.objects.buffs
 
-import com.broll.gainea.server.core.GameContainer
+import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.core.processing.GameUpdateReceiverAdapter
 
 open class TimedEffect : GameUpdateReceiverAdapter() {
-    protected lateinit var game: GameContainer
+    protected lateinit var game: Game
     protected lateinit var owner: Player
     protected var forThisTurn = false
     private var rounds = 0
@@ -33,31 +33,31 @@ open class TimedEffect : GameUpdateReceiverAdapter() {
     }
 
     companion object {
-        fun forCurrentTurn(game: GameContainer, effect: TimedEffect) {
+        fun forCurrentTurn(game: Game, effect: TimedEffect) {
             effect.game = game
             effect.forThisTurn = true
             game.updateReceiver.register(effect)
         }
 
-        fun forCurrentRound(game: GameContainer, effect: TimedEffect) {
+        fun forCurrentRound(game: Game, effect: TimedEffect) {
             effect.game = game
             game.updateReceiver.register(effect)
         }
 
-        fun forPlayersTurn(game: GameContainer, player: Player, effect: TimedEffect) {
+        fun forPlayersTurn(game: Game, player: Player, effect: TimedEffect) {
             effect.game = game
             effect.owner = player
             game.updateReceiver.register(effect)
         }
 
-        fun forPlayerRounds(game: GameContainer, player: Player, rounds: Int, effect: TimedEffect) {
+        fun forPlayerRounds(game: Game, player: Player, rounds: Int, effect: TimedEffect) {
             effect.game = game
             effect.rounds = rounds
             effect.owner = player
             game.updateReceiver.register(effect)
         }
 
-        fun forGameRounds(game: GameContainer, rounds: Int, effect: TimedEffect) {
+        fun forGameRounds(game: Game, rounds: Int, effect: TimedEffect) {
             effect.game = game
             effect.rounds = rounds
             game.updateReceiver.register(effect)

@@ -1,6 +1,6 @@
 package com.broll.gainea.server.core.processing
 
-import com.broll.gainea.server.core.GameContainer
+import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.utils.ProcessingUtils
 import com.broll.gainea.server.init.LobbyData
 import com.broll.gainea.server.init.PlayerData
@@ -14,7 +14,7 @@ import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
 
-class ProcessingCore(private val game: GameContainer,
+class ProcessingCore(private val game: Game,
                      private val finishedProcessingListener: Runnable,
                      lobby: ServerLobby<LobbyData, PlayerData>) {
     private val executor: ScheduledExecutorService

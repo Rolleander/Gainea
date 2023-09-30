@@ -5,15 +5,20 @@ import com.broll.gainea.server.core.battle.FightingPower
 import com.broll.gainea.server.core.fractions.Fraction
 import com.broll.gainea.server.core.fractions.FractionDescription
 import com.broll.gainea.server.core.fractions.FractionType
+import com.broll.gainea.server.core.fractions.UnitDescription
 import com.broll.gainea.server.core.map.Area
 import com.broll.gainea.server.core.map.AreaType
 import com.broll.gainea.server.core.objects.Soldier
-import com.broll.gainea.server.core.utils.LocationUtils
+import com.broll.gainea.server.core.utils.isAreaType
 
 class LizardFraction : Fraction(FractionType.LIZARDS) {
     private var turns = 0
     override fun description(): FractionDescription {
-        val desc = FractionDescription("")
+        val desc = FractionDescription(
+                "",
+                soldier = UnitDescription(name = "Echsenkrieger", icon = 122, power = 2, health = 2),
+                commander = UnitDescription(name = "Grash der Vernichter", icon = 123, power = 3, health = 5),
+        )
         desc.plus("Einheiten können Laufen und Angreifen im gleichen Zug")
         desc.contra("Erhält nur jeden zweiten Zug einen Soldat")
         desc.contra("Im Schnee -1 Zahl")
@@ -30,7 +35,7 @@ class LizardFraction : Fraction(FractionType.LIZARDS) {
     }
 
     override fun powerMutatorArea(power: FightingPower, area: Area) {
-        if (LocationUtils.isAreaType(area, AreaType.SNOW)) {
+        if (area.isAreaType(AreaType.SNOW)) {
             power.changeNumberPlus(-1)
         }
     }

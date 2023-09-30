@@ -2,17 +2,15 @@ package com.broll.gainea.server.core.actions.optional
 
 import com.broll.gainea.net.NT_Action_Attack
 import com.broll.gainea.net.NT_Reaction
-import com.broll.gainea.net.NT_Unit
 import com.broll.gainea.server.core.actions.AbstractActionHandler
 import com.broll.gainea.server.core.actions.ActionContext
 import com.broll.gainea.server.core.map.Location
 import com.broll.gainea.server.core.objects.Unit
-import com.broll.gainea.server.core.utils.PlayerUtils
+import com.broll.gainea.server.core.utils.getHostileArmy
 import org.slf4j.LoggerFactory
-import java.util.function.Consumer
 
 class AttackAction : AbstractActionHandler<NT_Action_Attack, AttackAction.Context>() {
-    inner class Context( action: NT_Action_Attack, val attackers: MutableList<Unit>, val location: Location)
+    inner class Context(action: NT_Action_Attack, val attackers: MutableList<Unit>, val location: Location)
         : ActionContext<NT_Action_Attack>(action)
 
     fun attack(attackers: List<Unit>, attackLocation: Location): Context {
@@ -45,7 +43,7 @@ class AttackAction : AbstractActionHandler<NT_Action_Attack, AttackAction.Contex
     }
 
     private fun startFight(attackers: List<Unit>, attackLocation: Location) {
-        val defenders = PlayerUtils.getHostileArmy(player, attackLocation)
+        val defenders = player.getHostileArmy(attackLocation)
         game.battleHandler.startBattle(attackers, defenders)
     }
 

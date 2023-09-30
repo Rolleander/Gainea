@@ -2,8 +2,8 @@ package com.broll.gainea.server.core.cards.impl.play
 
 import com.broll.gainea.net.NT_Event
 import com.broll.gainea.server.core.cards.Card
-import com.broll.gainea.server.core.utils.SelectionUtils.selectPlayerUnit
-import com.broll.gainea.server.core.utils.UnitControl
+import com.broll.gainea.server.core.utils.UnitControl.focus
+import com.broll.gainea.server.core.utils.selectPlayerUnit
 
 class C_BuffMighty : Card(10, "Excaliburs Macht", "Verdoppelt Angriff und Leben einer Einheit") {
     init {
@@ -14,11 +14,11 @@ class C_BuffMighty : Card(10, "Excaliburs Macht", "Verdoppelt Angriff und Leben 
         get() = true
 
     override fun play() {
-        val unit = selectPlayerUnit(game, owner, "Welche Einheit soll gestärkt werden?")
+        val unit = game.selectPlayerUnit(owner, "Welche Einheit soll gestärkt werden?")
         if (unit != null) {
             unit.setPower(unit.power.rootValue * 2)
             unit.changeHealth(unit.health.rootValue * 2)
-            UnitControl.focus(game, unit, NT_Event.EFFECT_BUFF)
+            game.focus(unit, NT_Event.EFFECT_BUFF)
         }
     }
 }

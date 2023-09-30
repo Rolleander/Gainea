@@ -6,12 +6,13 @@ import com.broll.gainea.net.NT_Event_ReceivedPoints
 import com.broll.gainea.net.NT_Event_ReceivedStars
 import com.broll.gainea.net.NT_Event_RemoveGoal
 import com.broll.gainea.net.NT_Goal
-import com.broll.gainea.server.core.GameContainer
+import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.goals.Goal
-import com.broll.gainea.server.core.utils.GameUtils
 import com.broll.gainea.server.core.utils.ProcessingUtils
+import com.broll.gainea.server.core.utils.isGameEnd
+import com.broll.gainea.server.core.utils.sendUpdate
 
-class GoalHandler(private val game: GameContainer, private val player: Player) {
+class GoalHandler(private val game: Game, private val player: Player) {
     var score = 0
         private set
     var stars = 0
@@ -23,9 +24,9 @@ class GoalHandler(private val game: GameContainer, private val player: Player) {
         val nt = NT_Event_ReceivedPoints()
         nt.player = player.serverPlayer.id
         nt.points = points
-        GameUtils.sendUpdate(game, nt)
+        game.sendUpdate(nt)
         ProcessingUtils.pause(500)
-        if (GameUtils.isGameEnd(game)) {
+        if (game.isGameEnd()) {
             game.end()
         }
     }
@@ -35,20 +36,16 @@ class GoalHandler(private val game: GameContainer, private val player: Player) {
         val nt = NT_Event_ReceivedStars()
         nt.player = player.serverPlayer.id
         nt.stars = stars
-        GameUtils.sendUpdate(game, nt)
+        game.sendUpdate(nt)
         ProcessingUtils.pause(500)
         game.updateReceiver.earnedStars(player, stars)
-    }
-
-    fun getGoals(): List<Goal> {
-        return goals
     }
 
     fun removeGoal(oldGoal: Goal) {
         goals.remove(oldGoal)
         game.updateReceiver.unregister(oldGoal)
         val nt = NT_Event_RemoveGoal()
-        nt.goal = oldGoal!!.nt()
+        nt.goal = oldGoal.nt()
         player.serverPlayer.sendTCP(nt)
     }
 
@@ -60,7 +57,7 @@ class GoalHandler(private val game: GameContainer, private val player: Player) {
         nt.goal = goal.nt()
         val nt2 = NT_Event_OtherPlayerReceivedGoal()
         nt2.player = player.serverPlayer.id
-        GameUtils.sendUpdate(game, player, nt, nt2)
+        game.sendUpdate(player, nt, nt2)
         //directly check goal for completion
         game.processingCore.execute({ goal.check() }, 100)
     }

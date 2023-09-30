@@ -7,7 +7,8 @@ import com.broll.gainea.server.core.map.Location
 import com.broll.gainea.server.core.objects.MapObject
 import com.broll.gainea.server.core.objects.Unit
 import com.broll.gainea.server.core.objects.buffs.BuffableInt
-import com.broll.gainea.server.core.utils.PlayerUtils
+import com.broll.gainea.server.core.utils.getHostileArmy
+import com.broll.gainea.server.core.utils.owner
 import org.slf4j.LoggerFactory
 
 object BattleSimulation {
@@ -48,10 +49,9 @@ object BattleSimulation {
         return wins / SIMULATIONS.toFloat()
     }
 
-    private fun winsBattle(location: Location, units: List<Unit>): Boolean {
-        val owner = PlayerUtils.getOwner(units)
-        return winsBattle(units, PlayerUtils.getHostileArmy(owner, location))
-    }
+    private fun winsBattle(location: Location, units: List<Unit>) =
+            winsBattle(units, units.owner().getHostileArmy(location))
+
 
     fun winsBattle(attackers: List<Unit>, defenders: List<Unit>): Boolean {
         val simulationWrapper = UnitSimulationWrapper(attackers, defenders)

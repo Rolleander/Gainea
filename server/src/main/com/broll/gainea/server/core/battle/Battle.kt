@@ -52,6 +52,6 @@ open class Battle(private val attackers: List<Unit>,
         result.damage(source, target, lethal)
     }
 
-    private fun getDamageTarget(targetUnits: List<Unit>) = targetUnits.filter { it.alive }.shuffled().minByOrNull { it.power.getValue() }
+    private fun getDamageTarget(targetUnits: List<Unit>) = targetUnits.filter { it.alive }.shuffled().minByOrNull { it.power.value }
 
 }

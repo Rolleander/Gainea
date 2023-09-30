@@ -5,7 +5,8 @@ import com.broll.gainea.server.core.goals.CustomOccupyGoal
 import com.broll.gainea.server.core.goals.GoalDifficulty
 import com.broll.gainea.server.core.map.AreaType
 import com.broll.gainea.server.core.map.ExpansionType
-import com.broll.gainea.server.core.utils.LocationUtils
+import com.broll.gainea.server.core.utils.getControlledLocationsIn
+import com.broll.gainea.server.core.utils.isAreaType
 
 class G_Snow : CustomOccupyGoal(GoalDifficulty.EASY, "Erobere " + COUNT + " Schneegebiete") {
     init {
@@ -14,8 +15,8 @@ class G_Snow : CustomOccupyGoal(GoalDifficulty.EASY, "Erobere " + COUNT + " Schn
     }
 
     override fun check() {
-        val count = LocationUtils.getControlledLocationsIn(player, ExpansionType.ICELANDS)
-                .count { LocationUtils.isAreaType(it, AreaType.SNOW) }
+        val count = player.getControlledLocationsIn(ExpansionType.ICELANDS)
+                .count { it.isAreaType(AreaType.SNOW) }
         updateProgression(count)
         if (count >= COUNT) {
             success()

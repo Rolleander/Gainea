@@ -6,18 +6,23 @@ import com.broll.gainea.server.core.cards.Card
 import com.broll.gainea.server.core.fractions.Fraction
 import com.broll.gainea.server.core.fractions.FractionDescription
 import com.broll.gainea.server.core.fractions.FractionType
+import com.broll.gainea.server.core.fractions.UnitDescription
 import com.broll.gainea.server.core.map.Area
 import com.broll.gainea.server.core.map.AreaType
 import com.broll.gainea.server.core.objects.Soldier
 import com.broll.gainea.server.core.objects.monster.Monster
-import com.broll.gainea.server.core.utils.LocationUtils
-import com.broll.gainea.server.core.utils.SelectionUtils
 import com.broll.gainea.server.core.utils.UnitControl.damage
+import com.broll.gainea.server.core.utils.isAreaType
+import com.broll.gainea.server.core.utils.selectHostileUnit
 
 class FireFraction : Fraction(FractionType.FIRE) {
     private var turns = 0
     override fun description(): FractionDescription {
-        val desc = FractionDescription("")
+        val desc = FractionDescription(
+                "",
+                soldier = UnitDescription(name = "Feuermagier", icon = 23),
+                commander = UnitDescription(name = "Flammenschürer Duras", icon = 48, power = 3, health = 3),
+        )
         desc.plus("Erhält jede dritte Runde eine Feuerregen-Karte\n(Verursacht 1 Schaden an einer beliebigen feindlichen Einheit)")
         desc.plus("Zahl +1 auf Wüsten")
         desc.contra("Erhält keine Belohnung für besiegte Monster auf Schnee oder Seen")
@@ -57,7 +62,7 @@ class FireFraction : Fraction(FractionType.FIRE) {
     }
 
     override fun killedMonster(monster: Monster) {
-        if (LocationUtils.isAreaType(monster.location, AreaType.SNOW, AreaType.LAKE)) {
+        if (monster.location.isAreaType(AreaType.SNOW, AreaType.LAKE)) {
             //no card when monster on ice or water
             return
         }
@@ -69,9 +74,9 @@ class FireFraction : Fraction(FractionType.FIRE) {
             get() = true
 
         override fun play() {
-            val unit = SelectionUtils.selectHostileUnit(game, owner, "Welcher Einheit soll Schaden zugeführt werden?")
+            val unit = game.selectHostileUnit(owner, "Welcher Einheit soll Schaden zugeführt werden?")
             if (unit != null) {
-                damage(game, unit)
+                game.damage(unit)
             }
         }
     }

@@ -5,13 +5,18 @@ import com.broll.gainea.server.core.battle.FightingPower
 import com.broll.gainea.server.core.fractions.Fraction
 import com.broll.gainea.server.core.fractions.FractionDescription
 import com.broll.gainea.server.core.fractions.FractionType
+import com.broll.gainea.server.core.fractions.UnitDescription
 import com.broll.gainea.server.core.objects.Soldier
 import com.broll.gainea.server.core.objects.monster.Monster
 import com.broll.gainea.server.core.utils.UnitControl.recruit
 
 class PoacherFraction : Fraction(FractionType.POACHER) {
     override fun description(): FractionDescription {
-        val desc = FractionDescription("")
+        val desc = FractionDescription(
+                "",
+                soldier = UnitDescription(name = "Wilderer", icon = 42),
+                commander = UnitDescription(name = "Monsterzähmer", icon = 44, power = 1, health = 5),
+        )
         desc.plus("Besiegte Monster werden rekrutiert")
         desc.contra("Gegen menschliche Truppen -1 Zahl für eigene Soldaten")
         return desc
@@ -27,7 +32,7 @@ class PoacherFraction : Fraction(FractionType.POACHER) {
 
     override fun killedMonster(monster: Monster) {
         super.killedMonster(monster)
-        recruit(game, owner, listOf(monster))
+        game.recruit(owner, listOf(monster))
     }
 
     override fun createSoldier(): Soldier {

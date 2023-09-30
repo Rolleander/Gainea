@@ -1,8 +1,8 @@
 package com.broll.gainea.server.core.cards.impl.play
 
 import com.broll.gainea.server.core.cards.Card
-import com.broll.gainea.server.core.utils.LocationUtils
-import com.broll.gainea.server.core.utils.PlayerUtils
+import com.broll.gainea.server.core.utils.getRandomFree
+import com.broll.gainea.server.core.utils.isCommanderAlive
 
 class C_ResurrectCommander : Card(61, "Auferstehung", "Lasst euren gefallenen Feldherr zurückkehren") {
     init {
@@ -10,12 +10,14 @@ class C_ResurrectCommander : Card(61, "Auferstehung", "Lasst euren gefallenen Fe
     }
 
     override val isPlayable: Boolean
-        get() = !PlayerUtils.isCommanderAlive(owner)
+        get() = !owner.isCommanderAlive()
 
     override fun play() {
         val locations = owner.controlledLocations.toMutableList()
         if (locations.isEmpty()) {
-            locations.add(LocationUtils.getRandomFree(game.map.allAreas))
+            game.map.allAreas.getRandomFree()?.let {
+                locations += it
+            }
         }
         placeUnitHandler.placeCommander(owner, locations)
     }

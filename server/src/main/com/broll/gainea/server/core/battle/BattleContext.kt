@@ -4,7 +4,7 @@ import com.broll.gainea.server.core.map.Location
 import com.broll.gainea.server.core.objects.Unit
 import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.core.player.isNeutral
-import com.broll.gainea.server.core.utils.PlayerUtils
+import com.broll.gainea.server.core.utils.owner
 
 open class BattleContext(var attackers: List<Unit>, var defenders: List<Unit>) {
     var location: Location
@@ -18,7 +18,7 @@ open class BattleContext(var attackers: List<Unit>, var defenders: List<Unit>) {
     init {
         location = defenders[0].location
         sourceLocation = attackers[0].location
-        attackingPlayer = PlayerUtils.getOwner(attackers)
+        attackingPlayer = attackers.owner()
         defendingPlayers = defenders.map { it.owner }.distinct()
     }
 
@@ -108,7 +108,7 @@ open class BattleContext(var attackers: List<Unit>, var defenders: List<Unit>) {
 
     protected fun getNonNeutralOwners(owners: List<Player>) = owners.filterNot { it.isNeutral() }
 
-    fun getDefendingPlayers() =
+    fun getNonNeutralDefenders() =
             getNonNeutralOwners(defendingPlayers)
 
 }

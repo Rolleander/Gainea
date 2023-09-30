@@ -6,7 +6,8 @@ import com.broll.gainea.server.core.goals.GoalDifficulty
 import com.broll.gainea.server.core.map.AreaType
 import com.broll.gainea.server.core.map.ExpansionType
 import com.broll.gainea.server.core.map.Location
-import com.broll.gainea.server.core.utils.LocationUtils
+import com.broll.gainea.server.core.utils.filterByType
+import com.broll.gainea.server.core.utils.getControlledLocationsIn
 
 class G_AreaTypes : CustomOccupyGoal(GoalDifficulty.MEDIUM, "Erobere zwei beliebige Steppen, Wüsten, Meere und Berge") {
     init {
@@ -16,9 +17,9 @@ class G_AreaTypes : CustomOccupyGoal(GoalDifficulty.MEDIUM, "Erobere zwei belieb
 
     override fun check() {
         var count = 0
-        val locations = LocationUtils.getControlledLocationsIn(player, ExpansionType.GAINEA)
+        val locations = player.getControlledLocationsIn(ExpansionType.GAINEA)
         for (type in TYPES) {
-            count += Math.min(2, LocationUtils.filterByType(locations, type).count())
+            count += Math.min(2, locations.filterByType(type).count())
         }
         updateProgression(count)
         if (count == TYPES.size * 2) {
@@ -42,6 +43,6 @@ class G_AreaTypes : CustomOccupyGoal(GoalDifficulty.MEDIUM, "Erobere zwei belieb
     }
 
     companion object {
-        private val TYPES = arrayOf(AreaType.PLAINS, AreaType.DESERT, AreaType.LAKE, AreaType.MOUNTAIN)
+        private val TYPES = listOf(AreaType.PLAINS, AreaType.DESERT, AreaType.LAKE, AreaType.MOUNTAIN)
     }
 }

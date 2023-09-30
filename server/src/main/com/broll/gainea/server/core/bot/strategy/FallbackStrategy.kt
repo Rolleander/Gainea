@@ -1,6 +1,6 @@
 package com.broll.gainea.server.core.bot.strategy
 
-import com.broll.gainea.server.core.GameContainer
+import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.goals.Goal
 import com.broll.gainea.server.core.goals.GoalDifficulty
 import com.broll.gainea.server.core.objects.monster.Monster
@@ -17,7 +17,7 @@ object FallbackStrategy {
 
     }
 
-    fun create(botStrategy: BotStrategy, player: Player, game: GameContainer, constants: StrategyConstants): GoalStrategy {
+    fun create(botStrategy: BotStrategy, player: Player, game: Game, constants: StrategyConstants): GoalStrategy {
         val strategy = GoalStrategy(botStrategy, FallbackGoal, player, game, constants)
         strategy.setPrepareStrategy {
             //attack monsters

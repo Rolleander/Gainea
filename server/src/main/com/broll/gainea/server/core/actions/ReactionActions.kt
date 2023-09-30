@@ -6,6 +6,6 @@ import com.broll.gainea.server.core.player.Player
 interface ReactionActions {
     fun endTurn()
     fun sendBoardUpdate()
-    fun requireAction(player: Player, action: RequiredActionContext<NT_Action>): ActionContext<NT_Action>
+    fun requireAction(player: Player, action: RequiredActionContext<out NT_Action>): ActionContext<out NT_Action>
     fun sendGameUpdate(update: Any)
 }

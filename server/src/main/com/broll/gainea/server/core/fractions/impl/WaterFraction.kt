@@ -7,6 +7,7 @@ import com.broll.gainea.server.core.battle.FightingPower
 import com.broll.gainea.server.core.fractions.Fraction
 import com.broll.gainea.server.core.fractions.FractionDescription
 import com.broll.gainea.server.core.fractions.FractionType
+import com.broll.gainea.server.core.fractions.UnitDescription
 import com.broll.gainea.server.core.map.Area
 import com.broll.gainea.server.core.map.AreaType
 import com.broll.gainea.server.core.objects.Soldier
@@ -15,13 +16,17 @@ import com.broll.gainea.server.core.objects.buffs.BuffType
 import com.broll.gainea.server.core.objects.buffs.IntBuff
 import com.broll.gainea.server.core.objects.monster.Monster
 import com.broll.gainea.server.core.player.Player
-import com.broll.gainea.server.core.utils.LocationUtils
 import com.broll.gainea.server.core.utils.UnitControl.spawn
+import com.broll.gainea.server.core.utils.isAreaType
 
 class WaterFraction : Fraction(FractionType.WATER) {
     private val spawns = mutableListOf<Unit>()
     override fun description(): FractionDescription {
-        val desc = FractionDescription("")
+        val desc = FractionDescription(
+                "",
+                soldier = UnitDescription(name = "Wassermagier", icon = 46),
+                commander = UnitDescription(name = "Frostbeschwörer Arn", icon = 116, power = 3, health = 3),
+        )
         desc.plus("""Fällt Arn wird er in eurem nächsten Zug als Eiskoloss (2/4) wiederbelebt
 Der Eiskoloss kann für $FROZEN_ROUNDS Runden nicht angreifen oder sich bewegen
 Fällt der Eiskoloss kehrt Arn in eruem nächsten Zug zurück""")
@@ -37,7 +42,7 @@ Fällt der Eiskoloss kehrt Arn in eruem nächsten Zug zurück""")
     }
 
     override fun turnStarted(actionHandlers: ActionHandlers) {
-        spawns.forEach { unit: Unit -> spawn(game, unit, unit.location) }
+        spawns.forEach { unit: Unit -> game.spawn(unit, unit.location) }
         spawns.clear()
     }
 
@@ -68,7 +73,7 @@ Fällt der Eiskoloss kehrt Arn in eruem nächsten Zug zurück""")
     private open class WaterSoldier(owner: Player) : Soldier(owner) {
         override fun moved() {
             super.moved()
-            if (LocationUtils.isAreaType(location, AreaType.LAKE)) {
+            if (location.isAreaType(AreaType.LAKE)) {
                 turnStart()
             }
         }
@@ -95,7 +100,7 @@ Fällt der Eiskoloss kehrt Arn in eruem nächsten Zug zurück""")
 
         override fun moved() {
             super.moved()
-            if (LocationUtils.isAreaType(location, AreaType.LAKE)) {
+            if (location.isAreaType(AreaType.LAKE)) {
                 turnStart()
             }
         }

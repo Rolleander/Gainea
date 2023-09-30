@@ -1,6 +1,6 @@
 package com.broll.gainea.server.core.goals.impl.all
 
-import com.broll.gainea.server.core.GameContainer
+import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.battle.BattleResult
 import com.broll.gainea.server.core.bot.strategy.GoalStrategy
 import com.broll.gainea.server.core.goals.Goal
@@ -10,11 +10,11 @@ import com.broll.gainea.server.core.objects.Unit
 import com.broll.gainea.server.core.objects.monster.Monster
 import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.core.player.isNeutral
-import com.broll.gainea.server.core.utils.LocationUtils
+import com.broll.gainea.server.core.utils.getMonsters
 
 class G_KillAllMonsters : Goal(GoalDifficulty.MEDIUM, "") {
     private lateinit var continent: Continent
-    override fun init(game: GameContainer, player: Player): Boolean {
+    override fun init(game: Game, player: Player): Boolean {
         for (continent in game.map.allContinents.shuffled()) {
             this.continent = continent
             val monsterCount = monsterCount
@@ -29,7 +29,7 @@ class G_KillAllMonsters : Goal(GoalDifficulty.MEDIUM, "") {
     }
 
     private val monsterCount: Int
-        get() = continent.areas.flatMap { LocationUtils.getMonsters(it) }.count { it.owner.isNeutral() && it.alive }
+        get() = continent.areas.flatMap { it.getMonsters() }.count { it.owner.isNeutral() && it.alive }
 
     override fun check() {
         if (monsterCount == 0) {
@@ -46,7 +46,7 @@ class G_KillAllMonsters : Goal(GoalDifficulty.MEDIUM, "") {
     override fun botStrategy(strategy: GoalStrategy) {
         strategy.isSpreadUnits = false
         strategy.setPrepareStrategy {
-            val monsters = continent.areas.flatMap { LocationUtils.getMonsters(it) }
+            val monsters = continent.areas.flatMap { it.getMonsters() }
             val stars = monsters.sumOf { it.stars }
             strategy.updateTargets(monsters.map { it.location }.toSet())
             strategy.setRequiredUnits(stars)

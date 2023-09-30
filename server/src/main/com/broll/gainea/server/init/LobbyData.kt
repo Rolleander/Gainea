@@ -1,7 +1,7 @@
 package com.broll.gainea.server.init
 
 import com.broll.gainea.net.NT_LobbySettings
-import com.broll.gainea.server.core.GameContainer
+import com.broll.gainea.server.core.Game
 import com.broll.networklib.server.impl.ILobbyData
 
 class LobbyData : ILobbyData {
@@ -12,7 +12,7 @@ class LobbyData : ILobbyData {
     var pointLimit = POINT_LIMIT_DEFAULT
     var monsterCount = MONSTERS_PER_MAP
     var roundLimit = ROUND_LIMIT_DEFAULT
-    var game: GameContainer? = null
+    var game: Game? = null
     var gameStartListener: IGameStartListener? = null
     var isGameRoundsStarted = false
     override fun nt(): NT_LobbySettings {

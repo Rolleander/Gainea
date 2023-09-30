@@ -3,14 +3,14 @@ package com.broll.gainea.server.core.goals
 import com.broll.gainea.net.NT_Event_FinishedGoal
 import com.broll.gainea.net.NT_Goal
 import com.broll.gainea.net.NT_GoalProgression
-import com.broll.gainea.server.core.GameContainer
+import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.bot.strategy.GoalStrategy
 import com.broll.gainea.server.core.map.ExpansionType
 import com.broll.gainea.server.core.map.Location
 import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.core.processing.GameUpdateReceiverAdapter
-import com.broll.gainea.server.core.utils.GameUtils
 import com.broll.gainea.server.core.utils.ProcessingUtils
+import com.broll.gainea.server.core.utils.sendUpdate
 
 abstract class Goal(var difficulty: GoalDifficulty, var text: String) : GameUpdateReceiverAdapter() {
     protected val locations = mutableListOf<Location>()
@@ -21,10 +21,10 @@ abstract class Goal(var difficulty: GoalDifficulty, var text: String) : GameUpda
     private var progression = 0
     private var progressionGoal = NT_Goal.NO_PROGRESSION_GOAL
     private val requiredExpansions = mutableListOf<ExpansionType>()
-    protected lateinit var game: GameContainer
+    protected lateinit var game: Game
     protected lateinit var player: Player
     private var finished = false
-    open fun init(game: GameContainer, player: Player): Boolean {
+    open fun init(game: Game, player: Player): Boolean {
         this.game = game
         this.player = player
         id = game.newObjectId()
@@ -60,7 +60,7 @@ abstract class Goal(var difficulty: GoalDifficulty, var text: String) : GameUpda
             nt.sound = "fanfare.ogg"
             nt.player = player.serverPlayer.id
             nt.goal = nt()
-            GameUtils.sendUpdate(game, nt)
+            game.sendUpdate(nt)
             ProcessingUtils.pause(4000)
             player.goalHandler.addPoints(difficulty.points)
             finished = true

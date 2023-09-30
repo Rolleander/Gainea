@@ -4,7 +4,7 @@ import com.broll.gainea.server.core.cards.Card
 import com.broll.gainea.server.core.map.AreaType
 import com.broll.gainea.server.core.map.Location
 import com.broll.gainea.server.core.objects.monster.Monster
-import com.broll.gainea.server.core.utils.LocationUtils
+import com.broll.gainea.server.core.utils.emptyOrWildMonster
 
 class C_PlaceWatersnake : Card(49, "Verseuchte Gewässer", "Platziert eine wilde Seeschlange auf ein beliebiges unbesetztes Meer") {
     init {
@@ -14,7 +14,7 @@ class C_PlaceWatersnake : Card(49, "Verseuchte Gewässer", "Platziert eine wilde
     override val isPlayable: Boolean
         get() = locations.isNotEmpty()
     private val locations: List<Location>
-        get() = game.map.allAreas.filter { it.type == AreaType.LAKE && LocationUtils.emptyOrWildMonster(it) }
+        get() = game.map.allAreas.filter { it.type == AreaType.LAKE && it.emptyOrWildMonster() }
 
     override fun play() {
         val monster = Monster(game.neutralPlayer)

@@ -5,13 +5,18 @@ import com.broll.gainea.server.core.battle.FightingPower
 import com.broll.gainea.server.core.fractions.Fraction
 import com.broll.gainea.server.core.fractions.FractionDescription
 import com.broll.gainea.server.core.fractions.FractionType
+import com.broll.gainea.server.core.fractions.UnitDescription
 import com.broll.gainea.server.core.map.AreaType
 import com.broll.gainea.server.core.objects.Soldier
-import com.broll.gainea.server.core.utils.LocationUtils
+import com.broll.gainea.server.core.utils.isAreaType
 
 class SamuraiFraction : Fraction(FractionType.SAMURAI) {
     override fun description(): FractionDescription {
-        val desc = FractionDescription("")
+        val desc = FractionDescription(
+                "",
+                soldier = UnitDescription(name = "Samurai", icon = 111),
+                commander = UnitDescription(name = "Ronin", icon = 113, power = 3, health = 3),
+        )
         desc.plus("Als Angreifer +1 Zahl")
         desc.plus("Auf Bergen +1 Zahl")
         desc.contra("Als Verteidiger höchste Würfelzahl 5")
@@ -25,7 +30,7 @@ class SamuraiFraction : Fraction(FractionType.SAMURAI) {
         } else {
             power.withHighestNumber(5)
         }
-        if (LocationUtils.isAreaType(context.location, AreaType.MOUNTAIN)) {
+        if (context.location.isAreaType(AreaType.MOUNTAIN)) {
             power.changeNumberPlus(1)
         }
         return power

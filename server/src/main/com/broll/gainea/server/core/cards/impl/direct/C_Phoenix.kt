@@ -10,14 +10,14 @@ class C_Phoenix : DirectlyPlayedCard(65, "Beschworener Phönix", "Beschwört ein
     }
 
     override fun play() {
-        val monster = Monster()
+        val monster = Monster(game.neutralPlayer)
         monster.name = "Phönix"
         monster.attacksPerTurn.value = 0
         monster.movesPerTurn.value = 2
         monster.setHealth(2)
         monster.setPower(2)
         monster.icon = 124
-        monster.setMotion(MonsterMotion.AIRBORNE)
+        monster.motion = MonsterMotion.AIRBORNE
         monster.owner = owner
         placeUnitHandler.placeUnit(owner, monster, owner.controlledLocations, "Ort der Beschwörung wählen")
     }

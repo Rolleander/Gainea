@@ -1,6 +1,6 @@
 package com.broll.gainea.server.core.fractions
 
-import com.broll.gainea.server.core.GameContainer
+import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.actions.ActionHandlers
 import com.broll.gainea.server.core.actions.required.PlaceUnitAction
 import com.broll.gainea.server.core.battle.BattleContext
@@ -11,11 +11,11 @@ import com.broll.gainea.server.core.objects.Unit
 import com.broll.gainea.server.core.objects.monster.Monster
 import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.core.processing.GameUpdateReceiverAdapter
-import com.broll.gainea.server.core.utils.LocationUtils
+import com.broll.gainea.server.core.utils.getRandomFree
 
 abstract class Fraction(val type: FractionType) : GameUpdateReceiverAdapter() {
     val description: FractionDescription
-    protected lateinit var game: GameContainer
+    protected lateinit var game: Game
     protected lateinit var owner: Player
 
     init {
@@ -23,7 +23,7 @@ abstract class Fraction(val type: FractionType) : GameUpdateReceiverAdapter() {
     }
 
     protected abstract fun description(): FractionDescription
-    fun init(game: GameContainer, owner: Player) {
+    fun init(game: Game, owner: Player) {
         this.game = game
         this.owner = owner
     }
@@ -33,7 +33,7 @@ abstract class Fraction(val type: FractionType) : GameUpdateReceiverAdapter() {
         val spawnLocations = owner.controlledLocations.toMutableSet()
         if (spawnLocations.isEmpty()) {
             //player has no more controlled locations. give him a random free one
-            val location = LocationUtils.getRandomFree(game.map.allAreas)
+            val location = game.map.allAreas.getRandomFree()
                     ?: //no more free locations, just skip
                     return
             spawnLocations.add(location)

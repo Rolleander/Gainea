@@ -7,17 +7,22 @@ import com.broll.gainea.server.core.battle.FightingPower
 import com.broll.gainea.server.core.fractions.Fraction
 import com.broll.gainea.server.core.fractions.FractionDescription
 import com.broll.gainea.server.core.fractions.FractionType
+import com.broll.gainea.server.core.fractions.UnitDescription
 import com.broll.gainea.server.core.map.AreaType
 import com.broll.gainea.server.core.map.Location
 import com.broll.gainea.server.core.objects.Soldier
 import com.broll.gainea.server.core.objects.Unit
 import com.broll.gainea.server.core.objects.monster.Monster
-import com.broll.gainea.server.core.utils.LocationUtils
 import com.broll.gainea.server.core.utils.UnitControl.spawn
+import com.broll.gainea.server.core.utils.isAreaType
 
 class ShadowFraction : Fraction(FractionType.SHADOW) {
     override fun description(): FractionDescription {
-        val desc = FractionDescription("")
+        val desc = FractionDescription(
+                "",
+                soldier = UnitDescription(name = "Schatten", icon = 12),
+                commander = UnitDescription(name = "Erznekromant Bal", icon = 21, power = 3, health = 3),
+        )
         desc.plus("Bei Kämpfen können gefallene Feinde zu Skeletten (1/1) werden")
         desc.contra("Erhält keine Belohnung für besiegte Monster auf Steppen")
         desc.contra("Skelette haben -1 Zahl")
@@ -25,7 +30,7 @@ class ShadowFraction : Fraction(FractionType.SHADOW) {
     }
 
     override fun killedMonster(monster: Monster) {
-        if (LocationUtils.isAreaType(monster.location, AreaType.PLAINS)) {
+        if (monster.location.isAreaType(AreaType.PLAINS)) {
             return
         }
         super.killedMonster(monster)
@@ -65,7 +70,7 @@ class ShadowFraction : Fraction(FractionType.SHADOW) {
         skeleton.setStats(SOLDIER_POWER, SOLDIER_HEALTH)
         skeleton.icon = 94
         skeleton.name = "Skelett"
-        spawn(game, skeleton, location)
+        game.spawn(skeleton, location)
     }
 
     override fun battleResult(result: BattleResult) {

@@ -7,15 +7,12 @@ import com.broll.gainea.server.core.actions.ActionContext
 import com.broll.gainea.server.core.actions.RequiredActionContext
 import com.broll.gainea.server.core.map.Location
 import com.broll.gainea.server.core.player.Player
-import com.broll.gainea.server.core.utils.PlayerUtils
-import com.broll.gainea.server.init.PlayerData
-import com.broll.networklib.server.impl.LobbyPlayer
+import com.broll.gainea.server.core.utils.getOtherPlayers
 import org.slf4j.LoggerFactory
-import java.util.stream.Collectors
 
 class SelectChoiceAction : AbstractActionHandler<NT_Action_SelectChoice, SelectChoiceAction.Context>() {
     inner class Context(action: NT_Action_SelectChoice,
-                        var selectedOption : Int = 0) : ActionContext<NT_Action_SelectChoice>(action)
+                        var selectedOption: Int = 0) : ActionContext<NT_Action_SelectChoice>(action)
 
     fun selection(message: String, choices: List<String>): Int {
         return selection(game.currentPlayer, message, choices)
@@ -63,7 +60,7 @@ class SelectChoiceAction : AbstractActionHandler<NT_Action_SelectChoice, SelectC
     }
 
     fun selectOtherPlayer(player: Player, message: String): Player {
-        return selectPlayer(player, PlayerUtils.getOtherPlayers(game, player), message)
+        return selectPlayer(player, game.getOtherPlayers(player), message)
     }
 
     fun selectPlayer(player: Player, options: List<Player>, message: String): Player {

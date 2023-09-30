@@ -20,7 +20,7 @@ class C_Blockade : Card(54, "Burgfried", "Platziert eine neutrale Befestigung (3
         soldier.addHealthBuff(buff)
         val locations = game.map.allAreas.filter { it.free }
         val location = selectHandler.selectLocation("Wo soll die Befestigung errichtet werden?", locations)
-        spawn(game, soldier, location)
+        game.spawn(soldier, location)
         game.buffProcessor.timeoutBuff(buff, ROUNDS)
     }
 

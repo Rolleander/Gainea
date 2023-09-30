@@ -1,12 +1,13 @@
 package com.broll.gainea.server.core.stats
 
 import com.broll.gainea.net.NT_GameStatistic
-import com.broll.gainea.server.core.GameContainer
+import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.core.processing.GameUpdateReceiverAdapter
-import com.broll.gainea.server.core.utils.GameUtils
+import com.broll.gainea.server.core.utils.sendUpdate
 
-class GameStatistic(private val game: GameContainer) : GameUpdateReceiverAdapter() {
+
+class GameStatistic(private val game: Game) : GameUpdateReceiverAdapter() {
     private val turnStatistics = mutableListOf<TurnStatistic>()
     override fun roundStarted() {
         registerRound()
@@ -20,7 +21,7 @@ class GameStatistic(private val game: GameContainer) : GameUpdateReceiverAdapter
         calcTurnStatistic()
         val nt = NT_GameStatistic()
         nt.rounds = turnStatistics.map { it.nt() }.toTypedArray()
-        GameUtils.sendUpdate(game, nt)
+        game.sendUpdate(nt)
     }
 
     private fun calcTurnStatistic() = TurnStatistic(game.allPlayers.map { calcPlayerStatistic(it) })

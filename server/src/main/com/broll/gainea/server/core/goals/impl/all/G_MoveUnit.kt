@@ -1,6 +1,6 @@
 package com.broll.gainea.server.core.goals.impl.all
 
-import com.broll.gainea.server.core.GameContainer
+import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.bot.strategy.GoalStrategy
 import com.broll.gainea.server.core.goals.CustomOccupyGoal
 import com.broll.gainea.server.core.goals.GoalDifficulty
@@ -8,8 +8,8 @@ import com.broll.gainea.server.core.map.Area
 import com.broll.gainea.server.core.map.Location
 import com.broll.gainea.server.core.objects.Unit
 import com.broll.gainea.server.core.player.Player
-import com.broll.gainea.server.core.utils.LocationUtils
-import com.broll.gainea.server.core.utils.PlayerUtils
+import com.broll.gainea.server.core.utils.getUnits
+import com.broll.gainea.server.core.utils.getWalkingDistance
 
 open class G_MoveUnit(difficulty: GoalDifficulty = GoalDifficulty.EASY, private val distance: Int = 6) : CustomOccupyGoal(difficulty, "") {
     private lateinit var from: Area
@@ -36,7 +36,7 @@ open class G_MoveUnit(difficulty: GoalDifficulty = GoalDifficulty.EASY, private 
         return null
     }
 
-    override fun init(game: GameContainer, player: Player): Boolean {
+    override fun init(game: Game, player: Player): Boolean {
         this.game = game
         this.player = player
         val startingPoints = game.map.allAreas.shuffled().toMutableList()
@@ -58,12 +58,14 @@ open class G_MoveUnit(difficulty: GoalDifficulty = GoalDifficulty.EASY, private 
 
     override fun check() {
         walkingUnits.removeIf { it.dead }
-        walkingUnits.addAll(PlayerUtils.getUnits(player, from))
+        walkingUnits.addAll(player.getUnits(from))
         if (walkingUnits.any { it.location === to }) {
             updateProgression(distance)
             success()
         } else {
-            val closestDistance = walkingUnits.minOf { LocationUtils.getWalkingDistance(it, it.location, to) }
+            val closestDistance = walkingUnits.minOf {
+                it.getWalkingDistance(it.location, to) ?: distance
+            }
             updateProgression(distance - closestDistance)
         }
     }

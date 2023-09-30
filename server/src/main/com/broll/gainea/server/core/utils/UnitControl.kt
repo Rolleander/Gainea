@@ -6,7 +6,7 @@ import com.broll.gainea.net.NT_Event_FocusObjects
 import com.broll.gainea.net.NT_Event_MovedObject
 import com.broll.gainea.net.NT_Event_PlacedObject
 import com.broll.gainea.net.NT_Event_UpdateObjects
-import com.broll.gainea.server.core.GameContainer
+import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.map.Area
 import com.broll.gainea.server.core.map.Location
 import com.broll.gainea.server.core.objects.MapObject
@@ -19,58 +19,60 @@ import org.apache.commons.collections4.ListUtils
 import org.slf4j.LoggerFactory
 import java.util.function.Consumer
 
-fun Unit.isNeutralMonster() = this is Monster && this.owner.isNeutral()
-
 object UnitControl {
     private val Log = LoggerFactory.getLogger(UnitControl::class.java)
     private const val MOVE_PAUSE = 1500
     private const val SPAWN_PAUSE = 1500
     private const val DAMAGE_PAUSE = 1000
-    fun move(game: GameContainer, unit: MapObject, location: Location) =
-            move(game, Lists.newArrayList(unit), location)
 
 
-    fun move(game: GameContainer, units: List<MapObject>, location: Location) {
+    fun Unit.isNeutralMonster() = this is Monster && this.owner.isNeutral()
+
+
+    fun Game.move(unit: MapObject, location: Location) =
+            move(Lists.newArrayList(unit), location)
+
+
+    fun Game.move(units: List<MapObject>, location: Location) {
         if (units.isEmpty()) return
         Log.trace("UnitControl: move units [" + units.size + "] to " + location)
-        units.forEach { GameUtils.place(it, location) }
+        units.forEach { it.place(location) }
         val movedObject = NT_Event_MovedObject()
         movedObject.objects = units.map { it.nt() }.toTypedArray()
-        GameUtils.sendUpdate(game, movedObject)
-        game.updateReceiver.moved(units, location)
+        sendUpdate(movedObject)
+        updateReceiver.moved(units, location)
         ProcessingUtils.pause(MOVE_PAUSE)
     }
 
-    fun kill(game: GameContainer, unit: Unit) =
-            damage(game, unit, Int.MAX_VALUE)
+    fun Game.kill(unit: Unit) = damage(unit, Int.MAX_VALUE)
 
 
-    fun focus(game: GameContainer, obj: MapObject, effect: Int) {
+    fun Game.focus(obj: MapObject, effect: Int) {
         val nt = NT_Event_FocusObject()
         nt.screenEffect = effect
         nt.`object` = obj.nt()
-        GameUtils.sendUpdate(game, nt)
+        sendUpdate(nt)
         ProcessingUtils.pause(DAMAGE_PAUSE)
     }
 
-    fun focus(game: GameContainer, objects: List<MapObject>, effect: Int) {
+    fun Game.focus(objects: List<MapObject>, effect: Int) {
         objects.map { it.location }.distinct().forEach { location ->
             val nt = NT_Event_FocusObjects()
             nt.screenEffect = effect
             nt.objects = objects.filter { it.location === location }.map { it.nt() }.toTypedArray()
-            GameUtils.sendUpdate(game, nt)
+            sendUpdate(nt)
             ProcessingUtils.pause(DAMAGE_PAUSE)
         }
     }
 
-    fun update(game: GameContainer, objects: List<MapObject>) {
+    fun Game.update(objects: List<MapObject>) {
         val nt = NT_Event_UpdateObjects()
         nt.objects = objects.map { it.nt() }.toTypedArray()
-        GameUtils.sendUpdate(game, nt)
+        sendUpdate(nt)
     }
 
 
-    fun heal(game: GameContainer, unit: Unit, heal: Int = 1, consumer: Consumer<NT_Event_FocusObject>? = null) {
+    fun Game.heal(unit: Unit, heal: Int = 1, consumer: Consumer<NT_Event_FocusObject>? = null) {
         Log.trace("UnitControl: heal unit $unit for $heal")
         val actualHeal = Math.max(unit.maxHealth.value - unit.health.value, heal)
         unit.heal(actualHeal)
@@ -78,11 +80,11 @@ object UnitControl {
         nt.`object` = unit.nt()
         nt.screenEffect = NT_Event.EFFECT_HEAL
         consumer?.accept(nt)
-        GameUtils.sendUpdate(game, nt)
+        sendUpdate(nt)
         ProcessingUtils.pause(DAMAGE_PAUSE)
     }
 
-    fun damage(game: GameContainer, unit: Unit, damage: Int = 1, consumer: Consumer<NT_Event_FocusObject>? = null) {
+    fun Game.damage(unit: Unit, damage: Int = 1, consumer: Consumer<NT_Event_FocusObject>? = null) {
         Log.trace("UnitControl: damage unit $unit for $damage")
         //dont overkill
         val actualDamage = Math.min(unit.health.value, damage)
@@ -90,7 +92,7 @@ object UnitControl {
         val lethal = unit.dead
         if (lethal) {
             //remove unit
-            val removed = GameUtils.remove(game, unit)
+            val removed = remove(unit)
             if (!removed) {
                 //was already killed/removed, do nothing
                 return
@@ -102,73 +104,73 @@ object UnitControl {
         nt.`object` = unit.nt()
         nt.screenEffect = NT_Event.EFFECT_DAMAGE
         consumer?.accept(nt)
-        GameUtils.sendUpdate(game, nt)
-        game.updateReceiver.damaged(unit, damage)
+        sendUpdate(nt)
+        updateReceiver.damaged(unit, damage)
         if (lethal) {
             unit.onDeath(null)
-            game.updateReceiver.killed(unit, null)
+            updateReceiver.killed(unit, null)
         }
         ProcessingUtils.pause(DAMAGE_PAUSE)
     }
 
-    fun spawn(game: GameContainer, obj: MapObject, location: Location, consumer: Consumer<NT_Event_PlacedObject>? = null) {
+    fun Game.spawn(obj: MapObject, location: Location, consumer: Consumer<NT_Event_PlacedObject>? = null) {
         Log.trace("UnitControl: spawn object $obj at $location")
-        obj.init(game)
+        obj.init(this)
         if (obj.owner.isNeutral()) {
-            game.objects += obj
+            objects += obj
         } else if (obj is Unit) {
             obj.owner.units += obj
         }
         if (obj is Unit) {
-            game.buffProcessor.applyGlobalBuffs(obj)
+            buffProcessor.applyGlobalBuffs(obj)
         }
-        GameUtils.place(obj, location)
-        game.updateReceiver.register(obj)
+        obj.place(location)
+        updateReceiver.register(obj)
         val nt = NT_Event_PlacedObject()
         nt.`object` = obj.nt()
-        nt.sound = defaultSpawnSound(obj, location)
+        nt.sound = obj.defaultSpawnSound(location)
         consumer?.accept(nt)
-        GameUtils.sendUpdate(game, nt)
-        game.updateReceiver.spawned(obj, location)
+        sendUpdate(nt)
+        updateReceiver.spawned(obj, location)
         ProcessingUtils.pause(SPAWN_PAUSE)
     }
 
-    private fun defaultSpawnSound(obj: MapObject, location: Location) =
-            if (obj is Monster) {
+    private fun MapObject.defaultSpawnSound(location: Location) =
+            if (this is Monster) {
                 "monster.ogg"
             } else {
                 "recruit.ogg"
             }
 
-    fun spawnMonsters(game: GameContainer, count: Int) {
-        LocationUtils.getRandomFree(game.map.allAreas, count).forEach {
-            spawnMonster(game, it as Area)
+    fun Game.spawnMonsters(count: Int) {
+        map.allAreas.getRandomFree(count).forEach {
+            spawnMonster(it as Area)
         }
     }
 
-    fun spawnMonster(game: GameContainer, area: Area) {
-        val activeMonsters = game.objects.filterIsInstance<Monster>()
-        game.monsterFactory.spawn(game.neutralPlayer, area.type, activeMonsters)?.let {
+    fun Game.spawnMonster(area: Area) {
+        val activeMonsters = objects.filterIsInstance<Monster>()
+        monsterFactory.spawn(neutralPlayer, area.type, activeMonsters)?.let {
             Log.debug("spawn monster " + it.name + " on " + area)
-            spawn(game, it, area)
+            spawn(it, area)
         }
     }
 
-    fun conquer(game: GameContainer, units: List<Unit>, target: Location) {
-        val owner = PlayerUtils.getOwner(units)
+    fun Game.conquer(units: List<Unit>, target: Location) {
+        val owner = units.owner()
         val targetUnits = if (owner.isNeutral()) {
             target.units
         } else {
-            PlayerUtils.getHostileArmy(owner, target)
+            owner.getHostileArmy(target)
         }
         if (targetUnits.isEmpty()) {
-            move(game, units, target)
+            move(units, target)
         } else {
-            game.battleHandler.startBattle(units, targetUnits)
+            battleHandler.startBattle(units, targetUnits)
         }
     }
 
-    fun recruit(game: GameContainer, newOwner: Player, units: List<Unit>, newLocation: Location? = null) {
+    fun Game.recruit(newOwner: Player, units: List<Unit>, newLocation: Location? = null) {
         val recruit = units.filter { it.owner !== newOwner }
         if (recruit.isEmpty()) {
             return
@@ -178,7 +180,7 @@ object UnitControl {
         recruit.forEach {
             val previousOwner = it.owner
             if (previousOwner.isNeutral()) {
-                game.objects.remove(it)
+                objects.remove(it)
             } else {
                 previousOwner.units.remove(it)
             }
@@ -192,13 +194,14 @@ object UnitControl {
             }
         }
         if (moveUnits.isNotEmpty()) {
-            move(game, moveUnits, newLocation!!)
+            move(moveUnits, newLocation!!)
         }
         if (updateUnits.isNotEmpty()) {
             if (newLocation != null) {
                 updateUnits.forEach { it.location = newLocation }
             }
-            update(game, updateUnits)
+            update(updateUnits)
         }
     }
+
 }

@@ -5,6 +5,7 @@ import com.broll.gainea.server.core.battle.FightingPower
 import com.broll.gainea.server.core.fractions.Fraction
 import com.broll.gainea.server.core.fractions.FractionDescription
 import com.broll.gainea.server.core.fractions.FractionType
+import com.broll.gainea.server.core.fractions.UnitDescription
 import com.broll.gainea.server.core.map.Location
 import com.broll.gainea.server.core.objects.Soldier
 import com.broll.gainea.server.core.objects.buffs.BuffType
@@ -13,7 +14,11 @@ import com.broll.gainea.server.core.player.Player
 
 class GuardsFraction : Fraction(FractionType.GUARDS) {
     override fun description(): FractionDescription {
-        val desc = FractionDescription("")
+        val desc = FractionDescription(
+                "",
+                soldier = UnitDescription(name = "Gardistenwache", icon = 19),
+                commander = UnitDescription(name = "Elitegardist", icon = 15, power = 3, health = 3),
+        )
         desc.plus("Als Verteidiger ist die niedrigste Würfelzahl 3")
         desc.plus("Zahl +1 für Verteidiger, die ihr Feld mindestens eine Runde\nnicht verlassen haben")
         desc.contra("Als Angreifer Zahl -1")

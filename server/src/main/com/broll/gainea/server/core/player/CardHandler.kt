@@ -3,13 +3,13 @@ package com.broll.gainea.server.core.player
 import com.broll.gainea.net.NT_Event_OtherPlayerReceivedCard
 import com.broll.gainea.net.NT_Event_ReceivedCard
 import com.broll.gainea.net.NT_Event_RemoveCard
-import com.broll.gainea.server.core.GameContainer
+import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.actions.optional.CardAction
 import com.broll.gainea.server.core.cards.Card
 import com.broll.gainea.server.core.cards.DirectlyPlayedCard
-import com.broll.gainea.server.core.utils.GameUtils
+import com.broll.gainea.server.core.utils.sendUpdate
 
-class CardHandler(private val game: GameContainer, private val player: Player) {
+class CardHandler(private val game: Game, private val player: Player) {
     val cards = mutableListOf<Card>()
     fun drawRandomCard() {
         game.cardStorage.drawRandomCard(player)
@@ -27,7 +27,7 @@ class CardHandler(private val game: GameContainer, private val player: Player) {
         nt.sound = "chime.ogg"
         val nt2 = NT_Event_OtherPlayerReceivedCard()
         nt2.player = player.serverPlayer.id
-        GameUtils.sendUpdate(game, player, nt, nt2)
+        game.sendUpdate(player, nt, nt2)
     }
 
     fun discardCard(card: Card) {
@@ -41,6 +41,6 @@ class CardHandler(private val game: GameContainer, private val player: Player) {
     val cardCount: Int
         get() = cards.size
 
-    fun ntCards()  = cards.map { it.nt() }.toTypedArray()
+    fun ntCards() = cards.map { it.nt() }.toTypedArray()
 
 }

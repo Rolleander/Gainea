@@ -10,7 +10,7 @@ import com.broll.gainea.server.core.bot.strategy.GoalStrategy
 import com.broll.gainea.server.core.bot.strategy.LocationDanger
 import com.broll.gainea.server.core.map.Location
 import com.broll.gainea.server.core.objects.Unit
-import com.broll.gainea.server.core.utils.LocationUtils
+import com.broll.gainea.server.core.utils.getWalkingDistance
 import org.apache.commons.lang3.ArrayUtils
 import org.slf4j.LoggerFactory
 import java.util.concurrent.atomic.AtomicInteger
@@ -61,8 +61,11 @@ class BotMove : BotOptionalAction<NT_Action_Move, BotMove.MoveOption>() {
                 if (unitTarget == null || unitTarget === unit.location) {
                     continue
                 }
-                val currentTargetDistance = LocationUtils.getWalkingDistance(unit, unit.location, unitTarget)
-                val moveTargetDistance = LocationUtils.getWalkingDistance(unit, to, unitTarget)
+                val currentTargetDistance = unit.getWalkingDistance(unit.location, unitTarget)
+                val moveTargetDistance = unit.getWalkingDistance(to, unitTarget)
+                if (currentTargetDistance == null || moveTargetDistance == null) {
+                    continue
+                }
                 if (moveTargetDistance > currentTargetDistance) {
                     continue
                 }
@@ -110,8 +113,8 @@ class BotMove : BotOptionalAction<NT_Action_Move, BotMove.MoveOption>() {
         }
         val targetCounts = HashMap<Location, AtomicInteger>()
         targets.forEach {
-            var distance = LocationUtils.getWalkingDistance(unit, unit.location, it)
-            if (distance == -1) {
+            var distance = unit.getWalkingDistance(unit.location, it)
+            if (distance == null) {
                 distance = 100
             }
             targetCounts[it] = AtomicInteger(distance)

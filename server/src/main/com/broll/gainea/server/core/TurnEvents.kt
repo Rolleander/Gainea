@@ -6,9 +6,10 @@ import com.broll.gainea.server.core.cards.events.E_GetCards
 import com.broll.gainea.server.core.cards.events.E_SpawnGoddrake
 import com.broll.gainea.server.core.cards.events.E_SpawnMonster
 import com.broll.gainea.server.core.processing.GameUpdateReceiverAdapter
-import com.broll.gainea.server.core.utils.GameUtils
+import com.broll.gainea.server.core.utils.countNeutralMonsters
+import com.broll.gainea.server.core.utils.getTotalStartMonsters
 
-class TurnEvents(private val game: GameContainer) : GameUpdateReceiverAdapter() {
+class TurnEvents(private val game: Game) : GameUpdateReceiverAdapter() {
     private fun turnEvent(event: Class<out EventCard>) {
         val nt = NT_PlayerWait()
         nt.playersTurn = -1
@@ -29,8 +30,8 @@ class TurnEvents(private val game: GameContainer) : GameUpdateReceiverAdapter() 
                 }
             }
             if (turn % SPAWN_MONSTER_TURNS == 0) {
-                val totalAtStart = GameUtils.getTotalStartMonsters(game)
-                val currentMonsters = GameUtils.countNeutralMonsters(game)
+                val totalAtStart = game.getTotalStartMonsters()
+                val currentMonsters = game.countNeutralMonsters()
                 val missing = totalAtStart - currentMonsters
                 if (missing > 0) {
                     turnEvent(E_SpawnMonster::class.java)

@@ -8,9 +8,9 @@ class GodDragon(owner: Player) : Monster(owner) {
         icon = 58
         name = "Götterdrache"
         setStats(8, 8)
-        setBehavior(MonsterBehavior.AGGRESSIVE)
-        setActivity(MonsterActivity.ALWAYS)
-        setMotion(MonsterMotion.AIRBORNE)
+        behavior = MonsterBehavior.AGGRESSIVE
+        activity = MonsterActivity.ALWAYS
+        motion = MonsterMotion.AIRBORNE
     }
 
     override fun onDeath(throughBattle: BattleResult?) {

@@ -6,8 +6,8 @@ import com.broll.gainea.server.core.objects.MapObject
 import com.broll.gainea.server.core.objects.monster.GodDragon
 import com.broll.gainea.server.core.objects.monster.Monster
 import com.broll.gainea.server.core.player.isNeutral
-import com.broll.gainea.server.core.utils.SelectionUtils
-import com.broll.gainea.server.core.utils.UnitControl
+import com.broll.gainea.server.core.utils.UnitControl.recruit
+import com.broll.gainea.server.core.utils.selectUnitFromLocations
 
 class C_MonsterRecruit : Card(71, "Tierfreund", "Rekrutiert ein benachbartes Monster (ausser Götterdrache)") {
     init {
@@ -27,14 +27,9 @@ class C_MonsterRecruit : Card(71, "Tierfreund", "Rekrutiert ein benachbartes Mon
     override fun play() {
         val monsterLocations = monsterLocations
         if (!monsterLocations.isEmpty()) {
-            val monster = SelectionUtils.selectUnitFromLocations(game,
-                    monsterLocations, { validMonster(it) },
-                    "Welches Monster soll rekrutiert werden?") as Monster? ?: return
-            owner.units.add(monster)
-            monster.removeActionTimer()
-            monster.owner = owner
-            game.objects.remove(monster)
-            UnitControl.focus(game, monster, 0)
+            val monster = game.selectUnitFromLocations(monsterLocations, { validMonster(it) },
+                    "Welches Monster soll rekrutiert werden?") ?: return
+            game.recruit(owner, listOf(monster))
         }
     }
 }

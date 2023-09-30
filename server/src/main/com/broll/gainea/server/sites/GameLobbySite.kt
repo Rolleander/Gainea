@@ -16,16 +16,14 @@ import com.broll.networklib.server.ConnectionRestriction
 import com.broll.networklib.server.LobbyGameServer
 import com.broll.networklib.server.LobbyServerSite
 import com.broll.networklib.server.RestrictionType
-import com.broll.networklib.server.impl.BotPlayer
 import com.broll.networklib.server.impl.LobbyHandler
 import com.broll.networklib.server.impl.Player
 import org.slf4j.LoggerFactory
-import java.util.function.Function
 
-class GameLobbySite : LobbyServerSite<LobbyData?, PlayerData?>() {
-    override fun init(server: LobbyGameServer<LobbyData?, PlayerData?>, lobbyHandler: LobbyHandler<LobbyData?, PlayerData?>) {
+class GameLobbySite : LobbyServerSite<LobbyData, PlayerData>() {
+    override fun init(server: LobbyGameServer<LobbyData, PlayerData>, lobbyHandler: LobbyHandler<LobbyData, PlayerData>) {
         super.init(server, lobbyHandler)
-        this.lobbyHandler.setLobbyCreationRequestHandler { requester: Player<PlayerData?>?, lobbyName: String?, settings: Any? ->
+        this.lobbyHandler.setLobbyCreationRequestHandler { requester: Player<PlayerData>, lobbyName: String, settings: Any? ->
             val lobby = lobbyHandler.openLobby(lobbyName, LobbyData())
             lobby.addListener(LobbyListener())
             lobby.playerLimit = 9
@@ -40,9 +38,9 @@ class GameLobbySite : LobbyServerSite<LobbyData?, PlayerData?>() {
         if (EnumUtils.inBounds(newFraction, FractionType::class.java)) {
             val fraction = FractionType.entries[newFraction]
             //check if its free
-            if (!lobby.playersData.stream().map<FractionType?>(Function { obj: PlayerData -> obj.fraction }).anyMatch { it: FractionType? -> it == fraction }) {
+            if (!lobby.playersData.map { it.fraction }.any { it == fraction }) {
                 //update player fraction
-                player.data.setFraction(fraction)
+                player.data.fraction = fraction
                 lobby.sendLobbyUpdate()
             }
         }
@@ -55,7 +53,7 @@ class GameLobbySite : LobbyServerSite<LobbyData?, PlayerData?>() {
             Log.warn("Ignore change settings from $player because he is not owner of the lobby")
             return
         }
-        val data = lobby.data!!
+        val data = lobby.data
         val value = nt.value
         when (nt.setting) {
             NT_UpdateLobbySettings.SETTING_EXPANSIONS -> if (EnumUtils.inBounds(value, ExpansionSetting::class.java)) {
@@ -91,24 +89,24 @@ class GameLobbySite : LobbyServerSite<LobbyData?, PlayerData?>() {
 
     @PackageReceiver
     @ConnectionRestriction(RestrictionType.LOBBY_UNLOCKED)
-    fun addBot(nt: NT_AddBot?) {
+    fun addBot(nt: NT_AddBot) {
         val lobby = lobby
         if (!lobby.isFull) {
-            val data = PlayerData()
-            data.isReady = true
-            lobbyHandler.createBot(lobby, "bot_" + lobby.players.size, data).ifPresent { bot: BotPlayer<PlayerData?> -> bot.register(BotPlayerSite()) }
+            val data = PlayerData(FractionType.entries.random())
+            data.ready = true
+            lobbyHandler.createBot(lobby, "bot_" + lobby.players.size, data).ifPresent { it.register(BotPlayerSite()) }
         }
     }
 
     @PackageReceiver
     @ConnectionRestriction(RestrictionType.LOBBY_UNLOCKED)
     fun ready(ready: NT_PlayerReady) {
-        player.data.setReady(ready.ready)
+        player.data.ready = ready.ready
         lobby.sendLobbyUpdate()
         //check for all ready, then lock lobby and start game
         val lobby = lobby
         synchronized(lobby) {
-            if (lobby.playersData.stream().map { obj: PlayerData? -> obj!!.isReady }.reduce(true) { a: Boolean, b: Boolean -> java.lang.Boolean.logicalAnd(a, b) }) {
+            if (lobby.playersData.all { it.ready }) {
                 lobby.lock()
                 accessSite(GameStartSite::class.java).startGame()
             }

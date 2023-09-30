@@ -76,10 +76,6 @@ class RollResult(context: BattleContext, units: List<Unit>) {
         Collections.sort(rolls, Collections.reverseOrder())
     }
 
-    fun getRolls(): List<Roll?> {
-        return rolls
-    }
-
     inner class Roll(var source: Unit?, var value: Int) : Comparable<Roll> {
         override fun compareTo(other: Roll): Int {
             return Integer.compare(value, other.value)

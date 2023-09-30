@@ -7,17 +7,23 @@ import com.broll.gainea.server.core.battle.FightingPower
 import com.broll.gainea.server.core.fractions.Fraction
 import com.broll.gainea.server.core.fractions.FractionDescription
 import com.broll.gainea.server.core.fractions.FractionType
+import com.broll.gainea.server.core.fractions.UnitDescription
 import com.broll.gainea.server.core.objects.Soldier
 import com.broll.gainea.server.core.objects.Unit
 import com.broll.gainea.server.core.player.Player
-import com.broll.gainea.server.core.utils.PlayerUtils
 import com.broll.gainea.server.core.utils.UnitControl.spawn
+import com.broll.gainea.server.core.utils.getCommander
+import com.broll.gainea.server.core.utils.isCommander
 
 class BarbarianFraction : Fraction(FractionType.BARBARIANS) {
     private var turns = 0
     private var brother: BarbarianBrother? = null
     override fun description(): FractionDescription {
-        val desc = FractionDescription("")
+        val desc = FractionDescription(
+                "",
+                soldier = UnitDescription(name = "Barbarenrkieger", icon = 45),
+                commander = UnitDescription(name = "Barbarenanführer", icon = 45, power = 3, health = 3),
+        )
         desc.plus("Nach " + SUMMON_TURN + " Runden ruft der Kommandant seine zweite Hand (2/3) herbei")
         desc.plus("+1 Zahl, wenn Kommandant und zweite Hand zusammen kämpfen")
         desc.contra("-1 Zahl, wenn keine Barbarenrkieger im Kampf beteiligt sind")
@@ -30,7 +36,7 @@ class BarbarianFraction : Fraction(FractionType.BARBARIANS) {
         if (army.none { isPlainBarbarianSoldier(it) }) {
             power.changeNumberPlus(-1)
         }
-        if (army.any { PlayerUtils.isCommander(it) }
+        if (army.any { it.isCommander() }
                 && army.any { it is BarbarianBrother }) {
             power.changeNumberPlus(1)
         }
@@ -71,9 +77,9 @@ class BarbarianFraction : Fraction(FractionType.BARBARIANS) {
     }
 
     private fun summon() {
-        PlayerUtils.getCommander(owner)?.let {
+        owner.getCommander()?.let {
             brother = BarbarianBrother(owner)
-            spawn(game, brother!!, it.location)
+            game.spawn(brother!!, it.location)
         }
     }
 

@@ -24,8 +24,8 @@ class C_Necromanty : Card(70, "Nekromantie", "Für diesen Zug werden bei euren A
         })
     }
 
-    private fun summonSkeleton(location: Location?) {
-        spawn(game, Skeleton(owner), location)
+    private fun summonSkeleton(location: Location) {
+        game.spawn(Skeleton(owner), location)
     }
 
     private class Skeleton(owner: Player) : Soldier(owner) {
