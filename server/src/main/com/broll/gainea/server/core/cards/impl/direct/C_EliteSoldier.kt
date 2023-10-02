@@ -7,7 +7,7 @@ import com.broll.gainea.server.core.player.Player
 class C_EliteSoldier : DirectlyPlayedCard(25, "Profi anheuern", "Rekrutiert einen Elitekrieger") {
     override fun play() {
         val soldier = EliteSoldier(owner)
-        placeUnitHandler.placeUnit(owner, soldier, owner.controlledLocations, "Platziere Elitekrieger")
+        placeUnitHandler.placeUnit(owner, soldier, owner.controlledLocations.toList(), "Platziere Elitekrieger")
     }
 
     private inner class EliteSoldier(owner: Player) : Soldier(owner) {

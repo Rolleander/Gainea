@@ -25,11 +25,11 @@ class PlaceUnitAction : AbstractActionHandler<NT_Action_PlaceUnit, PlaceUnitActi
     ) : ActionContext<NT_Action_PlaceUnit>(action)
 
 
-    fun placeSoldier(player: Player, locations: List<Location> = player.controlledLocations): Pair<Unit, Location> {
+    fun placeSoldier(player: Player, locations: List<Location> = player.controlledLocations.toList()): Pair<Unit, Location> {
         return placeUnit(player, createSoldier(player), locations, "Platziere einen Soldat")
     }
 
-    fun placeCommander(player: Player, locations: List<Location> = player.controlledLocations): Pair<Unit, Location> {
+    fun placeCommander(player: Player, locations: List<Location> = player.controlledLocations.toList()): Pair<Unit, Location> {
         return placeUnit(player, createCommander(player), locations, "Platziere deinen Feldherr")
     }
 

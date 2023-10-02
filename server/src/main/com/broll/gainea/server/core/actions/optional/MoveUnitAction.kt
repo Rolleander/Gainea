@@ -26,19 +26,21 @@ class MoveUnitAction : AbstractActionHandler<NT_Action_Move, MoveUnitAction.Cont
             Log.trace("Handle move reaction")
             val selectedUnits = mutableListOf<MapObject>()
             var from: Location? = null
-            for (selection in reaction.options) {
-                val unit = context.unitsToMove[selection]
+            reaction.options.map { selection -> context.unitsToMove.find { it.id == selection } }.filterNotNull().forEach { unit ->
                 if (from == null) {
                     from = unit.location
-                } else if (unit.location !== from) {
-                    continue
                 }
-                selectedUnits.add(unit)
+                if (unit.location == from) {
+                    selectedUnits.add(unit)
+                }
             }
+
             context.unitsToMove.removeAll(selectedUnits)
             //perform move
-            selectedUnits.forEach { it.moved() }
-            game.move(selectedUnits, context.location)
+            if (selectedUnits.isNotEmpty()) {
+                selectedUnits.forEach { it.moved() }
+                game.move(selectedUnits, context.location)
+            }
         }
     }
 

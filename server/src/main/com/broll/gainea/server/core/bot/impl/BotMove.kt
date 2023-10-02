@@ -3,7 +3,6 @@ package com.broll.gainea.server.core.bot.impl
 import com.broll.gainea.net.NT_Action
 import com.broll.gainea.net.NT_Action_Move
 import com.broll.gainea.net.NT_Reaction
-import com.broll.gainea.net.NT_Unit
 import com.broll.gainea.server.core.bot.BotOptionalAction
 import com.broll.gainea.server.core.bot.BotUtils
 import com.broll.gainea.server.core.bot.strategy.GoalStrategy
@@ -11,7 +10,6 @@ import com.broll.gainea.server.core.bot.strategy.LocationDanger
 import com.broll.gainea.server.core.map.Location
 import com.broll.gainea.server.core.objects.Unit
 import com.broll.gainea.server.core.utils.getWalkingDistance
-import org.apache.commons.lang3.ArrayUtils
 import org.slf4j.LoggerFactory
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -26,7 +24,7 @@ class BotMove : BotOptionalAction<NT_Action_Move, BotMove.MoveOption>() {
         val goalStrategies = units.mapNotNull { strategy.getStrategy(it) }
         for (goalStrategy in goalStrategies) {
             val goalUnits = units.filter { strategy.getStrategy(it) == goalStrategy }
-            val move = chooseUnits(goalStrategy, action.units, goalUnits, location)
+            val move = chooseUnits(goalStrategy, goalUnits, location)
             if (move != null) {
                 return move
             }
@@ -38,7 +36,7 @@ class BotMove : BotOptionalAction<NT_Action_Move, BotMove.MoveOption>() {
     override val actionClass: Class<out NT_Action>
         get() = NT_Action_Move::class.java
 
-    private fun chooseUnits(goalStrategy: GoalStrategy, nt_units: Array<NT_Unit>, units: List<Unit>, to: Location): MoveOption? {
+    private fun chooseUnits(goalStrategy: GoalStrategy, units: List<Unit>, to: Location): MoveOption? {
         val unitTargets = getPathTargets(units, goalStrategy)
         var distance = Int.MAX_VALUE
         val moveTogether = mutableListOf<Unit>()
@@ -81,13 +79,11 @@ class BotMove : BotOptionalAction<NT_Action_Move, BotMove.MoveOption>() {
         if (moveTogether.isEmpty()) {
             return null
         }
-        //todo broken indexes somehwere?!
-        val unitIds = nt_units.map { it.id }.toTypedArray()
         var score = Math.max(MOVE_SCORE - distance, 1)
         if (flee) {
             score = LocationDanger.getFleeToScore(bot, to)
         }
-        return MoveOption(score.toFloat(), moveTogether.map { ArrayUtils.indexOf(unitIds, it.id) }.toIntArray(), to)
+        return MoveOption(score.toFloat(), moveTogether.map { it.id }.toIntArray(), to)
     }
 
     private fun getPathTargets(units: List<Unit>, goalStrategy: GoalStrategy) = units.map {

@@ -31,7 +31,7 @@ class LobbyData : ILobbyData {
         private const val START_LOCATIONS_DEFAULT = 3
         private const val START_GOALS_DEFAULT = 3
         private const val POINT_LIMIT_DEFAULT = 0
-        private const val ROUND_LIMIT_DEFAULT = 30
+        private const val ROUND_LIMIT_DEFAULT = 20
         private const val MONSTERS_PER_MAP = 10
     }
 }

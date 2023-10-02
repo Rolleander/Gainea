@@ -63,9 +63,7 @@ class BotSelect : BotAction<NT_Action_SelectChoice>() {
         chooseOption.add(option)
     }
 
-    private fun pollChooseOption(): Selection {
-        return chooseOption.last()
-    }
+    private fun pollChooseOption() = chooseOption.lastOrNull()
 
 
     interface Selection {

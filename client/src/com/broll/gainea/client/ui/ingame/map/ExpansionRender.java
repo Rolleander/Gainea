@@ -51,10 +51,10 @@ public class ExpansionRender extends Actor {
     private void drawShip(Batch batch, Ship ship) {
         float x = ship.getCoordinates().getDisplayX();
         float y = ship.getCoordinates().getDisplayY();
-        float tx = ship.to.getCoordinates().getDisplayX();
-        float ty = ship.to.getCoordinates().getDisplayY();
-        float fx = ship.from.getCoordinates().getDisplayX();
-        float fy = ship.from.getCoordinates().getDisplayY();
+        float tx = ship.getTo().getCoordinates().getDisplayX();
+        float ty = ship.getTo().getCoordinates().getDisplayY();
+        float fx = ship.getFrom().getCoordinates().getDisplayX();
+        float fy = ship.getFrom().getCoordinates().getDisplayY();
         float angleTo = (float) Math.toDegrees(MathUtils.atan2(ty - y, tx - x)) - 90;
         float angleFrom = (float) Math.toDegrees(MathUtils.atan2(y - fy, x - fx)) - 90;
         float diff = ((angleTo - angleFrom + 180 + 360) % 360) - 180;

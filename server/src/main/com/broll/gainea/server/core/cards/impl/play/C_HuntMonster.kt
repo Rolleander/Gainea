@@ -10,7 +10,7 @@ class C_HuntMonster : Card(37, "Drachenjagd", "Wählt eine Truppe und greift dam
         get() = true
 
     override fun play() {
-        val from = selectHandler.selectLocation("Wählt eure Angriffstruppe", owner.controlledLocations)
+        val from = selectHandler.selectLocation("Wählt eure Angriffstruppe", owner.controlledLocations.toList())
         val attackers = owner.getUnits(from)
         val attackLocations = game.getWildMonsterLocations()
                 .filter { it.container.expansion === from.container.expansion }

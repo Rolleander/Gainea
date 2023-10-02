@@ -18,6 +18,7 @@ import com.broll.gainea.client.ui.screens.StartScreen;
 
 public class Gainea extends ApplicationAdapter {
 
+    public static String VERSION;
     public ClientHandler client;
     public Stage gameStage;
     public Stage uiStage;
@@ -29,8 +30,6 @@ public class Gainea extends ApplicationAdapter {
     public boolean shutdown = false;
     private Screen startScreen;
     private boolean reconnectCheck;
-
-    public static String VERSION;
 
     public Gainea() {
         this(new StartScreen(), true);

@@ -203,8 +203,8 @@ class BattleHandler(private val game: Game, private val reactionResult: Reaction
         result.getNonNeutralDefenders().forEach { rewardKilledMonsters(it, result.killedAttackers) }
     }
 
-    private fun rewardKilledMonsters(killer: Player?, units: List<Unit>) {
-        if (killer == null) {
+    private fun rewardKilledMonsters(killer: Player, units: List<Unit>) {
+        if (killer.isNeutral()) {
             return
         }
         units.filterIsInstance(Monster::class.java).filter { it.owner.isNeutral() }.forEach {

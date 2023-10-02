@@ -61,7 +61,7 @@ fun Game.remove(target: MapObject): Boolean {
 }
 
 fun MapObject.place(location: Location) {
-    location.inhabitants.remove(this)
+    this.location.inhabitants.remove(this)
     this.location = location
     location.inhabitants += this
 }

@@ -11,7 +11,7 @@ abstract class TeleportCard(picture: Int, title: String, text: String) : Card(pi
         get() = true
 
     override fun play() {
-        val from = selectHandler.selectLocation("Wählt eine Truppe die bewegt werden soll", owner.controlledLocations)
+        val from = selectHandler.selectLocation("Wählt eine Truppe die bewegt werden soll", owner.controlledLocations.toList())
         //filter target locations to empty or locations controlled by the player (cant teleport into enemy location)
         val targets = getTeleportTargets(from).filter { it.emptyOrControlledBy(owner) }
         if (targets.isNotEmpty()) {

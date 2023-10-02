@@ -11,7 +11,7 @@ class C_Tunnel : Card(77, "Tunnelgräber", "Bewegt eine Truppe auf ein beliebige
         get() = owner.units.isNotEmpty()
 
     override fun play() {
-        val from = selectHandler.selectLocation("Wählt eine Truppe", owner.controlledLocations)
+        val from = selectHandler.selectLocation("Wählt eine Truppe", owner.controlledLocations.toList())
         val units = owner.getUnits(from)
         val targets = from.getConnectedLocations(DISTANCE)
                 .filter { it.free && it !is Ship }

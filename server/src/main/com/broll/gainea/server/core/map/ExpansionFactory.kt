@@ -82,26 +82,28 @@ abstract class ExpansionFactory(val type: ExpansionType, val texture: String) {
     }
 
     protected fun ships(fromId: AreaID, toId: AreaID, x: FloatArray, y: FloatArray): List<Ship> {
-        val ships = mutableListOf<Ship>()
-        var current: Location = get(fromId)
-        val to = get(toId)
         val container = get(fromId).container
-        for (i in x.indices) {
+        val ships = x.indices.map { i ->
             val ship = Ship(coord(x[i], y[i]))
-            ship.from = current
             ship.container = container
-            ships.add(ship)
-            current = ships[i]
+            ship
         }
-        for (i in x.indices) {
-            var next: Location = to
-            if (i < x.size - 1) {
-                next = ships[i + 1]
+        val from = get(fromId)
+        val to = get(toId)
+        ships.forEachIndexed { i, ship ->
+            if (i == 0) {
+                ship.from = from
             } else {
-                to.addAdjacentLocation(ships[i])
+                ship.from = ships[i - 1]
             }
-            ships[i].to = next
+            if (i == ships.lastIndex) {
+                ship.to = to
+            } else {
+                ship.to = ships[i + 1]
+            }
         }
+        from.addAdjacentLocation(ships.first())
+        to.addAdjacentLocation(ships.last())
         container.ships.addAll(ships)
         return ships
     }

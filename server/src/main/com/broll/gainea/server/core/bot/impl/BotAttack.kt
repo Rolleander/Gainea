@@ -11,16 +11,14 @@ import com.broll.gainea.server.core.bot.strategy.BattleSimulation
 import com.broll.gainea.server.core.map.Location
 import com.broll.gainea.server.core.objects.Unit
 import com.broll.gainea.server.core.utils.getMonsters
-import org.apache.commons.lang3.ArrayUtils
 
 class BotAttack : BotOptionalAction<NT_Action_Attack, BotAttack.AttackOption>() {
     override fun score(action: NT_Action_Attack): AttackOption? {
-        val location = BotUtils.getLocation(game!!, action.location.toInt())
+        val location = BotUtils.getLocation(game, action.location.toInt())
         val usableUnits = usableUnits(action.units)
         val fightType = getFighType(location)
         val winChance = getRequiredWinChance(fightType)
-        val unitIds = action.units.map { it.id }.toTypedArray()
-        val attackFromOptions = usableUnits.map { it.location!! }.toTypedArray()
+        val attackFromOptions = usableUnits.map { it.location }.toTypedArray()
         for (attackFrom in attackFromOptions) {
             val groupedUnits = usableUnits.filter { it.location === attackFrom }
             if (groupedUnits.isEmpty()) {
@@ -28,7 +26,7 @@ class BotAttack : BotOptionalAction<NT_Action_Attack, BotAttack.AttackOption>() 
             }
             val fighters = BattleSimulation.calculateRequiredFighters(location, groupedUnits, winChance)
             if (fighters != null) {
-                return AttackOption(score = ((3 - fightType) * 5).toFloat(), fighters.map { ArrayUtils.indexOf(unitIds, it.id) }.toIntArray(),
+                return AttackOption(score = ((3 - fightType) * 5).toFloat(), fighters.map { it.id }.toIntArray(),
                         fightType, location)
             }
         }

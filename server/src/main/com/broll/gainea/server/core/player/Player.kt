@@ -49,8 +49,8 @@ open class Player(game: Game, val fraction: Fraction, val serverPlayer: LobbyPla
         }
     }
 
-    val controlledLocations: List<Location>
-        get() = units.mapNotNull { it.location }
+    val controlledLocations: Set<Location>
+        get() = units.mapNotNull { it.location }.toSet()
 
     fun nt(): NT_Player {
         val player = NT_Player()

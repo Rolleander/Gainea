@@ -25,14 +25,13 @@ class AttackAction : AbstractActionHandler<NT_Action_Attack, AttackAction.Contex
             Log.trace("Handle attack reaction")
             val selectedAttackers = mutableListOf<Unit>()
             var from: Location? = null
-            for (selection in reaction.options) {
-                val attacker = context.attackers[selection]
+            reaction.options.map { selection -> context.attackers.find { it.id == selection } }.filterNotNull().forEach { unit ->
                 if (from == null) {
-                    from = attacker.location
-                } else if (attacker.location !== from) {
-                    continue
+                    from = unit.location
                 }
-                selectedAttackers.add(attacker)
+                if (unit.location == from) {
+                    selectedAttackers.add(unit)
+                }
             }
             context.attackers.removeAll(selectedAttackers)
             if (selectedAttackers.isNotEmpty()) {

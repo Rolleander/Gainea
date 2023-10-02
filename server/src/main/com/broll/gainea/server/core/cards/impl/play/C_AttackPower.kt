@@ -16,7 +16,7 @@ class C_AttackPower : Card(22, "Sturmangriff", "Verleiht allen Einheiten einer e
         get() = true
 
     override fun play() {
-        val locations = owner.controlledLocations
+        val locations = owner.controlledLocations.toList()
         val location = selectHandler.selectLocation("Wählt eine Truppe", locations)
         val buff = IntBuff(BuffType.ADD, 1)
         val units = owner.getUnits(location)

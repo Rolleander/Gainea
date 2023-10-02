@@ -19,6 +19,6 @@ class C_Phoenix : DirectlyPlayedCard(65, "Beschworener Phönix", "Beschwört ein
         monster.icon = 124
         monster.motion = MonsterMotion.AIRBORNE
         monster.owner = owner
-        placeUnitHandler.placeUnit(owner, monster, owner.controlledLocations, "Ort der Beschwörung wählen")
+        placeUnitHandler.placeUnit(owner, monster, owner.controlledLocations.toList(), "Ort der Beschwörung wählen")
     }
 }

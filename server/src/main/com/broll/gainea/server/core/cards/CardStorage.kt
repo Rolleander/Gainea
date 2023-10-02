@@ -37,7 +37,7 @@ class CardStorage(private val game: Game, private val actionHandlers: ActionHand
     fun getRandomPlayableCard(): Card {
         while (true) {
             val card = getRandomCard()
-            if (card is DirectlyPlayedCard) {
+            if (card !is DirectlyPlayedCard) {
                 return card
             }
         }

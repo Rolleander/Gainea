@@ -14,7 +14,7 @@ class C_BlitzAttack : Card(11, "Blitzkrieg", "Wählt eine Truppe und greift dami
         get() = true
 
     override fun play() {
-        val from = selectHandler.selectLocation("Wählt eure Angriffstruppe", owner.controlledLocations)
+        val from = selectHandler.selectLocation("Wählt eure Angriffstruppe", owner.controlledLocations.toList())
         val attackers = owner.getUnits(from)
         val attackLocations = game.getHostileLocations(owner)
                 .filter { it.container.expansion === from.container.expansion }

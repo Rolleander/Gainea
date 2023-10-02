@@ -16,7 +16,6 @@ import com.broll.gainea.server.core.map.Location;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.map.MultiValueMap;
-import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,8 +52,8 @@ public class AttackAndMoveActionHandler {
         paths.keySet().forEach(from -> {
             List<NT_Unit> pathUnits = (List<NT_Unit>) paths.getCollection(from);
             createMapAction(from, to, action, pathUnits, type, () -> {
-                int[] options = getSelectedUnits(selectedUnits, getUnits.apply(action));
-                playerPerformAction.perform(action, 0, options);
+                int[] ids = getSelectedUnitIds(selectedUnits);
+                playerPerformAction.perform(action, 0, ids);
             });
         });
     }
@@ -90,15 +89,8 @@ public class AttackAndMoveActionHandler {
         mapActions.stream().filter(it -> CollectionUtils.containsAny(it.getUnits(), units)).forEach(it -> it.setVisible(true));
     }
 
-    private int[] getSelectedUnits(List<NT_Unit> selectedUnits, NT_Unit[] units) {
-        List<Integer> selection = new ArrayList<>();
-        int[] selectedIds = selectedUnits.stream().mapToInt(it -> it.id).toArray();
-        for (int i = 0; i < units.length; i++) {
-            if (ArrayUtils.contains(selectedIds, units[i].id)) {
-                selection.add(i);
-            }
-        }
-        return selection.stream().mapToInt(i -> i).toArray();
+    private int[] getSelectedUnitIds(List<NT_Unit> selectedUnits) {
+        return selectedUnits.stream().mapToInt(it -> it.id).toArray();
     }
 
 }
