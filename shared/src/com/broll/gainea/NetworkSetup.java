@@ -89,7 +89,7 @@ public class NetworkSetup {
                 NT_ReconnectGame.class, NT_RoundStatistic.class, NT_StartGame.class,
                 NT_Unit.class, NT_UpdateLobbySettings.class, NT_Battle_Damage[].class,
                 NT_Action[].class, NT_BoardObject[].class, NT_Unit[].class, NT_Player[].class,
-                NT_Goal[].class, NT_Card[].class, int[].class, short[].class, byte[].class,
+                NT_Goal[].class, NT_Card[].class, Integer[].class, int[].class, short[].class, byte[].class,
                 String[].class, Object[].class, NT_RoundStatistic[].class, NT_BoardEffect[].class);
         classes.forEach(register::registerNetworkType);
     }

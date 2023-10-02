@@ -5,7 +5,7 @@ sourceSets.main.java.srcDirs = ["src/"]
 sourceSets.main.resources.srcDirs = ["../core/assets"]
 
 project.ext.mainClassName = "com.broll.gainea.desktop.DesktopLauncher"
-project.ext.assetsDir = new File("../core/assets")
+project.ext.assetsDir = new File("../client/assets")
 
 task runDesktop(dependsOn: classes, type: JavaExec) {
     group = "Execution"
@@ -16,15 +16,15 @@ task runDesktop(dependsOn: classes, type: JavaExec) {
     ignoreExitValue = true
 }
 
-task testDesktop(dependsOn: classes, type: JavaExec) {
+
+task testDesktop(dependsOn: classes, type: SpawnJavaExec) {
     group = "Execution"
-    main = project.mainClassName
     classpath = sourceSets.main.runtimeClasspath
-    standardInput = System.in
     workingDir = project.assetsDir
-    ignoreExitValue = true
-    args 'test'
+    main = project.mainClassName
+    args = ['test']
 }
+
 
 task debug(dependsOn: classes, type: JavaExec) {
     main = project.mainClassName
@@ -49,3 +49,28 @@ task dist(type: Jar) {
 }
 
 dist.dependsOn classes
+
+
+import java.util.concurrent.atomic.AtomicReference
+
+class SpawnJavaExec extends JavaExec {
+
+    @Internal
+    final AtomicReference spawnRef = new AtomicReference()
+
+    @TaskAction
+    @Override
+    void exec() {
+        setJvmArgs(getJvmArgs())
+        def javaExecAction = getExecActionFactory().newJavaExecAction()
+        def f = super.getClass().superclass.superclass.getDeclaredField('javaExecSpec')
+        f.accessible = true
+        def javaExecSpec = f.get(this)
+        javaExecSpec.copyTo(javaExecAction)
+        def m = super.getClass().superclass.superclass.getDeclaredMethod('getEffectiveExecutable')
+        m.accessible = true
+        javaExecAction.executable = m.invoke(this)
+        def execHandle = javaExecAction.build()
+        spawnRef.set execHandle.start()
+    }
+}

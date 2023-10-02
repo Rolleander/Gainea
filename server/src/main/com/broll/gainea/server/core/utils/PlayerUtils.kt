@@ -1,0 +1,47 @@
+package com.broll.gainea.server.core.utils
+
+import com.broll.gainea.server.core.Game
+import com.broll.gainea.server.core.map.Location
+import com.broll.gainea.server.core.objects.MapObject
+import com.broll.gainea.server.core.objects.Soldier
+import com.broll.gainea.server.core.objects.Unit
+import com.broll.gainea.server.core.player.Player
+import java.util.function.Consumer
+
+fun Game.iteratePlayers(pauseBetween: Int, consumer: Consumer<Player>) {
+    val current = currentTurn
+    val players = ArrayList(activePlayers)
+    for (i in players.indices) {
+        val nr = (current + i) % players.size
+        consumer.accept(players[nr])
+        ProcessingUtils.pause(pauseBetween)
+    }
+}
+
+fun Player.isCommanderAlive() = getCommander() != null
+
+fun Game.getOtherPlayers(player: Player) = allPlayers.filter { it !== player }
+
+fun Player.getCommander() = units.filterIsInstance(Soldier::class.java).find { it.isCommander }
+
+fun Unit.isCommander() = this is Soldier && this.isCommander
+
+fun Player.getUnits(location: Location) =
+        location.units.filter { it.owner == this }
+
+fun Player.getHostileArmy(location: Location) =
+        location.units.filter { isHostile(it) }
+
+fun Player.isHostile(obj: MapObject) =
+        if (obj is Unit) {
+            this.fraction.isHostile(obj)
+        } else false
+
+
+fun Player.hasHostileArmy(location: Location) = getHostileArmy(location).isNotEmpty()
+
+fun Game.getHostileLocations(player: Player) =
+        getOtherPlayers(player).flatMap { it.controlledLocations }.filter { player.hasHostileArmy(it) }
+
+fun List<Unit>.owner() = first().owner
+

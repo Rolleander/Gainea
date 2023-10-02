@@ -1,0 +1,36 @@
+package com.broll.gainea.server.core.cards.impl.play
+
+import com.broll.gainea.net.NT_Event
+import com.broll.gainea.server.core.cards.Card
+import com.broll.gainea.server.core.objects.Unit
+import com.broll.gainea.server.core.objects.buffs.BuffType
+import com.broll.gainea.server.core.objects.buffs.IntBuff
+import com.broll.gainea.server.core.utils.UnitControl.focus
+import com.broll.gainea.server.core.utils.getHostileLocations
+
+class C_Rooting : Card(63, "Schattenfesseln", "Wählt eine feindliche Truppe. Diese kann sich für " + DURATION + " Runden nicht bewegen.") {
+    init {
+        drawChance = 0.7f
+    }
+
+    override val isPlayable: Boolean
+        get() = true
+
+    override fun play() {
+        val location = selectHandler.selectLocation("Ziel für Schattenfesseln wählen", game.getHostileLocations(owner).toList())
+        val units = location.inhabitants.toList()
+        val rootDebuff = IntBuff(BuffType.SET, 0)
+        units.forEach {
+            it.movesPerTurn.addBuff(rootDebuff)
+            if (it is Unit) {
+                it.attacksPerTurn.addBuff(rootDebuff)
+            }
+        }
+        game.focus(units, NT_Event.EFFECT_DEBUFF)
+        game.buffProcessor.timeoutBuff(rootDebuff, DURATION)
+    }
+
+    companion object {
+        private const val DURATION = 2
+    }
+}
