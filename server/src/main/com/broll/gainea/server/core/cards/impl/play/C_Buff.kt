@@ -17,7 +17,7 @@ class C_Buff : Card(30, "Aufstieg", "Verleiht einer eurer Einheiten +1/+1"), ICa
         val unit = game.selectPlayerUnit(owner, "Welche Einheit soll gestärkt werden?")
         if (unit != null) {
             unit.power.addValue(1)
-            unit.changeHealth(1)
+            unit.addHealth(1)
             game.focus(unit, NT_Event.EFFECT_BUFF)
         }
     }

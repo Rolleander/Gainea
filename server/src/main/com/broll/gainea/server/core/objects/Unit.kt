@@ -107,7 +107,7 @@ abstract class Unit(owner: Player) : MapObject(owner) {
         maxHealth.value = health
     }
 
-    fun changeHealth(change: Int) {
+    fun addHealth(change: Int) {
         health.addValue(change)
         maxHealth.addValue(change)
     }

@@ -11,14 +11,12 @@ class C_BuffMighty : Card(10, "Excaliburs Macht", "Verdoppelt Angriff und Leben 
     }
 
     override val isPlayable: Boolean
-        get() = true
+        get() = owner.units.isNotEmpty()
 
     override fun play() {
-        val unit = game.selectPlayerUnit(owner, "Welche Einheit soll gestärkt werden?")
-        if (unit != null) {
-            unit.setPower(unit.power.rootValue * 2)
-            unit.changeHealth(unit.health.rootValue * 2)
-            game.focus(unit, NT_Event.EFFECT_BUFF)
-        }
+        val unit = game.selectPlayerUnit(owner, "Welche Einheit soll gestärkt werden?")!!
+        unit.setPower(unit.power.rootValue * 2)
+        unit.setHealth(unit.health.rootValue * 2)
+        game.focus(unit, NT_Event.EFFECT_BUFF)
     }
 }

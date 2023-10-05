@@ -1,6 +1,5 @@
 package com.broll.gainea.client.ui.ingame.battle;
 
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -15,6 +14,7 @@ import com.broll.gainea.client.ui.utils.TableUtils;
 import com.broll.gainea.client.ui.utils.TextureUtils;
 import com.broll.gainea.net.NT_Battle_Damage;
 import com.broll.gainea.net.NT_Battle_Reaction;
+import com.broll.gainea.net.NT_Battle_Roll;
 import com.broll.gainea.net.NT_Battle_Update;
 import com.broll.gainea.net.NT_Unit;
 import com.broll.gainea.server.core.map.Area;
@@ -23,6 +23,7 @@ import com.broll.gainea.server.core.map.Location;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Stack;
 import java.util.stream.Collectors;
@@ -56,10 +57,10 @@ public class BattleHandler {
         return battleBoard;
     }
 
-    public void updateBattle(int[] attackRolls, int[] defenderRolls, Stack<NT_Battle_Damage> damage, int state) {
+    public void updateBattle(NT_Battle_Roll[] attackRolls, NT_Battle_Roll[] defenderRolls, Stack<NT_Battle_Damage> damage, int state) {
         battleBoard.attackRolls(attackRolls, defenderRolls, new IRollAnimationListener() {
             @Override
-            public void diceSet(boolean attackerWon) {
+            public void diceSet() {
                 if (!damage.empty()) {
                     damage(damage.pop());
                 }
@@ -149,10 +150,8 @@ public class BattleHandler {
         private List<UnitRender> attackerRenders;
         private List<UnitRender> defenderRenders;
         private BattleRollRender rollRender;
-        private boolean place = true;
 
         public BattleBoard(Location location) {
-            super(skin);
             setSize(1000, 800);
             TableUtils.consumeClicks(this);
             int backgroundNr = 0;
@@ -160,34 +159,27 @@ public class BattleHandler {
                 backgroundNr = ((Area) location).getType().ordinal() + 1;
             }
             setBackground(new TextureRegionDrawable(TextureUtils.battleBackground(game, backgroundNr)));
-            attackerRenders = attackers.stream().map(it -> (UnitRender) MapObjectRender.createRender(game, skin, it)).sorted((a, b) -> Integer.compare(a.getRank(), b.getRank())).collect(Collectors.toList());
-            defenderRenders = defenders.stream().map(it -> (UnitRender) MapObjectRender.createRender(game, skin, it)).sorted((a, b) -> Integer.compare(a.getRank(), b.getRank())).collect(Collectors.toList());
+            attackerRenders = attackers.stream().map(it -> (UnitRender) MapObjectRender.createRender(game, skin, it)).sorted(Comparator.comparingInt(MapObjectRender::getRank)).collect(Collectors.toList());
+            defenderRenders = defenders.stream().map(it -> (UnitRender) MapObjectRender.createRender(game, skin, it)).sorted(Comparator.comparingInt(MapObjectRender::getRank)).collect(Collectors.toList());
             attackerRenders.forEach(it -> {
                 it.setAlwaysDrawPlate(true);
+                addActor(it);
             });
             defenderRenders.forEach(it -> {
                 it.setAlwaysDrawPlate(true);
                 it.flip();
+                addActor(it);
             });
-            this.rollRender = new BattleRollRender(game, skin);
+            this.rollRender = new BattleRollRender(game, attackerRenders, defenderRenders, skin);
+            addActor(this.rollRender);
+            rollRender.setWidth(getWidth());
+            rollRender.setHeight(getHeight());
             placeUnits();
         }
 
-        public void attackRolls(int[] attackRolls, int[] defenderRolls, IRollAnimationListener listener) {
-            place = true;
+        public void attackRolls(NT_Battle_Roll[] attackRolls, NT_Battle_Roll[] defenderRolls, IRollAnimationListener listener) {
+            placeUnits();
             rollRender.start(attackRolls, defenderRolls, listener);
-        }
-
-        @Override
-        public void act(float delta) {
-            super.act(delta);
-            if (place) {
-                placeUnits();
-                place = false;
-            }
-            rollRender.update(delta);
-            attackerRenders.forEach(it -> it.act(delta));
-            defenderRenders.forEach(it -> it.act(delta));
         }
 
         private void placeUnits() {
@@ -212,31 +204,6 @@ public class BattleHandler {
                     unit.setPosition(x + dx, y);
                 }
                 y -= deltaY;
-            }
-        }
-
-        @Override
-        protected void drawChildren(Batch batch, float parentAlpha) {
-            float startY = getY() + getHeight() - 100;
-            renderUnits(batch, attackerRenders);
-            renderUnits(batch, defenderRenders);
-            float rollY = startY + 70;
-            rollRender.render(batch, getX() + getWidth() / 2, rollY, parentAlpha);
-            super.drawChildren(batch, parentAlpha);
-        }
-
-        private void renderUnits(Batch batch, List<UnitRender> units) {
-            int count = units.size();
-            //draw reverse order
-            for (int i = count - 1; i >= 0; i--) {
-                UnitRender render = units.get(i);
-                float x = render.getX();
-                float y = render.getY();
-                render.setX(x + getX());
-                render.setY(y + getY());
-                render.draw(batch, 1);
-                render.setX(x);
-                render.setY(y);
             }
         }
     }

@@ -21,7 +21,7 @@ open class Battle(private val attackers: List<Unit>,
         val allBlockRolls = defenderRolls.rolls
         val attackRolls = allAttackRolls.take(battleSize)
         val blockRolls = allBlockRolls.take(battleSize)
-        val result = FightResult(allAttackRolls.map { it.value }, allBlockRolls.map { it.value })
+        val result = FightResult(allAttackRolls, allBlockRolls)
         for (i in 0 until battleSize) {
             val attack = attackRolls[i]
             val block = blockRolls[i]

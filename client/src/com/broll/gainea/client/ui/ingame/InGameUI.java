@@ -27,6 +27,7 @@ import com.broll.gainea.net.NT_Action_Attack;
 import com.broll.gainea.net.NT_Action_Card;
 import com.broll.gainea.net.NT_Action_Move;
 import com.broll.gainea.net.NT_Battle_Damage;
+import com.broll.gainea.net.NT_Battle_Roll;
 import com.broll.gainea.net.NT_GameOver;
 import com.broll.gainea.net.NT_Unit;
 import com.broll.gainea.server.core.map.Location;
@@ -141,7 +142,7 @@ public class InGameUI {
         showCenter(battleHandler.startBattle(attackers, defenders, location, allowRetreat));
     }
 
-    public void updateBattle(int[] attackRolls, int[] defenderRolls, Stack<NT_Battle_Damage> damage, int state) {
+    public void updateBattle(NT_Battle_Roll[] attackRolls, NT_Battle_Roll[] defenderRolls, Stack<NT_Battle_Damage> damage, int state) {
         battleHandler.updateBattle(attackRolls, defenderRolls, damage, state);
     }
 

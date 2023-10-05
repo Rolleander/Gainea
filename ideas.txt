@@ -3,7 +3,9 @@
 
 
 cards:
-- swap place with enemy army ?
+- swap place with enemy army
+- move army to neighbour empty area
+- attack with any army a neighbour area
 - teleport to random field of selected continent
 - alle einheiten auf einen platz
 - eine directplay card aussuchen 

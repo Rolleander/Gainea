@@ -67,7 +67,7 @@ class SpawnJavaExec extends JavaExec {
         f.accessible = true
         def javaExecSpec = f.get(this)
         javaExecSpec.copyTo(javaExecAction)
-        def m = super.getClass().superclass.superclass.getDeclaredMethod('getEffectiveExecutable')
+        def m = super.getClass().superclass.superclass.getDeclaredMethod('getExecutable')
         m.accessible = true
         javaExecAction.executable = m.invoke(this)
         def execHandle = javaExecAction.build()

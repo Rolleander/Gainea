@@ -9,9 +9,8 @@ class BuffableInt<T>(target: T, value: Int) : BuffableValue<T, Int, IntBuff>(tar
         recalc()
     }
 
-    @JvmOverloads
     fun copy(target: T): BuffableInt<T> {
-        val copy = BuffableInt(target, this.value)
+        val copy = BuffableInt(target, this.rootValue)
         copy.minValue = minValue
         copy.maxValue = maxValue
         copy.buffs = buffs
@@ -46,7 +45,7 @@ class BuffableInt<T>(target: T, value: Int) : BuffableValue<T, Int, IntBuff>(tar
     }
 
     fun addValue(value: Int) {
-        this.value += value
+        this.rootValue += value
         recalc()
     }
 }

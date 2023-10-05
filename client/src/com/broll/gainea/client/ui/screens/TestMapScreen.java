@@ -1,11 +1,11 @@
 package com.broll.gainea.client.ui.screens;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.broll.gainea.client.AudioPlayer;
 import com.broll.gainea.client.game.ClientMapContainer;
 import com.broll.gainea.client.ui.Screen;
-import com.broll.gainea.client.ui.components.FinishedGoalDisplay;
 import com.broll.gainea.misc.RandomUtils;
 import com.broll.gainea.net.NT_BoardEffect;
 import com.broll.gainea.net.NT_BoardObject;
@@ -16,7 +16,10 @@ import com.broll.gainea.net.NT_Player;
 import com.broll.gainea.net.NT_Unit;
 import com.broll.gainea.server.init.ExpansionSetting;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class TestMapScreen extends Screen {
+    private AtomicInteger idCounter = new AtomicInteger();
 
     public TestMapScreen() {
     }
@@ -56,7 +59,8 @@ public class TestMapScreen extends Screen {
             p.units = new NT_Unit[0];
             nt.players[i] = p;
         }
-        nt.objects = new NT_BoardObject[0];
+        nt.objects = new NT_BoardObject[1];
+        nt.objects[0] = unit();
         nt.effects = new NT_BoardEffect[0];
         nt.round = 0;
         game.ui.initInGameUi();
@@ -66,8 +70,20 @@ public class TestMapScreen extends Screen {
         game.ui.inGameUI.updateWindows();
         NT_Event_FinishedGoal evt = new NT_Event_FinishedGoal();
         evt.goal = goal;
-        FinishedGoalDisplay message = new FinishedGoalDisplay(game, evt, true);
-        game.ui.inGameUI.showCenterOverlay(message);
+        //  FinishedGoalDisplay message = new FinishedGoalDisplay(game, evt, true);
+        // game.ui.inGameUI.showCenterOverlay(message);
         return new Table();
+    }
+
+    private NT_Unit unit() {
+        NT_Unit u = new NT_Unit();
+        u.id = (short) idCounter.incrementAndGet();
+        u.icon = (short) MathUtils.random(0, 100);
+        u.name = "Testfighter";
+        u.power = (short) MathUtils.random(1, 3);
+        u.health = (short) MathUtils.random(1, 5);
+        u.maxHealth = u.health;
+        u.location = 5;
+        return u;
     }
 }

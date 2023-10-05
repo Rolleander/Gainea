@@ -16,7 +16,7 @@ class C_BuffDefence : Card(52, "Schildformation", "Verleiht einer Einheit +" + B
     override fun play() {
         val unit = game.selectPlayerUnit(owner, "Welche Einheit soll ausgerüstet werden?")
         if (unit != null) {
-            unit.changeHealth(BUFF)
+            unit.addHealth(BUFF)
             game.focus(unit, NT_Event.EFFECT_BUFF)
         }
     }

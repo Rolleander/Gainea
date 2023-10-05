@@ -7,6 +7,7 @@ import com.broll.gainea.client.ui.ingame.map.MapAction;
 import com.broll.gainea.client.ui.ingame.map.MapScrollUtils;
 import com.broll.gainea.net.NT_Battle_Damage;
 import com.broll.gainea.net.NT_Battle_Intention;
+import com.broll.gainea.net.NT_Battle_Roll;
 import com.broll.gainea.net.NT_Battle_Start;
 import com.broll.gainea.net.NT_Battle_Update;
 import com.broll.gainea.net.NT_Unit;
@@ -73,8 +74,8 @@ public class GameBattleSite extends AbstractGameSite {
 
     @PackageReceiver
     public void received(NT_Battle_Update battle) {
-        int[] attackRolls = battle.attackerRolls;
-        int[] defenderRolls = battle.defenderRolls;
+        NT_Battle_Roll[] attackRolls = battle.attackerRolls;
+        NT_Battle_Roll[] defenderRolls = battle.defenderRolls;
         List<NT_Unit> attackers = Lists.newArrayList(battle.attackers);
         List<NT_Unit> defenders = Lists.newArrayList(battle.defenders);
         Log.info("Update fight: Attackers (" + attackers.stream().map(it -> it.id + "| " + it.name + " " + it.power + " " + it.health).collect(Collectors.joining(", ")) + ") Defenders (" + defenders.stream().map(it -> it.id + "| " + it.name + " " + it.power + " " + it.health).collect(Collectors.joining(", ")) + ")");

@@ -1,9 +1,10 @@
 package com.broll.gainea.server.core.battle
 
 import com.broll.gainea.net.NT_Battle_Damage
+import com.broll.gainea.server.core.battle.RollResult.Roll
 import com.broll.gainea.server.core.objects.Unit
 
-class FightResult(val attackRolls: List<Int>, val defenderRolls: List<Int>) {
+class FightResult(val attackRolls: List<Roll>, val defenderRolls: List<Roll>) {
     var deadAttackers = listOf<Unit>()
     var deadDefenders = listOf<Unit>()
 
