@@ -116,6 +116,7 @@ public class TestBattleScreen extends Screen {
         NT_Battle_Roll r = new NT_Battle_Roll();
         r.number = MathUtils.random(r.min, r.max);
         r.sourceUnit = source.id;
+        r.plus = MathUtils.random(-2, 2);
         return r;
     }
 

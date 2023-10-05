@@ -1,5 +1,6 @@
 package com.broll.gainea.client.ui.ingame.battle;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -25,14 +26,14 @@ import java.util.stream.Collectors;
 
 public class BattleRollRender extends WidgetGroup {
 
+
     private final static Logger Log = LoggerFactory.getLogger(BattleRollRender.class);
     private final static float ROLL_TIME = 0.05f;
     private final static float SHOW_NUMBER_TIME = 0.8f;
-
     private final List<UnitRender> attackerRenders;
     private final List<UnitRender> defenderRenders;
-    private final Label numberLabel;
     private final TextureRegion rollback, rollwin, rolllose;
+    private Gainea game;
     private List<BattleRoll> attackerRolls;
     private List<BattleRoll> defenderRolls;
     private int showRolls = 0;
@@ -44,6 +45,7 @@ public class BattleRollRender extends WidgetGroup {
 
 
     public BattleRollRender(Gainea game, List<UnitRender> attackerRenders, List<UnitRender> defenderRenders, Skin skin) {
+        this.game = game;
         int rs = 20;
         this.attackerRenders = attackerRenders;
         this.defenderRenders = defenderRenders;
@@ -51,10 +53,10 @@ public class BattleRollRender extends WidgetGroup {
         rollback = new TextureRegion(rolls, 0, 0, rs, rs);
         rollwin = new TextureRegion(rolls, rs, 0, rs, rs);
         rolllose = new TextureRegion(rolls, 2 * rs, 0, rs, rs);
-        numberLabel = LabelUtils.info(skin, "");
     }
 
     public void start(NT_Battle_Roll[] attackRolls, NT_Battle_Roll[] defenderRolls, IRollAnimationListener listener) {
+        this.listener = listener;
         if (this.attackerRolls != null) {
             this.attackerRolls.forEach(BattleRoll::hide);
         }
@@ -68,7 +70,8 @@ public class BattleRollRender extends WidgetGroup {
         this.rollRounds = Math.min(attackerRolls.size(), this.defenderRolls.size());
         this.placeInCircle(this.attackerRolls);
         this.placeInCircle(this.defenderRolls);
-        this.listener = listener;
+        this.attackerRolls.forEach(BattleRoll::showBuffs);
+        this.defenderRolls.forEach(BattleRoll::showBuffs);
         showRolls = 0;
         rollAnimation = 0;
         showAnimation = 0;
@@ -121,7 +124,7 @@ public class BattleRollRender extends WidgetGroup {
     @Override
     public void act(float delta) {
         super.act(delta);
-        if (attackerRolls != null && defenderRolls != null) {
+        if (attackerRolls != null && defenderRolls != null && listener != null) {
             rollAnimation += delta;
             if (rollAnimation >= ROLL_TIME && (showRolls <= rollRounds + 1)) {
                 rollAnimation = 0;
@@ -142,6 +145,7 @@ public class BattleRollRender extends WidgetGroup {
 
     private class BattleRoll extends Actor {
 
+        private final static float BUFF_DURATION = 3f;
         private final static int MIDDLE_DISTANCE = 30;
         private final static int CIRCLE_DISTANCE = 25;
 
@@ -151,10 +155,37 @@ public class BattleRollRender extends WidgetGroup {
 
         private boolean attacker;
 
+        private Label numberLabel = LabelUtils.info(game.ui.skin, "");
+
+
         public BattleRoll(NT_Battle_Roll nt, boolean attacker) {
             this.nt = nt;
             this.attacker = attacker;
             this.place();
+        }
+
+        public void showBuffs() {
+            if (nt.plus != 0) {
+                String t;
+                Color c;
+                if (nt.plus > 0) {
+                    t = "+" + nt.plus;
+                    c = Color.GREEN;
+                } else {
+                    t = String.valueOf(nt.plus);
+                    c = Color.RED;
+                }
+                Label label = LabelUtils.color(LabelUtils.label(game.ui.skin, t), c);
+                label.setFontScale(0.6f);
+                label.setColor(c);
+                label.pack();
+                addActor(label);
+                label.setPosition(getX() - label.getWidth() / 2, getY());
+                label.addAction(Actions.sequence(Actions.parallel(
+                        Actions.moveBy(0, 30, BUFF_DURATION),
+                        Actions.alpha(0, BUFF_DURATION)
+                ), Actions.removeActor()));
+            }
         }
 
         public void roll() {
@@ -211,7 +242,7 @@ public class BattleRollRender extends WidgetGroup {
                 back = rolllose;
             }
             batch.setColor(1, 1, 1, parentAlpha);
-            batch.draw(back, getX() - 7, getY() - 10);
+            batch.draw(back, getX() - 6, getY() - 10);
             numberLabel.setText(String.valueOf(currentRoll));
             numberLabel.setPosition(getX(), getY());
             numberLabel.draw(batch, parentAlpha);
