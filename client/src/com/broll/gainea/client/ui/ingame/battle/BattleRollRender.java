@@ -29,7 +29,7 @@ public class BattleRollRender extends WidgetGroup {
 
     private final static Logger Log = LoggerFactory.getLogger(BattleRollRender.class);
     private final static float ROLL_TIME = 0.05f;
-    private final static float SHOW_NUMBER_TIME = 0.8f;
+    private final static float SHOW_NUMBER_TIME = 0.6f;
     private final List<UnitRender> attackerRenders;
     private final List<UnitRender> defenderRenders;
     private final TextureRegion rollback, rollwin, rolllose;

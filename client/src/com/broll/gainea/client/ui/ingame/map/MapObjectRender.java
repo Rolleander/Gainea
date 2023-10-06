@@ -25,14 +25,14 @@ public class MapObjectRender extends Actor {
 
     protected final static int R = 50;
     protected Gainea game;
-    private NT_BoardObject object;
-    private TextureRegion chip;
     protected Collection<MapObjectRender> stack;
     protected boolean stackTop = true;
+    protected Color renderColor = new Color();
+    private NT_BoardObject object;
+    private TextureRegion chip;
     private Location location;
     private TextureRegion icon;
     private float stackHeight;
-    protected Color renderColor = new Color();
 
     public MapObjectRender(Gainea game, Skin skin, NT_BoardObject object) {
         this.game = game;
@@ -42,8 +42,18 @@ public class MapObjectRender extends Actor {
         icon = TextureUtils.unitIcon(game, object.icon);
     }
 
-    public int getRank(){
-        if(object instanceof NT_Unit){
+    public static MapObjectRender createRender(Gainea gainea, Skin skin, NT_BoardObject object) {
+        if (object instanceof NT_Monster) {
+            return new MonsterRender(gainea, skin, (NT_Monster) object);
+        }
+        if (object instanceof NT_Unit) {
+            return new UnitRender(gainea, skin, (NT_Unit) object);
+        }
+        return new MapObjectRender(gainea, skin, object);
+    }
+
+    public int getRank() {
+        if (object instanceof NT_Unit) {
             NT_Unit unit = (NT_Unit) object;
             return unit.power + unit.maxHealth;
         }
@@ -110,26 +120,12 @@ public class MapObjectRender extends Actor {
         batch.draw(icon, getX() - R + 9, getY() - R + 9);
     }
 
-    protected void calcRenderColor(float parentAlpha){
-        renderColor.set(this.getColor()).mul(1,1,1,parentAlpha);
+    protected void calcRenderColor(float parentAlpha) {
+        renderColor.set(this.getColor()).mul(1, 1, 1, parentAlpha);
     }
 
     public NT_BoardObject getObject() {
         return object;
-    }
-
-    public static MapObjectRender createRender(Gainea gainea, Skin skin, NT_BoardObject object) {
-        if (object instanceof NT_Monster) {
-            return new MonsterRender(gainea, skin, (NT_Monster) object);
-        }
-        if (object instanceof NT_Unit) {
-            return new UnitRender(gainea, skin, (NT_Unit) object);
-        }
-        return new MapObjectRender(gainea, skin, object);
-    }
-
-    public void setLocation(Location location) {
-        this.location = location;
     }
 
     public float getStackHeight() {
@@ -139,4 +135,9 @@ public class MapObjectRender extends Actor {
     public Location getLocation() {
         return location;
     }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+
 }

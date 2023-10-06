@@ -55,19 +55,18 @@ class BuffProcessor(private val game: Game) : GameUpdateReceiverAdapter() {
         gloabalBuffs[globalBuff.buff] = globalBuff
         //apply directly to all existing units for the targets
         globalBuff.targets.forEach { player ->
-            val units = game.objects.filterIsInstance<Unit>().filter { it.owner == player }
-            units.forEach { globalBuff.apply(it) }
-            game.update(units)
-        }
-        if (globalBuff.forNeutral) {
-            val units = game.objects.filterIsInstance<Unit>().filter { it.owner.isNeutral() }
+            val units = if (player.isNeutral()) {
+                game.objects.filterIsInstance<Unit>()
+            } else {
+                player.units
+            }
             units.forEach { globalBuff.apply(it) }
             game.update(units)
         }
     }
 
     fun applyGlobalBuffs(unit: Unit) =
-            gloabalBuffs.values.filter { it.targets.contains(unit.owner) || (it.forNeutral && unit.owner.isNeutral()) }.forEach {
+            gloabalBuffs.values.filter { it.targets.contains(unit.owner) }.forEach {
                 it.apply(unit)
             }
 

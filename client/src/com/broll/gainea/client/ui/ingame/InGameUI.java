@@ -125,6 +125,7 @@ public class InGameUI {
         attackAndMoveHandler.update(moves, attacks, playerPerformAction);
         requiredActionHandler.toFront();
         menuActions.updateOptionalActions(playerPerformAction);
+        game.state.getMapObjectsContainer().updateActiveState(moves, attacks);
     }
 
     private void activeCards(List<NT_Action_Card> cards, PlayerPerformOptionalAction playerPerformAction) {
@@ -139,6 +140,7 @@ public class InGameUI {
 
     public void startBattle(List<NT_Unit> attackers, List<NT_Unit> defenders, Location location, boolean allowRetreat) {
         clearSelection();
+        clearCenter();
         showCenter(battleHandler.startBattle(attackers, defenders, location, allowRetreat));
     }
 

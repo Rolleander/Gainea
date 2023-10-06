@@ -70,7 +70,7 @@ class BattleHandler(private val game: Game, private val reactionResult: Reaction
         intention.fromLocation = context.sourceLocation.number
         intention.toLocation = context.location.number
         reactionResult.sendGameUpdate(intention)
-        ProcessingUtils.pause(BATTLE_ANIMATION_DELAY)
+        ProcessingUtils.pause(BATTLE_INTENT_DELAY)
     }
 
     private fun sendFightStart() {
@@ -215,9 +215,10 @@ class BattleHandler(private val game: Game, private val reactionResult: Reaction
 
     companion object {
         private val Log = LoggerFactory.getLogger(BattleHandler::class.java)
-        const val BATTLE_ANIMATION_DELAY = 2000
+        const val BATTLE_ANIMATION_DELAY = 1600
+        const val BATTLE_INTENT_DELAY = 1300
         fun getAnimationDelay(atkRolls: Int, defRolls: Int): Int {
-            return BATTLE_ANIMATION_DELAY / 2 + 800 * Math.min(atkRolls, defRolls)
+            return BATTLE_ANIMATION_DELAY / 2 + 600 * Math.min(atkRolls, defRolls)
         }
     }
 }

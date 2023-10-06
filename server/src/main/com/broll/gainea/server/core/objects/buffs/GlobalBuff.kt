@@ -6,7 +6,6 @@ import com.broll.gainea.server.core.player.Player
 import java.util.function.Consumer
 
 class GlobalBuff(
-        val forNeutral: Boolean,
         val targets: List<Player>,
         val buff: Buff<*>,
         private val applier: Consumer<Unit>
@@ -18,23 +17,23 @@ class GlobalBuff(
 
     companion object {
         fun createForPlayer(game: Game, target: Player, buff: Buff<*>, applier: Consumer<Unit>, effect: Int) {
-            register(game, GlobalBuff(false, listOf(target), buff, applier), effect)
+            register(game, GlobalBuff(listOf(target), buff, applier), effect)
         }
 
         fun createForAllPlayers(game: Game, buff: Buff<*>, applier: Consumer<Unit>, effect: Int) {
-            register(game, GlobalBuff(false, ArrayList(game.allPlayers), buff, applier), effect)
+            register(game, GlobalBuff(ArrayList(game.allPlayers), buff, applier), effect)
         }
 
         fun createForPlayers(game: Game, targets: List<Player>, buff: Buff<*>, applier: Consumer<Unit>, effect: Int) {
-            register(game, GlobalBuff(false, targets, buff, applier), effect)
+            register(game, GlobalBuff(targets, buff, applier), effect)
         }
 
         fun createForNeutral(game: Game, buff: Buff<*>, applier: Consumer<Unit>, effect: Int) {
-            register(game, GlobalBuff(true, listOf(), buff, applier), effect)
+            register(game, GlobalBuff(listOf(game.neutralPlayer), buff, applier), effect)
         }
 
         fun createForAll(game: Game, buff: Buff<*>, applier: Consumer<Unit>, effect: Int) {
-            register(game, GlobalBuff(true, game.allPlayers, buff, applier), effect)
+            register(game, GlobalBuff(listOf(game.allPlayers, listOf(game.neutralPlayer)).flatten(), buff, applier), effect)
         }
 
         private fun register(game: Game, buff: GlobalBuff, effect: Int) {

@@ -95,7 +95,7 @@ public class BattleHandler {
     }
 
     private void checkBattleState(int state) {
-        battleBoard.addAction(Actions.delay(2, Actions.run(() -> {
+        battleBoard.addAction(Actions.delay(0.8f, Actions.run(() -> {
             if (state == NT_Battle_Update.STATE_FIGHTING) {
                 if (allowRetreat) {
                     Table dialog = new Table(game.ui.skin);
@@ -123,7 +123,7 @@ public class BattleHandler {
 
     private void battleEnd(String text) {
         Popup popup = new Popup(skin, LabelUtils.title(game.ui.skin, text));
-        popup.addAction(Actions.delay(com.broll.gainea.server.core.battle.BattleHandler.BATTLE_ANIMATION_DELAY, Actions.run(() -> {
+        popup.addAction(Actions.delay(0.8f, Actions.run(() -> {
             clearBattleScreen();
             game.state.turnIdle();
         })));
@@ -132,7 +132,7 @@ public class BattleHandler {
 
     public void clearBattleScreen() {
         if (battleBoard != null) {
-            battleBoard.addAction(Actions.sequence(Actions.fadeOut(0.5f), Actions.removeActor()));
+            battleBoard.addAction(Actions.sequence(Actions.fadeOut(0.3f), Actions.removeActor()));
         }
     }
 

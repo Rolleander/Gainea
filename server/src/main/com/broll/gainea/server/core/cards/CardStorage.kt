@@ -43,6 +43,15 @@ class CardStorage(private val game: Game, private val actionHandlers: ActionHand
         }
     }
 
+    fun getRandomDirectlyPlayedCard(): Card {
+        while (true) {
+            val card = getRandomCard()
+            if (card is DirectlyPlayedCard) {
+                return card
+            }
+        }
+    }
+
     fun getPlayableCards(count: Int): List<Card> {
         val classes = ArrayList(loader.classes)
         classes.shuffle()

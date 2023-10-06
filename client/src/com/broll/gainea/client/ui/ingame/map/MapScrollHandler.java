@@ -9,7 +9,7 @@ import com.broll.gainea.client.ui.ingame.InGameUI;
 
 public class MapScrollHandler extends InputListener {
     private static float DRAG_SPEED = 1;
-    private static float SCROLL_SPEED = 30;
+    private static float SCROLL_SPEED = 15;
     private Gainea game;
     private MapScrollControl control;
     private OrthographicCamera camera;
@@ -69,7 +69,7 @@ public class MapScrollHandler extends InputListener {
         if (control.isAnimationActive()) {
             return false;
         }
-        camera.zoom *= 1 + ((Math.max(amountX, amountY) * SCROLL_SPEED) / 100f);
+        camera.zoom *= 1 + ((amountY * SCROLL_SPEED) / 150f);
         if (camera.zoom < 1) {
             camera.zoom = 1;
         } else if (camera.zoom > MapScrollControl.MAX_ZOOM) {

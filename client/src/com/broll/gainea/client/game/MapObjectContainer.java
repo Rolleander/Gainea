@@ -1,6 +1,9 @@
 package com.broll.gainea.client.game;
 
 import com.broll.gainea.client.ui.ingame.map.MapObjectRender;
+import com.broll.gainea.client.ui.ingame.unit.UnitRender;
+import com.broll.gainea.net.NT_Action_Attack;
+import com.broll.gainea.net.NT_Action_Move;
 import com.broll.gainea.net.NT_BoardObject;
 import com.broll.gainea.net.NT_Unit;
 import com.broll.gainea.server.core.map.Location;
@@ -8,6 +11,7 @@ import com.broll.gainea.server.core.map.Location;
 import org.apache.commons.collections4.map.MultiValueMap;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -23,6 +27,19 @@ public class MapObjectContainer {
     public MapObjectContainer(GameState game) {
         super();
         this.game = game;
+    }
+
+    public void updateActiveState(List<NT_Action_Move> moves, List<NT_Action_Attack> attacks) {
+        for (Object value : objectRenders.values()) {
+            if (value instanceof UnitRender) {
+                UnitRender render = (UnitRender) value;
+                int id = render.getObject().id;
+                render.setActionActive(
+                        moves.stream().anyMatch(it -> Arrays.stream(it.units).anyMatch(unit -> unit.id == id))
+                                || attacks.stream().anyMatch(it -> Arrays.stream(it.units).anyMatch(unit -> unit.id == id))
+                );
+            }
+        }
     }
 
     public MapObjectRender getObjectRender(NT_BoardObject object) {

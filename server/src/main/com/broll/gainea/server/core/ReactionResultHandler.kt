@@ -6,7 +6,6 @@ import com.broll.gainea.net.NT_PlayerWait
 import com.broll.gainea.server.core.actions.ActionContext
 import com.broll.gainea.server.core.actions.ReactionActions
 import com.broll.gainea.server.core.actions.RequiredActionContext
-import com.broll.gainea.server.core.objects.Unit
 import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.core.utils.ProcessingUtils
 import com.broll.gainea.server.core.utils.displayMessage
@@ -17,7 +16,6 @@ import com.broll.gainea.server.init.LobbyData
 import com.broll.gainea.server.init.PlayerData
 import com.broll.networklib.server.impl.ServerLobby
 import org.slf4j.LoggerFactory
-import java.util.function.Consumer
 
 class ReactionResultHandler(private val game: Game, private val lobby: ServerLobby<LobbyData, PlayerData>) : ReactionActions {
     override fun sendGameUpdate(update: Any) {
@@ -74,9 +72,9 @@ class ReactionResultHandler(private val game: Game, private val lobby: ServerLob
         //do fraction turn prepare
         fraction!!.prepareTurn(actionsHandler)
         //send turn actions to player
-        player.units.forEach(Consumer { obj: Unit? -> obj!!.turnStart() })
+        player.units.forEach { it.turnStart() }
         val turn = game.turnBuilder.build(player)
-        Log.trace("Send optional turn actions (" + turn!!.actions.size + ") to player " + player)
+        Log.trace("Send optional turn actions (" + turn.actions.size + ") to player " + player)
         player.serverPlayer.sendTCP(turn)
         //do fraction turn started
         fraction.turnStarted(actionsHandler)

@@ -15,9 +15,9 @@ import java.util.Arrays;
 
 public class Assets {
 
-    private AssetManager manager = new AssetManager();
     private final static String SOUNDS = "sounds/";
     private final static String MUSIC = "music/";
+    private AssetManager manager = new AssetManager();
 
     public Assets() {
         manager.setLoader(TextAsset.class, new TextAssetLoader(new InternalFileHandleResolver()));
@@ -82,6 +82,7 @@ public class Assets {
         manager.load("textures/bubble.png", Texture.class);
         manager.load("textures/colors.png", Texture.class);
         manager.load("textures/fire.png", Texture.class);
+        manager.load("textures/active_ring.png", Texture.class);
         manager.load("textures/gate.png", Texture.class);
         manager.load("textures/water.jpg", Texture.class);
         manager.load("textures/indicator.png", Texture.class);

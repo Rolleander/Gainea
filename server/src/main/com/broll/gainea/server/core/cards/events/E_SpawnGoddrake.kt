@@ -15,8 +15,7 @@ class E_SpawnGoddrake : EventCard(59, "Gaineas Herrscher", "Der Götterdrache er
     }
 
     companion object {
-        fun isGoddrakeAlive(game: Game): Boolean {
-            return game.objects.any { it is GodDragon }
-        }
+        fun isGoddrakeAlive(game: Game) = game.objects.any { it is GodDragon }
+
     }
 }

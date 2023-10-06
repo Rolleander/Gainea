@@ -7,7 +7,6 @@ import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.init.LobbyData
 import com.broll.gainea.server.init.PlayerData
 import com.broll.gainea.server.init.ServerSetup
-import com.broll.networklib.NetworkRegister
 import com.broll.networklib.server.LobbyGameServer
 import com.broll.networklib.server.LobbyServerCLI
 import com.broll.networklib.server.LobbyServerCLI.CliCommand
@@ -15,12 +14,12 @@ import org.slf4j.LoggerFactory
 import java.util.function.Consumer
 
 class GaineaServer(version: String) {
-    private val server: LobbyGameServer<LobbyData, PlayerData>
+    val server: LobbyGameServer<LobbyData, PlayerData>
 
     init {
         com.esotericsoftware.minlog.Log.INFO()
         Log.info("Start Gainea Server $version")
-        server = LobbyGameServer("GaineaServer") { register: NetworkRegister? -> NetworkSetup.registerNetwork(register) }
+        server = LobbyGameServer("GaineaServer") { NetworkSetup.registerNetwork(it) }
         server.setVersion(version)
         ServerSetup.setup(server)
         server.open()
@@ -84,7 +83,7 @@ class GaineaServer(version: String) {
                     print(">> Cards (" + player.cardHandler.cards.size + "): " + player.cardHandler.cards.joinToString(","))
                     print(">> Controlled Locations: [" + player.controlledLocations.joinToString(",") + "]")
                     print(">> Objects [" + player.units.size + "]:")
-                    player.units.forEach { print(">>> " + it.toString()) }
+                    player.units.forEach { print(">>> $it") }
                 })
             }
         }
