@@ -63,10 +63,14 @@ open class G_MoveUnit(difficulty: GoalDifficulty = GoalDifficulty.EASY, private 
             updateProgression(distance)
             success()
         } else {
-            val closestDistance = walkingUnits.minOf {
+            val closestDistance = walkingUnits.minOfOrNull {
                 it.getWalkingDistance(it.location, to) ?: distance
             }
-            updateProgression(distance - closestDistance)
+            if (closestDistance != null) {
+                updateProgression(distance - closestDistance)
+            } else {
+                updateProgression(0)
+            }
         }
     }
 
