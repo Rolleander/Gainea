@@ -20,7 +20,7 @@ open class G_WinBattles(difficulty: GoalDifficulty = GoalDifficulty.MEDIUM, priv
     }
 
     override fun check() {
-        updateProgression(winTarget)
+        updateProgression(wins)
         if (wins >= winTarget) {
             success()
         }

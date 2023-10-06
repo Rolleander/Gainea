@@ -89,7 +89,7 @@ class GoalStrategy(val botStrategy: BotStrategy,
     }
 
     val lowesOccupations: Int
-        get() = targetLocations.minOf { player.getUnits(it).size }
+        get() = targetLocations.minOfOrNull { player.getUnits(it).size } ?: 0
 
     override fun toString() = goal.toString()
 }

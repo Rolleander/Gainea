@@ -193,11 +193,11 @@ class BattleHandler(private val game: Game, private val reactionResult: Reaction
         fallenUnits.forEach { it.onDeath(result) }
         fallenUnits.forEach { updateReceiver.killed(it, result) }
         updateReceiver.battleResult(result)
+        game.sendUpdate(game.nt())
         //if defenders lost, move surviving attackers to location
         if (result.attackersWon) {
             game.move(result.aliveAttackers, result.location)
         }
-        game.sendUpdate(game.nt())
         //find dead monsters to give killing player rewards
         rewardKilledMonsters(result.attackingPlayer, result.killedDefenders)
         result.getNonNeutralDefenders().forEach { rewardKilledMonsters(it, result.killedAttackers) }

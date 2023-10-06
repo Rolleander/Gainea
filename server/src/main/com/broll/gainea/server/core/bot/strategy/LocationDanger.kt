@@ -5,6 +5,7 @@ import com.broll.gainea.server.core.map.Location
 import com.broll.gainea.server.core.objects.Unit
 import com.broll.gainea.server.core.objects.monster.Monster
 import com.broll.gainea.server.core.player.Player
+import com.broll.gainea.server.core.player.isNeutral
 import com.broll.gainea.server.core.utils.getUnits
 import com.broll.gainea.server.core.utils.isHostile
 import org.apache.commons.collections4.map.MultiValueMap
@@ -40,9 +41,10 @@ object LocationDanger {
         if (attackers.isEmpty()) {
             return 0.0
         }
-        return if (enemy == null) {
+        return if (enemy.isNeutral()) {
             attackers.filter { it is Monster && it.mightAttackSoon() }
-                    .maxOf { BattleSimulation.calculateCurrentWinChance(listOf(it), defenders).toDouble() }
+                    .maxOfOrNull { BattleSimulation.calculateCurrentWinChance(listOf(it), defenders).toDouble() }
+                    ?: 0.0
         } else {
             BattleSimulation.calculateCurrentWinChance(attackers, defenders).toDouble()
         }

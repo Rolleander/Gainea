@@ -5,9 +5,9 @@ import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.core.processing.GameUpdateReceiverAdapter
 
 open class TimedEffect : GameUpdateReceiverAdapter() {
-    protected lateinit var game: Game
-    protected lateinit var owner: Player
-    protected var forThisTurn = false
+    private lateinit var game: Game
+    private var owner: Player? = null
+    private var forThisTurn = false
     private var rounds = 0
     override fun turnStarted(player: Player) {
         if (owner === player || forThisTurn) {

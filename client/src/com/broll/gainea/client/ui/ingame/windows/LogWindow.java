@@ -9,11 +9,11 @@ import com.broll.gainea.client.ui.utils.TextureUtils;
 
 public class LogWindow extends MenuWindow {
 
+    private final static int MESSAGE_LENGTH = 450;
     private Table logTable;
     private ScrollPane logScrollPane;
 
-    private final static int MESSAGE_LENGTH = 450;
-
+    //todo broken display
     public LogWindow(Gainea game) {
         super(game, "Log", game.ui.skin);
         logTable = new Table(skin);
