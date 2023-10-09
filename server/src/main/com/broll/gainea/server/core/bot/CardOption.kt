@@ -3,7 +3,7 @@ package com.broll.gainea.server.core.bot
 import com.broll.gainea.server.core.bot.impl.BotSelect
 
 class CardOption : BotOptionalAction.BotOption {
-    private val selectOptions = mutableListOf<BotSelect.Selection>()
+    val selectOptions = mutableListOf<BotSelect.Selection>()
 
     constructor(score: Float) : super(score)
     constructor() : super(20f)
@@ -16,7 +16,5 @@ class CardOption : BotOptionalAction.BotOption {
         selectOptions.add(select.selectUnit { units -> BotUtils.getHighestScoreEntry(units) { it.battleStrength } })
     }
 
-    fun getSelectOptions(): List<BotSelect.Selection> {
-        return selectOptions
-    }
+
 }

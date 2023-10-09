@@ -8,6 +8,8 @@ import com.broll.gainea.server.core.objects.monster.Monster
 import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.core.player.isNeutral
 
+
+fun Game.endTurn() = reactionHandler.actionHandlers.reactionActions.endTurn()
 fun Game.noActivePlayersRemaining() = activePlayers.isEmpty() || activePlayers.all { it.serverPlayer.isBot }
 
 fun Game.isGameEnd(): Boolean {

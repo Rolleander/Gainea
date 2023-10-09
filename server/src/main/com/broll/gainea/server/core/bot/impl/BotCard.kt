@@ -11,7 +11,7 @@ class BotCard : BotOptionalAction<NT_Action_Card, CardOption>() {
     override fun react(action: NT_Action_Card, reaction: NT_Reaction) {
         val select = handler.getActionHandler(BotSelect::class.java)
         select.clearSelections()
-        selectedOption!!.getSelectOptions().forEach { select.nextChooseOption(it) }
+        selectedOption!!.selectOptions.forEach { select.nextChooseOption(it) }
     }
 
     override val actionClass: Class<out NT_Action>

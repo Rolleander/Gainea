@@ -4,9 +4,11 @@ import com.broll.gainea.NetworkSetup
 import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.objects.MapObject
 import com.broll.gainea.server.core.player.Player
+import com.broll.gainea.server.core.utils.endTurn
 import com.broll.gainea.server.init.LobbyData
 import com.broll.gainea.server.init.PlayerData
 import com.broll.gainea.server.init.ServerSetup
+import com.broll.gainea.server.sites.CustomLobbySite
 import com.broll.networklib.server.LobbyGameServer
 import com.broll.networklib.server.LobbyServerCLI
 import com.broll.networklib.server.LobbyServerCLI.CliCommand
@@ -19,7 +21,7 @@ class GaineaServer(version: String) {
     init {
         com.esotericsoftware.minlog.Log.INFO()
         Log.info("Start Gainea Server $version")
-        server = LobbyGameServer("GaineaServer") { NetworkSetup.registerNetwork(it) }
+        server = LobbyGameServer("GaineaServer", CustomLobbySite()) { NetworkSetup.registerNetwork(it) }
         server.setVersion(version)
         ServerSetup.setup(server)
         server.open()
@@ -55,7 +57,7 @@ class GaineaServer(version: String) {
             val id = options[0].toInt()
             getGame(id)?.let { game ->
                 game.battleHandler.reset()
-                game.reactionHandler.actionHandlers.reactionActions.endTurn()
+                game.endTurn()
                 print("Ended turn")
             }
         }
