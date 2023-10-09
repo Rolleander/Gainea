@@ -64,7 +64,7 @@ public class Assets {
         for (int i = 0; i < 7; i++) {
             manager.load("textures/battles/battle_" + i + ".jpg", Texture.class);
         }
-        for (int i = 0; i < 16; i++) {
+        for (int i = 0; i < 18; i++) {
             manager.load("textures/cards/cards_" + i + ".png", Texture.class);
         }
         manager.load("textures/logo.png", Texture.class);
