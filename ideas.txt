@@ -9,7 +9,6 @@ cards:
 
 unbenutzte karten:
 
->4  assassine
 >27 buch
 >68 seeschlacht
 
