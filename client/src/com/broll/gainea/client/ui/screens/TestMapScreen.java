@@ -72,6 +72,9 @@ public class TestMapScreen extends Screen {
         evt.goal = goal;
         //  FinishedGoalDisplay message = new FinishedGoalDisplay(game, evt, true);
         // game.ui.inGameUI.showCenterOverlay(message);
+        game.ui.inGameUI.getLogWindow().logCardEvent("hat karte erhalten");
+        game.ui.inGameUI.getLogWindow().logGoalEvent("hat goal erhalten, mit sehr langem text der unbedingt"
+                + "umgebrochen werden sollte damit man noch etwas lesen kann im window....blablablabalbalbalbalabbla");
         return new Table();
     }
 

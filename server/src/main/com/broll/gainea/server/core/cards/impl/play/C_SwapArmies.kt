@@ -3,6 +3,7 @@ package com.broll.gainea.server.core.cards.impl.play
 import com.broll.gainea.server.core.cards.Card
 import com.broll.gainea.server.core.player.isNeutral
 import com.broll.gainea.server.core.utils.UnitControl.move
+import com.broll.gainea.server.core.utils.getEnemyLocations
 import com.broll.gainea.server.core.utils.getOtherPlayers
 
 class C_SwapArmies : Card(79, "Planwechsel", "Tauscht den Standort einer beliebigen eurer Armeen mit der eines anderen Spielers") {
@@ -12,9 +13,10 @@ class C_SwapArmies : Card(79, "Planwechsel", "Tauscht den Standort einer beliebi
 
     override fun play() {
         val from = selectHandler.selectLocation("Welche Armee soll bewegt werden?", owner.controlledLocations.toList())
-        val to = selectHandler.selectLocation("Wohin bewegen?", game.getOtherPlayers(owner).flatMap { it.controlledLocations })
+        val to = selectHandler.selectLocation("Wohin bewegen?", game.getEnemyLocations(owner))
+        val toUnits = to.units.filter { !it.owner.isNeutral() }
         game.move(from.units.filter { it.owner == owner }, to)
-        game.move(to.units.filter { !it.owner.isNeutral() }, from)
+        game.move(toUnits, from)
     }
 
 }

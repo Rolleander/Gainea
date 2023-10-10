@@ -13,7 +13,6 @@ public class LogWindow extends MenuWindow {
     private Table logTable;
     private ScrollPane logScrollPane;
 
-    //todo broken display
     public LogWindow(Gainea game) {
         super(game, "Log", game.ui.skin);
         logTable = new Table(skin);
@@ -43,14 +42,14 @@ public class LogWindow extends MenuWindow {
 
     private Table basicLog(String message) {
         Table log = new Table(skin);
-        log.add(LabelUtils.autoWrap(LabelUtils.markup(skin, message), MESSAGE_LENGTH));
+        log.add(LabelUtils.autoWrap(LabelUtils.markup(skin, message), MESSAGE_LENGTH)).expandX().fillX();
         return log;
     }
 
     private Table iconLog(int icon, String message) {
         Table log = new Table(skin);
         log.add(new Image(TextureUtils.icon(game, icon))).padRight(10);
-        log.add(LabelUtils.autoWrap(LabelUtils.markup(skin, message), MESSAGE_LENGTH));
+        log.add(LabelUtils.autoWrap(LabelUtils.markup(skin, message), MESSAGE_LENGTH)).expandX().fillX();
         return log;
     }
 
@@ -58,8 +57,7 @@ public class LogWindow extends MenuWindow {
         log.left();
         log.top();
         logTable.add(log).expandX().fillX().row();
-        logScrollPane.invalidate();
-        logScrollPane.layout();
+        logScrollPane.pack();
         logScrollPane.setScrollY(logScrollPane.getMaxY());
     }
 

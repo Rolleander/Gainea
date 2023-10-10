@@ -4,7 +4,7 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.broll.gainea.Gainea;
 import com.broll.gainea.client.AudioPlayer;
-import com.broll.gainea.client.ui.screens.TestBattleScreen;
+import com.broll.gainea.client.ui.screens.TestMapScreen;
 
 public class DesktopTestLauncher {
     public static void main(String[] arg) {
@@ -16,6 +16,6 @@ public class DesktopTestLauncher {
 //		config.height=1080;
         config.width = 1280;
         config.height = 900;
-        new LwjglApplication(new Gainea(new TestBattleScreen(), false), config);
+        new LwjglApplication(new Gainea(new TestMapScreen(), false), config);
     }
 }

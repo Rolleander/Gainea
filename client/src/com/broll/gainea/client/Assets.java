@@ -68,6 +68,7 @@ public class Assets {
             manager.load("textures/cards/cards_" + i + ".png", Texture.class);
         }
         manager.load("textures/logo.png", Texture.class);
+        manager.load("textures/white.png", Texture.class);
         manager.load("textures/title.jpg", Texture.class);
         manager.load("textures/chips.png", Texture.class);
         manager.load("textures/icons.png", Texture.class);

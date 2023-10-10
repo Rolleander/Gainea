@@ -9,7 +9,6 @@ import com.broll.gainea.server.core.objects.buffs.TimedEffect
 
 class C_Fire : Card(75, "Drachenfeuer", "Wählt ein unbesetztes Gebiet (ausser Seen), dieses kann für " + ROUNDS + " Runden nicht besetzt werden.") {
 
-    //todo broken?
     override val isPlayable: Boolean
         get() = targets.isNotEmpty()
     private val targets: List<Location>

@@ -29,6 +29,9 @@ fun Location.isAreaType(vararg type: AreaType): Boolean {
     return false
 }
 
+fun Location.getHostileUnits(player: Player) =
+        units.filter { player.isHostile(it) }
+
 fun List<Location>.filterByType(vararg type: AreaType) = filter { it.isAreaType(*type) }.map { it as Area }
 
 fun Player.getControlledLocationsIn(expansionType: ExpansionType) = controlledLocations.filter { it.container.expansion.type == expansionType }

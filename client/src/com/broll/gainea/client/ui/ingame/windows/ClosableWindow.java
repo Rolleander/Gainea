@@ -1,10 +1,14 @@
 package com.broll.gainea.client.ui.ingame.windows;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
+import com.badlogic.gdx.scenes.scene2d.utils.BaseDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.broll.gainea.Gainea;
@@ -12,9 +16,9 @@ import com.broll.gainea.client.ui.utils.TextureUtils;
 
 public class ClosableWindow extends Window {
 
-    private float width, height;
     protected Skin skin;
     protected Gainea game;
+    private float width, height;
     private boolean set = false;
 
 
@@ -31,6 +35,8 @@ public class ClosableWindow extends Window {
             }
         });
         bar.add(button);
+        bar.setBackground(new ColorDrawable(0.3f, 0.3f, 0.3f, 1f));
+        padTop(25);
         setVisible(false);
     }
 
@@ -48,5 +54,29 @@ public class ClosableWindow extends Window {
     public void center(int width, int height) {
         this.width = width;
         this.height = height;
+    }
+
+    private class ColorDrawable extends BaseDrawable {
+
+        private final static int BORDER = 4;
+        private float r, g, b, a;
+        private Color savedBatchColor = new Color();
+        private Texture blankWhite;
+
+        public ColorDrawable(float r, float g, float b, float a) {
+            this.r = r;
+            this.g = g;
+            this.b = b;
+            this.a = a;
+            this.blankWhite = game.assets.get("textures/white.png", Texture.class);
+        }
+
+        @Override
+        public void draw(Batch batch, float x, float y, float width, float height) {
+            savedBatchColor.set(batch.getColor());
+            batch.setColor(r, g, b, a);
+            batch.draw(blankWhite, x - BORDER, y, width + BORDER * 2, height);
+            batch.setColor(savedBatchColor);
+        }
     }
 }

@@ -5,8 +5,8 @@ import com.broll.gainea.server.core.objects.monster.Monster
 import com.broll.gainea.server.core.objects.monster.MonsterActivity
 import com.broll.gainea.server.core.objects.monster.MonsterBehavior
 import com.broll.gainea.server.core.utils.UnitControl.spawn
+import com.broll.gainea.server.core.utils.getEnemyLocations
 import com.broll.gainea.server.core.utils.getHostileArmy
-import com.broll.gainea.server.core.utils.getHostileLocations
 
 class C_OgreAttack : Card(36, "Ogerangriff", "Wählt eine feindliche Truppe und ruft einen wilden Kriegsoger (4/4) herbei der diese angreift.") {
     init {
@@ -24,7 +24,7 @@ class C_OgreAttack : Card(36, "Ogerangriff", "Wählt eine feindliche Truppe und 
         monster.setHealth(4)
         monster.behavior = MonsterBehavior.RANDOM
         monster.activity = MonsterActivity.SOMETIMES
-        val target = selectHandler.selectLocation("Wählt die feindliche Truppe", game.getHostileLocations(owner).toList())
+        val target = selectHandler.selectLocation("Wählt die feindliche Truppe", game.getEnemyLocations(owner).toList())
         val hostileArmy = owner.getHostileArmy(target)
         game.spawn(monster, target)
         game.battleHandler.startBattle(listOf(monster), hostileArmy)

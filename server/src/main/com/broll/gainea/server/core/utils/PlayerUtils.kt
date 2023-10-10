@@ -40,7 +40,7 @@ fun Player.isHostile(obj: MapObject) =
 
 fun Player.hasHostileArmy(location: Location) = getHostileArmy(location).isNotEmpty()
 
-fun Game.getHostileLocations(player: Player) =
+fun Game.getEnemyLocations(player: Player) =
         getOtherPlayers(player).flatMap { it.controlledLocations }.filter { player.hasHostileArmy(it) }
 
 fun List<Unit>.owner() = first().owner
