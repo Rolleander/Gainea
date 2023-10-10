@@ -2,14 +2,12 @@ package com.broll.gainea.server.core.goals
 
 import com.broll.gainea.misc.PackageLoader
 import com.broll.gainea.server.core.Game
-import com.broll.gainea.server.core.actions.ActionHandlers
 import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.init.GoalTypes
 import org.slf4j.LoggerFactory
 import java.util.stream.Collectors
 
 class GoalStorage(private val game: Game,
-                  private val actionHandlers: ActionHandlers,
                   private val goalTypes: GoalTypes) {
     private val goalClasses = mutableListOf<Class<out Goal>>()
     private val loader: PackageLoader<Goal> = PackageLoader(Goal::class.java, PACKAGE_PATH)

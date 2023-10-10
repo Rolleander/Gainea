@@ -3,16 +3,15 @@ package com.broll.gainea.server.core.cards
 import com.broll.gainea.misc.PackageLoader
 import com.broll.gainea.misc.RandomUtils
 import com.broll.gainea.server.core.Game
-import com.broll.gainea.server.core.actions.ActionHandlers
 import com.broll.gainea.server.core.player.Player
 
-class CardStorage(private val game: Game, private val actionHandlers: ActionHandlers) {
+class CardStorage(private val game: Game) {
     private val loader: PackageLoader<Card> = PackageLoader(Card::class.java, PACKAGE_PATH)
     private val drawChances: FloatArray
     private val totalDrawChances: Float
+    val allCards: List<Card> = loader.instantiateAll().filter { it.validFor(game) }
 
     init {
-        val allCards = loader.instantiateAll()
         drawChances = allCards.map { it.drawChance }.toFloatArray()
         totalDrawChances = allCards.map { it.drawChance }.sum()
     }
@@ -68,8 +67,6 @@ class CardStorage(private val game: Game, private val actionHandlers: ActionHand
         return cards
     }
 
-    val allCards: List<Card>
-        get() = loader.instantiateAll()
 
     fun getCard(cardClass: Class<out Card>): Card {
         return loader.instantiate(cardClass)

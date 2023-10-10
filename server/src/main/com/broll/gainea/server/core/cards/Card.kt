@@ -24,6 +24,8 @@ abstract class Card(val picture: Int, val title: String, val text: String) {
         this.id = id
     }
 
+    open fun validFor(game: Game): Boolean = true
+
     abstract val isPlayable: Boolean
     fun play(actionHandlers: ActionHandlers) {
         actions = actionHandlers

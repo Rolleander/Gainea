@@ -81,8 +81,8 @@ class Game(val lobby: ServerLobby<LobbyData, PlayerData>) {
         processingCore = ProcessingCore(this, { reactionHandler.finishedProcessing() }, lobby)
         turnBuilder = TurnBuilder(this, actionHandlers)
         battleHandler = BattleHandler(this, reactionResult)
-        goalStorage = GoalStorage(this, actionHandlers, lobby.data.goalTypes)
-        cardStorage = CardStorage(this, actionHandlers)
+        goalStorage = GoalStorage(this, lobby.data.goalTypes)
+        cardStorage = CardStorage(this)
     }
 
 

@@ -6,14 +6,13 @@ import com.broll.gainea.server.core.objects.MapObject
 import com.broll.gainea.server.core.objects.Soldier
 import com.broll.gainea.server.core.objects.Unit
 import com.broll.gainea.server.core.player.Player
-import java.util.function.Consumer
 
-fun Game.iteratePlayers(pauseBetween: Int, consumer: Consumer<Player>) {
+fun Game.iteratePlayers(pauseBetween: Int, consumer: (Player) -> kotlin.Unit) {
     val current = currentTurn
     val players = ArrayList(activePlayers)
     for (i in players.indices) {
         val nr = (current + i) % players.size
-        consumer.accept(players[nr])
+        consumer(players[nr])
         ProcessingUtils.pause(pauseBetween)
     }
 }
