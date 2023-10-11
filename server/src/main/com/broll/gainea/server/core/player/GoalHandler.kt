@@ -20,6 +20,7 @@ class GoalHandler(private val game: Game, private val player: Player) {
 
     val goals = mutableListOf<Goal>()
     fun addPoints(points: Int) {
+        if (player.isNeutral()) return
         score += points
         val nt = NT_Event_ReceivedPoints()
         nt.player = player.serverPlayer.id
@@ -32,6 +33,7 @@ class GoalHandler(private val game: Game, private val player: Player) {
     }
 
     fun addStars(stars: Int) {
+        if (player.isNeutral()) return
         this.stars += stars
         val nt = NT_Event_ReceivedStars()
         nt.player = player.serverPlayer.id
@@ -42,6 +44,7 @@ class GoalHandler(private val game: Game, private val player: Player) {
     }
 
     fun removeGoal(oldGoal: Goal) {
+        if (player.isNeutral()) return
         goals.remove(oldGoal)
         game.updateReceiver.unregister(oldGoal)
         val nt = NT_Event_RemoveGoal()
@@ -50,6 +53,7 @@ class GoalHandler(private val game: Game, private val player: Player) {
     }
 
     fun newGoal(goal: Goal) {
+        if (player.isNeutral()) return
         goals.add(goal)
         game.updateReceiver.register(goal)
         val nt = NT_Event_ReceivedGoal()

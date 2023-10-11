@@ -66,12 +66,12 @@ class Game(val lobby: ServerLobby<LobbyData, PlayerData>) {
     init {
         lobby.data.game = this
         updateReceiver = GameUpdateReceiverProxy()
+        updateReceiver.register(TurnEvents(this))
         map = MapContainer(lobby.data.expansionSetting)
         allPlayers = PlayerFactory.create(this, lobby.players)
         monsterFactory = MonsterFactory()
         buffProcessor = BuffProcessor(this)
         statistic = GameStatistic(this)
-        updateReceiver.register(TurnEvents(this))
         updateReceiver.register(statistic)
     }
 

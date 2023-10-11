@@ -24,6 +24,7 @@ import java.util.Collection;
 public class MapObjectRender extends Actor {
 
     protected final static int R = 50;
+    protected float radius;
     protected Gainea game;
     protected Collection<MapObjectRender> stack;
     protected boolean stackTop = true;
@@ -37,7 +38,8 @@ public class MapObjectRender extends Actor {
     public MapObjectRender(Gainea game, Skin skin, NT_BoardObject object) {
         this.game = game;
         this.object = object;
-        setSize(R * 2, R * 2);
+        this.radius = R * object.scale;
+        setSize(radius * 2, radius * 2);
         init();
         icon = TextureUtils.unitIcon(game, object.icon);
     }
@@ -84,7 +86,7 @@ public class MapObjectRender extends Actor {
     public Actor hit(float x, float y, boolean touchable) {
         if (touchable && this.getTouchable() != Touchable.enabled) return null;
         if (!isVisible()) return null;
-        if (Vector2.dst(0, 0, x, y) < R) {
+        if (Vector2.dst(0, 0, x, y) < radius) {
             return this;
         }
         return null;
@@ -116,8 +118,8 @@ public class MapObjectRender extends Actor {
     public void draw(Batch batch, float parentAlpha) {
         calcRenderColor(parentAlpha);
         batch.setColor(renderColor);
-        batch.draw(chip, getX() - R, getY() - R);
-        batch.draw(icon, getX() - R + 9, getY() - R + 9);
+        batch.draw(chip, getX() - radius, getY() - radius);
+        batch.draw(icon, getX() - radius + 9, getY() - radius + 9);
     }
 
     protected void calcRenderColor(float parentAlpha) {

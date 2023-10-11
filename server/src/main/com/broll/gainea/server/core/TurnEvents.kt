@@ -1,16 +1,23 @@
 package com.broll.gainea.server.core
 
+import com.broll.gainea.misc.RandomUtils
 import com.broll.gainea.net.NT_PlayerWait
 import com.broll.gainea.server.core.cards.EventCard
+import com.broll.gainea.server.core.cards.RandomEventContainer
 import com.broll.gainea.server.core.cards.events.E_GetCards
 import com.broll.gainea.server.core.cards.events.E_SpawnGoddrake
 import com.broll.gainea.server.core.cards.events.E_SpawnMonster
+import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.core.processing.GameUpdateReceiverAdapter
 import com.broll.gainea.server.core.utils.countNeutralMonsters
 import com.broll.gainea.server.core.utils.getTotalStartMonsters
 import com.broll.gainea.server.core.utils.sendUpdate
 
 class TurnEvents(private val game: Game) : GameUpdateReceiverAdapter() {
+
+    private val randomEvents = RandomEventContainer()
+    private val randomEventChance = 0.1f
+
     private fun turnEvent(event: EventCard) {
         val nt = NT_PlayerWait()
         nt.playersTurn = -1
@@ -40,6 +47,14 @@ class TurnEvents(private val game: Game) : GameUpdateReceiverAdapter() {
             }
         }
     }
+
+    override fun turnStarted(player: Player) {
+        if (game.rounds > 1 && RandomUtils.randomBoolean(randomEventChance)) {
+            //TODO activate when more events are done
+            //   randomEvents.run(game)
+        }
+    }
+
 
     companion object {
         private const val SPAWN_MONSTER_TURNS = 2

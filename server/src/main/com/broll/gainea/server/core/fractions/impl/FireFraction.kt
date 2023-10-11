@@ -69,15 +69,17 @@ class FireFraction : Fraction(FractionType.FIRE) {
         super.killedMonster(monster)
     }
 
-    private inner class FireRain : Card(76, "Feuerregen", "Verursacht 1 Schaden an einer beliebigen feindlichen Einheit") {
-        override val isPlayable: Boolean
-            get() = true
 
-        override fun play() {
-            val unit = game.selectHostileUnit(owner, "Welcher Einheit soll Schaden zugeführt werden?")
-            if (unit != null) {
-                game.damage(unit)
-            }
+}
+
+class FireRain : Card(76, "Feuerregen", "Verursacht 1 Schaden an einer beliebigen feindlichen Einheit") {
+    override val isPlayable: Boolean
+        get() = true
+
+    override fun play() {
+        val unit = game.selectHostileUnit(owner, "Welcher Einheit soll Schaden zugeführt werden?")
+        if (unit != null) {
+            game.damage(unit)
         }
     }
 }

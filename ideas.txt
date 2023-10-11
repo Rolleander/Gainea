@@ -4,6 +4,18 @@ card ideas:
 - alle einheiten auf einen platz
 
 
+event / object ideas:
+- spawn unit that attacks player units when they move to close field
+- spawn collectible that rewards soldiers
+- spawn collectible that rewards a card
+- spawn collectible that rewards a buff
+- spawn random moving object that deals damage to all units it walks upon
+- spawn unit that rewards an additional goal on kill
+- spawn object that rewards 1 point to player that holds the area for 3 rounds
+- spawn unit that rewards spells (specific cards)
+- spawn soldier-stack that moves/attacks randomly every turn
+
+
 unbenutzte units:
 3 = dragon hunter
 6 = shadow knight

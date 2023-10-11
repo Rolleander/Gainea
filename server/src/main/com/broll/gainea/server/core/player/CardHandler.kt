@@ -16,6 +16,7 @@ class CardHandler(private val game: Game, private val player: Player) {
     }
 
     fun receiveCard(card: Card) {
+        if (player.isNeutral()) return
         card.init(game, player, game.newObjectId())
         if (card is DirectlyPlayedCard) {
             game.reactionHandler.actionHandlers.getHandler(CardAction::class.java).playCard(player, card)

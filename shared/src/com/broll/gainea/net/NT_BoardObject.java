@@ -6,9 +6,10 @@ public class NT_BoardObject {
 
     public final static short NO_LOCATION = -1;
     public String name;
-    public float size;
+    public float scale;
     public short icon;
     public short id;
+    public String description;
     public short location = NO_LOCATION;
 
     @Override

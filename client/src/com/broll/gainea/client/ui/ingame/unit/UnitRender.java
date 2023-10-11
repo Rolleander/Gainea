@@ -41,7 +41,7 @@ public class UnitRender extends MapObjectRender {
         super(game, skin, unit);
         this.plate = game.assets.get("textures/unit_plate.png", Texture.class);
         this.activeRing = game.assets.get("textures/active_ring.png", Texture.class);
-        setWidth(R * 2 + 37 * 2);
+        setWidth(radius * 2 + 37 * 2);
         setZIndex(100);
         numberLabel = LabelUtils.label(skin, "");
         blackStyle = numberLabel.getStyle();
@@ -133,7 +133,7 @@ public class UnitRender extends MapObjectRender {
         }
         if (shouldDrawPlate()) {
             NT_Unit unit = (NT_Unit) getObject();
-            batch.draw(plate, getX() - 37 - R, getY() + 20 - R);
+            batch.draw(plate, getX() - 37 - radius, getY() + 20 - radius);
             numberLabel.setColor(renderColor);
             numberLabel.setStyle(blackStyle);
             numberLabel.setPosition(getX() - 74, getY() - 16);

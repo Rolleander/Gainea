@@ -17,6 +17,7 @@ abstract class MapObject(var owner: Player) : GameUpdateReceiverAdapter() {
     var icon = 0
     var name: String? = null
     var scale = 1f
+    var description: String? = null
     protected var moveCount = 0
     var movesPerTurn = BuffableInt(this, 1) //default 1 move
 
@@ -67,7 +68,8 @@ abstract class MapObject(var owner: Player) : GameUpdateReceiverAdapter() {
         obj.id = id.toShort()
         obj.name = name
         obj.icon = icon.toShort()
-        obj.size = scale * 30
+        obj.scale = scale
+        obj.description = description
         if (location != SpawnLocation) {
             obj.location = location.number.toShort()
         }
