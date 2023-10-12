@@ -24,6 +24,7 @@ class C_UnknownSoldier : DirectlyPlayedCard(67, "Mytseriöser Herausforderer", "
             name = "Der Fremde"
             icon = 126
             setStats(7, 7)
+            description = "Bezwinger erhält einen Siegespunkt"
         }
 
         override fun onDeath(throughBattle: BattleResult?) {

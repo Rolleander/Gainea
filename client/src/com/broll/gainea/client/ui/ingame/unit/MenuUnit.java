@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -16,6 +17,8 @@ import com.broll.gainea.client.ui.utils.TextureUtils;
 import com.broll.gainea.net.NT_Monster;
 import com.broll.gainea.net.NT_Unit;
 import com.broll.gainea.server.core.objects.monster.MonsterBehavior;
+
+import org.apache.commons.lang3.StringUtils;
 
 public class MenuUnit extends Table {
 
@@ -50,11 +53,13 @@ public class MenuUnit extends Table {
         Table row = new Table(skin);
         row.add(IconLabel.attack(game, unit.power)).left();
         row.add(IconLabel.health(game, unit.health, unit.maxHealth)).spaceLeft(20).left();
+        row.add(new IconLabel(game, 8, "" + unit.kills)).spaceLeft(20).left();
         table.add(row).left().row();
-        if (unit.kills > 0) {
-            table.add(new IconLabel(game, 8, "" + unit.kills)).left().row();
+        if (StringUtils.isNotEmpty(unit.description)) {
+            Label info = LabelUtils.markup(skin, "[DARK_GRAY]" + unit.description);
+            table.add(LabelUtils.autoWrap(info, 180)).left().expandX().fillX().row();
         }
-        add(table).fillX().expandX().spaceLeft(10);
+        add(table).fillX().expandX().minWidth(180).spaceLeft(10);
         setTouchable(Touchable.enabled);
         addListener(new ClickListener() {
             @Override

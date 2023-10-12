@@ -11,6 +11,7 @@ class GodDragon(owner: Player) : Monster(owner) {
         behavior = MonsterBehavior.AGGRESSIVE
         activity = MonsterActivity.ALWAYS
         motion = MonsterMotion.AIRBORNE
+        description = "Bezwinger erhält einen Siegespunkt"
     }
 
     override fun onDeath(throughBattle: BattleResult?) {

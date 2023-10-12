@@ -21,7 +21,7 @@ abstract class MapObject(var owner: Player) : GameUpdateReceiverAdapter() {
     protected var moveCount = 0
     var movesPerTurn = BuffableInt(this, 1) //default 1 move
 
-    fun init(game: Game) {
+    open fun init(game: Game) {
         id = game.newObjectId()
         this.game = game
     }

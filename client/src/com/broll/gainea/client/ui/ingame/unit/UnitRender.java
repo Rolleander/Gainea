@@ -117,9 +117,7 @@ public class UnitRender extends MapObjectRender {
             return true;
         }
         if (stackTop) {
-            if (!hidePlate && ((OrthographicCamera) getStage().getCamera()).zoom < 2f) {
-                return true;
-            }
+            return !hidePlate && ((OrthographicCamera) getStage().getCamera()).zoom < 2f;
         }
         return false;
     }

@@ -48,6 +48,7 @@ class TurnEvents(private val game: Game) : GameUpdateReceiverAdapter() {
         }
     }
 
+
     override fun turnStarted(player: Player) {
         if (game.rounds > 1 && RandomUtils.randomBoolean(randomEventChance)) {
             //TODO activate when more events are done

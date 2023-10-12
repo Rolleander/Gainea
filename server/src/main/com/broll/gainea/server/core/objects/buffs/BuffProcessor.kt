@@ -13,7 +13,7 @@ import org.apache.commons.collections4.map.MultiValueMap
 class BuffProcessor(private val game: Game) : GameUpdateReceiverAdapter() {
     private var currentTurnCount = 0
     private val timedBuffs = MultiValueMap<Int, Buff<*>>()
-    private val gloabalBuffs: MutableMap<Buff<*>, GlobalBuff> = HashMap()
+    private val globalBuffs: MutableMap<Buff<*>, GlobalBuff> = HashMap()
 
     init {
         game.updateReceiver.register(this)
@@ -21,8 +21,8 @@ class BuffProcessor(private val game: Game) : GameUpdateReceiverAdapter() {
 
     override fun turnStarted(player: Player) {
         currentTurnCount++
-        val timedout = timedBuffs.getCollection(currentTurnCount)
-        if (timedout != null) {
+        timedBuffs.keys.flatMap { timedBuffs.getCollection(it) }.forEach { it.turnsActive += 1 }
+        timedBuffs.getCollection(currentTurnCount)?.let { timedout ->
             timedout.forEach { timedout(it) }
             timedBuffs.remove(currentTurnCount)
         }
@@ -31,7 +31,7 @@ class BuffProcessor(private val game: Game) : GameUpdateReceiverAdapter() {
     private fun timedout(buff: Buff<*>) {
         val affectedObjects = ArrayList(buff.affectedObjects)
         buff.remove()
-        gloabalBuffs.remove(buff)
+        globalBuffs.remove(buff)
         //check if any unit died because of removal of buffs
         val update = mutableListOf<MapObject>()
         for (target in affectedObjects) {
@@ -52,7 +52,7 @@ class BuffProcessor(private val game: Game) : GameUpdateReceiverAdapter() {
     }
 
     fun addGlobalBuff(globalBuff: GlobalBuff, effect: Int) {
-        gloabalBuffs[globalBuff.buff] = globalBuff
+        globalBuffs[globalBuff.buff] = globalBuff
         //apply directly to all existing units for the targets
         globalBuff.targets.forEach { player ->
             val units = if (player.isNeutral()) {
@@ -66,7 +66,7 @@ class BuffProcessor(private val game: Game) : GameUpdateReceiverAdapter() {
     }
 
     fun applyGlobalBuffs(unit: Unit) =
-            gloabalBuffs.values.filter { it.targets.contains(unit.owner) }.forEach {
+            globalBuffs.values.filter { it.targets.contains(unit.owner) }.forEach {
                 it.apply(unit)
             }
 

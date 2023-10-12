@@ -163,10 +163,12 @@ public class BattleHandler {
             defenderRenders = defenders.stream().map(it -> (UnitRender) MapObjectRender.createRender(game, skin, it)).sorted(Comparator.comparingInt(MapObjectRender::getRank)).collect(Collectors.toList());
             attackerRenders.forEach(it -> {
                 it.setAlwaysDrawPlate(true);
+                it.showDescription = false;
                 addActor(it);
             });
             defenderRenders.forEach(it -> {
                 it.setAlwaysDrawPlate(true);
+                it.showDescription = false;
                 it.flip();
                 addActor(it);
             });

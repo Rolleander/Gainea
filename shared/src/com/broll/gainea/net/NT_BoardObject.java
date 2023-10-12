@@ -6,7 +6,7 @@ public class NT_BoardObject {
 
     public final static short NO_LOCATION = -1;
     public String name;
-    public float scale;
+    public float scale = 1;
     public short icon;
     public short id;
     public String description;

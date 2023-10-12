@@ -2,7 +2,7 @@
 card ideas:
 - move army to neighbour empty area
 - alle einheiten auf einen platz
-
+- clone unit
 
 event / object ideas:
 - spawn unit that attacks player units when they move to close field

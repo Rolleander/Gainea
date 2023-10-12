@@ -4,6 +4,7 @@ import com.broll.gainea.server.core.cards.Card
 import com.broll.gainea.server.core.objects.Unit
 import com.broll.gainea.server.core.objects.buffs.BuffType
 import com.broll.gainea.server.core.objects.buffs.IntBuff
+import com.broll.gainea.server.core.objects.buffs.roundsActive
 import com.broll.gainea.server.core.utils.UnitControl.spawn
 
 class C_Blockade : Card(54, "Burgfried", "Platziert eine neutrale Befestigung (3/10) auf ein beliebiges freies Feld. Sie zerfällt nach " + ROUNDS + " Runden.") {
@@ -15,8 +16,8 @@ class C_Blockade : Card(54, "Burgfried", "Platziert eine neutrale Befestigung (3
         get() = true
 
     override fun play() {
-        val soldier = Blockade()
         val buff = IntBuff(BuffType.ADD, 10)
+        val soldier = Blockade(buff)
         soldier.addHealthBuff(buff)
         val locations = game.map.allAreas.filter { it.free }
         val location = selectHandler.selectLocation("Wo soll die Befestigung errichtet werden?", locations)
@@ -24,11 +25,21 @@ class C_Blockade : Card(54, "Burgfried", "Platziert eine neutrale Befestigung (3
         game.buffProcessor.timeoutBuff(buff, ROUNDS)
     }
 
-    private inner class Blockade : Unit(game.neutralPlayer) {
+    private inner class Blockade(val buff: IntBuff) : Unit(game.neutralPlayer) {
         init {
             icon = 127
             name = "Befestigung"
             setStats(3, 0)
+            updateDescription()
+        }
+
+        private fun updateDescription() {
+            description = "Verbleibende Runden: ${ROUNDS - buff.roundsActive(game)}"
+        }
+
+        override fun turnStart() {
+            updateDescription()
+            super.turnStart()
         }
     }
 

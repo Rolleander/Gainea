@@ -18,6 +18,7 @@ class C_BattleSummon : Card(66, "Rachedämon", "Beschwört einen Rachedämon (5/
         demon.setStats(5, 0)
         demon.icon = 125
         demon.name = "Rachedämon"
+        demon.description = "Stirbt in einer Runde"
         val buff = IntBuff(BuffType.ADD, 3)
         demon.addHealthBuff(buff)
         demon.turnStart()

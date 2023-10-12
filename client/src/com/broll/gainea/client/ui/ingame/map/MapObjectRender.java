@@ -1,6 +1,7 @@
 package com.broll.gainea.client.ui.ingame.map;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -9,21 +10,28 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.utils.Align;
 import com.broll.gainea.Gainea;
 import com.broll.gainea.client.ui.ingame.unit.MonsterRender;
 import com.broll.gainea.client.ui.ingame.unit.UnitRender;
+import com.broll.gainea.client.ui.utils.LabelUtils;
 import com.broll.gainea.client.ui.utils.TextureUtils;
 import com.broll.gainea.net.NT_BoardObject;
 import com.broll.gainea.net.NT_Monster;
 import com.broll.gainea.net.NT_Unit;
 import com.broll.gainea.server.core.map.Location;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.Collection;
 
 public class MapObjectRender extends Actor {
 
     protected final static int R = 50;
+    private final static int DESCRIPTION_WIDTH = 220;
+    public boolean showDescription = true;
     protected float radius;
     protected Gainea game;
     protected Collection<MapObjectRender> stack;
@@ -33,6 +41,7 @@ public class MapObjectRender extends Actor {
     private TextureRegion chip;
     private Location location;
     private TextureRegion icon;
+    private Label infoLabel;
     private float stackHeight;
 
     public MapObjectRender(Gainea game, Skin skin, NT_BoardObject object) {
@@ -42,6 +51,13 @@ public class MapObjectRender extends Actor {
         setSize(radius * 2, radius * 2);
         init();
         icon = TextureUtils.unitIcon(game, object.icon);
+        if (StringUtils.isNotEmpty(object.description)) {
+            infoLabel = LabelUtils.markup(skin, "[DARK_GRAY]" + object.description);
+            infoLabel.setWidth(DESCRIPTION_WIDTH);
+            infoLabel.setAlignment(Align.center);
+            LabelUtils.autoWrap(infoLabel, DESCRIPTION_WIDTH);
+            infoLabel.setWidth(DESCRIPTION_WIDTH);
+        }
     }
 
     public static MapObjectRender createRender(Gainea gainea, Skin skin, NT_BoardObject object) {
@@ -114,12 +130,20 @@ public class MapObjectRender extends Actor {
         icon.flip(true, false);
     }
 
+    private boolean shouldDrawInfo() {
+        return showDescription && ((OrthographicCamera) getStage().getCamera()).zoom <= 1.5f && infoLabel != null;
+    }
+
     @Override
     public void draw(Batch batch, float parentAlpha) {
         calcRenderColor(parentAlpha);
         batch.setColor(renderColor);
         batch.draw(chip, getX() - radius, getY() - radius);
         batch.draw(icon, getX() - radius + 9, getY() - radius + 9);
+        if (shouldDrawInfo()) {
+            infoLabel.setPosition(getX() - infoLabel.getWidth() / 2, getY() - infoLabel.getHeight() - radius);
+            infoLabel.draw(batch, parentAlpha);
+        }
     }
 
     protected void calcRenderColor(float parentAlpha) {

@@ -14,6 +14,7 @@ import com.broll.gainea.net.NT_Event_FinishedGoal;
 import com.broll.gainea.net.NT_Goal;
 import com.broll.gainea.net.NT_Player;
 import com.broll.gainea.net.NT_Unit;
+import com.broll.gainea.server.core.map.impl.GaineaMap;
 import com.broll.gainea.server.init.ExpansionSetting;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -61,12 +62,14 @@ public class TestMapScreen extends Screen {
         }
         nt.objects = new NT_BoardObject[1];
         nt.objects[0] = unit();
+        nt.objects[0].description = "unit mit langer description die korrekt umgebrochen werden sollte ohne das ui zu verstopfen";
+        //  nt.objects[0].description = "unit mit kurzer description";
         nt.effects = new NT_BoardEffect[0];
         nt.round = 0;
         game.ui.initInGameUi();
+        game.state.getMap().displayRenders();
         game.state.update(nt);
         game.ui.inGameUI.show();
-        game.state.getMap().displayRenders();
         game.ui.inGameUI.updateWindows();
         NT_Event_FinishedGoal evt = new NT_Event_FinishedGoal();
         evt.goal = goal;
@@ -86,7 +89,7 @@ public class TestMapScreen extends Screen {
         u.power = (short) MathUtils.random(1, 3);
         u.health = (short) MathUtils.random(1, 5);
         u.maxHealth = u.health;
-        u.location = 5;
+        u.location = (short) game.state.getMap().getArea(GaineaMap.Areas.WEIDESTEPPE).getNumber();
         return u;
     }
 }

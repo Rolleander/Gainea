@@ -1,18 +1,25 @@
 package com.broll.gainea.server.core.objects
 
+import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.battle.BattleContext
 import com.broll.gainea.server.core.battle.FightingPower
 import com.broll.gainea.server.core.fractions.Fraction
 import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.core.player.isNeutral
 
-open class Soldier(owner: Player) : Unit(owner) {
+open class Soldier(owner: Player, var isCommander: Boolean = false) : Unit(owner) {
     var fraction: Fraction? = null
-    var isCommander = false
 
     init {
         if (!owner.isNeutral()) {
             fraction = owner.fraction
+        }
+    }
+
+    override fun init(game: Game) {
+        super.init(game)
+        if (isCommander) {
+            description = "Feldherr"
         }
     }
 
