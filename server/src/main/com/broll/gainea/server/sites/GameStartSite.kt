@@ -104,17 +104,21 @@ class GameStartSite : GameSite() {
         Log.info("placeUnit")
         val game = game
         val playerCount = playersCount
+        Log.trace("calc unit #")
         val placingRound = gameStart.startUnitsPlaced / playerCount
         val player = placingPlayer
         val locations = gameStart.playerData[player]!!.startLocations
+        Log.trace("create unit to place")
         val unitToPlace = if (placingRound == 0) {
             player.fraction.createCommander()
         } else {
             player.fraction.createSoldier()
         }
+        Log.trace("start placing")
         val text = "Setze " + unitToPlace.name + " auf einen Startpunkt"
         val actionHandlers = game.reactionHandler.actionHandlers
         val placeUnitAction = actionHandlers.getHandler(PlaceUnitAction::class.java)
+        Log.trace("placeUnitAction")
         val result = placeUnitAction.placeUnit(player, unitToPlace, locations, text)
         placedUnit(result.right)
     }
