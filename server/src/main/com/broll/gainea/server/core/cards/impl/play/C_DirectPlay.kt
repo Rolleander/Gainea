@@ -10,6 +10,7 @@ class C_DirectPlay : Card(84, "Wahl des Druiden", "Wählt eine von drei Event-Ka
     override fun play() {
         val cards = (1..OPTIONS).map { game.cardStorage.getRandomDirectlyPlayedCard() }
         val card = cards[selectHandler.selectObject("Wählt eine Event-Karte", cards.map { it.nt() })]
+        //todo card is not shown in client
         card.init(game, owner, game.newObjectId())
         card.play(game.reactionHandler.actionHandlers)
     }
