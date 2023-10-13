@@ -4,6 +4,7 @@ card ideas:
 - alle einheiten auf einen platz
 - clone unit
 
+
 event / object ideas:
 - spawn unit that attacks player units when they move to close field
 - spawn collectible that rewards soldiers
@@ -16,7 +17,13 @@ event / object ideas:
 - spawn soldier-stack that moves/attacks randomly every turn
 
 
-unbenutzte units:
+unused cards:
+81 = parade
+82 = kneeling before king
+83 = dragon duel
+85 = knight duel
+
+unused units:
 3 = dragon hunter
 6 = shadow knight
 10 = merc knight
@@ -28,7 +35,6 @@ unbenutzte units:
 33 = plate armor warrior
 35 = lone fighter
 47 = wizard
-93 = demon warrior
 95 = undead warrior
 96 = lava golem
 100 = druid witch

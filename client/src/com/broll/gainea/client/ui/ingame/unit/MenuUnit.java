@@ -40,15 +40,16 @@ public class MenuUnit extends Table {
         table.left();
         table.add(LabelUtils.info(skin, unit.name)).left().spaceBottom(5).row();
         if (unit instanceof NT_Monster) {
+            NT_Monster m = (NT_Monster) unit;
             Table stars = new Table();
             for (int i = 0; i < ((NT_Monster) unit).stars; i++) {
                 stars.add(new Image(TextureUtils.icon(game, 2))).left();
             }
-            table.add(stars).left().row();
-            if (unit.owner == NT_Unit.NO_OWNER) {
+            if (m.actionTimer != -1) {
                 String behavior = MonsterBehavior.values()[((NT_Monster) unit).behavior].getLabel();
-                table.add(LabelUtils.info(skin, behavior)).center().spaceBottom(5).row();
+                stars.add(LabelUtils.markup(skin, behavior)).spaceLeft(10);
             }
+            table.add(stars).left().spaceBottom(5).row();
         }
         Table row = new Table(skin);
         row.add(IconLabel.attack(game, unit.power)).left();

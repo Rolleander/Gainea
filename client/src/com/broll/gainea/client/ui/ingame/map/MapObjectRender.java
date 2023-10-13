@@ -37,6 +37,7 @@ public class MapObjectRender extends Actor {
     protected Collection<MapObjectRender> stack;
     protected boolean stackTop = true;
     protected Color renderColor = new Color();
+    protected float labelDisplacement = 5;
     private NT_BoardObject object;
     private TextureRegion chip;
     private Location location;
@@ -141,7 +142,7 @@ public class MapObjectRender extends Actor {
         batch.draw(chip, getX() - radius, getY() - radius);
         batch.draw(icon, getX() - radius + 9, getY() - radius + 9);
         if (shouldDrawInfo()) {
-            infoLabel.setPosition(getX() - infoLabel.getWidth() / 2, getY() - infoLabel.getHeight() - radius);
+            infoLabel.setPosition(getX() - infoLabel.getWidth() / 2, getY() + radius + labelDisplacement);
             infoLabel.draw(batch, parentAlpha);
         }
     }

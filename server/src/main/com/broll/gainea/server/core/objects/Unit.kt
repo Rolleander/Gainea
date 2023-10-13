@@ -25,7 +25,6 @@ abstract class Unit(owner: Player) : MapObject(owner) {
     private var attacked = false
     private var moved = false
     var controllable = true
-        protected set
     private var type = NT_Unit.TYPE_MALE.toInt()
     var kills = 0
         private set
@@ -173,6 +172,8 @@ abstract class Unit(owner: Player) : MapObject(owner) {
                 ", location=" + location + '\'' +
                 '}'
     }
+
+    fun rank() = power.value + health.value
 
     companion object {
         fun copy(from: Unit, to: Unit) {

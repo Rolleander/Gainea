@@ -7,6 +7,9 @@ import com.broll.gainea.server.core.objects.Soldier
 import com.broll.gainea.server.core.objects.Unit
 import com.broll.gainea.server.core.player.Player
 
+fun Game.getWeakestPlayer() =
+        activePlayers.minBy { it.goalHandler.score * 15 + it.units.sumOf { unit -> unit.rank() } }
+
 fun Game.iteratePlayers(pauseBetween: Int, consumer: (Player) -> kotlin.Unit) {
     val current = currentTurn
     val players = ArrayList(activePlayers)

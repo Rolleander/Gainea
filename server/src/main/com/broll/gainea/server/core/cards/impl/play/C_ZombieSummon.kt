@@ -16,14 +16,12 @@ class C_ZombieSummon : Card(78, "Rückkehr der Verdammten", "Ruft für die Anzah
     override fun play() {
         owner.units.toList().forEach { unit ->
             for (i in 0 until unit.kills) {
-                val zombie = Zombie()
-                zombie.owner = owner
-                game.spawn(zombie, unit.location)
+                game.spawn(Zombie(), unit.location)
             }
         }
     }
 
-    private inner class Zombie : Monster(game.neutralPlayer) {
+    private inner class Zombie : Monster(owner) {
         init {
             controllable = false
             name = "Verdammter"

@@ -12,6 +12,7 @@ import com.broll.gainea.net.NT_BoardObject;
 import com.broll.gainea.net.NT_BoardUpdate;
 import com.broll.gainea.net.NT_Event_FinishedGoal;
 import com.broll.gainea.net.NT_Goal;
+import com.broll.gainea.net.NT_Monster;
 import com.broll.gainea.net.NT_Player;
 import com.broll.gainea.net.NT_Unit;
 import com.broll.gainea.server.core.map.impl.GaineaMap;
@@ -63,7 +64,7 @@ public class TestMapScreen extends Screen {
         nt.objects = new NT_BoardObject[1];
         nt.objects[0] = unit();
         nt.objects[0].description = "unit mit langer description die korrekt umgebrochen werden sollte ohne das ui zu verstopfen";
-        //  nt.objects[0].description = "unit mit kurzer description";
+        // nt.objects[0].description = "unit mit kurzer description";
         nt.effects = new NT_BoardEffect[0];
         nt.round = 0;
         game.ui.initInGameUi();
@@ -82,7 +83,8 @@ public class TestMapScreen extends Screen {
     }
 
     private NT_Unit unit() {
-        NT_Unit u = new NT_Unit();
+        NT_Monster u = new NT_Monster();
+        u.stars = 4;
         u.id = (short) idCounter.incrementAndGet();
         u.icon = (short) MathUtils.random(0, 100);
         u.name = "Testfighter";

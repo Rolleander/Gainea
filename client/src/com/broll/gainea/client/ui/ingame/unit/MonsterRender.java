@@ -20,6 +20,7 @@ public class MonsterRender extends UnitRender {
 
     public MonsterRender(Gainea game, Skin skin, NT_Monster unit) {
         super(game, skin, unit);
+        this.labelDisplacement = 25;
         this.timerStyle = new Label.LabelStyle(blackStyle.font, Color.LIGHT_GRAY);
         int stars = unit.stars;
         setHeight(radius * 2 + 48);
