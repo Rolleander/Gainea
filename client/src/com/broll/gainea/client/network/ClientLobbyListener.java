@@ -4,7 +4,6 @@ import com.broll.gainea.Gainea;
 import com.broll.gainea.client.ui.Screen;
 import com.broll.gainea.client.ui.screens.LobbyScreen;
 import com.broll.gainea.client.ui.screens.StartScreen;
-import com.broll.networklib.client.auth.LastConnection;
 import com.broll.networklib.client.impl.GameLobby;
 import com.broll.networklib.client.impl.ILobbyUpdateListener;
 import com.broll.networklib.client.impl.LobbyPlayer;
@@ -34,14 +33,12 @@ public class ClientLobbyListener implements ILobbyUpdateListener {
 
     @Override
     public void kickedFromLobby(GameLobby lobby) {
-        LastConnection.clear();
         backToTitle();
         game.ui.showErrorDialog("Kicked from lobby");
     }
 
     @Override
     public void closed(GameLobby lobby) {
-        LastConnection.clear();
         backToTitle();
         game.ui.showErrorDialog("Lobby closed");
     }

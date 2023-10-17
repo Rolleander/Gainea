@@ -166,6 +166,9 @@ public class GameEventSite extends AbstractGameSite {
                 logWindow().logCardEvent(owner.name + " hat [VIOLET]" + card.card.title + "[] ausgespielt: [GRAY]" + card.card.text + "[]");
             }
         }
+        if (card.player == -1 || !card.card.playable) {
+            logWindow().logCardEvent("Event-Karte [VIOLET]" + card.card.title + "[] wurde aktiviert: [GRAY]" + card.card.text + "[]");
+        }
         game.ui.inGameUI.updateWindows();
     }
 

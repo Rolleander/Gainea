@@ -45,7 +45,7 @@ fun Game.sendUpdate(update: Any) {
 fun Game.getAllUnits() = listOf(objects.getUnits(), activePlayers.flatMap { it.units }).flatten()
 
 
-fun List<MapObject>.getUnits() = filterIsInstance(Unit::class.java)
+fun List<MapObject>.getUnits() = filterIsInstance<Unit>()
 
 
 fun Game.remove(target: MapObject): Boolean {

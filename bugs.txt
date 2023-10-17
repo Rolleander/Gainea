@@ -7,8 +7,5 @@ spion karte wurd zu kurz angezeigt  ->  retest
 
 karten steal update client ...  -> retest
 
-event cards im log
+bot hat wilderer armee angreifen ohne das monster davon...??
 
-bot hat wilderer armee angreifen ohne das monster davon
-
-LastCOnnection file wird nicht geschrieben oder zu früh gelöscht manchmal?

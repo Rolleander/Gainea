@@ -157,12 +157,7 @@ object UnitControl {
     }
 
     fun Game.conquer(units: List<Unit>, target: Location) {
-        val owner = units.owner()
-        val targetUnits = if (owner.isNeutral()) {
-            target.units
-        } else {
-            owner.getHostileArmy(target)
-        }
+        val targetUnits = units.owner().getHostileArmy(target)
         if (targetUnits.isEmpty()) {
             move(units, target)
         } else {
