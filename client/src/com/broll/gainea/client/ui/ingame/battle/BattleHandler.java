@@ -103,9 +103,9 @@ public class BattleHandler {
                     dialog.pad(10, 20, 10, 20);
                     dialog.defaults().space(20);
                     dialog.add(LabelUtils.label(game.ui.skin, "Eure Truppe erwartet Befehle!")).row();
-                    dialog.add(TableUtils.textButton(game.ui.skin, "Anrgiff fortfahren", () -> sendBattleResponse(dialog, true))).left();
-                    dialog.add(TableUtils.textButton(game.ui.skin, "Rückzug", () -> sendBattleResponse(dialog, false))).right();
-                    Popup.show(game, dialog);
+                    Popup popup = Popup.show(game, dialog);
+                    dialog.add(TableUtils.textButton(game.ui.skin, "Anrgiff fortfahren", () -> sendBattleResponse(popup, true))).left();
+                    dialog.add(TableUtils.textButton(game.ui.skin, "Rückzug", () -> sendBattleResponse(popup, false))).right();
                 }
             } else {
                 //battle done
@@ -136,7 +136,7 @@ public class BattleHandler {
         }
     }
 
-    private void sendBattleResponse(Table dialog, boolean continueFight) {
+    private void sendBattleResponse(Popup dialog, boolean continueFight) {
         dialog.remove();
         NT_Battle_Reaction reaction = new NT_Battle_Reaction();
         reaction.keepAttacking = continueFight;

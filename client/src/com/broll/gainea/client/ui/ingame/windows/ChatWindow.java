@@ -22,9 +22,7 @@ public class ChatWindow extends MenuWindow {
 
 
     private void newMessages(int count) {
-        if (!isVisible()) {
-            newMessagesListener.accept(count);
-        }
+        newMessagesListener.accept(count);
     }
 
     @Override

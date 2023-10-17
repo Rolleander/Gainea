@@ -2,7 +2,6 @@ package com.broll.gainea.client.ui.components;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.broll.gainea.Gainea;
@@ -25,11 +24,15 @@ public class Popup extends Table {
         add(content);
     }
 
-    public static Cell<Actor> info(Gainea game, Actor content) {
-        return game.ui.inGameUI.showCenterOverlay(new Popup(game.ui.skin, content, MESSAGE_DURATION)).expandY().padTop(100).top();
+    public static Popup info(Gainea game, Actor content) {
+        Popup popup = new Popup(game.ui.skin, content, MESSAGE_DURATION);
+        game.ui.inGameUI.showCenterOverlay(popup).expandY().padTop(100).top();
+        return popup;
     }
 
-    public static Cell<Actor> show(Gainea game, Actor content) {
-        return game.ui.inGameUI.showCenterOverlay(new Popup(game.ui.skin, content)).expandY().padTop(100).top();
+    public static Popup show(Gainea game, Actor content) {
+        Popup popup = new Popup(game.ui.skin, content);
+        game.ui.inGameUI.showCenterOverlay(popup).expandY().padTop(100).top();
+        return popup;
     }
 }

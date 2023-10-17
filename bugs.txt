@@ -1,8 +1,6 @@
 
 fraktionsauswahl hängt?
 
-chatwindow reset new message on click
-
 spion karte wurd zu kurz angezeigt  ->  retest
 
 karten steal update client ...  -> retest
