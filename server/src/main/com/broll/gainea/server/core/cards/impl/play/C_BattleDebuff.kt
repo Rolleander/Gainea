@@ -20,11 +20,12 @@ class C_BattleDebuff : Card(53, "Pfeilhagel", "-1 Zahl für die feindliche Armee
                 rollManipulator.register { attackerRolls: RollResult, defenderRolls: RollResult ->
                     if (context.isAttacker(owner)) {
                         defenderRolls.plusNumber(-1)
-                    } else {
+                        unregister()
+                    } else if (context.isDefender(owner)) {
                         attackerRolls.plusNumber(-1)
+                        unregister()
                     }
                 }
-                unregister()
             }
         })
     }

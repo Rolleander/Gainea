@@ -48,7 +48,7 @@ abstract class Fraction(val type: FractionType) : GameUpdateReceiverAdapter() {
         owner.cardHandler.drawRandomCard()
     }
 
-    fun isHostile(unit: Unit): Boolean {
+    open fun isHostile(unit: Unit): Boolean {
         return unit.owner !== owner
     }
 

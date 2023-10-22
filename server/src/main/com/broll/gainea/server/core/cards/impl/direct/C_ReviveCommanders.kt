@@ -11,7 +11,7 @@ class C_ReviveCommanders : DirectlyPlayedCard(55, "Rückkehr der Legenden", "Gef
     }
 
     override fun play() {
-        game.activePlayers.filter { it.isCommanderAlive() }.forEach { player ->
+        game.activePlayers.filter { !it.isCommanderAlive() }.forEach { player ->
             val location = player.controlledLocations.randomOrNull()
                     ?: game.map.allAreas.getRandomFree()
             if (location != null) {

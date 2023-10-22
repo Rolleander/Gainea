@@ -24,7 +24,7 @@ class RollResult(context: BattleContext, units: List<Unit>) {
     }
 
     fun plusNumber(number: Int) {
-        rolls.forEach { it.value += number }
+        rolls.forEach { it.value += number; it.plus += number }
     }
 
     fun plusNumber(number: Int, affectDiceCount: Int) {

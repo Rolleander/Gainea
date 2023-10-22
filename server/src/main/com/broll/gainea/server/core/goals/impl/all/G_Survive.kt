@@ -14,6 +14,7 @@ class G_Survive : RoundGoal(GoalDifficulty.EASY, "Verliere für " + TARGET + " R
     }
 
     override fun check() {
+        //todo stimmt nicht?
         progressRound()
     }
 

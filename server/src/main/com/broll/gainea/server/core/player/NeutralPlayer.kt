@@ -6,6 +6,7 @@ import com.broll.gainea.server.core.fractions.FractionDescription
 import com.broll.gainea.server.core.fractions.FractionType.DRUIDS
 import com.broll.gainea.server.core.fractions.UnitDescription
 import com.broll.gainea.server.core.objects.Soldier
+import com.broll.gainea.server.core.objects.Unit
 import com.broll.gainea.server.init.PlayerData
 
 class NeutralPlayer(game: Game) : Player(game, NeutralFraction, NeutralServerPlayer) {
@@ -17,6 +18,8 @@ class NeutralPlayer(game: Game) : Player(game, NeutralFraction, NeutralServerPla
 fun Player.isNeutral() = this is NeutralPlayer
 
 object NeutralFraction : Fraction(type = DRUIDS) {
+
+    override fun isHostile(unit: Unit): Boolean = true
 
     override fun description(): FractionDescription {
         val dummyDescription = UnitDescription("", 0, 0, 0)
@@ -30,6 +33,7 @@ object NeutralFraction : Fraction(type = DRUIDS) {
     override fun createCommander(): Soldier {
         throw RuntimeException("invalid for neutral")
     }
+
 
 }
 
