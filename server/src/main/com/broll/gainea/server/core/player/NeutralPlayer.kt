@@ -8,7 +8,11 @@ import com.broll.gainea.server.core.fractions.UnitDescription
 import com.broll.gainea.server.core.objects.Soldier
 import com.broll.gainea.server.init.PlayerData
 
-class NeutralPlayer(game: Game) : Player(game, NeutralFraction, NeutralServerPlayer)
+class NeutralPlayer(game: Game) : Player(game, NeutralFraction, NeutralServerPlayer) {
+    init {
+        fraction.init(game, this)
+    }
+}
 
 fun Player.isNeutral() = this is NeutralPlayer
 
