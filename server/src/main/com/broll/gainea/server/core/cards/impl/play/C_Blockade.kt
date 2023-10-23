@@ -5,6 +5,7 @@ import com.broll.gainea.server.core.objects.Unit
 import com.broll.gainea.server.core.objects.buffs.BuffType
 import com.broll.gainea.server.core.objects.buffs.IntBuff
 import com.broll.gainea.server.core.objects.buffs.roundsActive
+import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.core.utils.UnitControl.spawn
 
 class C_Blockade : Card(54, "Burgfried", "Platziert eine neutrale Befestigung (3/10) auf ein beliebiges freies Feld. Sie zerfällt nach " + ROUNDS + " Runden.") {
@@ -37,9 +38,9 @@ class C_Blockade : Card(54, "Burgfried", "Platziert eine neutrale Befestigung (3
             description = "Verbleibende Runden: ${ROUNDS - buff.roundsActive(game)}"
         }
 
-        override fun turnStart() {
+        override fun turnStarted(player: Player) {
+            super.turnStarted(player)
             updateDescription()
-            super.turnStart()
         }
     }
 

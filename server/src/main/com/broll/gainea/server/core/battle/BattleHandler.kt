@@ -26,13 +26,15 @@ class BattleHandler(private val game: Game, private val reactionResult: Reaction
     private lateinit var rollManipulator: RollManipulator
     private lateinit var context: BattleContext
     private var allowRetreat = true
+    private var grantRewards = true
     fun reset() {
         isBattleActive = false
     }
 
-    fun startBattle(attackers: List<Unit>, defenders: List<Unit>, allowRetreat: Boolean = true) {
+    fun startBattle(attackers: List<Unit>, defenders: List<Unit>, allowRetreat: Boolean = true, grantRewards: Boolean = true) {
         if (!isBattleActive) {
             this.allowRetreat = allowRetreat
+            this.grantRewards = grantRewards
             context = BattleContext(attackers.toList(), defenders.toList())
             rollManipulator = RollManipulator()
             if (context.hasSurvivingAttackers() && context.hasSurvivingDefenders()) {
@@ -199,8 +201,10 @@ class BattleHandler(private val game: Game, private val reactionResult: Reaction
             game.move(result.aliveAttackers, result.location)
         }
         //find dead monsters to give killing player rewards
-        rewardKilledMonsters(result.attackingPlayer, result.killedDefenders)
-        result.getNonNeutralDefenders().forEach { rewardKilledMonsters(it, result.killedAttackers) }
+        if (grantRewards) {
+            rewardKilledMonsters(result.attackingPlayer, result.killedDefenders)
+            result.getNonNeutralDefenders().forEach { rewardKilledMonsters(it, result.killedAttackers) }
+        }
     }
 
     private fun rewardKilledMonsters(killer: Player, units: List<Unit>) {

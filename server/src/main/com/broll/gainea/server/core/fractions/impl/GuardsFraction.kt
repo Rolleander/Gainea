@@ -55,7 +55,7 @@ class GuardsFraction : Fraction(FractionType.GUARDS) {
     private class GuardSoldier(owner: Player) : Soldier(owner) {
         private var buff: IntBuff? = null
         private var lastLocation: Location? = null
-        override fun turnStart() {
+        override fun prepareForTurnStart() {
             if (location === lastLocation) {
                 buff = IntBuff(BuffType.ADD, 1)
                 numberPlus.addBuff(buff!!)
@@ -63,7 +63,7 @@ class GuardsFraction : Fraction(FractionType.GUARDS) {
                 lastLocation = location
                 clearBuff()
             }
-            super.turnStart()
+            super.prepareForTurnStart()
         }
 
         private fun clearBuff() {

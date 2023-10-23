@@ -72,7 +72,7 @@ class ReactionResultHandler(private val game: Game, private val lobby: ServerLob
         //do fraction turn prepare
         fraction!!.prepareTurn(actionsHandler)
         //send turn actions to player
-        player.units.forEach { it.turnStart() }
+        player.units.forEach { it.prepareForTurnStart() }
         val turn = game.turnBuilder.build(player)
         Log.trace("Send optional turn actions (" + turn.actions.size + ") to player " + player)
         player.serverPlayer.sendTCP(turn)

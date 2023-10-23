@@ -25,6 +25,7 @@ class C_ZombieSummon : Card(78, "Rückkehr der Verdammten", "Ruft für die Anzah
         init {
             controllable = false
             name = "Verdammter"
+            description = "Unkontrollierbar"
             behavior = MonsterBehavior.RANDOM
             activity = MonsterActivity.OFTEN
             setStats(1, 1)

@@ -6,33 +6,23 @@ card ideas:
 
 
 event / object ideas:
-- spawn unit that attacks player units when they move to close field
 - spawn collectible that rewards soldiers
 - spawn collectible that rewards a card
 - spawn collectible that rewards a buff
 - spawn random moving object that deals damage to all units it walks upon
-- spawn unit that rewards an additional goal on kill
 - spawn object that rewards 1 point to player that holds the area for 3 rounds
-- spawn unit that rewards spells (specific cards)
-- spawn soldier-stack that moves/attacks randomly every turn
 
 
 unused cards:
 81 = parade
 82 = kneeling before king
-83 = dragon duel
 85 = knight duel
 
 unused units:
-3 = dragon hunter
-6 = shadow knight
 10 = merc knight
 18 = shadow fighter
 22 = shield wielder
-24 = white rider
-25 = king
 28 = mace wielder
-33 = plate armor warrior
 35 = lone fighter
 47 = wizard
 95 = undead warrior

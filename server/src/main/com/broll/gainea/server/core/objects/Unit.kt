@@ -36,8 +36,8 @@ abstract class Unit(owner: Player) : MapObject(owner) {
         power.setMinValue(0)
     }
 
-    override fun turnStart() {
-        super.turnStart()
+    override fun prepareForTurnStart() {
+        super.prepareForTurnStart()
         justSpawned = false
         attackCount = 0
         moved = false

@@ -26,7 +26,7 @@ abstract class MapObject(var owner: Player) : GameUpdateReceiverAdapter() {
         this.game = game
     }
 
-    open fun turnStart() {
+    open fun prepareForTurnStart() {
         moveCount = 0
     }
 

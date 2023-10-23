@@ -21,7 +21,7 @@ class C_BattleSummon : Card(66, "Rachedämon", "Beschwört einen Rachedämon (5/
         demon.description = "Stirbt in einer Runde"
         val buff = IntBuff(BuffType.ADD, 3)
         demon.addHealthBuff(buff)
-        demon.turnStart()
+        demon.prepareForTurnStart()
         placeUnitHandler.placeUnit(owner, demon, locations.toList(), "Wählt einen Ort für die Beschwörung")
         game.buffProcessor.timeoutBuff(buff, 1)
     }

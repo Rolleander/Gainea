@@ -74,7 +74,7 @@ Fällt der Eiskoloss kehrt Arn in eruem nächsten Zug zurück""")
         override fun moved(fromPlayerAction: Boolean) {
             super.moved(fromPlayerAction)
             if (location.isAreaType(AreaType.LAKE)) {
-                turnStart()
+                prepareForTurnStart()
             }
         }
     }
@@ -101,7 +101,7 @@ Fällt der Eiskoloss kehrt Arn in eruem nächsten Zug zurück""")
         override fun moved(fromPlayerAction: Boolean) {
             super.moved(fromPlayerAction)
             if (location.isAreaType(AreaType.LAKE)) {
-                turnStart()
+                prepareForTurnStart()
             }
         }
 

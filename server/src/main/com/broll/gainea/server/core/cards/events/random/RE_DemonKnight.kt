@@ -16,6 +16,7 @@ class RE_DemonKnight : RandomEvent() {
             demon.controllable = false
             demon.behavior = MonsterBehavior.AGGRESSIVE
             demon.activity = MonsterActivity.OFTEN
+            demon.description = "Unkontrollierbar"
             demon.setStats(4, 4)
             game.spawn(demon, area)
         }
