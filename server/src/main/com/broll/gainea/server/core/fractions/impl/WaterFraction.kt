@@ -71,9 +71,8 @@ Fällt der Eiskoloss kehrt Arn in eruem nächsten Zug zurück""")
     }
 
     private open class WaterSoldier(owner: Player) : Soldier(owner) {
-        override fun moved() {
-            //todo broken?
-            super.moved()
+        override fun moved(fromPlayerAction: Boolean) {
+            super.moved(fromPlayerAction)
             if (location.isAreaType(AreaType.LAKE)) {
                 turnStart()
             }
@@ -99,8 +98,8 @@ Fällt der Eiskoloss kehrt Arn in eruem nächsten Zug zurück""")
             return power
         }
 
-        override fun moved() {
-            super.moved()
+        override fun moved(fromPlayerAction: Boolean) {
+            super.moved(fromPlayerAction)
             if (location.isAreaType(AreaType.LAKE)) {
                 turnStart()
             }

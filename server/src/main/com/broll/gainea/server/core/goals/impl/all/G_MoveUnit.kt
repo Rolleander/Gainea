@@ -52,7 +52,7 @@ open class G_MoveUnit(difficulty: GoalDifficulty = GoalDifficulty.EASY, private 
         locations.add(from)
         locations.add(to)
         text = "Bewege eine Einheit von " + from.name + " nach " + to.name
-        setProgressionGoal(distance)
+        progressionGoal = distance
         return super.init(game, player)
     }
 
@@ -67,7 +67,7 @@ open class G_MoveUnit(difficulty: GoalDifficulty = GoalDifficulty.EASY, private 
                 it.getWalkingDistance(it.location, to) ?: distance
             }
             if (closestDistance != null) {
-                updateProgression(distance - closestDistance)
+                updateProgression(Math.max(0, distance - closestDistance))
             } else {
                 updateProgression(0)
             }

@@ -8,7 +8,7 @@ import com.broll.gainea.server.core.map.Ship
 open class G_OccupyShips(difficulty: GoalDifficulty = GoalDifficulty.EASY, private val ships: Int = 5) :
         CustomOccupyGoal(difficulty, "Erobere $ships Schiffe") {
     init {
-        setProgressionGoal(ships)
+        progressionGoal = ships
     }
 
     override fun check() {

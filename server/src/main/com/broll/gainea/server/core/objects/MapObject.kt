@@ -33,10 +33,11 @@ abstract class MapObject(var owner: Player) : GameUpdateReceiverAdapter() {
     open fun hasRemainingMove() = moveCount < movesPerTurn.value
 
 
-    open fun moved() {
-        moveCount++
+    open fun moved(fromPlayerAction: Boolean = false) {
+        if (fromPlayerAction) {
+            moveCount++
+        }
     }
-
 
     open fun canMoveTo(to: Location): Boolean {
         if (!to.traversable) {

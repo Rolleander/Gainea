@@ -7,7 +7,7 @@ abstract class RoundGoal(difficulty: GoalDifficulty, text: String, private val r
     private var turns = 0
 
     init {
-        setProgressionGoal(roundTarget)
+        progressionGoal = roundTarget
     }
 
     override fun turnStarted(player: Player) {
@@ -22,7 +22,7 @@ abstract class RoundGoal(difficulty: GoalDifficulty, text: String, private val r
     protected fun progressRound() {
         turns = 0
         rounds++
-        updateProgression(roundTarget)
+        updateProgression(rounds)
         if (rounds >= roundTarget) {
             success()
         }
@@ -31,6 +31,6 @@ abstract class RoundGoal(difficulty: GoalDifficulty, text: String, private val r
     protected fun resetRounds() {
         turns = 0
         rounds = 0
-        updateProgression(roundTarget)
+        updateProgression(rounds)
     }
 }

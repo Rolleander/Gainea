@@ -33,7 +33,7 @@ abstract class OccupyGoal(difficulty: GoalDifficulty, text: String) : Goal(diffi
         }
         //set expansion restrictions by required locations
         setExpansionRestriction(*ExpansionType.entries.filter { hasLocationsOf(it) }.toTypedArray())
-        setProgressionGoal(locations.size)
+        progressionGoal = locations.size
         return true
     }
 

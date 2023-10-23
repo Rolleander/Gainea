@@ -19,7 +19,7 @@ abstract class Goal(var difficulty: GoalDifficulty, var text: String) : GameUpda
     var id = 0
         private set
     private var progression = 0
-    private var progressionGoal = NT_Goal.NO_PROGRESSION_GOAL
+    protected var progressionGoal = NT_Goal.NO_PROGRESSION_GOAL
     private val requiredExpansions = mutableListOf<ExpansionType>()
     protected lateinit var game: Game
     protected lateinit var player: Player
@@ -30,11 +30,7 @@ abstract class Goal(var difficulty: GoalDifficulty, var text: String) : GameUpda
         id = game.newObjectId()
         return validForGame()
     }
-
-    protected fun setProgressionGoal(goal: Int) {
-        progressionGoal = goal
-    }
-
+    
     protected fun setCustomRestrictionInfo(restrictionInfo: String) {
         this.restrictionInfo = restrictionInfo
     }

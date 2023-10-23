@@ -63,12 +63,12 @@ abstract class Unit(owner: Player) : MapObject(owner) {
             FightingPower(this).changeNumberPlus(numberPlus.value)
 
 
-    override fun moved() {
-        super.moved()
+    override fun moved(fromPlayerAction: Boolean) {
+        super.moved(fromPlayerAction)
         moved = true
     }
 
-    fun attacked() {
+    fun attacked(fromPlayerAction: Boolean = false) {
         attackCount++
         attacked = true
     }

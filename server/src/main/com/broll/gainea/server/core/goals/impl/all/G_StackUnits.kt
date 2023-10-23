@@ -11,6 +11,7 @@ class G_StackUnits : OccupyGoal(GoalDifficulty.EASY, "") {
 
     init {
         autoUpdateProgressions = false
+        progressionGoal = COUNT
     }
 
     override fun initOccupations() {

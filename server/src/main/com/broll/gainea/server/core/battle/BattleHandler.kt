@@ -99,7 +99,7 @@ class BattleHandler(private val game: Game, private val reactionResult: Reaction
     private fun rollFight(): FightResult {
         val attackerRolls = RollResult(context, context.aliveAttackers)
         val defenderRolls = RollResult(context, context.aliveDefenders)
-        rollManipulator.roundStarts(attackerRolls, defenderRolls)
+        rollManipulator.roundStarts(context, attackerRolls, defenderRolls)
         return Battle(context.aliveAttackers, context.aliveDefenders, attackerRolls, defenderRolls).fight()
     }
 

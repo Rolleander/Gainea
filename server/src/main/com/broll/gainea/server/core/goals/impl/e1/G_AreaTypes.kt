@@ -12,7 +12,7 @@ import com.broll.gainea.server.core.utils.getControlledLocationsIn
 class G_AreaTypes : CustomOccupyGoal(GoalDifficulty.MEDIUM, "Erobere zwei beliebige Steppen, Wüsten, Meere und Berge") {
     init {
         setExpansionRestriction(ExpansionType.GAINEA)
-        setProgressionGoal(8)
+        progressionGoal = 8
     }
 
     override fun check() {

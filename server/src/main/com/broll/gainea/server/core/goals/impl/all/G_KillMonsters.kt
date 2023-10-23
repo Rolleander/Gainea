@@ -11,7 +11,7 @@ open class G_KillMonsters(difficulty: GoalDifficulty = GoalDifficulty.EASY, priv
     private var stars = 0
 
     init {
-        setProgressionGoal(starsTarget)
+        progressionGoal = starsTarget
     }
 
     override fun earnedStars(player: Player, stars: Int) {

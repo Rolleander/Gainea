@@ -33,10 +33,11 @@ object UnitControl {
             move(Lists.newArrayList(unit), location)
 
 
-    fun Game.move(units: List<MapObject>, location: Location) {
+    fun Game.move(units: List<MapObject>, location: Location, fromPlayerAction: Boolean = false) {
         if (units.isEmpty()) return
         Log.trace("UnitControl: move units [" + units.size + "] to " + location)
         units.forEach { it.place(location) }
+        units.forEach { it.moved(fromPlayerAction) }
         val movedObject = NT_Event_MovedObject()
         movedObject.objects = units.map { it.nt() }.toTypedArray()
         sendUpdate(movedObject)

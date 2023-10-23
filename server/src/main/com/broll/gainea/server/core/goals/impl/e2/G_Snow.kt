@@ -11,7 +11,7 @@ import com.broll.gainea.server.core.utils.isAreaType
 class G_Snow : CustomOccupyGoal(GoalDifficulty.EASY, "Erobere " + COUNT + " Schneegebiete") {
     init {
         setExpansionRestriction(ExpansionType.ICELANDS)
-        setProgressionGoal(COUNT)
+        progressionGoal = COUNT
     }
 
     override fun check() {

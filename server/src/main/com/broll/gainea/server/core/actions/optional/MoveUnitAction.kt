@@ -38,8 +38,7 @@ class MoveUnitAction : AbstractActionHandler<NT_Action_Move, MoveUnitAction.Cont
             context.unitsToMove.removeAll(selectedUnits)
             //perform move
             if (selectedUnits.isNotEmpty()) {
-                selectedUnits.forEach { it.moved() }
-                game.move(selectedUnits, context.location)
+                game.move(selectedUnits, context.location, true)
             }
         }
     }

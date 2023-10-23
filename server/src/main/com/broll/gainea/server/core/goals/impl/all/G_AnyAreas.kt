@@ -8,7 +8,7 @@ import com.broll.gainea.server.core.map.Area
 open class G_AnyAreas(difficulty: GoalDifficulty = GoalDifficulty.EASY, val count: Int = 7) : CustomOccupyGoal(difficulty, "Besetze $count beliebige Gebiete") {
 
     init {
-        setProgressionGoal(count)
+        progressionGoal = count
     }
 
     override fun check() {

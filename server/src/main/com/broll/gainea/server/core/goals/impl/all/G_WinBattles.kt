@@ -9,7 +9,7 @@ open class G_WinBattles(difficulty: GoalDifficulty = GoalDifficulty.MEDIUM, priv
     private var wins = 0
 
     init {
-        setProgressionGoal(winTarget)
+        progressionGoal = winTarget
     }
 
     override fun battleResult(result: BattleResult) {

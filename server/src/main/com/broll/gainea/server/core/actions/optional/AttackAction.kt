@@ -35,7 +35,7 @@ class AttackAction : AbstractActionHandler<NT_Action_Attack, AttackAction.Contex
             }
             context.attackers.removeAll(selectedAttackers)
             if (selectedAttackers.isNotEmpty()) {
-                selectedAttackers.forEach { it.attacked() }
+                selectedAttackers.forEach { it.attacked(true) }
                 startFight(selectedAttackers, context.location)
             }
         }

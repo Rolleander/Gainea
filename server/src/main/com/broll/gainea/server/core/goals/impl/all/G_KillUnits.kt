@@ -11,7 +11,7 @@ open class G_KillUnits(difficulty: GoalDifficulty = GoalDifficulty.EASY, private
     private var kills = 0
 
     init {
-        setProgressionGoal(killTarget)
+        progressionGoal = killTarget
     }
 
     override fun battleResult(result: BattleResult) {
@@ -23,7 +23,7 @@ open class G_KillUnits(difficulty: GoalDifficulty = GoalDifficulty.EASY, private
     }
 
     override fun check() {
-        updateProgression(killTarget)
+        updateProgression(kills)
         if (kills >= killTarget) {
             success()
         }

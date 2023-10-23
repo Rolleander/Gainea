@@ -7,7 +7,7 @@ import com.broll.gainea.server.core.map.Ship
 
 class G_Spread : CustomOccupyGoal(GoalDifficulty.MEDIUM, "Kontrolliere Einheiten auf " + COUNT + " verschiedenen Landmassen") {
     init {
-        setProgressionGoal(COUNT)
+        progressionGoal = COUNT
     }
 
     override fun check() {
