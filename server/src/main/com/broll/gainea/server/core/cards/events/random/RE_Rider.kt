@@ -10,7 +10,7 @@ import com.broll.gainea.server.core.utils.UnitControl.spawn
 
 class RE_Rider : RandomEvent() {
     override fun run(game: Game) {
-        game.map.allContinents.flatMap { it.areas }.filter { it.free }.randomOrNull()?.let { area ->
+        game.freeContinentArea { area ->
             val rider = object : Soldier(game.neutralPlayer) {
                 override fun turnStarted(player: Player) {
                     location.connectedLocations.filter { it !is Ship }.randomOrNull()?.let {
@@ -18,8 +18,8 @@ class RE_Rider : RandomEvent() {
                     }
                 }
             }
-            rider.description = "Erobert in jedem Zug ein benachbartes Gebiet"
-            rider.setStats(5, 3)
+            rider.description = "Erobert jeden Zug ein benachbartes Gebiet"
+            rider.setStats(5, 4)
             rider.icon = 24
             rider.name = "Der weisse Reiter"
             game.spawn(rider, area)

@@ -6,12 +6,7 @@ card ideas:
 
 
 event / object ideas:
-- spawn collectible that rewards soldiers
-- spawn collectible that rewards a card
-- spawn collectible that rewards a buff
 - spawn random moving object that deals damage to all units it walks upon
-- spawn object that rewards 1 point to player that holds the area for 3 rounds
-
 
 unused cards:
 81 = parade

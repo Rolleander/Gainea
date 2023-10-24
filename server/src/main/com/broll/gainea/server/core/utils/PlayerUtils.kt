@@ -6,6 +6,7 @@ import com.broll.gainea.server.core.objects.MapObject
 import com.broll.gainea.server.core.objects.Soldier
 import com.broll.gainea.server.core.objects.Unit
 import com.broll.gainea.server.core.player.Player
+import com.broll.gainea.server.core.player.isNeutral
 
 fun Game.getWeakestPlayer() =
         activePlayers.minBy { it.goalHandler.score * 15 + it.units.sumOf { unit -> unit.rank() } }
@@ -45,5 +46,5 @@ fun Player.hasHostileArmy(location: Location) = getHostileArmy(location).isNotEm
 fun Game.getEnemyLocations(player: Player) =
         getOtherPlayers(player).flatMap { it.controlledLocations }.filter { player.hasHostileArmy(it) }
 
-fun List<Unit>.owner() = first().owner
+fun List<Unit>.owner() = find { !it.owner.isNeutral() }?.owner ?: first().owner
 
