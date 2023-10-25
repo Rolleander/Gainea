@@ -17,20 +17,21 @@ class RE_ShadowKnight : RandomEvent() {
                     game.spawn(knight, area)
                 }
     }
-}
 
-private class ShadowKnight(owner: Player) : Soldier(owner) {
-    init {
-        name = "Schattenlord"
-        icon = 6
-        description = "Greift Einheiten von Spielern an, die sich auf benachbarte Felder bewegen"
-        setStats(6, 4)
-    }
+    private class ShadowKnight(owner: Player) : Soldier(owner) {
+        init {
+            name = "Schattenlord"
+            icon = 6
+            description = "Greift Einheiten von Spielern an, die sich auf benachbarte Felder bewegen"
+            setStats(6, 4)
+        }
 
-    override fun moved(units: List<MapObject>, location: Location) {
-        if (location.connectedLocations.contains(this.location) && !units.contains(this)
-                && units.any { !it.owner.isNeutral() }) {
-            game.battleHandler.startBattle(listOf(this), location.units.filter { !it.owner.isNeutral() });
+        override fun moved(units: List<MapObject>, location: Location) {
+            if (location.connectedLocations.contains(this.location) && !units.contains(this)
+                    && units.any { !it.owner.isNeutral() }) {
+                game.battleHandler.startBattle(listOf(this), location.units.filter { !it.owner.isNeutral() });
+            }
         }
     }
 }
+
