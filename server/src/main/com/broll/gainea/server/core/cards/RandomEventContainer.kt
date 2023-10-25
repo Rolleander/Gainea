@@ -2,6 +2,8 @@ package com.broll.gainea.server.core.cards
 
 import com.broll.gainea.misc.PackageLoader
 import com.broll.gainea.server.core.Game
+import com.broll.gainea.server.core.utils.ProcessingUtils
+import com.broll.gainea.server.core.utils.displayMessage
 
 class RandomEventContainer {
     private val randomEventLoader: PackageLoader<RandomEvent> = PackageLoader(RandomEvent::class.java, PACKAGE_PATH)
@@ -16,6 +18,8 @@ class RandomEventContainer {
     }
 
     fun run(game: Game) {
+        game.displayMessage("Zufallsereignis!")
+        ProcessingUtils.pause(1000)
         getRandomEvent().run(game)
     }
 
