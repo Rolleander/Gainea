@@ -11,7 +11,10 @@ import com.broll.gainea.server.core.utils.UnitControl.spawn
 
 class RE_ShadowKnight : RandomEvent() {
     override fun run(game: Game) {
-        game.map.allAreas.filter { it.free && it.connectedLocations.all { n -> n.free } }
+        game.map.allAreas.filter {
+            it.free && it.connectedLocations.all { n -> n.free }
+                    && it.connectedLocations.size >= 2
+        }
                 .randomOrNull()?.let { area ->
                     val knight = ShadowKnight(game.neutralPlayer)
                     game.spawn(knight, area)

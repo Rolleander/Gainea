@@ -5,6 +5,8 @@ spion karte wurd zu kurz angezeigt  ->  retest
 
 karten steal update client ...  -> retest
 
-bot hat wilderer armee angreifen ohne das monster davon...??
+bot hat wilderer armee angreifen ohne das monster davon...??  -> 2 mal passiert
 
 render für collectibles
+
+kampf wurde nicht gestartet, nur move

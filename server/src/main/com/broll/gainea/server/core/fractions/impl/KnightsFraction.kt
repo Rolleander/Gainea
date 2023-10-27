@@ -24,6 +24,7 @@ class KnightsFraction : Fraction(FractionType.KNIGHTS) {
     }
 
     override fun calcFightingPower(soldier: Soldier, context: BattleContext): FightingPower {
+        //todo only for kreuzritter
         val power = super.calcFightingPower(soldier, context)
         val army = context.getFightingArmy(soldier)
         val opponents = context.getOpposingFightingArmy(soldier)

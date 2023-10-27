@@ -17,7 +17,7 @@ class RE_King : RandomEvent() {
                     }
                 }
             }
-            king.description = "Bezwinger erhält Reichtum-Karte"
+            king.description = "Bezwinger erhält eine Reichtum-Karte"
             king.setStats(1, 1)
             king.icon = 25
             king.name = "Händlerfürst"

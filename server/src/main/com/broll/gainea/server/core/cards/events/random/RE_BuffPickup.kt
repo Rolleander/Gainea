@@ -17,6 +17,7 @@ class RE_BuffPickup : RandomEvent() {
                 val buff = IntBuff(ADD, 3)
                 unit.addHealthBuff(buff)
                 unit.power.addBuff(buff)
+                //todo update
             }
             obj.name = "Waffenschmied"
             obj.description = "Eroberer verleiht einer Einheit +3/+3"

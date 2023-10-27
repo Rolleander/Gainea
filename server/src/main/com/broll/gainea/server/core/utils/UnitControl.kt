@@ -136,6 +136,7 @@ object UnitControl {
         ProcessingUtils.pause(SPAWN_PAUSE)
     }
 
+    //todo broken
     fun Game.despawn(obj: MapObject) {
         remove(obj)
         val nt = NT_Event_FocusObject()

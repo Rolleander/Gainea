@@ -5,18 +5,18 @@ import com.broll.gainea.server.core.objects.Soldier
 import com.broll.gainea.server.core.utils.UnitControl.spawn
 import com.broll.gainea.server.core.utils.selectWildMonster
 
-class C_FightMonster : Card(83, "Drachenj‰ger",
-        "W‰hlt ein wildes Monster und rekrutiert einen Drachenj‰ger (4/3) der dieses ohne R¸ckzug angreift (Ihr erhaltet keine Karte als Belohnung)") {
+class C_FightMonster : Card(83, "Drachenj√§ger",
+        "W√§hlt ein wildes Monster und rekrutiert einen Drachenj√§ger (4/3) der dieses ohne R√ºckzug angreift (Ihr erhaltet keine Kampf-Belohnungen)") {
 
     override val isPlayable: Boolean
         get() = true
 
     override fun play() {
-        game.selectWildMonster("W‰hlt ein Monster")?.let { monster ->
+        game.selectWildMonster("W√§hlt ein Monster")?.let { monster ->
             val soldier = Soldier(owner)
             soldier.setStats(4, 3)
             soldier.icon = 3
-            soldier.name = "Drachenj‰ger"
+            soldier.name = "Drachenj√§ger"
             game.spawn(soldier, monster.location)
             game.battleHandler.startBattle(listOf(soldier), listOf(monster), allowRetreat = false, grantRewards = false)
         }
