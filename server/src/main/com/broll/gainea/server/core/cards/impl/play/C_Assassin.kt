@@ -7,7 +7,12 @@ import com.broll.gainea.server.core.utils.getEnemyLocations
 import com.broll.gainea.server.core.utils.getHostileUnits
 
 class C_Assassin : Card(4, "Attentat",
-        "Wählt eine feindliche Armee und rekrutiert einen Assassinen (3/2), der diese direkt angreift.") {
+        "Wählt eine feindliche Armee und rekrutiert einen Assassinen (4/2), der diese direkt angreift.") {
+
+
+    init {
+        drawChance = 0.6f
+    }
 
     override val isPlayable: Boolean
         get() = game.getEnemyLocations(owner).isNotEmpty()
@@ -23,7 +28,7 @@ class C_Assassin : Card(4, "Attentat",
         init {
             fraction = null
             name = "Assassine"
-            setStats(3, 2)
+            setStats(4, 2)
             icon = 129
         }
     }

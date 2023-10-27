@@ -14,8 +14,8 @@ class RE_Support : RandomEvent() {
                     game.spawn(it.fraction.createSoldier(), obj.location)
                 }
             }
-            obj.name = "Verst‰rkung"
-            obj.description = "Eroberer erh‰lt 3 Einheiten"
+            obj.name = "Verst√§rkung"
+            obj.description = "Eroberer erh√§lt 3 Einheiten"
             obj.icon = 130
             game.spawn(obj, area)
         }

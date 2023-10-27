@@ -4,7 +4,7 @@ import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.map.Location
 import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.core.player.isNeutral
-import com.broll.gainea.server.core.utils.remove
+import com.broll.gainea.server.core.utils.UnitControl.despawn
 
 class Conquerable(game: Game) : MapObject(game.neutralPlayer) {
 
@@ -27,7 +27,7 @@ class Conquerable(game: Game) : MapObject(game.neutralPlayer) {
 
     private fun success() {
         holdingTurns = 0
-        game.remove(this)
+        game.despawn(this)
         afterConquer(currentHolder!!)
     }
 

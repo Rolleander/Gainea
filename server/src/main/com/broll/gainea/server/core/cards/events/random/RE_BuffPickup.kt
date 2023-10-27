@@ -13,7 +13,7 @@ class RE_BuffPickup : RandomEvent() {
         game.freeArea { area ->
             val obj = Collectible(game)
             obj.onPickup = { player ->
-                val unit = game.selectUnit(player, "Welche Einheit soll verst‰rkt werden?", obj.location.units.filter { it.owner == player })!!
+                val unit = game.selectUnit(player, "Welche Einheit soll verst√§rkt werden?", obj.location.units.filter { it.owner == player })!!
                 val buff = IntBuff(ADD, 3)
                 unit.addHealthBuff(buff)
                 unit.power.addBuff(buff)

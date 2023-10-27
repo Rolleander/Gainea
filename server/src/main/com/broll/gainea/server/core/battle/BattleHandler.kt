@@ -83,8 +83,8 @@ class BattleHandler(private val game: Game, private val reactionResult: Reaction
         start.defenders = context.defenders.sortedBy { it.id }.map { it.nt() }.toTypedArray()
         start.allowRetreat = allowRetreat
         start.location = context.location.number
-        if (!context.isNeutralAttacker) {
-            start.attacker = context.attackingPlayer.serverPlayer.id
+        context.getControllingAttacker()?.let {
+            start.attacker = it.serverPlayer.id
         }
         reactionResult.sendGameUpdate(start)
     }
@@ -155,7 +155,8 @@ class BattleHandler(private val game: Game, private val reactionResult: Reaction
         var startNextRound = true
         if (allowRetreat) {
             //disconnect check
-            if (!context.attackingPlayer.isNeutral() && !context.attackingPlayer.serverPlayer.isOnline) {
+            val controllingAttacker = context.getControllingAttacker()
+            if (controllingAttacker != null && !controllingAttacker.serverPlayer.isOnline) {
                 //retreat cause offline
                 Log.info("Retreat from battle because attacking player is offline")
                 battleFinished(true)
@@ -202,7 +203,7 @@ class BattleHandler(private val game: Game, private val reactionResult: Reaction
         }
         //find dead monsters to give killing player rewards
         if (grantRewards) {
-            rewardKilledMonsters(result.attackingPlayer, result.killedDefenders)
+            result.getNonNeutralAttackers().forEach { rewardKilledMonsters(it, result.killedDefenders) }
             result.getNonNeutralDefenders().forEach { rewardKilledMonsters(it, result.killedAttackers) }
         }
     }

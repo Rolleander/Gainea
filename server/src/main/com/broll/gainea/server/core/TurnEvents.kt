@@ -16,7 +16,7 @@ import com.broll.gainea.server.core.utils.sendUpdate
 class TurnEvents(private val game: Game) : GameUpdateReceiverAdapter() {
 
     private val randomEvents = RandomEventContainer()
-    private val randomEventChance = 0.1f
+    private val randomEventChance = 0.065f
 
     private fun turnEvent(event: EventCard) {
         val nt = NT_PlayerWait()

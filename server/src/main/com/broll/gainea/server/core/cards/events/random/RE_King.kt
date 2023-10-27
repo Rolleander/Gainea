@@ -11,16 +11,16 @@ class RE_King : RandomEvent() {
     override fun run(game: Game) {
         game.freeArea { area ->
             val king = object : Soldier(game.neutralPlayer) {
-                override fun battleResult(result: BattleResult) {
-                    result.getKillingPlayers(this).forEach {
+                override fun onDeath(throughBattle: BattleResult?) {
+                    throughBattle?.getKillingPlayers(this)?.forEach {
                         it.cardHandler.receiveCard(C_Treasury())
                     }
                 }
             }
-            king.description = "Bezwinger erhält Reichtum-Karte"
+            king.description = "Bezwinger erhÃ¤lt Reichtum-Karte"
             king.setStats(1, 1)
             king.icon = 25
-            king.name = "Händlerfürst"
+            king.name = "HÃ¤ndlerfÃ¼rst"
             game.spawn(king, area)
             for (i in 1..2) {
                 val soldier = Soldier(game.neutralPlayer)

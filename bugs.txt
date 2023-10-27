@@ -7,3 +7,4 @@ karten steal update client ...  -> retest
 
 bot hat wilderer armee angreifen ohne das monster davon...??
 
+render für collectibles

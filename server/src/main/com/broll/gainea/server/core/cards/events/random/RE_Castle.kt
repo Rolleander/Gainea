@@ -14,7 +14,7 @@ class RE_Castle : RandomEvent() {
             }
             obj.holdForRounds = 3
             obj.name = "Schloss " + area.container.name
-            obj.description = "Verleiht 1 Siegpunkt an den für drei Runden alleinig besetzenden Spieler"
+            obj.description = "Verleiht 1 Siegpunkt an den fÃ¼r drei Runden alleinig besetzenden Spieler"
             obj.icon = 133
             game.spawn(obj, area)
         }

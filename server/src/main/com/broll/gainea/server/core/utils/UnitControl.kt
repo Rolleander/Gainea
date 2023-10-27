@@ -136,6 +136,13 @@ object UnitControl {
         ProcessingUtils.pause(SPAWN_PAUSE)
     }
 
+    fun Game.despawn(obj: MapObject) {
+        remove(obj)
+        val nt = NT_Event_FocusObject()
+        nt.`object` = obj.nt()
+        sendUpdate(nt)
+    }
+
     private fun MapObject.defaultSpawnSound(location: Location) =
             if (this is Monster) {
                 "monster.ogg"

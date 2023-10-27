@@ -4,8 +4,8 @@ import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.map.Location
 import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.core.player.isNeutral
+import com.broll.gainea.server.core.utils.UnitControl.despawn
 import com.broll.gainea.server.core.utils.owner
-import com.broll.gainea.server.core.utils.remove
 
 class Collectible(game: Game) : MapObject(game.neutralPlayer) {
 
@@ -15,7 +15,7 @@ class Collectible(game: Game) : MapObject(game.neutralPlayer) {
         if (location == this.location) {
             val owner = units.filterIsInstance<Unit>().owner()
             if (!owner.isNeutral()) {
-                game.remove(this)
+                game.despawn(this)
                 onPickup(owner)
             }
         }

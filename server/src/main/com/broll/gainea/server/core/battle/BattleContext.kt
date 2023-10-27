@@ -4,21 +4,20 @@ import com.broll.gainea.server.core.map.Location
 import com.broll.gainea.server.core.objects.Unit
 import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.core.player.isNeutral
-import com.broll.gainea.server.core.utils.owner
 
 open class BattleContext(var attackers: List<Unit>, var defenders: List<Unit>) {
     var location: Location
         protected set
     var sourceLocation: Location
         protected set
-    var attackingPlayer: Player
-        protected set
-    protected var defendingPlayers: List<Player>
+
+    protected val attackingPlayers: List<Player>
+    protected val defendingPlayers: List<Player>
 
     init {
         location = defenders[0].location
         sourceLocation = attackers[0].location
-        attackingPlayer = attackers.owner()
+        attackingPlayers = attackers.map { it.owner }.distinct()
         defendingPlayers = defenders.map { it.owner }.distinct()
     }
 
@@ -83,7 +82,7 @@ open class BattleContext(var attackers: List<Unit>, var defenders: List<Unit>) {
     fun isParticipating(player: Player) = isAttacker(player) || isDefender(player)
 
 
-    fun isAttacker(player: Player) = attackingPlayer === player
+    fun isAttacker(player: Player) = attackingPlayers.contains(player)
 
 
     fun isAttacking(unit: Unit) = attackers.contains(unit)
@@ -96,7 +95,7 @@ open class BattleContext(var attackers: List<Unit>, var defenders: List<Unit>) {
 
 
     val isNeutralAttacker: Boolean
-        get() = attackingPlayer.isNeutral()
+        get() = isNeutralOwner(attackingPlayers)
     val isNeutralDefender: Boolean
         get() = isNeutralOwner(defendingPlayers)
     val isNeutralParticipant: Boolean
@@ -108,7 +107,12 @@ open class BattleContext(var attackers: List<Unit>, var defenders: List<Unit>) {
 
     protected fun getNonNeutralOwners(owners: List<Player>) = owners.filterNot { it.isNeutral() }
 
+    fun getNonNeutralAttackers() =
+            getNonNeutralOwners(attackingPlayers)
+
     fun getNonNeutralDefenders() =
             getNonNeutralOwners(defendingPlayers)
+
+    fun getControllingAttacker() = getNonNeutralAttackers().firstOrNull()
 
 }

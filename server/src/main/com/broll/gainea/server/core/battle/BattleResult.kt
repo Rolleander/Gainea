@@ -33,7 +33,7 @@ class BattleResult(val retreated: Boolean, context: BattleContext) : BattleConte
     private val winnerOwners: List<Player>
         get() {
             if (attackersWon) {
-                return listOf(attackingPlayer)
+                return attackingPlayers
             } else if (defendersWon) {
                 return defendingPlayers
             }
@@ -44,7 +44,7 @@ class BattleResult(val retreated: Boolean, context: BattleContext) : BattleConte
             if (attackersWon) {
                 return defendingPlayers
             } else if (defendersWon) {
-                return listOf(attackingPlayer)
+                return attackingPlayers
             }
             return listOf()
         }
@@ -119,7 +119,7 @@ class BattleResult(val retreated: Boolean, context: BattleContext) : BattleConte
         if (killedAttackers.contains(unit)) {
             return defendingPlayers
         } else if (killedDefenders.contains(unit)) {
-            return listOf(attackingPlayer)
+            return attackingPlayers
         }
         return listOf()
     }
