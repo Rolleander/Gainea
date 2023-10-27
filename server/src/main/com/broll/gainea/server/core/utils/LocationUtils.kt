@@ -16,7 +16,6 @@ import com.broll.gainea.server.core.objects.monster.Monster
 import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.core.player.isNeutral
 import com.broll.gainea.server.core.utils.UnitControl.isNeutralMonster
-import org.apache.commons.lang3.ArrayUtils
 
 
 fun Collection<Location>.getLocationNumbers() =
@@ -24,7 +23,7 @@ fun Collection<Location>.getLocationNumbers() =
 
 fun Location.isAreaType(vararg type: AreaType): Boolean {
     if (this is Area) {
-        return ArrayUtils.contains(type, type)
+        return type.contains(this.type)
     }
     return false
 }

@@ -17,7 +17,6 @@ class G_AreaTypes : CustomOccupyGoal(GoalDifficulty.MEDIUM, "Erobere zwei belieb
 
     override fun check() {
         var count = 0
-        //todo stimmt nicht?
         val locations = player.getControlledLocationsIn(ExpansionType.GAINEA)
         for (type in TYPES) {
             count += Math.min(2, locations.filterByType(type).count())
