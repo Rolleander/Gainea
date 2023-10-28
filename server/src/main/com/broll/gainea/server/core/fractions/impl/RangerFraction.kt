@@ -36,7 +36,7 @@ class RangerFraction : Fraction(FractionType.RANGER) {
     }
 
     override fun createSoldier(): Soldier {
-        val soldier = Soldier(owner)
+        val soldier = Soldier(owner, fraction = this)
         soldier.setStats(SOLDIER_POWER, SOLDIER_HEALTH)
         soldier.name = "Waldläuferin"
         soldier.setType(NT_Unit.TYPE_FEMALE.toInt())
@@ -45,7 +45,7 @@ class RangerFraction : Fraction(FractionType.RANGER) {
     }
 
     override fun createCommander(): Soldier {
-        val commander = Soldier(owner)
+        val commander = Soldier(owner, fraction = this)
         commander.isCommander = true
         commander.setStats(COMMANDER_POWER, COMMANDER_HEALTH)
         commander.name = "Elfenschützin"

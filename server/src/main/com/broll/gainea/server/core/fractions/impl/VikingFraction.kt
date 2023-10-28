@@ -56,7 +56,7 @@ class VikingFraction : Fraction(FractionType.VIKINGS) {
         return commander
     }
 
-    private class VikingSoldier(owner: Player) : Soldier(owner) {
+    private inner class VikingSoldier(owner: Player) : Soldier(owner, fraction = this@VikingFraction) {
         override fun canMoveTo(to: Location): Boolean {
             return to.traversable
         }

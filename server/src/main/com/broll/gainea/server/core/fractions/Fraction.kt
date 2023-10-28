@@ -44,7 +44,6 @@ abstract class Fraction(val type: FractionType) : GameUpdateReceiverAdapter() {
 
     open fun turnStarted(actionHandlers: ActionHandlers) {}
     open fun killedMonster(monster: Monster) {
-        //receive random card as bounty
         owner.cardHandler.drawRandomCard()
     }
 
@@ -61,6 +60,8 @@ abstract class Fraction(val type: FractionType) : GameUpdateReceiverAdapter() {
         }
         return power
     }
+
+    fun Unit.isFromFraction() = this is Soldier && this.fraction == this@Fraction
 
     protected open fun powerMutatorArea(power: FightingPower, area: Area) {}
 

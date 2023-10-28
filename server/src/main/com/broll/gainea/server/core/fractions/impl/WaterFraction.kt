@@ -70,7 +70,7 @@ Fällt der Eiskoloss kehrt Arn in eruem nächsten Zug zurück""")
         return commander
     }
 
-    private open class WaterSoldier(owner: Player) : Soldier(owner) {
+    private open inner class WaterSoldier(owner: Player) : Soldier(owner, fraction = this@WaterFraction) {
         override fun moved(fromPlayerAction: Boolean) {
             super.moved(fromPlayerAction)
             if (location.isAreaType(AreaType.LAKE)) {

@@ -41,7 +41,7 @@ class LizardFraction : Fraction(FractionType.LIZARDS) {
     }
 
     override fun createSoldier(): Soldier {
-        val soldier = Soldier(owner)
+        val soldier = Soldier(owner, fraction = this)
         soldier.setStats(2, 2)
         soldier.name = "Echsenkrieger"
         soldier.icon = 122
@@ -50,7 +50,7 @@ class LizardFraction : Fraction(FractionType.LIZARDS) {
     }
 
     override fun createCommander(): Soldier {
-        val commander = Soldier(owner)
+        val commander = Soldier(owner, fraction = this)
         commander.isCommander = true
         commander.setStats(3, 5)
         commander.name = "Grash der Vernichter"

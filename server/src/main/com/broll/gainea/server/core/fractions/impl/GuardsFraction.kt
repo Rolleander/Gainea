@@ -52,7 +52,7 @@ class GuardsFraction : Fraction(FractionType.GUARDS) {
         return commander
     }
 
-    private class GuardSoldier(owner: Player) : Soldier(owner) {
+    private inner class GuardSoldier(owner: Player) : Soldier(owner, fraction = this@GuardsFraction) {
         private var buff: IntBuff? = null
         private var lastLocation: Location? = null
         override fun prepareForTurnStart() {

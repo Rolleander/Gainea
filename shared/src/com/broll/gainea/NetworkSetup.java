@@ -35,6 +35,7 @@ import com.broll.gainea.net.NT_Event_ReceivedPoints;
 import com.broll.gainea.net.NT_Event_ReceivedStars;
 import com.broll.gainea.net.NT_Event_RemoveCard;
 import com.broll.gainea.net.NT_Event_RemoveGoal;
+import com.broll.gainea.net.NT_Event_RemoveObject;
 import com.broll.gainea.net.NT_Event_TextInfo;
 import com.broll.gainea.net.NT_Event_UpdateObjects;
 import com.broll.gainea.net.NT_GameOver;
@@ -81,7 +82,7 @@ public class NetworkSetup {
                 NT_Event_OtherPlayerReceivedGoal.class, NT_Event_PlacedObject.class, NT_Event_PlayedCard.class,
                 NT_Event_ReceivedCard.class, NT_Event_ReceivedGoal.class, NT_Event_ReceivedGoal.class,
                 NT_Event_ReceivedPoints.class, NT_Event_ReceivedStars.class, NT_Event_RemoveCard.class,
-                NT_Event_RemoveGoal.class, NT_Event_TextInfo.class, NT_Event_UpdateObjects.class,
+                NT_Event_RemoveGoal.class, NT_Event_RemoveObject.class, NT_Event_TextInfo.class, NT_Event_UpdateObjects.class,
                 NT_GameOver.class, NT_GameStatistic.class, NT_Goal.class, NT_GoalProgression.class,
                 NT_LoadedGame.class, NT_LobbySettings.class, NT_Monster.class,
                 NT_Player.class, NT_PlayerAction.class, NT_PlayerChangeFraction.class,

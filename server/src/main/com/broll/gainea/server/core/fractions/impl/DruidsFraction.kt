@@ -52,7 +52,7 @@ class DruidsFraction : Fraction(FractionType.DRUIDS) {
         return commander
     }
 
-    private inner class DruidSoldier(owner: Player) : Soldier(owner) {
+    private inner class DruidSoldier(owner: Player) : Soldier(owner, fraction = this@DruidsFraction) {
         override fun onDeath(throughBattle: BattleResult?) {
             if (RandomUtils.randomBoolean(SPAWN_CHANCE)) {
                 val tree = Tree(owner)
@@ -61,7 +61,7 @@ class DruidsFraction : Fraction(FractionType.DRUIDS) {
         }
     }
 
-    private inner class Tree(owner: Player) : Soldier(owner) {
+    private inner class Tree(owner: Player) : Soldier(owner, fraction = this@DruidsFraction) {
         init {
             setStats(1, 2)
             name = "Wurzelgolem"

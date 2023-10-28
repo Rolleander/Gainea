@@ -39,7 +39,7 @@ class MercenaryFraction : Fraction(FractionType.MERCENARY) {
     }
 
     override fun createSoldier(): Soldier {
-        val soldier = Soldier(owner)
+        val soldier = Soldier(owner, fraction = this)
         soldier.setStats(SOLDIER_POWER, SOLDIER_HEALTH)
         soldier.name = "Söldner"
         soldier.icon = ICONS[RandomUtils.random(ICONS.size - 1)]
@@ -47,7 +47,7 @@ class MercenaryFraction : Fraction(FractionType.MERCENARY) {
     }
 
     override fun createCommander(): Soldier {
-        val commander = Soldier(owner)
+        val commander = Soldier(owner, fraction = this)
         commander.isCommander = true
         commander.setStats(COMMANDER_POWER, COMMANDER_HEALTH)
         commander.name = "Söldnerkommandant"

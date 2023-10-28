@@ -45,7 +45,7 @@ class FireFraction : Fraction(FractionType.FIRE) {
     }
 
     override fun createSoldier(): Soldier {
-        val soldier = Soldier(owner)
+        val soldier = Soldier(owner, fraction = this)
         soldier.setStats(SOLDIER_POWER, SOLDIER_HEALTH)
         soldier.name = "Feuermagier"
         soldier.icon = 23
@@ -53,7 +53,7 @@ class FireFraction : Fraction(FractionType.FIRE) {
     }
 
     override fun createCommander(): Soldier {
-        val commander = Soldier(owner)
+        val commander = Soldier(owner, fraction = this)
         commander.isCommander = true
         commander.setStats(COMMANDER_POWER, COMMANDER_HEALTH)
         commander.name = "Flammenschürer Duras"

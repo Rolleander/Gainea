@@ -33,6 +33,7 @@ import com.broll.gainea.net.NT_Event_ReceivedPoints;
 import com.broll.gainea.net.NT_Event_ReceivedStars;
 import com.broll.gainea.net.NT_Event_RemoveCard;
 import com.broll.gainea.net.NT_Event_RemoveGoal;
+import com.broll.gainea.net.NT_Event_RemoveObject;
 import com.broll.gainea.net.NT_Event_TextInfo;
 import com.broll.gainea.net.NT_Event_UpdateObjects;
 import com.broll.gainea.net.NT_Player;
@@ -94,6 +95,11 @@ public class GameEventSite extends AbstractGameSite {
     @PackageReceiver
     public void received(NT_Event_FocusObjects focus) {
         focus(focus.objects);
+    }
+
+    @PackageReceiver
+    public void received(NT_Event_RemoveObject evt) {
+        game.state.getMapObjectsContainer().remove(evt.object);
     }
 
     @PackageReceiver

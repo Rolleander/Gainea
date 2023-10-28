@@ -76,5 +76,5 @@ class MonkFraction : Fraction(FractionType.MONKS) {
         return commander
     }
 
-    private class MonkSoldier(owner: Player) : Soldier(owner)
+    private inner class MonkSoldier(owner: Player) : Soldier(owner, fraction = this@MonkFraction)
 }

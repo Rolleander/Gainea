@@ -37,7 +37,7 @@ class ShadowFraction : Fraction(FractionType.SHADOW) {
     }
 
     override fun createSoldier(): Soldier {
-        val soldier = Soldier(owner)
+        val soldier = Soldier(owner, fraction = this)
         soldier.setStats(SOLDIER_POWER, SOLDIER_HEALTH)
         soldier.name = "Schatten"
         soldier.icon = 12
@@ -45,7 +45,7 @@ class ShadowFraction : Fraction(FractionType.SHADOW) {
     }
 
     override fun createCommander(): Soldier {
-        val commander = Soldier(owner)
+        val commander = Soldier(owner, fraction = this)
         commander.isCommander = true
         commander.setStats(COMMANDER_POWER, COMMANDER_HEALTH)
         commander.name = "Erznekromant Bal"
@@ -62,7 +62,7 @@ class ShadowFraction : Fraction(FractionType.SHADOW) {
     }
 
     private fun summon(location: Location) {
-        val skeleton: Soldier = object : Soldier(owner) {
+        val skeleton: Soldier = object : Soldier(owner, fraction = this@ShadowFraction) {
             override fun calcFightingPower(context: BattleContext): FightingPower {
                 return super.calcFightingPower(context).changeNumberPlus(-1)
             }

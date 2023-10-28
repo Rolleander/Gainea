@@ -7,12 +7,13 @@ import com.broll.gainea.server.core.fractions.Fraction
 import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.core.player.isNeutral
 
-open class Soldier(owner: Player, var isCommander: Boolean = false) : Unit(owner) {
-    var fraction: Fraction? = null
+open class Soldier(owner: Player,
+                   var fraction: Fraction? = null,
+                   var isCommander: Boolean = false) : Unit(owner) {
 
     init {
-        if (!owner.isNeutral()) {
-            fraction = owner.fraction
+        if (owner.isNeutral()) {
+            this.fraction = null
         }
     }
 

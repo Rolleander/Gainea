@@ -49,7 +49,7 @@ class BarbarianFraction : Fraction(FractionType.BARBARIANS) {
     }
 
     override fun createSoldier(): Soldier {
-        val soldier = Soldier(owner)
+        val soldier = Soldier(owner, fraction = this)
         soldier.setStats(SOLDIER_POWER, SOLDIER_HEALTH)
         soldier.name = "Barbarenrkieger"
         soldier.icon = 103
@@ -57,7 +57,7 @@ class BarbarianFraction : Fraction(FractionType.BARBARIANS) {
     }
 
     override fun createCommander(): Soldier {
-        val commander = Soldier(owner)
+        val commander = Soldier(owner, fraction = this)
         commander.isCommander = true
         commander.setStats(COMMANDER_POWER, COMMANDER_HEALTH)
         commander.name = "Barbarenanführer"

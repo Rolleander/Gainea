@@ -1,5 +1,6 @@
 package com.broll.gainea.client.game;
 
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.broll.gainea.client.ui.ingame.map.MapObjectRender;
 import com.broll.gainea.client.ui.ingame.unit.UnitRender;
 import com.broll.gainea.net.NT_Action_Attack;
@@ -15,6 +16,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class MapObjectContainer {
@@ -38,6 +40,18 @@ public class MapObjectContainer {
                         moves.stream().anyMatch(it -> Arrays.stream(it.units).anyMatch(unit -> unit.id == id))
                                 || attacks.stream().anyMatch(it -> Arrays.stream(it.units).anyMatch(unit -> unit.id == id))
                 );
+            }
+        }
+    }
+
+    public void remove(NT_BoardObject obj) {
+        Iterator<Map.Entry<Location, MapObjectRender>> iterator = objectRenders.iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<Location, MapObjectRender> entry = iterator.next();
+            if (entry.getValue().getObject().id == obj.id) {
+                entry.getValue().addAction(Actions.sequence(Actions.fadeOut(0.4f), Actions.removeActor()));
+                iterator.remove();
+                return;
             }
         }
     }
