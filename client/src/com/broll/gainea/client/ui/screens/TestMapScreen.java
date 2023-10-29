@@ -1,15 +1,20 @@
 package com.broll.gainea.client.ui.screens;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.broll.gainea.client.AudioPlayer;
 import com.broll.gainea.client.game.ClientMapContainer;
+import com.broll.gainea.client.game.PlayerPerformOptionalAction;
 import com.broll.gainea.client.ui.Screen;
 import com.broll.gainea.misc.RandomUtils;
+import com.broll.gainea.net.NT_Action;
+import com.broll.gainea.net.NT_Action_Card;
 import com.broll.gainea.net.NT_BoardEffect;
 import com.broll.gainea.net.NT_BoardObject;
 import com.broll.gainea.net.NT_BoardUpdate;
+import com.broll.gainea.net.NT_Card;
 import com.broll.gainea.net.NT_Event_FinishedGoal;
 import com.broll.gainea.net.NT_Goal;
 import com.broll.gainea.net.NT_Monster;
@@ -18,6 +23,10 @@ import com.broll.gainea.net.NT_Unit;
 import com.broll.gainea.server.core.map.impl.GaineaMap;
 import com.broll.gainea.server.init.ExpansionSetting;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class TestMapScreen extends Screen {
@@ -31,7 +40,7 @@ public class TestMapScreen extends Screen {
     public Actor build() {
         AudioPlayer.playSong("celtic.mp3");
         ClientMapContainer.RENDER_DEBUG = true;
-        game.state.init(ExpansionSetting.PLUS_ICELANDS, 0, 30, null);
+        game.state.init(ExpansionSetting.FULL, 0, 30, null);
         NT_Goal goal = null;
 
         for (int i = 0; i < 3; i++) {
@@ -79,7 +88,33 @@ public class TestMapScreen extends Screen {
         game.ui.inGameUI.getLogWindow().logCardEvent("hat karte erhalten");
         game.ui.inGameUI.getLogWindow().logGoalEvent("hat goal erhalten, mit sehr langem text der unbedingt"
                 + "umgebrochen werden sollte damit man noch etwas lesen kann im window....blablablabalbalbalbalabbla");
+
+        Executors.newSingleThreadScheduledExecutor().schedule(() -> Gdx.app.postRunnable(this::lateInit), 300, TimeUnit.MILLISECONDS);
+
         return new Table();
+    }
+
+    private void lateInit() {
+        short id = 0;
+        for (int i = 0; i < 15; i++) {
+            id = addCard();
+        }
+        game.state.turnIdle();
+        List<NT_Action> actions = new ArrayList<>();
+        NT_Action_Card ac = new NT_Action_Card();
+        ac.cardId = id;
+        actions.add(ac);
+        game.state.performOptionalAction(actions, new PlayerPerformOptionalAction() {
+            @Override
+            public void none() {
+
+            }
+
+            @Override
+            public void perform(NT_Action action, int option, int[] options) {
+
+            }
+        });
     }
 
     private NT_Unit unit() {
@@ -93,5 +128,17 @@ public class TestMapScreen extends Screen {
         u.maxHealth = u.health;
         u.location = (short) game.state.getMap().getArea(GaineaMap.Areas.WEIDESTEPPE).getNumber();
         return u;
+    }
+
+    private short addCard() {
+        NT_Card c = new NT_Card();
+        c.picture = (short) MathUtils.random(0, 80);
+        c.text = "langer text für karte der noch sehr lang weitergehen kann und richtig umbrechen sollte und so weiter " +
+                "umgebrochen werden sollte damit man noch etwas lesen kann im window....blablablabalbalbalbalabbla";
+        c.title = "coole karte";
+        c.id = (short) idCounter.incrementAndGet();
+        game.state.getCards().add(c);
+        game.ui.inGameUI.updateWindows();
+        return c.id;
     }
 }

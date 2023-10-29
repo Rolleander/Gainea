@@ -48,6 +48,7 @@ public class GameTurnSite extends AbstractGameSite {
         game.state.turnIdle();
         actions.addAll(Arrays.asList(turnContinue.actions));
         playerPickAction();
+        game.ui.inGameUI.updateWindows();
         game.ui.inGameUI.getBattleHandler().clearBattleScreen();
     }
 

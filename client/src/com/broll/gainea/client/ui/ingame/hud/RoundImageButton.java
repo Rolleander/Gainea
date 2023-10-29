@@ -56,7 +56,7 @@ public class RoundImageButton extends Button {
     @Override
     public Actor hit(float x, float y, boolean touchable) {
         if (touchable && this.getTouchable() != Touchable.enabled) return null;
-        if (!isVisible()) return null;
+        if (!isVisible() || isDisabled()) return null;
         if (Vector2.dst(texture.getRegionWidth() / 2, texture.getRegionHeight() / 2, x, y) < texture.getRegionWidth() / 2) {
             return this;
         }
@@ -66,7 +66,11 @@ public class RoundImageButton extends Button {
     @Override
     public void draw(Batch batch, float parentAlpha) {
         Color color = getColor();
-        batch.setColor(color.r, color.g, color.b, 0.8f * parentAlpha);
+        float a = 0.8f;
+        if (isDisabled()) {
+            a = 0.5f;
+        }
+        batch.setColor(color.r, color.g, color.b, a * parentAlpha);
         batch.draw(texture, getX(), getY());
         if (text != null) {
             numberLabel.setText(text);

@@ -93,6 +93,7 @@ public class MenuActions extends Table {
         cardWindow.update();
         chatWindow.update();
         int cards = game.state.getCards().size();
+        cardButton.setDisabled(cards == 0);
         if (cards > 0) {
             cardButton.setText(cards + "");
         } else {

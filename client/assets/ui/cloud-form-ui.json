@@ -42,7 +42,25 @@ com.badlogic.gdx.scenes.scene2d.ui.Skin$TintedDrawable: {
 			b: 0
 			a: 1
 		}
-	}
+	},
+	white: {
+		name: white,
+		color: {
+			r: 1
+			g: 1
+			b: 1
+			a: 1
+		}
+	},
+	dark: {
+		name: white
+		color: {
+			r: 0.2
+			g: 0.2
+			b: 0.2
+			a: 1
+		}
+	},
 	highlight: {
 		name: white
 		color: {
@@ -51,7 +69,7 @@ com.badlogic.gdx.scenes.scene2d.ui.Skin$TintedDrawable: {
 			b: 1
 			a: 1
 		}
-	}
+	},
 	selected: {
 		name: white
 		color: {
@@ -60,7 +78,7 @@ com.badlogic.gdx.scenes.scene2d.ui.Skin$TintedDrawable: {
 			b: 1
 			a: 1
 		}
-	}
+	},
 	menu-bg: {
 		name: white
 		color: {
@@ -88,7 +106,7 @@ com.badlogic.gdx.scenes.scene2d.ui.Skin$TintedDrawable: {
 			a: 1
 		}
 	}
-}
+},
 com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle: {
 	default: {
 		up: button
