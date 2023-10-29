@@ -74,8 +74,7 @@ public class FractionWindow extends MenuWindow {
         nt.power = (short) description.getPower();
         nt.name = description.getName();
         nt.icon = (short) description.getIcon();
-        MenuUnit unit = new MenuUnit(game, skin, nt, () -> {
-        });
+        MenuUnit unit = new MenuUnit(game, skin, nt);
         unit.setTouchable(Touchable.disabled);
         return unit;
     }

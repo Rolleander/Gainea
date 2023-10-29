@@ -34,6 +34,24 @@ public class TableUtils {
         });
     }
 
+    public static void onHoverOrClick(Table table, ActionListener listener) {
+        table.setTouchable(Touchable.enabled);
+        table.addListener(new ClickListener() {
+
+            @Override
+            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                super.enter(event, x, y, pointer, fromActor);
+                listener.action();
+            }
+
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                event.stop();
+                listener.action();
+            }
+        });
+    }
+
     public static Button textButton(Skin skin, String text, ActionListener listener) {
         TextButton button = new TextButton(text, skin);
         button.addListener(new ClickListener() {

@@ -18,7 +18,7 @@ import com.broll.gainea.client.ui.ingame.hud.MenuActions;
 import com.broll.gainea.client.ui.ingame.hud.PlayerOverlay;
 import com.broll.gainea.client.ui.ingame.map.MapObjectRender;
 import com.broll.gainea.client.ui.ingame.windows.LogWindow;
-import com.broll.gainea.client.ui.ingame.windows.UnitSelectionWindow;
+import com.broll.gainea.client.ui.ingame.windows.MapObjectSelection;
 import com.broll.gainea.client.ui.screens.ScoreScreen;
 import com.broll.gainea.client.ui.utils.LabelUtils;
 import com.broll.gainea.client.ui.utils.TableUtils;
@@ -102,7 +102,7 @@ public class InGameUI {
     public void selectStack(Location location, Collection<MapObjectRender> stack) {
         clearSelection();
         AudioPlayer.playSound("select.ogg");
-        Table window = UnitSelectionWindow.create(game, skin, location, stack);
+        Table window = new MapObjectSelection(game, location, stack);
         rightPanel.add(window).right().top().expand();
         rightPanel.layout();
     }

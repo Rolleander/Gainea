@@ -83,6 +83,7 @@ public class Assets {
         manager.load("textures/bubble.png", Texture.class);
         manager.load("textures/colors.png", Texture.class);
         manager.load("textures/fire.png", Texture.class);
+        manager.load("textures/selection_ring.png", Texture.class);
         manager.load("textures/active_ring.png", Texture.class);
         manager.load("textures/gate.png", Texture.class);
         manager.load("textures/water.jpg", Texture.class);

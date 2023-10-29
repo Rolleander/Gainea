@@ -10,7 +10,9 @@ import com.broll.gainea.client.game.PlayerPerformOptionalAction;
 import com.broll.gainea.client.ui.Screen;
 import com.broll.gainea.misc.RandomUtils;
 import com.broll.gainea.net.NT_Action;
+import com.broll.gainea.net.NT_Action_Attack;
 import com.broll.gainea.net.NT_Action_Card;
+import com.broll.gainea.net.NT_Action_Move;
 import com.broll.gainea.net.NT_BoardEffect;
 import com.broll.gainea.net.NT_BoardObject;
 import com.broll.gainea.net.NT_BoardUpdate;
@@ -20,6 +22,7 @@ import com.broll.gainea.net.NT_Goal;
 import com.broll.gainea.net.NT_Monster;
 import com.broll.gainea.net.NT_Player;
 import com.broll.gainea.net.NT_Unit;
+import com.broll.gainea.server.core.map.AreaID;
 import com.broll.gainea.server.core.map.impl.GaineaMap;
 import com.broll.gainea.server.init.ExpansionSetting;
 
@@ -68,12 +71,20 @@ public class TestMapScreen extends Screen {
             p.id = (short) i;
             p.stars = (short) (i * 5);
             p.units = new NT_Unit[0];
+            if (i == 0) {
+                p.units = new NT_Unit[10];
+                for (int j = 0; j < 10; j++) {
+                    p.units[j] = unit();
+                    p.units[j].owner = 0;
+                    p.units[j].location = getAreaNum(GaineaMap.Areas.GRUENLAND);
+                }
+                p.units[9].location = getAreaNum(GaineaMap.Areas.FELSWALD);
+            }
             nt.players[i] = p;
         }
         nt.objects = new NT_BoardObject[1];
         nt.objects[0] = unit();
         nt.objects[0].description = "unit mit langer description die korrekt umgebrochen werden sollte ohne das ui zu verstopfen";
-        // nt.objects[0].description = "unit mit kurzer description";
         nt.effects = new NT_BoardEffect[0];
         nt.round = 0;
         game.ui.initInGameUi();
@@ -104,6 +115,25 @@ public class TestMapScreen extends Screen {
         NT_Action_Card ac = new NT_Action_Card();
         ac.cardId = id;
         actions.add(ac);
+
+        NT_Unit[] units = game.state.getPlayer(0).units;
+        NT_Action_Move move = new NT_Action_Move();
+        move.units = units;
+        move.location = getAreaNum(GaineaMap.Areas.XOMDELTA);
+        actions.add(move);
+        move = new NT_Action_Move();
+        move.units = units;
+        move.location = getAreaNum(GaineaMap.Areas.KUESTENGEBIET);
+        actions.add(move);
+        move = new NT_Action_Move();
+        move.units = units;
+        move.location = getAreaNum(GaineaMap.Areas.FELSWALD);
+        actions.add(move);
+        NT_Action_Attack atk = new NT_Action_Attack();
+        atk.units = units;
+        atk.location = getAreaNum(GaineaMap.Areas.WEIDESTEPPE);
+        actions.add(atk);
+
         game.state.performOptionalAction(actions, new PlayerPerformOptionalAction() {
             @Override
             public void none() {
@@ -117,6 +147,10 @@ public class TestMapScreen extends Screen {
         });
     }
 
+    private short getAreaNum(AreaID area) {
+        return (short) game.state.getMap().getArea(area).getNumber();
+    }
+
     private NT_Unit unit() {
         NT_Monster u = new NT_Monster();
         u.stars = 4;
@@ -126,7 +160,7 @@ public class TestMapScreen extends Screen {
         u.power = (short) MathUtils.random(1, 3);
         u.health = (short) MathUtils.random(1, 5);
         u.maxHealth = u.health;
-        u.location = (short) game.state.getMap().getArea(GaineaMap.Areas.WEIDESTEPPE).getNumber();
+        u.location = getAreaNum(GaineaMap.Areas.WEIDESTEPPE);
         return u;
     }
 
