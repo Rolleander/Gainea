@@ -1,13 +1,12 @@
 package com.broll.gainea.test
 
-import com.broll.gainea.server.GaineaServer
 import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.init.LobbyData
+import com.broll.gainea.server.init.PlayerData
+import com.broll.networklib.server.impl.DummyServerLobby
 
 fun testGame(): Game {
-    val server = GaineaServer("")
-    val lobby = server.server.lobbyHandler.openLobby("test", LobbyData())
-    val game = Game(lobby)
-    lobby.data.game = game
-    return game
+    val lobby = DummyServerLobby<LobbyData, PlayerData>()
+    lobby.data = LobbyData()
+    return Game(lobby)
 }

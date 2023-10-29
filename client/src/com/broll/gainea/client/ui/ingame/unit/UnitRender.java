@@ -49,6 +49,9 @@ public class UnitRender extends MapObjectRender {
         blood = new Animation<>(0.05f, TextureUtils.split(game.assets.get("textures/blood.png", Texture.class), BLOOD_SIZE, BLOOD_SIZE));
     }
 
+    public boolean isActionActive() {
+        return actionActive;
+    }
 
     public void setActionActive(boolean b) {
         actionActive = b;

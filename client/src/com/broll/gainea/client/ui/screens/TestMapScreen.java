@@ -25,6 +25,7 @@ import com.broll.gainea.net.NT_Unit;
 import com.broll.gainea.server.core.map.AreaID;
 import com.broll.gainea.server.core.map.impl.GaineaMap;
 import com.broll.gainea.server.init.ExpansionSetting;
+import com.broll.networklib.client.impl.DummyLobbyPlayer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +44,7 @@ public class TestMapScreen extends Screen {
     public Actor build() {
         AudioPlayer.playSong("celtic.mp3");
         ClientMapContainer.RENDER_DEBUG = true;
-        game.state.init(ExpansionSetting.FULL, 0, 30, null);
+        game.state.init(ExpansionSetting.FULL, 0, 30, new DummyLobbyPlayer(0, null));
         NT_Goal goal = null;
 
         for (int i = 0; i < 3; i++) {
@@ -79,6 +80,14 @@ public class TestMapScreen extends Screen {
                     p.units[j].location = getAreaNum(GaineaMap.Areas.GRUENLAND);
                 }
                 p.units[9].location = getAreaNum(GaineaMap.Areas.FELSWALD);
+            }
+            if (i == 1) {
+                p.units = new NT_Unit[3];
+                for (int j = 0; j < 3; j++) {
+                    p.units[j] = unit();
+                    p.units[j].owner = 1;
+                    p.units[j].location = getAreaNum(GaineaMap.Areas.GROSSEWUESTE);
+                }
             }
             nt.players[i] = p;
         }

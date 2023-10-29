@@ -11,6 +11,7 @@ import com.broll.gainea.Gainea;
 import com.broll.gainea.client.ui.components.IconLabel;
 import com.broll.gainea.client.ui.ingame.map.MapObjectRender;
 import com.broll.gainea.client.ui.ingame.unit.MenuUnit;
+import com.broll.gainea.client.ui.ingame.unit.UnitRender;
 import com.broll.gainea.client.ui.utils.ActionListener;
 import com.broll.gainea.client.ui.utils.LabelUtils;
 import com.broll.gainea.client.ui.utils.TableUtils;
@@ -36,6 +37,8 @@ public class MapObjectSelection extends Table {
 
     private List<ObjectPreview> objects;
 
+    private boolean selectable = false;
+
     public MapObjectSelection(Gainea game, Location location, Collection<MapObjectRender> stack) {
         super(game.ui.skin);
         this.game = game;
@@ -44,6 +47,7 @@ public class MapObjectSelection extends Table {
         defaults().pad(5);
         setBackground("menu-bg");
         top();
+
 
         add(LabelUtils.label(game.ui.skin, location.toString()));
         if (location instanceof Area) {
@@ -57,11 +61,22 @@ public class MapObjectSelection extends Table {
             add(LabelUtils.info(game.ui.skin, name)).spaceLeft(20).row();
         }
         row();
+        selectable = stack.stream().anyMatch(it -> it.getObject() instanceof NT_Unit && ((NT_Unit) it.getObject()).owner == game.state.getPlayer().getId());
 
         objects = stack.stream().sorted(Comparator.comparingInt(MapObjectRender::getRank)).map(obj ->
-                new ObjectPreview(game, obj.getObject(), () -> updateView(obj.getObject()), this::updateSelection)
+                {
+                    ObjectPreview prev = new ObjectPreview(game, obj.getObject(), () -> updateView(obj.getObject()));
+                    if (obj instanceof UnitRender) {
+                        prev.setSelected(((UnitRender) obj).isActionActive());
+                    }
+                    if (selectable) {
+                        prev.selectable(this::updateSelection);
+                    }
+                    return prev;
+                }
         ).collect(Collectors.toList());
         Collections.reverse(objects);
+
 
         if (objects.size() > 1) {
             Table previews = new Table(game.ui.skin);
@@ -94,13 +109,13 @@ public class MapObjectSelection extends Table {
         view.clear();
         if (objects.size() > 1) {
             Table table = new Table(getSkin());
-            List<NT_Unit> units = objects.stream().filter(it -> it.selectionImage.selected).map(it -> it.obj)
+            List<NT_Unit> units = objects.stream().filter(it -> it.selectionImage.selected || !selectable).map(it -> it.obj)
                     .filter(it -> it instanceof NT_Unit).map(it -> (NT_Unit) it).collect(Collectors.toList());
             int power = units.stream().map(u -> (int) u.power).reduce(0, Integer::sum);
             int health = units.stream().map(u -> (int) u.health).reduce(0, Integer::sum);
             int maxHealth = units.stream().map(u -> (int) u.maxHealth).reduce(0, Integer::sum);
             table.defaults().left().pad(5).padLeft(10).padRight(10);
-            table.add(new Label(units.size() + " Einheiten", getSkin()));
+            table.add(new Label(units.size() + " Einheiten mit", getSkin()));
             table.add(IconLabel.attack(game, power));
             table.add(IconLabel.health(game, health, maxHealth));
             view.add(table).center().row();
@@ -113,7 +128,7 @@ public class MapObjectSelection extends Table {
         private SelectionImage selectionImage;
         private NT_BoardObject obj;
 
-        private ObjectPreview(Gainea game, NT_BoardObject obj, ActionListener onHover, ActionListener onSelect) {
+        private ObjectPreview(Gainea game, NT_BoardObject obj, ActionListener onHover) {
             super(game.ui.skin);
             this.obj = obj;
             TextureRegion icon = TextureUtils.unitIcon(game, obj.icon);
@@ -127,13 +142,15 @@ public class MapObjectSelection extends Table {
                 info.add(IconLabel.health(game, unit.health, unit.maxHealth));
                 add(info).center();
             }
-            setSelected(true);
+            TableUtils.onHoverOrClick(this, onHover);
+        }
+
+        public void selectable(ActionListener onSelect) {
             TableUtils.onClick(this, () -> {
                         setSelected(!selectionImage.selected);
                         onSelect.action();
                     }
             );
-            TableUtils.onHoverOrClick(this, onHover);
         }
 
         public void setSelected(boolean selected) {

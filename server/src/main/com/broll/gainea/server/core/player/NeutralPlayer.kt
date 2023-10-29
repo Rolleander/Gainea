@@ -8,6 +8,7 @@ import com.broll.gainea.server.core.fractions.UnitDescription
 import com.broll.gainea.server.core.objects.Soldier
 import com.broll.gainea.server.core.objects.Unit
 import com.broll.gainea.server.init.PlayerData
+import com.broll.networklib.server.impl.DummyLobbyPlayer
 
 class NeutralPlayer(game: Game) : Player(game, NeutralFraction, NeutralServerPlayer) {
     init {
@@ -37,11 +38,9 @@ object NeutralFraction : Fraction(type = DRUIDS) {
 
 }
 
-object NeutralServerPlayer : com.broll.networklib.server.impl.LobbyPlayer<PlayerData>(DummyPlayer) {
+object NeutralServerPlayer : DummyLobbyPlayer<PlayerData>() {
     override fun isOnline() = false
-}
 
-object DummyPlayer : com.broll.networklib.server.impl.Player<PlayerData>(-1, "", null) {
     init {
         data = PlayerData(DRUIDS)
     }
