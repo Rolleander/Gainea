@@ -1,4 +1,6 @@
-apply plugin: "java"
+plugins {
+    id "java"
+}
 
 sourceCompatibility = 1.8
 sourceSets.main.java.srcDirs = ["src/"]
@@ -16,15 +18,14 @@ task runDesktop(dependsOn: classes, type: JavaExec) {
     ignoreExitValue = true
 }
 
-
-task testDesktop(dependsOn: classes, type: SpawnJavaExec) {
+task testDesktop(dependsOn: classes, type: JavaExec) {
     group = "Execution"
     classpath = sourceSets.main.runtimeClasspath
     workingDir = project.assetsDir
+    ignoreExitValue = true
     main = project.mainClassName
     args = ['test']
 }
-
 
 task debug(dependsOn: classes, type: JavaExec) {
     main = project.mainClassName
@@ -49,28 +50,3 @@ task dist(type: Jar) {
 }
 
 dist.dependsOn classes
-
-
-import java.util.concurrent.atomic.AtomicReference
-
-class SpawnJavaExec extends JavaExec {
-
-    @Internal
-    final AtomicReference spawnRef = new AtomicReference()
-
-    @TaskAction
-    @Override
-    void exec() {
-        setJvmArgs(getJvmArgs())
-        def javaExecAction = getExecActionFactory().newJavaExecAction()
-        def f = super.getClass().superclass.superclass.getDeclaredField('javaExecSpec')
-        f.accessible = true
-        def javaExecSpec = f.get(this)
-        javaExecSpec.copyTo(javaExecAction)
-        def m = super.getClass().superclass.superclass.getDeclaredMethod('getExecutable')
-        m.accessible = true
-        javaExecAction.executable = m.invoke(this)
-        def execHandle = javaExecAction.build()
-        spawnRef.set execHandle.start()
-    }
-}

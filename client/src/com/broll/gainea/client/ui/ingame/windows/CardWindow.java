@@ -39,7 +39,7 @@ public class CardWindow extends MenuWindow {
         this.cardView = new Table(game.ui.skin);
         cardList.top().left();
         cardList.defaults().space(10);
-        add(cardList).padTop(10).row();
+        add(cardList).padTop(10).left().row();
         add(cardView).padLeft(10).padTop(10).padBottom(10).expand().fill();
         TableUtils.consumeClicks(this);
         center(920, 410);

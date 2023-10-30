@@ -39,7 +39,6 @@ object NeutralFraction : Fraction(type = DRUIDS) {
 }
 
 object NeutralServerPlayer : DummyLobbyPlayer<PlayerData>() {
-    override fun isOnline() = false
 
     init {
         data = PlayerData(DRUIDS)

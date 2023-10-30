@@ -70,7 +70,10 @@ public class MapObjectSelection extends Table {
                         prev.setSelected(((UnitRender) obj).isActionActive());
                     }
                     if (selectable) {
-                        prev.selectable(this::updateSelection);
+                        prev.selectable(() -> {
+                            this.updateSelection();
+                            this.updateView(obj.getObject());
+                        });
                     }
                     return prev;
                 }
