@@ -1,17 +1,13 @@
 package com.broll.gainea.server.core.battle
 
 import com.broll.gainea.server.core.map.Location
-import com.broll.gainea.server.core.objects.Unit
+import com.broll.gainea.server.core.objects.IUnit
 import com.broll.gainea.server.core.player.Player
 
-class BattleResult(val retreated: Boolean, context: BattleContext) : BattleContext(context.attackers, context.defenders) {
-    val attackersWon: Boolean
-    val defendersWon: Boolean
-
-    init {
-        attackersWon = !retreated && hasSurvivingAttackers() && !hasSurvivingDefenders()
-        defendersWon = retreated || hasSurvivingDefenders() && !hasSurvivingAttackers()
-    }
+class BattleResult(val retreated: Boolean, context: BattleContext)
+    : AbstractBattleContext<UnitSnapshot>(context.attackers.map { UnitSnapshot(it) }, context.defenders.map { UnitSnapshot(it) }) {
+    val attackersWon: Boolean = !retreated && hasSurvivingAttackers() && !hasSurvivingDefenders()
+    val defendersWon: Boolean = retreated || hasSurvivingDefenders() && !hasSurvivingAttackers()
 
     val winningPlayers: List<Player>
         get() = getNonNeutralOwners(winnerOwners)
@@ -51,7 +47,7 @@ class BattleResult(val retreated: Boolean, context: BattleContext) : BattleConte
 
     val isDraw: Boolean
         get() = !attackersWon && !defendersWon
-    val winnerUnits: List<Unit>
+    val winnerUnits: List<UnitSnapshot>
         get() {
             if (attackersWon) {
                 return attackers
@@ -60,7 +56,7 @@ class BattleResult(val retreated: Boolean, context: BattleContext) : BattleConte
             }
             return listOf()
         }
-    val loserUnits: List<Unit>
+    val loserUnits: List<UnitSnapshot>
         get() {
             if (attackersWon) {
                 return defenders
@@ -69,7 +65,7 @@ class BattleResult(val retreated: Boolean, context: BattleContext) : BattleConte
             }
             return listOf()
         }
-    val winnerSurvivingUnits: List<Unit>
+    val winnerSurvivingUnits: List<UnitSnapshot>
         get() {
             if (attackersWon) {
                 return aliveAttackers
@@ -78,7 +74,7 @@ class BattleResult(val retreated: Boolean, context: BattleContext) : BattleConte
             }
             return listOf()
         }
-    val loserSurvivingUnits: List<Unit>
+    val loserSurvivingUnits: List<UnitSnapshot>
         get() {
             if (attackersWon) {
                 return aliveDefenders
@@ -87,7 +83,7 @@ class BattleResult(val retreated: Boolean, context: BattleContext) : BattleConte
             }
             return listOf()
         }
-    val winnerDeadUnits: List<Unit>
+    val winnerDeadUnits: List<UnitSnapshot>
         get() {
             if (attackersWon) {
                 return killedAttackers
@@ -96,7 +92,7 @@ class BattleResult(val retreated: Boolean, context: BattleContext) : BattleConte
             }
             return listOf()
         }
-    val loserDeadUnits: List<Unit>
+    val loserDeadUnits: List<UnitSnapshot>
         get() {
             if (attackersWon) {
                 return killedDefenders
@@ -115,7 +111,7 @@ class BattleResult(val retreated: Boolean, context: BattleContext) : BattleConte
         return null
     }
 
-    fun getKillingPlayers(unit: Unit): List<Player> {
+    fun getKillingPlayers(unit: IUnit): List<Player> {
         if (killedAttackers.contains(unit)) {
             return defendingPlayers
         } else if (killedDefenders.contains(unit)) {

@@ -4,6 +4,7 @@ import com.broll.gainea.misc.RandomUtils
 import com.broll.gainea.server.core.battle.BattleContext
 import com.broll.gainea.server.core.battle.BattleResult
 import com.broll.gainea.server.core.battle.FightingPower
+import com.broll.gainea.server.core.battle.UnitSnapshot
 import com.broll.gainea.server.core.fractions.Fraction
 import com.broll.gainea.server.core.fractions.FractionDescription
 import com.broll.gainea.server.core.fractions.FractionType
@@ -11,7 +12,6 @@ import com.broll.gainea.server.core.fractions.UnitDescription
 import com.broll.gainea.server.core.map.AreaType
 import com.broll.gainea.server.core.map.Location
 import com.broll.gainea.server.core.objects.Soldier
-import com.broll.gainea.server.core.objects.Unit
 import com.broll.gainea.server.core.objects.monster.Monster
 import com.broll.gainea.server.core.utils.UnitControl.spawn
 import com.broll.gainea.server.core.utils.isAreaType
@@ -53,7 +53,7 @@ class ShadowFraction : Fraction(FractionType.SHADOW) {
         return commander
     }
 
-    private fun summonSkeletons(killedEnemies: List<Unit>, location: Location) {
+    private fun summonSkeletons(killedEnemies: List<UnitSnapshot>, location: Location) {
         killedEnemies.forEach { _ ->
             if (RandomUtils.randomBoolean(SUMMON_CHANCE)) {
                 summon(location)

@@ -6,6 +6,7 @@ import com.broll.gainea.net.NT_Battle_Start
 import com.broll.gainea.net.NT_Battle_Update
 import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.actions.ReactionActions
+import com.broll.gainea.server.core.objects.IUnit
 import com.broll.gainea.server.core.objects.Unit
 import com.broll.gainea.server.core.objects.monster.Monster
 import com.broll.gainea.server.core.player.Player
@@ -105,7 +106,7 @@ class BattleHandler(private val game: Game, private val reactionResult: Reaction
         return Battle(context.aliveAttackers, context.aliveDefenders, attackerRolls, defenderRolls).fight()
     }
 
-    private fun List<Unit>.toInfoString() = map { "${it.id} | ${it.name} ${it.power.value} ${it.health.value}" }.joinToString(", ")
+    private fun List<IUnit>.toInfoString() = map { "${it.id} | ${it.name} ${it.power.value} ${it.health.value}" }.joinToString(", ")
 
     private fun logContext(prefix: String) {
         Log.info(prefix + " Attackers: (" + context.aliveAttackers.toInfoString() + ")"
@@ -190,8 +191,8 @@ class BattleHandler(private val game: Game, private val reactionResult: Reaction
         isBattleActive = false
         val updateReceiver = game.updateReceiver
         val fallenUnits = mutableListOf<Unit>()
-        fallenUnits.addAll(result.killedAttackers)
-        fallenUnits.addAll(result.killedDefenders)
+        fallenUnits.addAll(result.killedAttackers.map { it.source })
+        fallenUnits.addAll(result.killedDefenders.map { it.source })
         fallenUnits.forEach { game.remove(it) }
         fallenUnits.forEach { it.onDeath(result) }
         fallenUnits.forEach { updateReceiver.killed(it, result) }
@@ -199,7 +200,7 @@ class BattleHandler(private val game: Game, private val reactionResult: Reaction
         game.sendUpdate(game.nt())
         //if defenders lost, move surviving attackers to location
         if (result.attackersWon) {
-            game.move(result.aliveAttackers, result.location)
+            game.move(result.aliveAttackers.map { it.source }, result.location)
         }
         //find dead monsters to give killing player rewards
         if (grantRewards) {
@@ -208,11 +209,11 @@ class BattleHandler(private val game: Game, private val reactionResult: Reaction
         }
     }
 
-    private fun rewardKilledMonsters(killer: Player, units: List<Unit>) {
+    private fun rewardKilledMonsters(killer: Player, units: List<UnitSnapshot>) {
         if (killer.isNeutral()) {
             return
         }
-        units.filterIsInstance(Monster::class.java).filter { it.owner.isNeutral() }.forEach {
+        units.map { it.source }.filterIsInstance(Monster::class.java).filter { it.owner.isNeutral() }.forEach {
             killer.goalHandler.addStars(it.stars)
             killer.fraction.killedMonster(it)
         }

@@ -29,6 +29,7 @@ class C_ForceAttack : Card(86, "Wahnsinniger Angriff", "Wählt eine feindliche A
         val from = selectHandler.selectLocation("Wählt eine feindliche Armee", targets)
         val enemy = from.units.map { it.owner }.find { !it.isNeutral() }!!
         val to = selectHandler.selectLocation("Wählt ein Angriffsziel", from.validNeighbours(enemy))
+        //todo darf nicht abhauen
         game.conquer(from.units.filter { it.owner == enemy }, to)
     }
 

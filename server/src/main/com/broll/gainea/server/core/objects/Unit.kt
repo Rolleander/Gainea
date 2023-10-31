@@ -9,16 +9,16 @@ import com.broll.gainea.server.core.objects.buffs.IntBuff
 import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.core.player.isNeutral
 
-abstract class Unit(owner: Player) : MapObject(owner) {
-    var maxHealth: BuffableInt<MapObject> = BuffableInt(this, 0)
+abstract class Unit(owner: Player) : MapObject(owner), IUnit {
+    override var maxHealth: BuffableInt<MapObject> = BuffableInt(this, 0)
 
-    var power: BuffableInt<MapObject> = BuffableInt(this, 0)
+    override var power: BuffableInt<MapObject> = BuffableInt(this, 0)
 
-    var health: BuffableInt<MapObject> = BuffableInt(this, 0)
+    override var health: BuffableInt<MapObject> = BuffableInt(this, 0)
 
-    var attacksPerTurn: BuffableInt<MapObject> = BuffableInt(this, 1) //default 1 attack
+    override var attacksPerTurn: BuffableInt<MapObject> = BuffableInt(this, 1) //default 1 attack
 
-    var numberPlus: BuffableInt<MapObject> = BuffableInt(this, 0)
+    override var numberPlus: BuffableInt<MapObject> = BuffableInt(this, 0)
 
     private var attackCount = 0
     var isMoveOrAttackRestriction = true //usually units can only attack or move in one turn
@@ -26,8 +26,7 @@ abstract class Unit(owner: Player) : MapObject(owner) {
     private var moved = false
     var controllable = true
     private var type = NT_Unit.TYPE_MALE.toInt()
-    var kills = 0
-        private set
+    override var kills = 0
     private var justSpawned = true
 
     init {
@@ -88,17 +87,12 @@ abstract class Unit(owner: Player) : MapObject(owner) {
     fun heal(heal: Int) {
         health.addValue(heal)
         if (health.value > maxHealth.value) {
-            heal()
+            health.value = maxHealth.value
         }
     }
 
-    val dead: Boolean
-        get() = health.value <= 0
-    val alive: Boolean
-        get() = !dead
-
     fun heal() {
-        health.value = maxHealth.rootValue
+        health.value = maxHealth.value
     }
 
     fun setHealth(health: Int) {

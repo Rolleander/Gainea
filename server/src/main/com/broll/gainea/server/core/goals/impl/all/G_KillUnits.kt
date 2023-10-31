@@ -15,7 +15,7 @@ open class G_KillUnits(difficulty: GoalDifficulty = GoalDifficulty.EASY, private
     }
 
     override fun battleResult(result: BattleResult) {
-        val killed = result.getOpposingUnits(player).count { it is Soldier && it.dead }
+        val killed = result.getOpposingUnits(player).count { it.source is Soldier && it.dead }
         if (killed > 0) {
             kills += killed
             check()

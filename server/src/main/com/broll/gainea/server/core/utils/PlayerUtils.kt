@@ -2,9 +2,11 @@ package com.broll.gainea.server.core.utils
 
 import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.map.Location
+import com.broll.gainea.server.core.objects.IUnit
 import com.broll.gainea.server.core.objects.MapObject
 import com.broll.gainea.server.core.objects.Soldier
 import com.broll.gainea.server.core.objects.Unit
+import com.broll.gainea.server.core.objects.resolve
 import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.core.player.isNeutral
 
@@ -27,7 +29,7 @@ fun Game.getOtherPlayers(player: Player) = allPlayers.filter { it !== player }
 
 fun Player.getCommander() = units.filterIsInstance(Soldier::class.java).find { it.isCommander }
 
-fun Unit.isCommander() = this is Soldier && this.isCommander
+fun IUnit.isCommander() = resolve().run { this is Soldier && this.isCommander }
 
 fun Player.getUnits(location: Location) =
         location.units.filter { it.owner == this }

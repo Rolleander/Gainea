@@ -10,9 +10,11 @@ import com.broll.gainea.net.NT_Event_UpdateObjects
 import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.map.Area
 import com.broll.gainea.server.core.map.Location
+import com.broll.gainea.server.core.objects.IUnit
 import com.broll.gainea.server.core.objects.MapObject
 import com.broll.gainea.server.core.objects.Unit
 import com.broll.gainea.server.core.objects.monster.Monster
+import com.broll.gainea.server.core.objects.resolve
 import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.core.player.isNeutral
 import com.google.common.collect.Lists
@@ -27,7 +29,7 @@ object UnitControl {
     private const val DAMAGE_PAUSE = 1000
 
 
-    fun Unit.isNeutralMonster() = this is Monster && this.owner.isNeutral()
+    fun IUnit.isNeutralMonster() = resolve().run { this is Monster && this.owner.isNeutral() }
 
 
     fun Game.move(unit: MapObject, location: Location) =

@@ -17,6 +17,8 @@ class BuffableInt<T>(target: T, value: Int) : BuffableValue<T, Int, IntBuff>(tar
         return copy
     }
 
+    fun frozenCopy(target: T): BuffableInt<T> = copy(target).also { it.freeze() }
+
     override fun recalc() {
         buffedValue = rootValue
         for (buff in buffs) {

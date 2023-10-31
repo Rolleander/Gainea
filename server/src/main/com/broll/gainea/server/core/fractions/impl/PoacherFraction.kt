@@ -39,7 +39,7 @@ class PoacherFraction : Fraction(FractionType.POACHER) {
         }
         val enemies = result.getOpposingUnits(owner)
         if (units.any { it.alive && it.isFromFraction() }) {
-            val deadMonsters = enemies.filter { it.isNeutralMonster() && it.dead }
+            val deadMonsters = enemies.filter { it.source.isNeutralMonster() && it.dead }.map { it.source }
             game.recruit(owner, deadMonsters)
         }
     }

@@ -1,11 +1,13 @@
 package com.broll.gainea.server.core.battle
 
 import com.broll.gainea.server.core.map.Location
+import com.broll.gainea.server.core.objects.IUnit
 import com.broll.gainea.server.core.objects.Unit
 import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.core.player.isNeutral
 
-open class BattleContext(var attackers: List<Unit>, var defenders: List<Unit>) {
+
+open abstract class AbstractBattleContext<U : IUnit>(var attackers: List<U>, var defenders: List<U>) {
     var location: Location
         protected set
     var sourceLocation: Location
@@ -30,20 +32,20 @@ open class BattleContext(var attackers: List<Unit>, var defenders: List<Unit>) {
         return null
     }
 
-    val aliveAttackers: List<Unit>
+    val aliveAttackers: List<U>
         get() = attackers.filter { it.alive }
-    val aliveDefenders: List<Unit>
+    val aliveDefenders: List<U>
         get() = defenders.filter { it.alive }
-    val killedAttackers: List<Unit>
+    val killedAttackers: List<U>
         get() = attackers.filter { it.dead }
-    val killedDefenders: List<Unit>
+    val killedDefenders: List<U>
         get() = defenders.filter { it.dead }
 
     fun hasSurvivingAttackers() = aliveAttackers.isNotEmpty()
 
     fun hasSurvivingDefenders() = aliveDefenders.isNotEmpty()
 
-    fun getFightingArmy(unit: Unit): List<Unit> {
+    fun getFightingArmy(unit: U): List<U> {
         if (isAttacking(unit)) {
             return aliveAttackers
         } else if (isDefending(unit)) {
@@ -52,7 +54,7 @@ open class BattleContext(var attackers: List<Unit>, var defenders: List<Unit>) {
         return listOf()
     }
 
-    fun getUnits(player: Player): List<Unit> {
+    fun getUnits(player: Player): List<U> {
         if (isAttacker(player)) {
             return attackers.filter { it.owner == player }
         } else if (isDefender(player)) {
@@ -61,7 +63,7 @@ open class BattleContext(var attackers: List<Unit>, var defenders: List<Unit>) {
         return listOf()
     }
 
-    fun getOpposingUnits(player: Player): List<Unit> {
+    fun getOpposingUnits(player: Player): List<U> {
         if (isAttacker(player)) {
             return defenders
         } else if (isDefender(player)) {
@@ -70,7 +72,7 @@ open class BattleContext(var attackers: List<Unit>, var defenders: List<Unit>) {
         return listOf()
     }
 
-    fun getOpposingFightingArmy(unit: Unit): List<Unit> {
+    fun getOpposingFightingArmy(unit: U): List<U> {
         if (isAttacking(unit)) {
             return aliveDefenders
         } else if (isDefending(unit)) {
@@ -85,10 +87,10 @@ open class BattleContext(var attackers: List<Unit>, var defenders: List<Unit>) {
     fun isAttacker(player: Player) = attackingPlayers.contains(player)
 
 
-    fun isAttacking(unit: Unit) = attackers.contains(unit)
+    fun isAttacking(unit: U) = attackers.any { it.id == unit.id }
 
 
-    fun isDefending(unit: Unit) = defenders.contains(unit)
+    fun isDefending(unit: U) = defenders.any { it.id == unit.id }
 
 
     fun isDefender(player: Player) = defendingPlayers.contains(player)
@@ -116,3 +118,5 @@ open class BattleContext(var attackers: List<Unit>, var defenders: List<Unit>) {
     fun getControllingAttacker() = getNonNeutralAttackers().firstOrNull()
 
 }
+
+class BattleContext(attackers: List<Unit>, defenders: List<Unit>) : AbstractBattleContext<Unit>(attackers, defenders)

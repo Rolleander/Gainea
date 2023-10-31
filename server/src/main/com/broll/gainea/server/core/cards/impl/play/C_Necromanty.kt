@@ -17,7 +17,7 @@ class C_Necromanty : Card(70, "Nekromantie", "Für diesen Zug werden bei euren A
             override fun battleResult(result: BattleResult) {
                 if (result.isAttacker(owner)) {
                     val summonLocation = result.attackerEndLocation
-                    result.killedAttackers.filter { it !is Skeleton }
+                    result.killedAttackers.map { it.source }.filter { it !is Skeleton }
                             .forEach { _ -> summonSkeleton(summonLocation) }
                 }
             }

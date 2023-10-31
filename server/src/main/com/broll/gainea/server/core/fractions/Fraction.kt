@@ -6,9 +6,11 @@ import com.broll.gainea.server.core.actions.required.PlaceUnitAction
 import com.broll.gainea.server.core.battle.BattleContext
 import com.broll.gainea.server.core.battle.FightingPower
 import com.broll.gainea.server.core.map.Area
+import com.broll.gainea.server.core.objects.IUnit
 import com.broll.gainea.server.core.objects.Soldier
 import com.broll.gainea.server.core.objects.Unit
 import com.broll.gainea.server.core.objects.monster.Monster
+import com.broll.gainea.server.core.objects.resolve
 import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.core.processing.GameUpdateReceiverAdapter
 import com.broll.gainea.server.core.utils.getRandomFree
@@ -61,7 +63,7 @@ abstract class Fraction(val type: FractionType) : GameUpdateReceiverAdapter() {
         return power
     }
 
-    fun Unit.isFromFraction() = this is Soldier && this.fraction == this@Fraction
+    fun IUnit.isFromFraction() = resolve().run { this is Soldier && this.fraction == this@Fraction }
 
     protected open fun powerMutatorArea(power: FightingPower, area: Area) {}
 
