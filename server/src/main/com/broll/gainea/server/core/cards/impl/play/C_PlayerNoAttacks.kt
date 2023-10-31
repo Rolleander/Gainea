@@ -18,6 +18,6 @@ class C_PlayerNoAttacks : Card(14, "Wachpatrouille", "Wählt einen Gegner, diese
     }
 
     companion object {
-        private const val DURATION = 3
+        private const val DURATION = 2
     }
 }

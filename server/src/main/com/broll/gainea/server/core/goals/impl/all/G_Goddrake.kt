@@ -9,6 +9,7 @@ import com.broll.gainea.server.core.player.isNeutral
 
 
 class G_Goddrake : Goal(GoalDifficulty.EASY, "Töte den Götterdrachen im Kampf") {
+
     override fun battleResult(result: BattleResult) {
         listOf(result.attackers, result.defenders).flatten()
                 .filter { it.source is GodDragon && it.owner.isNeutral() }
