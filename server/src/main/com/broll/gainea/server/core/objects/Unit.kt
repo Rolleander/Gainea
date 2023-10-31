@@ -54,7 +54,7 @@ abstract class Unit(owner: Player) : MapObject(owner), IUnit {
         if (justSpawned) return false
         return if (isMoveOrAttackRestriction && moved) {
             false
-        } else attackCount < attacksPerTurn!!.value!!
+        } else attackCount < attacksPerTurn.value
     }
 
     open fun onDeath(throughBattle: BattleResult?) {}
@@ -64,12 +64,16 @@ abstract class Unit(owner: Player) : MapObject(owner), IUnit {
 
     override fun moved(fromPlayerAction: Boolean) {
         super.moved(fromPlayerAction)
-        moved = true
+        if (fromPlayerAction) {
+            moved = true
+        }
     }
 
     fun attacked(fromPlayerAction: Boolean = false) {
-        attackCount++
-        attacked = true
+        if (fromPlayerAction) {
+            attackCount++
+            attacked = true
+        }
     }
 
     fun setStats(power: Int, health: Int) {

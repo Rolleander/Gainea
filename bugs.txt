@@ -11,6 +11,4 @@ render für collectibles
 
 kampf wurde nicht gestartet, nur move
 
-armee kann nicht angreifen ohne grund? (nach planwechsel-karte?)
-
 man darf gleiches ziel nicht nochmal bekommen

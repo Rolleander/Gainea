@@ -112,9 +112,9 @@ class BattleResult(val retreated: Boolean, context: BattleContext)
     }
 
     fun getKillingPlayers(unit: IUnit): List<Player> {
-        if (killedAttackers.contains(unit)) {
+        if (killedAttackers.any { it.id == unit.id }) {
             return defendingPlayers
-        } else if (killedDefenders.contains(unit)) {
+        } else if (killedDefenders.any { it.id == unit.id }) {
             return attackingPlayers
         }
         return listOf()

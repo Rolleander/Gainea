@@ -14,7 +14,6 @@ class GodDragon(owner: Player) : Monster(owner) {
         description = "Bezwinger erhält einen Siegespunkt"
     }
 
-    //todo geht nicht mehr
 
     override fun onDeath(throughBattle: BattleResult?) {
         throughBattle?.getKillingPlayers(this)
