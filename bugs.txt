@@ -10,5 +10,3 @@ bot hat wilderer armee angreifen ohne das monster davon...??  -> 2 mal passiert
 render für collectibles
 
 kampf wurde nicht gestartet, nur move
-
-man darf gleiches ziel nicht nochmal bekommen

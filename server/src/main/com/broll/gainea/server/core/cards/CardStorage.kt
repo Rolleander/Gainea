@@ -9,9 +9,12 @@ class CardStorage(private val game: Game) {
     private val loader: PackageLoader<Card> = PackageLoader(Card::class.java, PACKAGE_PATH)
     private val drawChances: FloatArray
     private val totalDrawChances: Float
-    val allCards: List<Card> = loader.instantiateAll().filter { it.validFor(game) }
 
     init {
+        loader.dropClassesOf {
+            !it.validFor(game)
+        }
+        val allCards = loader.instantiateAll()
         drawChances = allCards.map { it.drawChance }.toFloatArray()
         totalDrawChances = allCards.map { it.drawChance }.sum()
     }

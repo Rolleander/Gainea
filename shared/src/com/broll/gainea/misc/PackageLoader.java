@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class PackageLoader<T> {
@@ -48,6 +49,10 @@ public class PackageLoader<T> {
         return classes.stream().map(this::instantiate).collect(Collectors.toList());
     }
 
+    public void dropClassesOf(Predicate<T> filter) {
+        classes.removeIf(clazz -> filter.test(instantiate(clazz)));
+    }
+
     public T instantiate(int index) {
         return instantiate(classes.get(index));
     }
@@ -56,7 +61,7 @@ public class PackageLoader<T> {
         try {
             return (T) clazz.newInstance();
         } catch (Exception e) {
-            throw new RuntimeException("Failed to instantiate " + clazz,e);
+            throw new RuntimeException("Failed to instantiate " + clazz, e);
         }
     }
 
