@@ -34,7 +34,7 @@ class GoalStorage(private val game: Game,
         val goals = mutableListOf<Goal>()
         for (clazz in loader.classes.shuffled()) {
             val goal = loader.instantiate(clazz)
-            if (goal.init(game, player)) {
+            if (goal.init(game, player) && player.goalHandler.isValidNewGoal(goal)) {
                 goals.add(goal)
                 if (goals.size == count) {
                     break
@@ -77,7 +77,7 @@ class GoalStorage(private val game: Game,
         for (clazz in goalClasses) {
             val goal = loader.instantiate(clazz)
             if (goalTypes.contains(goal.difficulty)) {
-                if (goal.init(game, forPlayer)) {
+                if (goal.init(game, forPlayer) && forPlayer.goalHandler.isValidNewGoal(goal)) {
                     if (condition(goal)) {
                         goalClasses.remove(clazz)
                         return goal

@@ -13,12 +13,18 @@ import com.broll.gainea.server.core.utils.isGameEnd
 import com.broll.gainea.server.core.utils.sendUpdate
 
 class GoalHandler(private val game: Game, private val player: Player) {
+
+    private val previousGoals = mutableListOf<Goal>()
     var score = 0
         private set
     var stars = 0
         private set
 
     val goals = mutableListOf<Goal>()
+
+    fun isValidNewGoal(goal: Goal) =
+            goals.none { it::class == goal::class } && previousGoals.none { it::class == goal::class }
+
     fun addPoints(points: Int) {
         if (player.isNeutral()) return
         score += points
@@ -50,6 +56,7 @@ class GoalHandler(private val game: Game, private val player: Player) {
         val nt = NT_Event_RemoveGoal()
         nt.goal = oldGoal.nt()
         player.serverPlayer.sendTCP(nt)
+        previousGoals.add(oldGoal)
     }
 
     fun newGoal(goal: Goal) {
