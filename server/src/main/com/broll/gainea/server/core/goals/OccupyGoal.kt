@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory
 abstract class OccupyGoal(difficulty: GoalDifficulty, text: String) : Goal(difficulty, text) {
     private val conditions = HashMap<Location, (Location) -> Boolean>()
     protected lateinit var map: MapContainer
-    protected var autoUpdateProgressions = true
+    protected var autoCheckProgressions = true
     override fun botStrategy(strategy: GoalStrategy) {
         strategy.setRequiredUnits(locations.size)
         strategy.updateTargets(locations.toHashSet())
@@ -33,7 +33,9 @@ abstract class OccupyGoal(difficulty: GoalDifficulty, text: String) : Goal(diffi
         }
         //set expansion restrictions by required locations
         setExpansionRestriction(*ExpansionType.entries.filter { hasLocationsOf(it) }.toTypedArray())
-        progressionGoal = locations.size
+        if (autoCheckProgressions) {
+            progressionGoal = locations.size
+        }
         return true
     }
 
@@ -110,7 +112,8 @@ abstract class OccupyGoal(difficulty: GoalDifficulty, text: String) : Goal(diffi
 
     protected fun occupy(filter: (Area) -> Boolean, vararg continents: ContinentID): List<Area> {
         assureContinentExists(*continents)
-        val list = continents.mapNotNull { map.getContinent(it) }.flatMap { it.areas }.filter(filter)
+        val list =
+            continents.mapNotNull { map.getContinent(it) }.flatMap { it.areas }.filter(filter)
         locations.addAll(list)
         return list
     }
@@ -124,7 +127,8 @@ abstract class OccupyGoal(difficulty: GoalDifficulty, text: String) : Goal(diffi
 
     protected fun occupy(filter: (Area) -> Boolean, vararg expansions: ExpansionType): List<Area> {
         assureExpansionExists(*expansions)
-        val list = expansions.mapNotNull { map.getExpansion(it) }.flatMap { it.allAreas }.filter(filter)
+        val list =
+            expansions.mapNotNull { map.getExpansion(it) }.flatMap { it.allAreas }.filter(filter)
         locations.addAll(list)
         return list
     }
@@ -170,7 +174,7 @@ abstract class OccupyGoal(difficulty: GoalDifficulty, text: String) : Goal(diffi
                 }
             }
         }
-        if (autoUpdateProgressions) {
+        if (autoCheckProgressions) {
             updateProgression(progress)
         }
         if (success) {

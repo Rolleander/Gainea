@@ -49,7 +49,7 @@ public class MapObjectContainer {
         while (iterator.hasNext()) {
             Map.Entry<Location, MapObjectRender> entry = iterator.next();
             if (entry.getValue().getObject().id == obj.id) {
-                entry.getValue().addAction(Actions.sequence(Actions.fadeOut(0.4f), Actions.removeActor()));
+                entry.getValue().addAction(Actions.sequence(Actions.fadeOut(0.3f), Actions.removeActor()));
                 iterator.remove();
                 return;
             }

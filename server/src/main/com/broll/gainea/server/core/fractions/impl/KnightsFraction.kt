@@ -13,12 +13,17 @@ import com.broll.gainea.server.core.utils.isAreaType
 class KnightsFraction : Fraction(FractionType.KNIGHTS) {
     override fun description(): FractionDescription {
         val desc = FractionDescription(
-                "",
-                soldier = UnitDescription(name = "Kreuzritter", icon = 11),
-                commander = UnitDescription(name = "Kreuzritterchampion", icon = 7, power = 3, health = 3),
+            "",
+            soldier = UnitDescription(name = "Kreuzritter", icon = 11),
+            commander = UnitDescription(
+                name = "Kreuzritterchampion",
+                icon = 7,
+                power = 3,
+                health = 3
+            ),
         )
         desc.plus("In Unterzahl +1 Zahl")
-        desc.plus("Im 1v1 +2 Zahl")
+        desc.plus("Im 1v1 +1 Zahl, als Angreifer +2 Zahl")
         desc.contra("Auf Sümpfen und Seen -1 Zahl")
         return desc
     }
@@ -31,8 +36,9 @@ class KnightsFraction : Fraction(FractionType.KNIGHTS) {
             // smaller army +1 Z
             power.changeNumberPlus(1)
         } else if (army.size == 1 && opponents.size == 1) {
-            //1v1  +2 Z
-            power.changeNumberPlus(2)
+            //1v1  +2 Z (atk) / +1 Z (def)
+            val plus = if (context.isAttacking(army.first())) 2 else 1
+            power.changeNumberPlus(plus)
         }
         if (context.location.isAreaType(AreaType.BOG, AreaType.LAKE)) {
             power.changeNumberPlus(-1)

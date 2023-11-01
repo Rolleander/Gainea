@@ -4,8 +4,12 @@ import com.broll.gainea.server.core.map.Location
 import com.broll.gainea.server.core.objects.IUnit
 import com.broll.gainea.server.core.player.Player
 
-class BattleResult(val retreated: Boolean, context: BattleContext)
-    : AbstractBattleContext<UnitSnapshot>(context.attackers.map { UnitSnapshot(it) }, context.defenders.map { UnitSnapshot(it) }) {
+class BattleResult(val retreated: Boolean, context: BattleContext) :
+    AbstractBattleContext<UnitSnapshot>(
+        context.attackers.map { UnitSnapshot(it) },
+        context.defenders.map { UnitSnapshot(it) },
+        context.rounds
+    ) {
     val attackersWon: Boolean = !retreated && hasSurvivingAttackers() && !hasSurvivingDefenders()
     val defendersWon: Boolean = retreated || hasSurvivingDefenders() && !hasSurvivingAttackers()
 
@@ -101,6 +105,9 @@ class BattleResult(val retreated: Boolean, context: BattleContext)
             }
             return listOf()
         }
+
+    fun getDamageDealt(player: Player) =
+        rounds.flatMap { it.damageTaken }.count { it.source.owner == player }
 
     fun getEndLocation(player: Player): Location? {
         if (isAttacker(player)) {

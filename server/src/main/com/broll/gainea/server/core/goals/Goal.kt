@@ -12,7 +12,8 @@ import com.broll.gainea.server.core.processing.GameUpdateReceiverAdapter
 import com.broll.gainea.server.core.utils.ProcessingUtils
 import com.broll.gainea.server.core.utils.sendUpdate
 
-abstract class Goal(var difficulty: GoalDifficulty, var text: String) : GameUpdateReceiverAdapter() {
+abstract class Goal(var difficulty: GoalDifficulty, var text: String) :
+    GameUpdateReceiverAdapter() {
     protected val locations = mutableListOf<Location>()
     var restrictionInfo: String? = null
         private set
@@ -75,6 +76,10 @@ abstract class Goal(var difficulty: GoalDifficulty, var text: String) : GameUpda
             nt.index = player.goalHandler.goals.indexOf(this)
             player.serverPlayer.sendTCP(nt)
         }
+    }
+
+    protected fun resetProgression() {
+        updateProgression(0)
     }
 
     abstract fun check()

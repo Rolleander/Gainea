@@ -10,9 +10,12 @@ import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.core.utils.getOtherPlayers
 import org.slf4j.LoggerFactory
 
-class SelectChoiceAction : AbstractActionHandler<NT_Action_SelectChoice, SelectChoiceAction.Context>() {
-    inner class Context(action: NT_Action_SelectChoice,
-                        var selectedOption: Int = 0) : ActionContext<NT_Action_SelectChoice>(action)
+class SelectChoiceAction :
+    AbstractActionHandler<NT_Action_SelectChoice, SelectChoiceAction.Context>() {
+    inner class Context(
+        action: NT_Action_SelectChoice,
+        var selectedOption: Int = 0
+    ) : ActionContext<NT_Action_SelectChoice>(action)
 
     fun selection(message: String, choices: List<String>): Int {
         return selection(game.currentPlayer, message, choices)
@@ -21,7 +24,10 @@ class SelectChoiceAction : AbstractActionHandler<NT_Action_SelectChoice, SelectC
     fun selection(player: Player, message: String, choices: List<String>): Int {
         Log.debug("Select choice action")
         val context = build(choices)
-        actionHandlers.reactionActions.requireAction(player, RequiredActionContext(context, message))
+        actionHandlers.reactionActions.requireAction(
+            player,
+            RequiredActionContext(context, message)
+        )
         Log.trace("Wait for select choice reaction")
         processingBlock.waitFor(player)
         return context.selectedOption
@@ -37,7 +43,10 @@ class SelectChoiceAction : AbstractActionHandler<NT_Action_SelectChoice, SelectC
         val action = NT_Action_SelectChoice()
         action.objectChoices = choices.toTypedArray<Any>()
         val context = Context(action)
-        actionHandlers.reactionActions.requireAction(player, RequiredActionContext(context, message))
+        actionHandlers.reactionActions.requireAction(
+            player,
+            RequiredActionContext(context, message)
+        )
         Log.trace("Wait for select choice reaction")
         processingBlock.waitFor(player)
         return context.selectedOption
@@ -51,12 +60,16 @@ class SelectChoiceAction : AbstractActionHandler<NT_Action_SelectChoice, SelectC
         assureNotEmpty(choices)
         Log.debug("Select location action")
         val action = NT_Action_SelectChoice()
-        action.objectChoices = choices.map { it.number }.toTypedArray()
+        val distinctLocations = choices.distinct()
+        action.objectChoices = distinctLocations.map { it.number }.toTypedArray()
         val context = Context(action)
-        actionHandlers.reactionActions.requireAction(player, RequiredActionContext(context, message))
+        actionHandlers.reactionActions.requireAction(
+            player,
+            RequiredActionContext(context, message)
+        )
         Log.trace("Wait for select choice reaction")
         processingBlock.waitFor(player)
-        return choices[context.selectedOption]
+        return distinctLocations[context.selectedOption]
     }
 
     fun selectOtherPlayer(player: Player, message: String): Player {
@@ -66,7 +79,10 @@ class SelectChoiceAction : AbstractActionHandler<NT_Action_SelectChoice, SelectC
     fun selectPlayer(player: Player, options: List<Player>, message: String): Player {
         Log.debug("Select player action")
         val context = build(options.map { it.serverPlayer.name })
-        actionHandlers.reactionActions.requireAction(player, RequiredActionContext(context, message))
+        actionHandlers.reactionActions.requireAction(
+            player,
+            RequiredActionContext(context, message)
+        )
         Log.trace("Wait for select choice reaction")
         processingBlock.waitFor(player)
         return options[context.selectedOption]
@@ -85,7 +101,11 @@ class SelectChoiceAction : AbstractActionHandler<NT_Action_SelectChoice, SelectC
         return Context(action)
     }
 
-    override fun handleReaction(context: Context, action: NT_Action_SelectChoice, reaction: NT_Reaction) {
+    override fun handleReaction(
+        context: Context,
+        action: NT_Action_SelectChoice,
+        reaction: NT_Reaction
+    ) {
         Log.trace("Handle select choice reaction")
         context.selectedOption = reaction.option
         processingBlock.resume()

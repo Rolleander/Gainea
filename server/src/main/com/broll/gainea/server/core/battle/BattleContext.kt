@@ -7,7 +7,13 @@ import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.core.player.isNeutral
 
 
-open abstract class AbstractBattleContext<U : IUnit>(var attackers: List<U>, var defenders: List<U>) {
+abstract class AbstractBattleContext<U : IUnit>(
+    var attackers: List<U>,
+    var defenders: List<U>,
+    val rounds: MutableList<BattleRound> = mutableListOf()
+) {
+
+    
     var location: Location
         protected set
     var sourceLocation: Location
@@ -110,13 +116,16 @@ open abstract class AbstractBattleContext<U : IUnit>(var attackers: List<U>, var
     protected fun getNonNeutralOwners(owners: List<Player>) = owners.filterNot { it.isNeutral() }
 
     fun getNonNeutralAttackers() =
-            getNonNeutralOwners(attackingPlayers)
+        getNonNeutralOwners(attackingPlayers)
 
     fun getNonNeutralDefenders() =
-            getNonNeutralOwners(defendingPlayers)
+        getNonNeutralOwners(defendingPlayers)
 
     fun getControllingAttacker() = getNonNeutralAttackers().firstOrNull()
 
 }
 
-class BattleContext(attackers: List<Unit>, defenders: List<Unit>) : AbstractBattleContext<Unit>(attackers, defenders)
+data class BattleRound(val damageTaken: List<FightResult.AttackDamage>)
+
+class BattleContext(attackers: List<Unit>, defenders: List<Unit>) :
+    AbstractBattleContext<Unit>(attackers, defenders)

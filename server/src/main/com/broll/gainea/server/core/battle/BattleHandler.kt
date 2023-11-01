@@ -32,7 +32,12 @@ class BattleHandler(private val game: Game, private val reactionResult: Reaction
         isBattleActive = false
     }
 
-    fun startBattle(attackers: List<Unit>, defenders: List<Unit>, allowRetreat: Boolean = true, grantRewards: Boolean = true) {
+    fun startBattle(
+        attackers: List<Unit>,
+        defenders: List<Unit>,
+        allowRetreat: Boolean = true,
+        grantRewards: Boolean = true
+    ) {
         if (!isBattleActive) {
             this.allowRetreat = allowRetreat
             this.grantRewards = grantRewards
@@ -103,14 +108,22 @@ class BattleHandler(private val game: Game, private val reactionResult: Reaction
         val attackerRolls = RollResult(context, context.aliveAttackers)
         val defenderRolls = RollResult(context, context.aliveDefenders)
         rollManipulator.roundStarts(context, attackerRolls, defenderRolls)
-        return Battle(context.aliveAttackers, context.aliveDefenders, attackerRolls, defenderRolls).fight()
+        return Battle(
+            context.aliveAttackers,
+            context.aliveDefenders,
+            attackerRolls,
+            defenderRolls
+        ).fight()
     }
 
-    private fun List<IUnit>.toInfoString() = map { "${it.id} | ${it.name} ${it.power.value} ${it.health.value}" }.joinToString(", ")
+    private fun List<IUnit>.toInfoString() =
+        map { "${it.id} | ${it.name} ${it.power.value} ${it.health.value}" }.joinToString(", ")
 
     private fun logContext(prefix: String) {
-        Log.info(prefix + " Attackers: (" + context.aliveAttackers.toInfoString() + ")"
-                + ")   Defenders: (" + context.aliveDefenders.toInfoString() + ")")
+        Log.info(
+            prefix + " Attackers: (" + context.aliveAttackers.toInfoString() + ")"
+                    + ")   Defenders: (" + context.aliveDefenders.toInfoString() + ")"
+        )
     }
 
     private fun fightRound() {
@@ -134,6 +147,7 @@ class BattleHandler(private val game: Game, private val reactionResult: Reaction
         }
         update.state = state
         update.damage = result.getDamage().map { it.nt() }.toTypedArray()
+        context.rounds += BattleRound(result.getDamage())
         //send update
         reactionResult.sendGameUpdate(update)
         val delay = getAnimationDelay(result.attackRolls.size, result.defenderRolls.size)
@@ -184,10 +198,12 @@ class BattleHandler(private val game: Game, private val reactionResult: Reaction
 
     private fun battleFinished(retreated: Boolean) {
         val result = BattleResult(retreated, context)
-        Log.info("Battle over! Surviving Attackers: (" + result.aliveAttackers.toInfoString() + ")" +
-                " Killed Attackers: (" + result.killedAttackers.toInfoString() + ")" +
-                " Surviving Defenders: (" + result.aliveDefenders.toInfoString() + ")" +
-                " Killed Defenders: (" + result.killedDefenders.toInfoString() + ")")
+        Log.info(
+            "Battle over! Surviving Attackers: (" + result.aliveAttackers.toInfoString() + ")" +
+                    " Killed Attackers: (" + result.killedAttackers.toInfoString() + ")" +
+                    " Surviving Defenders: (" + result.aliveDefenders.toInfoString() + ")" +
+                    " Killed Defenders: (" + result.killedDefenders.toInfoString() + ")"
+        )
         isBattleActive = false
         val updateReceiver = game.updateReceiver
         val fallenUnits = mutableListOf<Unit>()
@@ -204,8 +220,10 @@ class BattleHandler(private val game: Game, private val reactionResult: Reaction
         }
         //find dead monsters to give killing player rewards
         if (grantRewards) {
-            result.getNonNeutralAttackers().forEach { rewardKilledMonsters(it, result.killedDefenders) }
-            result.getNonNeutralDefenders().forEach { rewardKilledMonsters(it, result.killedAttackers) }
+            result.getNonNeutralAttackers()
+                .forEach { rewardKilledMonsters(it, result.killedDefenders) }
+            result.getNonNeutralDefenders()
+                .forEach { rewardKilledMonsters(it, result.killedAttackers) }
         }
     }
 
@@ -213,10 +231,11 @@ class BattleHandler(private val game: Game, private val reactionResult: Reaction
         if (killer.isNeutral()) {
             return
         }
-        units.map { it.source }.filterIsInstance(Monster::class.java).filter { it.owner.isNeutral() }.forEach {
-            killer.goalHandler.addStars(it.stars)
-            killer.fraction.killedMonster(it)
-        }
+        units.map { it.source }.filterIsInstance(Monster::class.java)
+            .filter { it.owner.isNeutral() }.forEach {
+                killer.goalHandler.addStars(it.stars)
+                killer.fraction.killedMonster(it)
+            }
     }
 
     companion object {

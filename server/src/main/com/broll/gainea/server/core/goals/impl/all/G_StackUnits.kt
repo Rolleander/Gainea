@@ -10,7 +10,7 @@ class G_StackUnits : OccupyGoal(GoalDifficulty.EASY, "") {
     private lateinit var area: Area
 
     init {
-        autoUpdateProgressions = false
+        autoCheckProgressions = false
         progressionGoal = COUNT
     }
 

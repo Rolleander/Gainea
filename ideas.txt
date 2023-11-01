@@ -19,7 +19,6 @@ unused units:
 22 = shield wielder
 28 = mace wielder
 35 = lone fighter
-47 = wizard
 95 = undead warrior
 96 = lava golem
 100 = druid witch
