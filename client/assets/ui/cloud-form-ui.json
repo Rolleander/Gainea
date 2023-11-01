@@ -33,6 +33,15 @@ com.badlogic.gdx.scenes.scene2d.ui.Skin$TintedDrawable: {
 			b: 1
 			a: 0.7733333
 		}
+	},
+	background-dark: {
+		name: white
+		color: {
+			r: 0.8
+			g: 0.8
+			b: 0.8
+			a: 0.9
+		}
 	}
 	black: {
 		name: white

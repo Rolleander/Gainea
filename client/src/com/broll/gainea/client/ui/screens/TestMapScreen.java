@@ -27,6 +27,8 @@ import com.broll.gainea.server.core.map.impl.GaineaMap;
 import com.broll.gainea.server.init.ExpansionSetting;
 import com.broll.networklib.client.impl.DummyLobbyPlayer;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -125,7 +127,8 @@ public class TestMapScreen extends Screen {
         ac.cardId = id;
         actions.add(ac);
 
-        NT_Unit[] units = game.state.getPlayer(0).units;
+        NT_Unit[] units = game.state.getPlayer(0).units.clone();
+        units = ArrayUtils.remove(units, 0);
         NT_Action_Move move = new NT_Action_Move();
         move.units = units;
         move.location = getAreaNum(GaineaMap.Areas.XOMDELTA);

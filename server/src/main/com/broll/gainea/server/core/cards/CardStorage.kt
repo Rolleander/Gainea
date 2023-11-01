@@ -8,13 +8,14 @@ import com.broll.gainea.server.core.player.Player
 class CardStorage(private val game: Game) {
     private val loader: PackageLoader<Card> = PackageLoader(Card::class.java, PACKAGE_PATH)
     private val drawChances: FloatArray
+    val allCards: List<Card>
     private val totalDrawChances: Float
 
     init {
         loader.dropClassesOf {
             !it.validFor(game)
         }
-        val allCards = loader.instantiateAll()
+        allCards = loader.instantiateAll()
         drawChances = allCards.map { it.drawChance }.toFloatArray()
         totalDrawChances = allCards.map { it.drawChance }.sum()
     }

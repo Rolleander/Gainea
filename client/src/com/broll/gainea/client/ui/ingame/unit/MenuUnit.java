@@ -20,13 +20,11 @@ import org.apache.commons.lang3.StringUtils;
 
 public class MenuUnit extends Table {
 
-    private boolean selected = false;
     private NT_BoardObject object;
 
     public MenuUnit(Gainea game, Skin skin, NT_BoardObject object) {
         this.object = object;
         setSkin(skin);
-        setSelected(false);
         MapObjectRender render = MapObjectRender.createRender(game, game.ui.skin, object);
         render.showDescription = false;
         if (render instanceof UnitRender) {
@@ -69,19 +67,6 @@ public class MenuUnit extends Table {
         setTouchable(Touchable.enabled);
         TableUtils.consumeClicks(this);
         this.padRight(8);
-    }
-
-    public boolean isSelected() {
-        return selected;
-    }
-
-    public void setSelected(boolean selected) {
-        this.selected = selected;
-        if (selected) {
-            setBackground("highlight");
-        } else {
-            setBackground("menu-bg");
-        }
     }
 
     public NT_BoardObject getObject() {

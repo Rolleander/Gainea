@@ -1,8 +1,10 @@
 package com.broll.gainea.client.ui.ingame.windows;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -37,19 +39,17 @@ public class MapObjectSelection extends Table {
 
     private List<ObjectPreview> objects;
 
-    private boolean selectable = false;
+    private boolean anySelectable = false;
+
 
     public MapObjectSelection(Gainea game, Location location, Collection<MapObjectRender> stack) {
         super(game.ui.skin);
         this.game = game;
-        pad(3);
-        padTop(10);
-        defaults().pad(5);
-        setBackground("menu-bg");
         top();
-
-
-        add(LabelUtils.label(game.ui.skin, location.toString()));
+        Table title = new Table(getSkin());
+        title.pad(8);
+        title.setBackground("background");
+        title.add(LabelUtils.label(game.ui.skin, location.toString()));
         if (location instanceof Area) {
             AreaCollection container = location.container;
             String name = container.getName();
@@ -58,22 +58,27 @@ public class MapObjectSelection extends Table {
             } else if (container instanceof Continent) {
                 name = "Kontinent: " + name;
             }
-            add(LabelUtils.info(game.ui.skin, name)).spaceLeft(20).row();
+            title.add(LabelUtils.info(game.ui.skin, name)).spaceLeft(20);
         }
-        row();
-        selectable = stack.stream().anyMatch(it -> it.getObject() instanceof NT_Unit && ((NT_Unit) it.getObject()).owner == game.state.getPlayer().getId());
+        add(title).expandX().fillX().row();
+
+        anySelectable = stack.stream().anyMatch(it -> it instanceof UnitRender && ((UnitRender) it).isActionActive());
+        boolean foreignUnits = stack.stream().anyMatch(it -> it.getObject() instanceof NT_Unit && ((NT_Unit) it.getObject()).owner != game.state.getPlayer().getId());
 
         objects = stack.stream().sorted(Comparator.comparingInt(MapObjectRender::getRank)).map(obj ->
                 {
                     ObjectPreview prev = new ObjectPreview(game, obj.getObject(), () -> updateView(obj.getObject()));
                     if (obj instanceof UnitRender) {
-                        prev.setSelected(((UnitRender) obj).isActionActive());
-                    }
-                    if (selectable) {
-                        prev.selectable(() -> {
-                            this.updateSelection();
-                            this.updateView(obj.getObject());
-                        });
+                        boolean selectable = ((UnitRender) obj).isActionActive();
+                        prev.setSelected(selectable);
+                        if (selectable) {
+                            prev.selectable(() -> {
+                                this.updateSelection();
+                                this.updateView(obj.getObject());
+                            });
+                        } else if (!foreignUnits) {
+                            prev.disabled();
+                        }
                     }
                     return prev;
                 }
@@ -83,8 +88,9 @@ public class MapObjectSelection extends Table {
 
         if (objects.size() > 1) {
             Table previews = new Table(game.ui.skin);
+            previews.setBackground("background-dark");
+            previews.pad(8);
             previews.defaults().pad(4).left();
-
             int columns = objects.size() > 21 ? 4 : 3;
             for (int i = 0; i < objects.size(); i++) {
                 previews.add(objects.get(i));
@@ -96,7 +102,7 @@ public class MapObjectSelection extends Table {
         }
 
         this.view = new Table(game.ui.skin);
-        add(view).colspan(2);
+        add(view).colspan(2).expandX().fillX();
         updateView(objects.get(0).obj);
         TableUtils.consumeClicks(this);
         updateSelection();
@@ -108,11 +114,15 @@ public class MapObjectSelection extends Table {
     }
 
     private void updateView(NT_BoardObject object) {
+        Table content = new Table(getSkin());
+        content.pad(8);
+        content.setBackground("background");
         MenuUnit unit = new MenuUnit(game, getSkin(), object);
-        view.clear();
+        unit.pad(8);
         if (objects.size() > 1) {
             Table table = new Table(getSkin());
-            List<NT_Unit> units = objects.stream().filter(it -> it.selectionImage.selected || !selectable).map(it -> it.obj)
+            table.pad(8);
+            List<NT_Unit> units = objects.stream().filter(it -> it.selectionImage.selected || !anySelectable).map(it -> it.obj)
                     .filter(it -> it instanceof NT_Unit).map(it -> (NT_Unit) it).collect(Collectors.toList());
             int power = units.stream().map(u -> (int) u.power).reduce(0, Integer::sum);
             int health = units.stream().map(u -> (int) u.health).reduce(0, Integer::sum);
@@ -121,9 +131,11 @@ public class MapObjectSelection extends Table {
             table.add(new Label(units.size() + " Einheiten mit", getSkin()));
             table.add(IconLabel.attack(game, power));
             table.add(IconLabel.health(game, health, maxHealth));
-            view.add(table).center().row();
+            content.add(table).expandX().fillX().center().row();
         }
-        view.add(unit).spaceTop(10);
+        content.add(unit);
+        view.clear();
+        view.add(content).expandX().fillX();
     }
 
     private static class ObjectPreview extends Table {
@@ -136,7 +148,7 @@ public class MapObjectSelection extends Table {
             this.obj = obj;
             TextureRegion icon = TextureUtils.unitIcon(game, obj.icon);
             selectionImage = new SelectionImage(game, icon);
-            add(selectionImage).spaceRight(5);
+            add(selectionImage).spaceRight(8);
             if (obj instanceof NT_Unit) {
                 NT_Unit unit = (NT_Unit) obj;
                 Table info = new Table();
@@ -159,12 +171,18 @@ public class MapObjectSelection extends Table {
         public void setSelected(boolean selected) {
             selectionImage.selected = selected;
         }
+
+        public void disabled() {
+            selectionImage.addAction(Actions.alpha(0.4f));
+        }
     }
 
     private static class SelectionImage extends Image {
 
         private boolean selected = false;
         private Texture selectionRing;
+
+        private float t;
 
         private SelectionImage(Gainea game, TextureRegion region) {
             super(region);
@@ -177,9 +195,11 @@ public class MapObjectSelection extends Table {
         @Override
         public void draw(Batch batch, float parentAlpha) {
             super.draw(batch, parentAlpha);
+            t += Gdx.graphics.getDeltaTime();
             if (selected) {
-                batch.draw(selectionRing, getX() - 5, getY() - 5,
-                        selectionRing.getWidth() * getScaleX(), selectionRing.getHeight() * getScaleY());
+                float grow = (float) (Math.sin(t * 10) * 2.5f);
+                batch.draw(selectionRing, getX() - 5 - grow / 2.0f, getY() - 5 - grow / 2.0f,
+                        selectionRing.getWidth() * getScaleX() + grow, selectionRing.getHeight() * getScaleY() + grow);
             }
         }
     }
