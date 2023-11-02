@@ -8,6 +8,7 @@ import com.broll.gainea.net.NT_BoardUpdate;
 import com.broll.gainea.net.NT_Card;
 import com.broll.gainea.net.NT_GameStatistic;
 import com.broll.gainea.net.NT_Goal;
+import com.broll.gainea.net.NT_MercShop;
 import com.broll.gainea.net.NT_Player;
 import com.broll.gainea.net.NT_Unit;
 import com.broll.gainea.server.init.ExpansionSetting;
@@ -22,11 +23,11 @@ import java.util.stream.Collectors;
 
 public class GameState {
 
+    public NT_MercShop shop;
     private Gainea game;
     //game data:
     private int round;
     private int turn;
-
     private int pointLimit;
     private int roundLimit;
     private List<NT_BoardObject> objects;
@@ -169,12 +170,12 @@ public class GameState {
         return player;
     }
 
-    public void setStatistic(NT_GameStatistic nt) {
-        this.statistic = nt;
-    }
-
     public NT_GameStatistic getStatistic() {
         return statistic;
+    }
+
+    public void setStatistic(NT_GameStatistic nt) {
+        this.statistic = nt;
     }
 
     public int getRound() {
@@ -192,4 +193,5 @@ public class GameState {
     public int getRoundLimit() {
         return roundLimit;
     }
+
 }

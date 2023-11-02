@@ -14,7 +14,11 @@ import org.slf4j.LoggerFactory
 object BattleSimulation {
     private val Log = LoggerFactory.getLogger(BattleSimulation::class.java)
     private const val SIMULATIONS = 10
-    fun calculateRequiredFighters(location: Location, units: List<Unit>, winChance: Float): List<Unit>? {
+    fun calculateRequiredFighters(
+        location: Location,
+        units: List<Unit>,
+        winChance: Float
+    ): List<Unit>? {
         val fighters = mutableListOf<Unit>()
         for (unit in units) {
             fighters.add(unit)
@@ -50,16 +54,14 @@ object BattleSimulation {
     }
 
     private fun winsBattle(location: Location, units: List<Unit>) =
-            winsBattle(units, units.owner().getHostileArmy(location))
+        winsBattle(units, units.owner().getHostileArmy(location))
 
 
     fun winsBattle(attackers: List<Unit>, defenders: List<Unit>): Boolean {
         val simulationWrapper = UnitSimulationWrapper(attackers, defenders)
         while (attackers.any { it.alive } && defenders.any { it.alive }) {
             val context = BattleContext(attackers, defenders)
-            object : Battle(context,
-                    attackers.filter { it.alive },
-                    defenders.filter { it.alive }) {
+            object : Battle(context) {
                 override fun damage(result: FightResult, source: Unit, target: Unit) {
                     target.takeDamage()
                 }

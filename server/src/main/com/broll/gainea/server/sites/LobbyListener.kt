@@ -2,7 +2,6 @@ package com.broll.gainea.server.sites
 
 import com.broll.gainea.net.NT_Battle_Reaction
 import com.broll.gainea.server.core.fractions.FractionType
-import com.broll.gainea.server.core.utils.ProcessingUtils
 import com.broll.gainea.server.core.utils.gameLog
 import com.broll.gainea.server.init.LobbyData
 import com.broll.gainea.server.init.PlayerData
@@ -11,7 +10,10 @@ import com.broll.networklib.server.impl.Player
 import com.broll.networklib.server.impl.ServerLobby
 
 class LobbyListener : IServerLobbyListener<LobbyData, PlayerData> {
-    override fun playerJoined(lobby: ServerLobby<LobbyData, PlayerData>, player: Player<PlayerData>) {
+    override fun playerJoined(
+        lobby: ServerLobby<LobbyData, PlayerData>,
+        player: Player<PlayerData>
+    ) {
         var playerData = player.data
         if (playerData == null) {
             playerData = PlayerData(findOpenFraction(lobby))
@@ -20,12 +22,21 @@ class LobbyListener : IServerLobbyListener<LobbyData, PlayerData> {
     }
 
     private fun findOpenFraction(lobby: ServerLobby<LobbyData, PlayerData>): FractionType {
-        return FractionType.entries.subtract(lobby.players.filter { it.data != null }.map { it.data.fraction }.distinct()).randomOrNull()
-                ?: FractionType.entries.random()
+        return FractionType.entries.subtract(lobby.players.filter { it.data != null }
+            .map { it.data.fraction }.distinct()).randomOrNull()
+            ?: FractionType.entries.random()
     }
 
-    override fun playerLeft(lobby: ServerLobby<LobbyData, PlayerData>, player: Player<PlayerData>) {}
-    override fun playerDisconnected(lobby: ServerLobby<LobbyData, PlayerData>, player: Player<PlayerData>) {
+    override fun playerLeft(
+        lobby: ServerLobby<LobbyData, PlayerData>,
+        player: Player<PlayerData>
+    ) {
+    }
+
+    override fun playerDisconnected(
+        lobby: ServerLobby<LobbyData, PlayerData>,
+        player: Player<PlayerData>
+    ) {
         lobby.data.game?.let { game ->
             game.gameLog("Verbindung zu " + player.name + " verloren!")
             if (game.battleHandler.isBattleActive) {
@@ -35,16 +46,17 @@ class LobbyListener : IServerLobbyListener<LobbyData, PlayerData> {
         }
     }
 
-    override fun playerReconnected(lobby: ServerLobby<LobbyData, PlayerData>, player: Player<PlayerData>) {
+    override fun playerReconnected(
+        lobby: ServerLobby<LobbyData, PlayerData>,
+        player: Player<PlayerData>
+    ) {
         lobby.data.game?.let { game ->
             game.processingCore.executeParallel({
                 game.gameLog(player.name + " ist zurück!")
                 //send game reconnect update to reconnecting player
                 val gamePlayer = player.data.gamePlayer
                 player.sendTCP(game.reconnect(gamePlayer))
-                ProcessingUtils.pause(1000)
-                //check for open actions and resend them
-                game.reactionHandler.playerReconnected(gamePlayer)
+
             }, 100)
         }
     }

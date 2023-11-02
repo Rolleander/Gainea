@@ -21,7 +21,8 @@ class G_KillAllMonsters : Goal(GoalDifficulty.MEDIUM, "") {
             if (monsterCount >= 2) {
                 difficulty = if (monsterCount >= 5) GoalDifficulty.MEDIUM else GoalDifficulty.EASY
                 setExpansionRestriction(continent.expansion.type)
-                text = "Auf dem Kontinent " + continent.name + " darf es keine wilden Monster mehr geben"
+                text =
+                    "Auf dem Kontinent " + continent.name + " darf es keine wilden Monster mehr geben"
                 return super.init(game, player)
             }
         }
@@ -29,7 +30,8 @@ class G_KillAllMonsters : Goal(GoalDifficulty.MEDIUM, "") {
     }
 
     private val monsterCount: Int
-        get() = continent.areas.flatMap { it.getMonsters() }.count { it.owner.isNeutral() && it.alive }
+        get() = continent.areas.flatMap { it.getMonsters() }
+            .count { it.owner.isNeutral() && it.alive }
 
     override fun check() {
         if (monsterCount == 0) {
@@ -37,7 +39,7 @@ class G_KillAllMonsters : Goal(GoalDifficulty.MEDIUM, "") {
         }
     }
 
-    override fun killed(unit: Unit, throughBattle: BattleResult?) {
+    override fun unitKilled(unit: Unit, throughBattle: BattleResult?) {
         if (unit is Monster && unit.owner.isNeutral()) {
             check()
         }

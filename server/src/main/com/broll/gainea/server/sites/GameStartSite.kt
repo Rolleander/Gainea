@@ -14,6 +14,8 @@ import com.broll.gainea.server.core.utils.UnitControl.spawnMonsters
 import com.broll.gainea.server.core.utils.pickRandomEmpty
 import com.broll.networklib.PackageReceiver
 import com.broll.networklib.server.Autoshared
+import com.broll.networklib.server.ConnectionRestriction
+import com.broll.networklib.server.RestrictionType
 import com.broll.networklib.server.ShareLevel
 import com.google.common.collect.Lists
 import org.slf4j.LoggerFactory
@@ -92,7 +94,8 @@ class GameStartSite : GameSite() {
         val game = game
         val startLocationsCount = lobby.data.startLocations
         val playerCount = game.allPlayers.size
-        val startLocations = game.map.pickRandomEmpty(playerCount * startLocationsCount).toMutableList()
+        val startLocations =
+            game.map.pickRandomEmpty(playerCount * startLocationsCount).toMutableList()
         for (player in game.allPlayers) {
             val playerStartLocations = startLocations.take(startLocationsCount)
             startLocations.removeAll(playerStartLocations)
@@ -156,11 +159,20 @@ class GameStartSite : GameSite() {
         }
     }
 
+    @PackageReceiver
+    @ConnectionRestriction(RestrictionType.LOBBY_LOCKED)
+    fun playerReconnectFinished(loadedGame: NT_LoadedGame) {
+        if (!gameStart.loading) {
+            game.reactionHandler.playerReconnected(gamePlayer)
+        }
+    }
+
     private fun allPlayersLoaded() = gameStart.playerData.values.all { it.loaded }
 
     companion object {
         private val Log = LoggerFactory.getLogger(GameStartSite::class.java)
-        private val STARTING_CARDS: List<Class<out Card?>> = Lists.newArrayList(C_ReplaceGoal::class.java, C_PickCard::class.java)
+        private val STARTING_CARDS: List<Class<out Card?>> =
+            Lists.newArrayList(C_ReplaceGoal::class.java, C_PickCard::class.java)
         private const val DELAY = 1000
     }
 }

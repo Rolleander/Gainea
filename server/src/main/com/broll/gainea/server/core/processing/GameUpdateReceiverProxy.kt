@@ -47,24 +47,27 @@ class GameUpdateReceiverProxy : IGameUpdateReceiver {
     }
 
     override fun battleIntention(context: BattleContext, cancelFight: MutableBoolean) =
-            run { it.battleIntention(context, cancelFight) }
+        run { it.battleIntention(context, cancelFight) }
 
 
     override fun battleBegin(context: BattleContext, rollManipulator: RollManipulator) =
-            run { it.battleBegin(context, rollManipulator) }
+        run { it.battleBegin(context, rollManipulator) }
 
     override fun battleResult(result: BattleResult) =
-            run { it.battleResult(result) }
+        run { it.battleResult(result) }
 
     override fun playedCard(card: Card) = run { it.playedCard(card) }
 
-    override fun moved(units: List<MapObject>, location: Location) = run { it.moved(units, location) }
+    override fun unitsMoved(units: List<MapObject>, location: Location) =
+        run { it.unitsMoved(units, location) }
 
-    override fun spawned(mapObject: MapObject, location: Location) = run { it.spawned(mapObject, location) }
+    override fun unitSpawned(mapObject: MapObject, location: Location) =
+        run { it.unitSpawned(mapObject, location) }
 
-    override fun damaged(unit: Unit, damage: Int) = run { it.damaged(unit, damage) }
+    override fun unitDamaged(unit: Unit, damage: Int) = run { it.unitDamaged(unit, damage) }
 
-    override fun killed(unit: Unit, throughBattle: BattleResult?) = run { it.killed(unit, throughBattle) }
+    override fun unitKilled(unit: Unit, throughBattle: BattleResult?) =
+        run { it.unitKilled(unit, throughBattle) }
 
     override fun earnedStars(player: Player, stars: Int) = run { it.earnedStars(player, stars) }
 

@@ -24,7 +24,6 @@ import com.broll.gainea.client.ui.utils.LabelUtils;
 import com.broll.gainea.client.ui.utils.TableUtils;
 import com.broll.gainea.net.NT_Action;
 import com.broll.gainea.net.NT_Action_Attack;
-import com.broll.gainea.net.NT_Action_Card;
 import com.broll.gainea.net.NT_Action_Move;
 import com.broll.gainea.net.NT_Battle_Damage;
 import com.broll.gainea.net.NT_Battle_Roll;
@@ -121,15 +120,10 @@ public class InGameUI {
     public void optionalActions(List<NT_Action> actions, PlayerPerformOptionalAction playerPerformAction) {
         List<NT_Action_Move> moves = actions.stream().filter(it -> it instanceof NT_Action_Move).map(it -> (NT_Action_Move) it).collect(Collectors.toList());
         List<NT_Action_Attack> attacks = actions.stream().filter(it -> it instanceof NT_Action_Attack).map(it -> (NT_Action_Attack) it).collect(Collectors.toList());
-        activeCards(actions.stream().filter(it -> it instanceof NT_Action_Card).map(it -> (NT_Action_Card) it).collect(Collectors.toList()), playerPerformAction);
         attackAndMoveHandler.update(moves, attacks, playerPerformAction);
         requiredActionHandler.toFront();
-        menuActions.updateOptionalActions(playerPerformAction);
+        menuActions.updateOptionalActions(actions, playerPerformAction);
         game.state.getMapObjectsContainer().updateActiveState(moves, attacks);
-    }
-
-    private void activeCards(List<NT_Action_Card> cards, PlayerPerformOptionalAction playerPerformAction) {
-        menuActions.updatePlayableCards(cards, playerPerformAction);
     }
 
     //required ui action

@@ -18,7 +18,8 @@ class G_OccupyRounds : RoundGoal(GoalDifficulty.MEDIUM, "", ROUND_TARGET) {
     override fun init(game: Game, player: Player): Boolean {
         container = game.map.allContainers.random()
         locations += container.areas
-        text = "Sei für " + ROUND_TARGET + " Runden der einzige Spieler mit Einheiten auf " + container.name
+        text =
+            "Sei für " + ROUND_TARGET + " Runden der einzige Spieler mit Einheiten auf " + container.name
         val containerSize = container.areas.size
         difficulty = if (containerSize <= 5) {
             GoalDifficulty.EASY
@@ -28,21 +29,23 @@ class G_OccupyRounds : RoundGoal(GoalDifficulty.MEDIUM, "", ROUND_TARGET) {
         return super.init(game, player)
     }
 
-    override fun moved(units: List<MapObject>, location: Location) {
+    override fun unitsMoved(units: List<MapObject>, location: Location) {
         if (location.container === container && location !is Ship &&
-                units.any { !it.owner.isNeutral() && it.owner !== player }) {
+            units.any { !it.owner.isNeutral() && it.owner !== player }
+        ) {
             resetRounds()
         }
     }
 
-    override fun spawned(it: MapObject, location: Location) {
+    override fun unitSpawned(it: MapObject, location: Location) {
         if (location.container === container && location !is Ship && !it.owner.isNeutral() && it.owner !== player) {
             resetRounds()
         }
     }
 
     override fun check() {
-        val owners = container.areas.flatMap { area -> area.inhabitants.map { it.owner } }.filter { !it.isNeutral() }.distinct()
+        val owners = container.areas.flatMap { area -> area.inhabitants.map { it.owner } }
+            .filter { !it.isNeutral() }.distinct()
         if (owners.size == 1 && owners[0] === player) {
             progressRound()
         } else {

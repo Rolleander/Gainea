@@ -4,6 +4,7 @@ import com.broll.gainea.net.NT_Action
 import com.broll.gainea.net.NT_PlayerTurnActions
 import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.actions.optional.AttackAction
+import com.broll.gainea.server.core.actions.optional.BuyMercAction
 import com.broll.gainea.server.core.actions.optional.CardAction
 import com.broll.gainea.server.core.actions.optional.MoveUnitAction
 import com.broll.gainea.server.core.map.Location
@@ -19,6 +20,9 @@ class TurnBuilder(private val game: Game, private val actionHandlers: ActionHand
         val actions = mutableListOf<ActionContext<out NT_Action>>()
         actions.addAll(buildMoveAndAttackActions(player))
         actions.addAll(buildCardActions(player))
+        if (player.units.isNotEmpty()) {
+            actions += buildMercActions(player)
+        }
         turn.actions = actions.map { it.action }.toTypedArray()
         actions.forEach { game.pushAction(it) }
         return turn
@@ -31,7 +35,8 @@ class TurnBuilder(private val game: Game, private val actionHandlers: ActionHand
         val moveableTo = MultiValueMap<Location, Unit>()
         val attackableTo = MultiValueMap<Location, Unit>()
         player.units.filter { it.controllable }.forEach { unit ->
-            val walkableLocations = unit.location.connectedLocations.filter { unit.canMoveTo(it) }.toMutableList()
+            val walkableLocations =
+                unit.location.connectedLocations.filter { unit.canMoveTo(it) }.toMutableList()
             val attackableLocations = walkableLocations.filter { player.hasHostileArmy(it) }
             walkableLocations.removeAll(attackableLocations)
             if (unit.hasRemainingAttack()) {
@@ -52,6 +57,16 @@ class TurnBuilder(private val game: Game, private val actionHandlers: ActionHand
 
     private fun buildCardActions(player: Player): List<ActionContext<out NT_Action>> {
         val cardAction = actionHandlers.getHandler(CardAction::class.java)
-        return player.cardHandler.cards.filter { it.isPlayable }.map { cardAction.playableCard(player, it) }
+        return player.cardHandler.cards.filter { it.isPlayable }
+            .map { cardAction.playableCard(player, it) }
     }
+
+    private fun buildMercActions(player: Player) =
+        with(player.mercenaryShop.units) {
+            filter { it.available && it.price <= player.goalHandler.stars }
+                .map {
+                    actionHandlers.getHandler(BuyMercAction::class.java)
+                        .purchasableMerc(player, this.indexOf(it))
+                }
+        }
 }

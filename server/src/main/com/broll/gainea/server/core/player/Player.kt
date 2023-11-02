@@ -12,6 +12,8 @@ open class Player(game: Game, val fraction: Fraction, val serverPlayer: LobbyPla
     val units = mutableListOf<Unit>()
     val goalHandler: GoalHandler
     val cardHandler: CardHandler
+    val mercenaryShop: MercenaryShop
+
     var skipRounds = 0
         private set
     private var color = 0
@@ -20,6 +22,7 @@ open class Player(game: Game, val fraction: Fraction, val serverPlayer: LobbyPla
     init {
         goalHandler = GoalHandler(game, this)
         cardHandler = CardHandler(game, this)
+        mercenaryShop = MercenaryShop(game, this)
         serverPlayer.data.joinedGame(this)
     }
 

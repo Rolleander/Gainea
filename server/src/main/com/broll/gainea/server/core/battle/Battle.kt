@@ -4,14 +4,19 @@ import com.broll.gainea.misc.RandomUtils
 import com.broll.gainea.server.core.battle.RollResult.Roll
 import com.broll.gainea.server.core.objects.Unit
 
-open class Battle(private val attackers: List<Unit>,
-                  private val defenders: List<Unit>,
-                  private val attackerRolls: RollResult,
-                  private val defenderRolls: RollResult) {
-    constructor(context: BattleContext, attackingUnits: List<Unit>, defendingUnits: List<Unit>) :
-            this(attackingUnits, defendingUnits, RollResult(context, attackingUnits),
-                    RollResult(context, defendingUnits))
-
+open class Battle(
+    private val context: BattleContext,
+    private val attackerRolls: RollResult,
+    private val defenderRolls: RollResult,
+    private val attackers: List<Unit> = context.aliveAttackers,
+    private val defenders: List<Unit> = context.aliveDefenders,
+) {
+    constructor(context: BattleContext) :
+            this(
+                context = context,
+                attackerRolls = RollResult(context, context.aliveAttackers),
+                defenderRolls = RollResult(context, context.aliveDefenders)
+            )
 
     fun fight(): FightResult {
         val attacks = attackerRolls.count()
@@ -37,7 +42,12 @@ open class Battle(private val attackers: List<Unit>,
         return result
     }
 
-    private fun dealDamage(result: FightResult, winningRoll: Roll, sourceUnits: List<Unit>, targetUnits: List<Unit>) {
+    private fun dealDamage(
+        result: FightResult,
+        winningRoll: Roll,
+        sourceUnits: List<Unit>,
+        targetUnits: List<Unit>
+    ) {
         val target = getDamageTarget(targetUnits)
         target?.let {
             damage(result, winningRoll.source ?: RandomUtils.pickRandom(sourceUnits), it)
@@ -47,11 +57,12 @@ open class Battle(private val attackers: List<Unit>,
     protected open fun damage(result: FightResult, source: Unit, target: Unit) {
         val lethal = target.takeDamage()
         if (lethal) {
-            source.addKill()
+            source.killedEnemy(target)
         }
         result.damage(source, target, lethal)
     }
 
-    private fun getDamageTarget(targetUnits: List<Unit>) = targetUnits.filter { it.alive }.shuffled().minByOrNull { it.power.value }
+    private fun getDamageTarget(targetUnits: List<Unit>) =
+        targetUnits.filter { it.alive }.shuffled().minByOrNull { it.power.value }
 
 }

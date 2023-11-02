@@ -19,9 +19,14 @@ class FireFraction : Fraction(FractionType.FIRE) {
     private var turns = 0
     override fun description(): FractionDescription {
         val desc = FractionDescription(
-                "",
-                soldier = UnitDescription(name = "Feuermagier", icon = 23),
-                commander = UnitDescription(name = "Flammenschürer Duras", icon = 48, power = 3, health = 3),
+            "",
+            soldier = UnitDescription(name = "Feuermagier", icon = 23),
+            commander = UnitDescription(
+                name = "Flammenschürer Duras",
+                icon = 48,
+                power = 3,
+                health = 3
+            ),
         )
         desc.plus("Erhält jede dritte Runde eine Feuerregen-Karte\n(Verursacht 1 Schaden an einer beliebigen feindlichen Einheit)")
         desc.plus("Zahl +1 auf Wüsten")
@@ -61,18 +66,19 @@ class FireFraction : Fraction(FractionType.FIRE) {
         return commander
     }
 
-    override fun killedMonster(monster: Monster) {
+    override fun killedNeutralMonster(monster: Monster) {
         if (monster.location.isAreaType(AreaType.SNOW, AreaType.LAKE)) {
             //no card when monster on ice or water
             return
         }
-        super.killedMonster(monster)
+        super.killedNeutralMonster(monster)
     }
 
 
 }
 
-class FireRain : Card(76, "Feuerregen", "Verursacht 1 Schaden an einer beliebigen feindlichen Einheit") {
+class FireRain :
+    Card(76, "Feuerregen", "Verursacht 1 Schaden an einer beliebigen feindlichen Einheit") {
     override val isPlayable: Boolean
         get() = true
 

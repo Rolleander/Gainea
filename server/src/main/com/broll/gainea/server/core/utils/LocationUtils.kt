@@ -19,7 +19,7 @@ import com.broll.gainea.server.core.utils.UnitControl.isNeutralMonster
 
 
 fun Collection<Location>.getLocationNumbers() =
-        map { it.number.toShort() }.toShortArray()
+    map { it.number.toShort() }.toShortArray()
 
 fun Location.isAreaType(vararg type: AreaType): Boolean {
     if (this is Area) {
@@ -29,11 +29,13 @@ fun Location.isAreaType(vararg type: AreaType): Boolean {
 }
 
 fun Location.getHostileUnits(player: Player) =
-        units.filter { player.isHostile(it) }
+    units.filter { player.isHostile(it) }
 
-fun List<Location>.filterByType(vararg type: AreaType) = filter { it.isAreaType(*type) }.map { it as Area }
+fun List<Location>.filterByType(vararg type: AreaType) =
+    filter { it.isAreaType(*type) }.map { it as Area }
 
-fun Player.getControlledLocationsIn(expansionType: ExpansionType) = controlledLocations.filter { it.container.expansion.type == expansionType }
+fun Player.getControlledLocationsIn(expansionType: ExpansionType) =
+    controlledLocations.filter { it.container.expansion.type == expansionType }
 
 fun Location.emptyOrControlledBy(player: Player): Boolean {
     if (units.any { it.owner == player }) {
@@ -52,7 +54,7 @@ fun Location.emptyOrWildMonster(): Boolean {
 fun Location.noPlayerUnits() = units.all { it.owner.isNeutral() }
 
 fun Game.getWildMonsterLocations() =
-        objects.filterIsInstance<Monster>().map { it.location }.distinct()
+    objects.filterIsInstance<Monster>().map { it.location }.distinct()
 
 fun Location.getMonsters() = units.filterIsInstance<Monster>()
 
@@ -61,15 +63,15 @@ fun List<Location>.getRandomFree() = filter { it.free }.randomOrNull()
 fun List<Location>.getRandomFree(count: Int) = filter { it.free }.shuffled().take(count)
 
 fun Location.isInContinent(id: ContinentID) =
-        if (this !is Ship && this.container is Continent) {
-            (this.container as Continent).id === id
-        } else false
+    if (this !is Ship && this.container is Continent) {
+        (this.container as Continent).id === id
+    } else false
 
 
 fun Location.isInIsland(id: IslandID) =
-        if (this !is Ship && this.container is Island) {
-            (this.container as Island).id === id
-        } else false
+    if (this !is Ship && this.container is Island) {
+        (this.container as Island).id === id
+    } else false
 
 
 fun MapContainer.pickRandom(amount: Int) = allAreas.shuffled().take(amount)
@@ -107,6 +109,9 @@ fun MapObject.getWalkingDistance(from: Location, to: Location): Int? {
     return null
 }
 
+fun Location.getWalkingDistance(to: Location, obj: MapObject) =
+    obj.getWalkingDistance(this, to)
+
 fun Location.getConnectedLocations(maxDistance: Int): List<Location> {
     val visited = mutableListOf<Location>()
     var remaining = mutableListOf(this)
@@ -120,4 +125,22 @@ fun Location.getConnectedLocations(maxDistance: Int): List<Location> {
     visited.addAll(remaining)
     visited.remove(this)
     return visited
+}
+
+
+fun Location.getDistance(to: Location): Int? {
+    var distance = 0
+    val visited = mutableSetOf<Location>()
+    var remaining = mutableSetOf<Location>()
+    remaining += connectedLocations
+    do {
+        distance++
+        if (remaining.contains(to)) {
+            return distance
+        }
+        visited += remaining
+        remaining = remaining.flatMap { it.connectedLocations }.toMutableSet()
+        remaining -= visited
+    } while (remaining.isNotEmpty())
+    return null
 }

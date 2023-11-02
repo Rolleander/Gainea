@@ -98,7 +98,7 @@ public class MapObjectSelection extends Table {
                     previews.row();
                 }
             }
-            add(previews).colspan(2).row();
+            add(previews).colspan(2).expandX().fillX().row();
         }
 
         this.view = new Table(game.ui.skin);

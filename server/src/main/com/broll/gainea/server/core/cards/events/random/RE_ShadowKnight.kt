@@ -15,24 +15,28 @@ class RE_ShadowKnight : RandomEvent() {
             it.free && it.connectedLocations.all { n -> n.free }
                     && it.connectedLocations.size >= 2
         }
-                .randomOrNull()?.let { area ->
-                    val knight = ShadowKnight(game.neutralPlayer)
-                    game.spawn(knight, area)
-                }
+            .randomOrNull()?.let { area ->
+                val knight = ShadowKnight(game.neutralPlayer)
+                game.spawn(knight, area)
+            }
     }
 
     private class ShadowKnight(owner: Player) : Soldier(owner) {
         init {
             name = "Schattenlord"
             icon = 6
-            description = "Greift Einheiten von Spielern an, die sich auf benachbarte Felder bewegen"
+            description =
+                "Greift Einheiten von Spielern an, die sich auf benachbarte Felder bewegen"
             setStats(6, 4)
         }
 
-        override fun moved(units: List<MapObject>, location: Location) {
+        override fun unitsMoved(units: List<MapObject>, location: Location) {
             if (location.connectedLocations.contains(this.location) && !units.contains(this)
-                    && units.any { !it.owner.isNeutral() }) {
-                game.battleHandler.startBattle(listOf(this), location.units.filter { !it.owner.isNeutral() });
+                && units.any { !it.owner.isNeutral() }
+            ) {
+                game.battleHandler.startBattle(
+                    listOf(this),
+                    location.units.filter { !it.owner.isNeutral() });
             }
         }
     }

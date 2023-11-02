@@ -33,7 +33,7 @@ object UnitControl {
 
 
     fun Game.move(unit: MapObject, location: Location) =
-            move(Lists.newArrayList(unit), location)
+        move(Lists.newArrayList(unit), location)
 
 
     fun Game.move(units: List<MapObject>, location: Location, fromPlayerAction: Boolean = false) {
@@ -44,7 +44,7 @@ object UnitControl {
         val movedObject = NT_Event_MovedObject()
         movedObject.objects = units.map { it.nt() }.toTypedArray()
         sendUpdate(movedObject)
-        updateReceiver.moved(units, location)
+        updateReceiver.unitsMoved(units, location)
         ProcessingUtils.pause(MOVE_PAUSE)
     }
 
@@ -109,15 +109,19 @@ object UnitControl {
         nt.screenEffect = NT_Event.EFFECT_DAMAGE
         consumer?.accept(nt)
         sendUpdate(nt)
-        updateReceiver.damaged(unit, damage)
+        updateReceiver.unitDamaged(unit, damage)
         if (lethal) {
             unit.onDeath(null)
-            updateReceiver.killed(unit, null)
+            updateReceiver.unitKilled(unit, null)
         }
         ProcessingUtils.pause(DAMAGE_PAUSE)
     }
 
-    fun Game.spawn(obj: MapObject, location: Location, consumer: Consumer<NT_Event_PlacedObject>? = null) {
+    fun Game.spawn(
+        obj: MapObject,
+        location: Location,
+        consumer: Consumer<NT_Event_PlacedObject>? = null
+    ) {
         Log.trace("UnitControl: spawn object $obj at $location")
         obj.init(this)
         if (obj.owner.isNeutral()) {
@@ -135,7 +139,7 @@ object UnitControl {
         nt.sound = obj.defaultSpawnSound(location)
         consumer?.accept(nt)
         sendUpdate(nt)
-        updateReceiver.spawned(obj, location)
+        updateReceiver.unitSpawned(obj, location)
         ProcessingUtils.pause(SPAWN_PAUSE)
     }
 
@@ -147,11 +151,11 @@ object UnitControl {
     }
 
     private fun MapObject.defaultSpawnSound(location: Location) =
-            if (this is Monster) {
-                "monster.ogg"
-            } else {
-                "recruit.ogg"
-            }
+        if (this is Monster) {
+            "monster.ogg"
+        } else {
+            "recruit.ogg"
+        }
 
     fun Game.spawnMonsters(count: Int) {
         map.allAreas.getRandomFree(count).forEach {
@@ -181,7 +185,8 @@ object UnitControl {
         if (recruit.isEmpty()) {
             return
         }
-        val moveUnits = recruit.filter { it.alive && newLocation != null && it.location !== newLocation }
+        val moveUnits =
+            recruit.filter { it.alive && newLocation != null && it.location !== newLocation }
         val updateUnits = ListUtils.subtract(recruit, moveUnits)
         recruit.forEach {
             val previousOwner = it.owner

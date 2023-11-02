@@ -2,4 +2,4 @@ package com.broll.gainea.server.core.goals.impl.all
 
 import com.broll.gainea.server.core.goals.GoalDifficulty
 
-class G_KillMonsters2 : G_KillMonsters(GoalDifficulty.HARD, 17)
+class G_EarnStars2 : G_EarnStars(GoalDifficulty.HARD, 17)

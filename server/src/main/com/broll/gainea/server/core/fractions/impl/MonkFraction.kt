@@ -19,9 +19,14 @@ class MonkFraction : Fraction(FractionType.MONKS) {
     private var killedMonsters = 0
     override fun description(): FractionDescription {
         val desc = FractionDescription(
-                "",
-                soldier = UnitDescription(name = "Mönch", icon = 108),
-                commander = UnitDescription(name = "Großmeister Eron", icon = 107, power = 3, health = 3),
+            "",
+            soldier = UnitDescription(name = "Mönch", icon = 108),
+            commander = UnitDescription(
+                name = "Großmeister Eron",
+                icon = 107,
+                power = 3,
+                health = 3
+            ),
         )
         desc.plus("Jede Runde erhält eine Einheit +1 Leben")
         desc.plus("Werden nicht von Monstern angegriffen")
@@ -39,13 +44,13 @@ class MonkFraction : Fraction(FractionType.MONKS) {
         }
     }
 
-    override fun killedMonster(monster: Monster) {
+    override fun killedNeutralMonster(monster: Monster) {
         killedMonsters++
         if (killedMonsters == 3) {
             killedMonsters = 0
             return
         }
-        super.killedMonster(monster)
+        super.killedNeutralMonster(monster)
     }
 
     override fun turnStarted(actionHandlers: ActionHandlers) {

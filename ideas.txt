@@ -14,10 +14,7 @@ unused cards:
 85 = knight duel
 
 unused units:
-10 = merc knight
-18 = shadow fighter
 22 = shield wielder
-28 = mace wielder
 35 = lone fighter
 95 = undead warrior
 96 = lava golem

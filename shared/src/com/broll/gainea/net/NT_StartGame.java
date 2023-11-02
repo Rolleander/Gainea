@@ -7,4 +7,5 @@ public class NT_StartGame extends NT_BoardUpdate {
 
     public int roundLimit;
     public NT_Card[] cards;
+    public NT_MercShop shop;
 }

@@ -11,9 +11,13 @@ import com.broll.gainea.client.ui.ingame.windows.FractionWindow;
 import com.broll.gainea.client.ui.ingame.windows.LogWindow;
 import com.broll.gainea.client.ui.ingame.windows.MenuWindow;
 import com.broll.gainea.client.ui.ingame.windows.SettingsWindow;
+import com.broll.gainea.client.ui.ingame.windows.ShopWindow;
+import com.broll.gainea.net.NT_Action;
+import com.broll.gainea.net.NT_Action_BuyMerc;
 import com.broll.gainea.net.NT_Action_Card;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MenuActions extends Table {
 
@@ -24,6 +28,8 @@ public class MenuActions extends Table {
     private ChatWindow chatWindow;
 
     private CardWindow cardWindow;
+
+    private ShopWindow shopWindow;
 
     private FractionWindow fractionWindow;
 
@@ -41,6 +47,7 @@ public class MenuActions extends Table {
         this.endTurnButton = new EndTurnButton(game);
         this.chatWindow = new ChatWindow(game, this::newChatMessages);
         this.cardWindow = new CardWindow(game);
+        this.shopWindow = new ShopWindow(game);
         this.fractionWindow = new FractionWindow(game);
         this.logWindow = new LogWindow(game);
         this.settingsWindow = new SettingsWindow(game);
@@ -54,11 +61,12 @@ public class MenuActions extends Table {
         content.defaults().padTop(5).left();
         content.add(endTurnButton).spaceBottom(30).row();
         content.add(cardButton).row();
+        content.add(windowButton(5, shopWindow)).row();
         content.add(windowButton(4, fractionWindow)).row();
         content.add(windowButton(3, logWindow)).row();
         content.add(chatButton).row();
         content.add(windowButton(0, settingsWindow)).row();
-        add(content).padTop(Math.max(250, game.state.getGoals().size() * 30));
+        add(content).padTop(Math.max(200, game.state.getGoals().size() * 30));
         game.state.addListener(endTurnButton);
     }
 
@@ -70,6 +78,7 @@ public class MenuActions extends Table {
         game.uiStage.addActor(fractionWindow);
         game.uiStage.addActor(settingsWindow);
         game.uiStage.addActor(logWindow);
+        game.uiStage.addActor(shopWindow);
     }
 
 
@@ -83,11 +92,14 @@ public class MenuActions extends Table {
         return new TextureRegion(game.assets.get("textures/menu.png", Texture.class), 60 * nr, 0, 60, 60);
     }
 
-    public void updateOptionalActions(PlayerPerformOptionalAction playerPerformAction) {
+    public void updateOptionalActions(List<NT_Action> actions, PlayerPerformOptionalAction playerPerformAction) {
         this.endTurnButton.update(playerPerformAction);
+        cardWindow.updatePlayableCards(actions.stream().filter(it -> it instanceof NT_Action_Card).map(it -> (NT_Action_Card) it).collect(Collectors.toList()), playerPerformAction);
+        shopWindow.updateState(actions.stream().filter(it -> it instanceof NT_Action_BuyMerc).map(it -> (NT_Action_BuyMerc) it).collect(Collectors.toList()), playerPerformAction);
     }
 
     public void update() {
+        shopWindow.update();
         roundInformation.update();
         fractionWindow.update();
         cardWindow.update();
@@ -121,5 +133,6 @@ public class MenuActions extends Table {
         cardWindow.setVisible(false);
         fractionWindow.setVisible(false);
         logWindow.setVisible(false);
+        shopWindow.setVisible(false);
     }
 }

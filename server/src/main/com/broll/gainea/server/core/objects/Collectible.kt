@@ -11,7 +11,7 @@ class Collectible(game: Game) : MapObject(game.neutralPlayer) {
 
     lateinit var onPickup: ((Player) -> kotlin.Unit)
 
-    override fun moved(units: List<MapObject>, location: Location) {
+    override fun unitsMoved(units: List<MapObject>, location: Location) {
         if (location == this.location) {
             val owner = units.filterIsInstance<Unit>().owner()
             if (!owner.isNeutral()) {

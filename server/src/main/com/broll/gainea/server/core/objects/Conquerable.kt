@@ -38,11 +38,11 @@ class Conquerable(game: Game) : MapObject(game.neutralPlayer) {
         }
     }
 
-    override fun moved(units: List<MapObject>, location: Location) {
+    override fun unitsMoved(units: List<MapObject>, location: Location) {
         updateState()
     }
 
-    override fun spawned(obj: MapObject, location: Location) {
+    override fun unitSpawned(obj: MapObject, location: Location) {
         updateState()
     }
 

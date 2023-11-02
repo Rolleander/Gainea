@@ -55,6 +55,7 @@ public class GameStateSite extends AbstractGameSite {
         ExpansionSetting setting = ExpansionSetting.values()[start.expansionsSetting];
         game.state.init(setting, start.pointLimit, start.roundLimit, getPlayer());
         game.state.getCards().addAll(Arrays.asList(start.cards));
+        game.state.shop = start.shop;
         //switch to game screen
         game.ui.showScreen(new GameScreen());
         game.state.update(start);

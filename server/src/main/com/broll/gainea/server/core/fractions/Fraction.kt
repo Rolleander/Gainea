@@ -36,8 +36,8 @@ abstract class Fraction(val type: FractionType) : GameUpdateReceiverAdapter() {
         if (spawnLocations.isEmpty()) {
             //player has no more controlled locations. give him a random free one
             val location = game.map.allAreas.getRandomFree()
-                    ?: //no more free locations, just skip
-                    return
+                ?: //no more free locations, just skip
+                return
             spawnLocations.add(location)
         }
         val placeUnitAction = actionHandlers.getHandler(PlaceUnitAction::class.java)
@@ -45,7 +45,8 @@ abstract class Fraction(val type: FractionType) : GameUpdateReceiverAdapter() {
     }
 
     open fun turnStarted(actionHandlers: ActionHandlers) {}
-    open fun killedMonster(monster: Monster) {
+
+    open fun killedNeutralMonster(monster: Monster) {
         owner.cardHandler.drawRandomCard()
     }
 

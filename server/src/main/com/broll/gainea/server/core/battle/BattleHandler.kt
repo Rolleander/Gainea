@@ -109,10 +109,9 @@ class BattleHandler(private val game: Game, private val reactionResult: Reaction
         val defenderRolls = RollResult(context, context.aliveDefenders)
         rollManipulator.roundStarts(context, attackerRolls, defenderRolls)
         return Battle(
-            context.aliveAttackers,
-            context.aliveDefenders,
-            attackerRolls,
-            defenderRolls
+            context = context,
+            attackerRolls = attackerRolls,
+            defenderRolls = defenderRolls
         ).fight()
     }
 
@@ -132,8 +131,6 @@ class BattleHandler(private val game: Game, private val reactionResult: Reaction
         val update = NT_Battle_Update()
         update.attackerRolls = result.attackRolls.map { it.nt() }.toTypedArray()
         update.defenderRolls = result.defenderRolls.map { it.nt() }.toTypedArray()
-        update.attackers = context.aliveAttackers.sortedBy { it.id }.map { it.nt() }.toTypedArray()
-        update.defenders = context.aliveDefenders.sortedBy { it.id }.map { it.nt() }.toTypedArray()
         logContext("Fight round result:")
         var state = NT_Battle_Update.STATE_FIGHTING
         val attackersDead = context.aliveAttackers.isEmpty()
@@ -211,7 +208,7 @@ class BattleHandler(private val game: Game, private val reactionResult: Reaction
         fallenUnits.addAll(result.killedDefenders.map { it.source })
         fallenUnits.forEach { game.remove(it) }
         fallenUnits.forEach { it.onDeath(result) }
-        fallenUnits.forEach { updateReceiver.killed(it, result) }
+        fallenUnits.forEach { updateReceiver.unitKilled(it, result) }
         updateReceiver.battleResult(result)
         game.sendUpdate(game.nt())
         //if defenders lost, move surviving attackers to location
@@ -232,9 +229,11 @@ class BattleHandler(private val game: Game, private val reactionResult: Reaction
             return
         }
         units.map { it.source }.filterIsInstance(Monster::class.java)
-            .filter { it.owner.isNeutral() }.forEach {
+            .forEach {
                 killer.goalHandler.addStars(it.stars)
-                killer.fraction.killedMonster(it)
+                if (it.owner.isNeutral()) {
+                    killer.fraction.killedNeutralMonster(it)
+                }
             }
     }
 

@@ -19,17 +19,14 @@ import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Stack;
 import java.util.stream.Collectors;
 
 public class GameBattleSite extends AbstractGameSite {
 
     private final static Logger Log = LoggerFactory.getLogger(GameBattleSite.class);
-    private List<NT_Unit> attackers;
-    private List<NT_Unit> defenders;
-
     private MapAction battleIntention;
     private ActionTrail battleIntentionTrail;
 
@@ -63,8 +60,8 @@ public class GameBattleSite extends AbstractGameSite {
             battleIntentionTrail.addAction(Actions.sequence(Actions.fadeOut(0.3f), Actions.removeActor()));
         }
         game.state.updateIdleState(false);
-        this.attackers = Lists.newArrayList(battle.attackers);
-        this.defenders = Lists.newArrayList(battle.defenders);
+        ArrayList<NT_Unit> attackers = Lists.newArrayList(battle.attackers);
+        ArrayList<NT_Unit> defenders = Lists.newArrayList(battle.defenders);
         int location = defenders.get(0).location;
         Log.info("Start fight: Attackers (" + attackers.stream().map(it -> it.id + "| " + it.name + " " + it.power + " " + it.health).collect(Collectors.joining(", ")) + ") Defenders (" + defenders.stream().map(it -> it.id + "| " + it.name + " " + it.power + " " + it.health).collect(Collectors.joining(", ")) + ")");
         boolean allowRetreat = battle.allowRetreat && getPlayer().getId() == battle.attacker;
@@ -76,13 +73,6 @@ public class GameBattleSite extends AbstractGameSite {
     public void received(NT_Battle_Update battle) {
         NT_Battle_Roll[] attackRolls = battle.attackerRolls;
         NT_Battle_Roll[] defenderRolls = battle.defenderRolls;
-        List<NT_Unit> attackers = Lists.newArrayList(battle.attackers);
-        List<NT_Unit> defenders = Lists.newArrayList(battle.defenders);
-        Log.info("Update fight: Attackers (" + attackers.stream().map(it -> it.id + "| " + it.name + " " + it.power + " " + it.health).collect(Collectors.joining(", ")) + ") Defenders (" + defenders.stream().map(it -> it.id + "| " + it.name + " " + it.power + " " + it.health).collect(Collectors.joining(", ")) + ")");
-        this.attackers = attackers;
-        this.defenders = defenders;
-        this.attackers.removeIf(it -> it.health <= 0);
-        this.defenders.removeIf(it -> it.health <= 0);
         Stack<NT_Battle_Damage> damage = new Stack<>();
         damage.addAll(Arrays.asList(battle.damage));
         game.ui.inGameUI.updateBattle(attackRolls, defenderRolls, damage, battle.state);

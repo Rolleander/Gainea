@@ -19,9 +19,14 @@ import com.broll.gainea.server.core.utils.isAreaType
 class ShadowFraction : Fraction(FractionType.SHADOW) {
     override fun description(): FractionDescription {
         val desc = FractionDescription(
-                "",
-                soldier = UnitDescription(name = "Schatten", icon = 12),
-                commander = UnitDescription(name = "Erznekromant Bal", icon = 21, power = 3, health = 3),
+            "",
+            soldier = UnitDescription(name = "Schatten", icon = 12),
+            commander = UnitDescription(
+                name = "Erznekromant Bal",
+                icon = 21,
+                power = 3,
+                health = 3
+            ),
         )
         desc.plus("Bei Kämpfen können gefallene Feinde zu Skeletten (1/1) werden")
         desc.contra("Erhält keine Belohnung für besiegte Monster auf Steppen")
@@ -29,11 +34,11 @@ class ShadowFraction : Fraction(FractionType.SHADOW) {
         return desc
     }
 
-    override fun killedMonster(monster: Monster) {
+    override fun killedNeutralMonster(monster: Monster) {
         if (monster.location.isAreaType(AreaType.PLAINS)) {
             return
         }
-        super.killedMonster(monster)
+        super.killedNeutralMonster(monster)
     }
 
     override fun createSoldier(): Soldier {

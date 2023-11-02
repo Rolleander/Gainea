@@ -182,14 +182,14 @@ abstract class OccupyGoal(difficulty: GoalDifficulty, text: String) : Goal(diffi
         }
     }
 
-    override fun moved(units: List<MapObject>, location: Location) {
+    override fun unitsMoved(units: List<MapObject>, location: Location) {
         if (units.any { it.owner === player }) {
             //unit of this player moved, check occupy condition
             check()
         }
     }
 
-    override fun spawned(`object`: MapObject, location: Location) {
+    override fun unitSpawned(`object`: MapObject, location: Location) {
         if (`object`.owner === player) {
             //unit of this player spawned, check occupy condition
             check()

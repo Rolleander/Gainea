@@ -13,13 +13,13 @@ class G_KillPlayer : Goal(GoalDifficulty.MEDIUM, "") {
     private lateinit var target: Player
     override fun init(game: Game, player: Player): Boolean {
         target = game.activePlayers.filter { it !== player && it.units.isNotEmpty() }.randomOrNull()
-                ?: return false
+            ?: return false
         text = target.serverPlayer.name + " darf keine Einheiten mehr besitzen"
         difficulty = if (target.units.size >= 8) GoalDifficulty.HARD else GoalDifficulty.MEDIUM
         return super.init(game, player)
     }
 
-    override fun killed(unit: Unit, throughBattle: BattleResult?) {
+    override fun unitKilled(unit: Unit, throughBattle: BattleResult?) {
         if (unit.owner === target) {
             check()
         }

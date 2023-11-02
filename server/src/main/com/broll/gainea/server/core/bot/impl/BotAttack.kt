@@ -2,7 +2,6 @@ package com.broll.gainea.server.core.bot.impl
 
 import com.broll.gainea.net.NT_Action
 import com.broll.gainea.net.NT_Action_Attack
-import com.broll.gainea.net.NT_Battle_Update
 import com.broll.gainea.net.NT_Reaction
 import com.broll.gainea.net.NT_Unit
 import com.broll.gainea.server.core.bot.BotOptionalAction
@@ -24,10 +23,13 @@ class BotAttack : BotOptionalAction<NT_Action_Attack, BotAttack.AttackOption>() 
             if (groupedUnits.isEmpty()) {
                 continue
             }
-            val fighters = BattleSimulation.calculateRequiredFighters(location, groupedUnits, winChance)
+            val fighters =
+                BattleSimulation.calculateRequiredFighters(location, groupedUnits, winChance)
             if (fighters != null) {
-                return AttackOption(score = ((3 - fightType) * 5).toFloat(), fighters.map { it.id }.toIntArray(),
-                        fightType, location)
+                return AttackOption(
+                    score = ((3 - fightType) * 5).toFloat(), fighters.map { it.id }.toIntArray(),
+                    fightType, location
+                )
             }
         }
         return null
@@ -40,9 +42,10 @@ class BotAttack : BotOptionalAction<NT_Action_Attack, BotAttack.AttackOption>() 
     override val actionClass: Class<out NT_Action>
         get() = NT_Action_Attack::class.java
 
-    fun keepAttacking(update: NT_Battle_Update): Boolean {
-        val attackers = BotUtils.getObjects(game, update.attackers)
-        val defenders = BotUtils.getObjects(game, update.defenders)
+    fun keepAttacking(
+        attackers: List<Unit>,
+        defenders: List<Unit>
+    ): Boolean {
         if (attackers.none { it.alive } || defenders.none { it.alive }) {
             return false
         }
@@ -79,12 +82,15 @@ class BotAttack : BotOptionalAction<NT_Action_Attack, BotAttack.AttackOption>() 
         } else FIGHT_PLAYER
     }
 
-    private fun isTargetLocation(location: Location) = strategy.getGoalStrategies().flatMap { it.targetLocations }.any { it === location }
+    private fun isTargetLocation(location: Location) =
+        strategy.getGoalStrategies().flatMap { it.targetLocations }.any { it === location }
 
-    class AttackOption(score: Float,
-                       val attackUnits: IntArray,
-                       val type: Int = 0,
-                       val location: Location) : BotOption(score) {
+    class AttackOption(
+        score: Float,
+        val attackUnits: IntArray,
+        val type: Int = 0,
+        val location: Location
+    ) : BotOption(score) {
 
         override fun toString(): String {
             return "attack " + location + " with " + attackUnits.size + " units"

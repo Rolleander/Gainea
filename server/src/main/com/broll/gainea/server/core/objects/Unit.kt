@@ -59,7 +59,7 @@ abstract class Unit(owner: Player) : MapObject(owner), IUnit {
 
     open fun onDeath(throughBattle: BattleResult?) {}
     open fun calcFightingPower(context: BattleContext) =
-            FightingPower(this).changeNumberPlus(numberPlus.value)
+        FightingPower(this).changeNumberPlus(numberPlus.value)
 
 
     override fun moved(fromPlayerAction: Boolean) {
@@ -158,7 +158,7 @@ abstract class Unit(owner: Player) : MapObject(owner), IUnit {
         this.type = type
     }
 
-    fun addKill() {
+    open fun killedEnemy(unit: Unit) {
         kills++
     }
 

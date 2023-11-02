@@ -11,6 +11,7 @@ import com.broll.gainea.client.ui.Screen;
 import com.broll.gainea.misc.RandomUtils;
 import com.broll.gainea.net.NT_Action;
 import com.broll.gainea.net.NT_Action_Attack;
+import com.broll.gainea.net.NT_Action_BuyMerc;
 import com.broll.gainea.net.NT_Action_Card;
 import com.broll.gainea.net.NT_Action_Move;
 import com.broll.gainea.net.NT_BoardEffect;
@@ -19,6 +20,7 @@ import com.broll.gainea.net.NT_BoardUpdate;
 import com.broll.gainea.net.NT_Card;
 import com.broll.gainea.net.NT_Event_FinishedGoal;
 import com.broll.gainea.net.NT_Goal;
+import com.broll.gainea.net.NT_MercShop;
 import com.broll.gainea.net.NT_Monster;
 import com.broll.gainea.net.NT_Player;
 import com.broll.gainea.net.NT_Unit;
@@ -47,6 +49,17 @@ public class TestMapScreen extends Screen {
         AudioPlayer.playSong("celtic.mp3");
         ClientMapContainer.RENDER_DEBUG = true;
         game.state.init(ExpansionSetting.FULL, 0, 30, new DummyLobbyPlayer(0, null));
+
+        NT_MercShop shop = new NT_MercShop();
+        shop.prices = new short[6];
+        shop.units = new NT_Unit[6];
+        for (int i = 0; i < shop.units.length; i++) {
+            shop.units[i] = unit();
+            shop.units[i].description = "langer kauftext ok passt";
+            shop.prices[i] = (short) (5 + i);
+        }
+        game.state.shop = shop;
+
         NT_Goal goal = null;
 
         for (int i = 0; i < 3; i++) {
@@ -145,6 +158,10 @@ public class TestMapScreen extends Screen {
         atk.units = units;
         atk.location = getAreaNum(GaineaMap.Areas.WEIDESTEPPE);
         actions.add(atk);
+
+        NT_Action_BuyMerc buy = new NT_Action_BuyMerc();
+        buy.index = 5;
+        actions.add(buy);
 
         game.state.performOptionalAction(actions, new PlayerPerformOptionalAction() {
             @Override

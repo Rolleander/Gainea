@@ -17,13 +17,13 @@ class GoalHandler(private val game: Game, private val player: Player) {
     private val previousGoals = mutableListOf<Goal>()
     var score = 0
         private set
-    var stars = 0
+    var stars = 30
         private set
 
     val goals = mutableListOf<Goal>()
 
     fun isValidNewGoal(goal: Goal) =
-            goals.none { it::class == goal::class } && previousGoals.none { it::class == goal::class }
+        goals.none { it::class == goal::class } && previousGoals.none { it::class == goal::class }
 
     fun addPoints(points: Int) {
         if (player.isNeutral()) return
@@ -47,6 +47,15 @@ class GoalHandler(private val game: Game, private val player: Player) {
         game.sendUpdate(nt)
         ProcessingUtils.pause(500)
         game.updateReceiver.earnedStars(player, stars)
+    }
+
+    fun removeStars(stars: Int) {
+        if (player.isNeutral()) return
+        this.stars -= stars
+        val nt = NT_Event_ReceivedStars()
+        nt.player = player.serverPlayer.id
+        nt.stars = stars
+        game.sendUpdate(nt)
     }
 
     fun removeGoal(oldGoal: Goal) {

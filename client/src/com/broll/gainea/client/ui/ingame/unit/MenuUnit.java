@@ -23,6 +23,10 @@ public class MenuUnit extends Table {
     private NT_BoardObject object;
 
     public MenuUnit(Gainea game, Skin skin, NT_BoardObject object) {
+        this(game, skin, object, false);
+    }
+
+    public MenuUnit(Gainea game, Skin skin, NT_BoardObject object, boolean hideKills) {
         this.object = object;
         setSkin(skin);
         MapObjectRender render = MapObjectRender.createRender(game, game.ui.skin, object);
@@ -55,7 +59,9 @@ public class MenuUnit extends Table {
             row.defaults().spaceLeft(20).left();
             row.add(IconLabel.attack(game, unit.power));
             row.add(IconLabel.health(game, unit.health, unit.maxHealth));
-            row.add(new IconLabel(game, 8, String.valueOf(unit.kills)));
+            if (!hideKills) {
+                row.add(new IconLabel(game, 8, String.valueOf(unit.kills)));
+            }
             table.add(row).left().row();
         }
 

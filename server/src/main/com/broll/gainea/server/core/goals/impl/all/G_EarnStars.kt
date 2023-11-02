@@ -6,8 +6,10 @@ import com.broll.gainea.server.core.goals.GoalDifficulty
 import com.broll.gainea.server.core.objects.monster.Monster
 import com.broll.gainea.server.core.player.Player
 
-open class G_KillMonsters(difficulty: GoalDifficulty = GoalDifficulty.EASY, private val starsTarget: Int = 7)
-    : Goal(difficulty, "Erledige Monster mit insgesamt $starsTarget Sternen") {
+open class G_EarnStars(
+    difficulty: GoalDifficulty = GoalDifficulty.EASY,
+    private val starsTarget: Int = 7
+) : Goal(difficulty, "Erhalte $starsTarget Sterne") {
     private var stars = 0
 
     init {
