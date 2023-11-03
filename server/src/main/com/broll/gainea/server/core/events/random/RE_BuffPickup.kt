@@ -1,8 +1,9 @@
-package com.broll.gainea.server.core.cards.events.random
+package com.broll.gainea.server.core.events.random
 
 import com.broll.gainea.net.NT_Event
 import com.broll.gainea.server.core.Game
-import com.broll.gainea.server.core.cards.RandomEvent
+import com.broll.gainea.server.core.events.RandomEvent
+import com.broll.gainea.server.core.events.freeArea
 import com.broll.gainea.server.core.objects.Collectible
 import com.broll.gainea.server.core.objects.buffs.BuffType.ADD
 import com.broll.gainea.server.core.objects.buffs.IntBuff
@@ -15,7 +16,10 @@ class RE_BuffPickup : RandomEvent() {
         game.freeArea { area ->
             val obj = Collectible(game)
             obj.onPickup = { player ->
-                val unit = game.selectUnit(player, "Welche Einheit soll verstärkt werden?", obj.location.units.filter { it.owner == player })!!
+                val unit = game.selectUnit(
+                    player,
+                    "Welche Einheit soll verstärkt werden?",
+                    obj.location.units.filter { it.owner == player })!!
                 val buff = IntBuff(ADD, 3)
                 unit.addHealthBuff(buff)
                 unit.power.addBuff(buff)

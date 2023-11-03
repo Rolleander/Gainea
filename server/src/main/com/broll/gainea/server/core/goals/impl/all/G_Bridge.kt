@@ -28,6 +28,6 @@ class G_Bridge : OccupyGoal(difficulty = MEDIUM, text = "") {
     }
 
     companion object {
-        private const val LENGTH = 7
+        private const val LENGTH = 8
     }
 }

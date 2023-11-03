@@ -17,7 +17,6 @@ import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.core.player.isNeutral
 import com.broll.gainea.server.core.utils.UnitControl.isNeutralMonster
 
-
 fun Collection<Location>.getLocationNumbers() =
     map { it.number.toShort() }.toShortArray()
 

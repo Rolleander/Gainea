@@ -5,6 +5,9 @@ import java.util.Objects;
 public class NT_BoardObject {
 
     public final static short NO_LOCATION = -1;
+    public final static byte NO_OWNER = -1;
+    public short owner = NO_OWNER;
+
     public String name;
     public float scale = 1;
     public short icon;

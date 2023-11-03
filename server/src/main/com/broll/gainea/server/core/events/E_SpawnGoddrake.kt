@@ -1,7 +1,6 @@
-package com.broll.gainea.server.core.cards.events
+package com.broll.gainea.server.core.events
 
 import com.broll.gainea.server.core.Game
-import com.broll.gainea.server.core.cards.EventCard
 import com.broll.gainea.server.core.objects.monster.GodDragon
 import com.broll.gainea.server.core.utils.UnitControl.spawn
 import com.broll.gainea.server.core.utils.getRandomFree

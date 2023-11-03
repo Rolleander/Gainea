@@ -1,7 +1,8 @@
-package com.broll.gainea.server.core.cards.events.random
+package com.broll.gainea.server.core.events.random
 
 import com.broll.gainea.server.core.Game
-import com.broll.gainea.server.core.cards.RandomEvent
+import com.broll.gainea.server.core.events.RandomEvent
+import com.broll.gainea.server.core.events.freeContinentArea
 import com.broll.gainea.server.core.map.Ship
 import com.broll.gainea.server.core.objects.Soldier
 import com.broll.gainea.server.core.player.Player

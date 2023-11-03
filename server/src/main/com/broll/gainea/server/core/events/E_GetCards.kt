@@ -1,6 +1,5 @@
-package com.broll.gainea.server.core.cards.events
+package com.broll.gainea.server.core.events
 
-import com.broll.gainea.server.core.cards.EventCard
 import com.broll.gainea.server.core.utils.iteratePlayers
 
 

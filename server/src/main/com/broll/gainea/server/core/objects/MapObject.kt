@@ -7,6 +7,7 @@ import com.broll.gainea.server.core.map.Ship
 import com.broll.gainea.server.core.map.SpawnLocation
 import com.broll.gainea.server.core.objects.buffs.BuffableInt
 import com.broll.gainea.server.core.player.Player
+import com.broll.gainea.server.core.player.isNeutral
 import com.broll.gainea.server.core.processing.GameUpdateReceiverAdapter
 
 abstract class MapObject(var owner: Player) : GameUpdateReceiverAdapter() {
@@ -71,6 +72,9 @@ abstract class MapObject(var owner: Player) : GameUpdateReceiverAdapter() {
         obj.icon = icon.toShort()
         obj.scale = scale
         obj.description = description
+        if (!owner.isNeutral()) {
+            obj.owner = owner.serverPlayer.id.toShort()
+        }
         if (location != SpawnLocation) {
             obj.location = location.number.toShort()
         }

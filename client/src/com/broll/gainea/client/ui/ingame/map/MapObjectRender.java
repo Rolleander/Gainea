@@ -78,6 +78,11 @@ public class MapObjectRender extends DepthActor {
         if (StringUtils.isNotEmpty(object.description)) {
             infoLabel.setText("[DARK_GRAY]" + object.description);
         }
+        int color = 0;
+        if (object.owner != NT_BoardObject.NO_OWNER) {
+            color = game.state.getPlayer(object.owner).color + 1;
+        }
+        setChipColor(color);
     }
 
     public int getRank() {
@@ -163,6 +168,10 @@ public class MapObjectRender extends DepthActor {
 
     public float getStackHeight() {
         return stackHeight;
+    }
+
+    public Collection<MapObjectRender> getStack() {
+        return stack;
     }
 
     public Location getLocation() {

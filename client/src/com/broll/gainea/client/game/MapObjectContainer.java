@@ -3,6 +3,7 @@ package com.broll.gainea.client.game;
 import static com.broll.gainea.net.NT_BoardObject.NO_LOCATION;
 
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.broll.gainea.client.ui.ingame.InGameUI;
 import com.broll.gainea.client.ui.ingame.map.MapObjectRender;
 import com.broll.gainea.client.ui.ingame.unit.UnitRender;
 import com.broll.gainea.net.NT_Action_Attack;
@@ -130,7 +131,22 @@ public class MapObjectContainer {
         rearrangeStacks();
     }
 
+    private void refreshSelectionWindow() {
+        InGameUI ui = game.getContainer().ui.inGameUI;
+        if (ui.isSelectionOpen()) {
+            Location lastSelection = ui.getSelectionLocation();
+            for (MapObjectRender render : objectRenders.values()) {
+                if (render.getLocation() == lastSelection) {
+                    ui.selectStack(lastSelection, render.getStack());
+                    return;
+                }
+            }
+            ui.clearSelection();
+        }
+    }
+
     public void rearrangeStacks() {
+        refreshSelectionWindow();
         objectRenders.values().stream().map(MapObjectRender::getLocation).distinct().forEach(this::arrange);
         game.getContainer().gameStage.sort();
     }
@@ -145,7 +161,7 @@ public class MapObjectContainer {
                 int owner = unit.owner;
                 stacks.put(owner, render);
             } else {
-                stacks.put((int) NT_Unit.NO_OWNER, render);
+                stacks.put((int) NT_BoardObject.NO_OWNER, render);
             }
         });
         arrange(location, objects, stacks);

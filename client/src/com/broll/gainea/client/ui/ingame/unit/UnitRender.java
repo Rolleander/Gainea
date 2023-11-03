@@ -17,7 +17,6 @@ import com.broll.gainea.client.AudioPlayer;
 import com.broll.gainea.client.ui.ingame.map.MapObjectRender;
 import com.broll.gainea.client.ui.utils.LabelUtils;
 import com.broll.gainea.client.ui.utils.TextureUtils;
-import com.broll.gainea.net.NT_BoardObject;
 import com.broll.gainea.net.NT_Monster;
 import com.broll.gainea.net.NT_Unit;
 
@@ -46,17 +45,6 @@ public class UnitRender extends MapObjectRender {
         blackStyle = numberLabel.getStyle();
         redStyle = new Label.LabelStyle(blackStyle.font, Color.RED);
         blood = new Animation<>(0.05f, TextureUtils.split(game.assets.get("textures/blood.png", Texture.class), BLOOD_SIZE, BLOOD_SIZE));
-    }
-
-    @Override
-    public void init(NT_BoardObject object) {
-        super.init(object);
-        NT_Unit unit = (NT_Unit) getObject();
-        int color = 0;
-        if (unit.owner != NT_Unit.NO_OWNER) {
-            color = game.state.getPlayer(unit.owner).color + 1;
-        }
-        setChipColor(color);
     }
 
     public boolean isActionActive() {

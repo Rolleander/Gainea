@@ -48,7 +48,7 @@ public class GameUtils {
             if (unit.health <= 0) {
                 return;
             }
-            if (unit.owner == NT_Unit.NO_OWNER) {
+            if (unit.owner == NT_BoardObject.NO_OWNER) {
                 game.state.getObjects().add(object);
             } else {
                 NT_Player owner = game.state.getPlayer(unit.owner);

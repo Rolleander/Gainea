@@ -7,7 +7,7 @@ import com.broll.gainea.server.core.player.isNeutral
 import com.broll.gainea.server.core.utils.UnitControl.despawn
 import com.broll.gainea.server.core.utils.owner
 
-class Collectible(game: Game) : MapObject(game.neutralPlayer) {
+open class Collectible(game: Game) : MapObject(game.neutralPlayer) {
 
     lateinit var onPickup: ((Player) -> kotlin.Unit)
 

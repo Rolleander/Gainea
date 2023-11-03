@@ -54,6 +54,10 @@ public class InGameUI {
 
     private MenuActions menuActions;
 
+    private boolean selectionOpen = false;
+
+    private Location selectionLocation;
+
     public InGameUI(Gainea game, Skin skin) {
         this.attackAndMoveHandler = new AttackAndMoveActionHandler(game);
         this.requiredActionHandler = new RequiredActionHandler(game, skin);
@@ -104,6 +108,8 @@ public class InGameUI {
         Table window = new MapObjectSelection(game, location, stack);
         rightPanel.add(window).right().top().expand();
         rightPanel.layout();
+        selectionLocation = location;
+        selectionOpen = true;
     }
 
     public void selectedUnits(List<NT_Unit> units) {
@@ -113,6 +119,7 @@ public class InGameUI {
     }
 
     public void clearSelection() {
+        selectionOpen = false;
         rightPanel.clear();
         attackAndMoveHandler.showFor(new ArrayList<>());
     }
@@ -170,5 +177,13 @@ public class InGameUI {
 
     public RequiredActionHandler getRequiredActionHandler() {
         return requiredActionHandler;
+    }
+
+    public Location getSelectionLocation() {
+        return selectionLocation;
+    }
+
+    public boolean isSelectionOpen() {
+        return selectionOpen;
     }
 }

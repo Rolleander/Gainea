@@ -1,5 +1,6 @@
 package com.broll.gainea.server.core.bot
 
+import com.broll.gainea.net.NT_BoardObject
 import com.broll.gainea.net.NT_Goal
 import com.broll.gainea.net.NT_Unit
 import com.broll.gainea.server.core.Game
@@ -14,7 +15,7 @@ object BotUtils {
     fun getObjects(game: Game, units: Array<NT_Unit>) = units.map { getObject(game, it) }
 
     fun getObject(game: Game, unit: NT_Unit): Unit {
-        if (unit.owner == NT_Unit.NO_OWNER.toShort()) {
+        if (unit.owner == NT_BoardObject.NO_OWNER.toShort()) {
             for (`object` in game.objects) {
                 if (`object`.id == unit.id.toInt() && `object` is Unit) {
                     return `object`
@@ -33,7 +34,8 @@ object BotUtils {
         throw RuntimeException("unknown object")
     }
 
-    fun getGoal(game: Game, nt: NT_Goal) = game.allPlayers.flatMap { it.goalHandler.goals }.first { it.id == nt.id }
+    fun getGoal(game: Game, nt: NT_Goal) =
+        game.allPlayers.flatMap { it.goalHandler.goals }.first { it.id == nt.id }
 
 
     fun getLocations(game: Game, options: ShortArray): List<Location> {
@@ -78,7 +80,12 @@ object BotUtils {
         return index
     }
 
-    fun getBestPath(player: Player, obj: Unit, fromOptions: Collection<Location>, to: Location): Pair<Location, Int> {
+    fun getBestPath(
+        player: Player,
+        obj: Unit,
+        fromOptions: Collection<Location>,
+        to: Location
+    ): Pair<Location, Int> {
         var distance = Int.MAX_VALUE
         var units = 0
         var location = fromOptions.iterator().next()
@@ -97,7 +104,11 @@ object BotUtils {
         return location to distance
     }
 
-    fun getBestPath(obj: Unit, from: Location, toOptions: Collection<Location>): Pair<Location, Int> {
+    fun getBestPath(
+        obj: Unit,
+        from: Location,
+        toOptions: Collection<Location>
+    ): Pair<Location, Int> {
         var distance = Int.MAX_VALUE
         var units = 0
         var location = toOptions.iterator().next()
@@ -115,7 +126,8 @@ object BotUtils {
         return location to distance
     }
 
-    fun huntOtherPlayersTargets(owner: Player, game: Game) = game.allPlayers.filter { it !== owner }.flatMap { it.controlledLocations }.toHashSet()
+    fun huntOtherPlayersTargets(owner: Player, game: Game) =
+        game.allPlayers.filter { it !== owner }.flatMap { it.controlledLocations }.toHashSet()
 
 
     fun huntPlayerTargets(player: Player) = player.controlledLocations.toHashSet()

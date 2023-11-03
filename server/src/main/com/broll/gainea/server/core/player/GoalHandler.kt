@@ -22,8 +22,9 @@ class GoalHandler(private val game: Game, private val player: Player) {
 
     val goals = mutableListOf<Goal>()
 
-    fun isValidNewGoal(goal: Goal) =
-        goals.none { it::class == goal::class } && previousGoals.none { it::class == goal::class }
+    fun isValidNewGoal(goal: Goal) = with(goal.javaClass) {
+        goals.none { isInstance(it) } && previousGoals.none { isInstance(it) }
+    }
 
     fun addPoints(points: Int) {
         if (player.isNeutral()) return

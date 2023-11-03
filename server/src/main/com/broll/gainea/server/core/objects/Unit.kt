@@ -7,7 +7,6 @@ import com.broll.gainea.server.core.battle.FightingPower
 import com.broll.gainea.server.core.objects.buffs.BuffableInt
 import com.broll.gainea.server.core.objects.buffs.IntBuff
 import com.broll.gainea.server.core.player.Player
-import com.broll.gainea.server.core.player.isNeutral
 
 abstract class Unit(owner: Player) : MapObject(owner), IUnit {
     override var maxHealth: BuffableInt<MapObject> = BuffableInt(this, 0)
@@ -146,9 +145,6 @@ abstract class Unit(owner: Player) : MapObject(owner), IUnit {
         unit.power = power.value.toShort()
         unit.type = type.toByte()
         unit.kills = kills.toShort()
-        if (!owner.isNeutral()) {
-            unit.owner = owner.serverPlayer.id.toShort()
-        }
     }
 
     val hurt: Boolean

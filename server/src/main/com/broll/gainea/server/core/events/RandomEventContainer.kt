@@ -1,4 +1,4 @@
-package com.broll.gainea.server.core.cards
+package com.broll.gainea.server.core.events
 
 import com.broll.gainea.misc.PackageLoader
 import com.broll.gainea.server.core.Game
@@ -6,7 +6,8 @@ import com.broll.gainea.server.core.utils.ProcessingUtils
 import com.broll.gainea.server.core.utils.displayMessage
 
 class RandomEventContainer {
-    private val randomEventLoader: PackageLoader<RandomEvent> = PackageLoader(RandomEvent::class.java, PACKAGE_PATH)
+    private val randomEventLoader: PackageLoader<RandomEvent> =
+        PackageLoader(RandomEvent::class.java, PACKAGE_PATH)
     private val randomEvents = randomEventLoader.instantiateAll().shuffled().toMutableList()
 
     private fun getRandomEvent(): RandomEvent {
