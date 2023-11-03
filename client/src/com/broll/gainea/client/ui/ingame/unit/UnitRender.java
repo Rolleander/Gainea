@@ -99,6 +99,8 @@ public class UnitRender extends MapObjectRender {
         if (removeActor) {
             addAction(Actions.sequence(Actions.fadeOut(0.5f), Actions.removeActor()));
         }
+        bloodAnimation = 0;
+        showBlood = true;
     }
 
     public void attack(UnitRender target) {

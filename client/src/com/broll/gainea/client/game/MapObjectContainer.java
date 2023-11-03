@@ -12,8 +12,10 @@ import com.broll.gainea.net.NT_Event;
 import com.broll.gainea.net.NT_Unit;
 import com.broll.gainea.server.core.map.Location;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.map.MultiValueMap;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
@@ -84,6 +86,7 @@ public class MapObjectContainer {
         if (render instanceof UnitRender) {
             UnitRender unitRender = (UnitRender) render;
             if (unitRender.getUnit().health <= 0) {
+                this.objectRenders.remove(nt.id);
                 if (damage) {
                     unitRender.kill(true);
                     //todo update stack after killed
@@ -100,24 +103,30 @@ public class MapObjectContainer {
         }
     }
 
+    private MapObjectRender createRender(NT_BoardObject nt) {
+        Location location = game.getMap().getLocation(nt.location);
+        MapObjectRender render = MapObjectRender.createRender(game.getContainer(), game.getContainer().ui.skin, nt);
+        render.selectionListener();
+        render.setLocation(location);
+        this.objectRenders.put(nt.id, render);
+        game.getContainer().gameStage.addActor(render);
+        return render;
+    }
+
     public void update(int effect, List<NT_BoardObject> update) {
-        for (MapObjectRender existingRender : objectRenders.values()) {
+        List<MapObjectRender> newRenders = new ArrayList<>();
+        update.forEach(nt -> {
+            MapObjectRender render = getObjectRender(nt);
+            if (render == null && nt.location != NO_LOCATION) {
+                newRenders.add(createRender(nt));
+            }
+        });
+        for (MapObjectRender existingRender : CollectionUtils.subtract(objectRenders.values(), newRenders)) {
             NT_BoardObject nt = findObject(update, existingRender.getObject().id);
             if (nt != null) {
                 updateRender(existingRender, nt, effect);
             }
         }
-        update.forEach(nt -> {
-            MapObjectRender render = getObjectRender(nt);
-            if (render == null && nt.location != NO_LOCATION) {
-                Location location = game.getMap().getLocation(nt.location);
-                render = MapObjectRender.createRender(game.getContainer(), game.getContainer().ui.skin, nt);
-                render.selectionListener();
-                render.setLocation(location);
-                this.objectRenders.put(nt.id, render);
-                game.getContainer().gameStage.addActor(render);
-            }
-        });
         rearrangeStacks();
     }
 
@@ -133,10 +142,8 @@ public class MapObjectContainer {
             NT_BoardObject object = render.getObject();
             if (object instanceof NT_Unit) {
                 NT_Unit unit = ((NT_Unit) object);
-                if (unit.health > 0) {
-                    int owner = unit.owner;
-                    stacks.put(owner, render);
-                }
+                int owner = unit.owner;
+                stacks.put(owner, render);
             } else {
                 stacks.put((int) NT_Unit.NO_OWNER, render);
             }

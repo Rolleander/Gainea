@@ -78,7 +78,7 @@ class FireFraction : Fraction(FractionType.FIRE) {
 }
 
 class FireRain :
-    Card(76, "Feuerregen", "Verursacht 1 Schaden an einer beliebigen feindlichen Einheit") {
+    Card(76, "Feuerregen", "Verursacht 1 Schaden an einer beliebigen Einheit") {
     override val isPlayable: Boolean
         get() = true
 
