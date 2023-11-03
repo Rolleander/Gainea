@@ -34,7 +34,7 @@ import com.broll.gainea.net.NT_Event_ReceivedPoints;
 import com.broll.gainea.net.NT_Event_ReceivedStars;
 import com.broll.gainea.net.NT_Event_RemoveCard;
 import com.broll.gainea.net.NT_Event_RemoveGoal;
-import com.broll.gainea.net.NT_Event_RemoveObject;
+import com.broll.gainea.net.NT_Event_RemoveObjects;
 import com.broll.gainea.net.NT_Event_TextInfo;
 import com.broll.gainea.net.NT_Event_UpdateObjects;
 import com.broll.gainea.net.NT_Player;
@@ -44,6 +44,8 @@ import com.broll.networklib.PackageReceiver;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Arrays;
 
 public class GameEventSite extends AbstractGameSite {
 
@@ -90,30 +92,32 @@ public class GameEventSite extends AbstractGameSite {
 
     @PackageReceiver
     public void received(NT_Event_FocusObject focus) {
-        focus(focus.object);
+        focus(focus.screenEffect, focus.object);
     }
 
     @PackageReceiver
     public void received(NT_Event_FocusObjects focus) {
-        focus(focus.objects);
+        focus(focus.screenEffect, focus.objects);
     }
 
     @PackageReceiver
-    public void received(NT_Event_RemoveObject evt) {
-        game.state.getMapObjectsContainer().remove(evt.object);
+    public void received(NT_Event_RemoveObjects evt) {
+        for (NT_BoardObject obj : evt.objects) {
+            game.state.getMapObjectsContainer().remove(obj);
+        }
     }
 
     @PackageReceiver
     public void received(NT_Event_UpdateObjects update) {
+        game.state.getMapObjectsContainer().update(update.screenEffect, Arrays.asList(update.objects));
         GameUtils.updateMapObjects(game, update.objects);
-        game.state.updateMapObjects();
     }
 
-    private void focus(NT_BoardObject... objects) {
+    private void focus(int effect, NT_BoardObject... objects) {
         game.ui.inGameUI.hideWindows();
+        game.state.getMapObjectsContainer().update(effect, Arrays.asList(objects));
         GameUtils.updateMapObjects(game, objects);
         MapScrollUtils.showObject(game, objects[0]);
-        game.state.updateMapObjects();
         game.ui.inGameUI.updateWindows();
     }
 
@@ -137,7 +141,8 @@ public class GameEventSite extends AbstractGameSite {
             if (first) {
                 render.addAction(Actions.sequence(action, Actions.run(() -> {
                     //walking done
-                    game.state.updateMapObjects();
+                    GameUtils.findObject(game, object.id).location = (short) to;
+                    game.state.updateMapObjects(NT_Event.EFFECT_MOVED);
                 })));
             } else {
                 render.addAction(action);
@@ -152,7 +157,7 @@ public class GameEventSite extends AbstractGameSite {
         NT_BoardObject object = placed.object;
         MapScrollUtils.showObject(game, object);
         GameUtils.addMapObject(game, object);
-        game.state.updateMapObjects();
+        game.state.updateMapObjects(NT_Event.EFFECT_SPAWNED);
         game.ui.inGameUI.updateWindows();
     }
 
@@ -267,6 +272,6 @@ public class GameEventSite extends AbstractGameSite {
     @PackageReceiver
     public void received(NT_Event_BoardEffect nt) {
         GameUtils.updateMapEffects(game.state, nt.effects);
-        game.state.updateMapObjects();
+        game.state.updateMapObjects(nt.screenEffect);
     }
 }

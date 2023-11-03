@@ -6,6 +6,7 @@ import com.broll.gainea.client.game.ClientMapContainer;
 import com.broll.gainea.client.game.PlayerPerformOptionalAction;
 import com.broll.gainea.client.ui.ingame.map.ActionTrail;
 import com.broll.gainea.client.ui.ingame.map.MapAction;
+import com.broll.gainea.client.ui.ingame.unit.UnitRender;
 import com.broll.gainea.client.ui.utils.ActionListener;
 import com.broll.gainea.net.NT_Action;
 import com.broll.gainea.net.NT_Action_Attack;
@@ -53,6 +54,9 @@ public class AttackAndMoveActionHandler {
             List<NT_Unit> pathUnits = (List<NT_Unit>) paths.getCollection(from);
             createMapAction(from, to, action, pathUnits, type, () -> {
                 int[] ids = getSelectedUnitIds(selectedUnits);
+                selectedUnits.forEach(it ->
+                        ((UnitRender) game.state.getMapObjectsContainer().getObjectRender(it)).setActionActive(false)
+                );
                 playerPerformAction.perform(action, 0, ids);
             });
         });

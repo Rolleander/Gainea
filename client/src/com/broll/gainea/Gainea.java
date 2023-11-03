@@ -13,6 +13,7 @@ import com.broll.gainea.client.game.GameState;
 import com.broll.gainea.client.network.ClientHandler;
 import com.broll.gainea.client.ui.GameUI;
 import com.broll.gainea.client.ui.Screen;
+import com.broll.gainea.client.ui.ingame.DepthStage;
 import com.broll.gainea.client.ui.screens.LoadingScreen;
 import com.broll.gainea.client.ui.screens.StartScreen;
 
@@ -20,7 +21,7 @@ public class Gainea extends ApplicationAdapter {
 
     public static String VERSION;
     public ClientHandler client;
-    public Stage gameStage;
+    public DepthStage gameStage;
     public Stage uiStage;
     public GameUI ui;
     public Assets assets;
@@ -40,7 +41,7 @@ public class Gainea extends ApplicationAdapter {
         this.reconnectCheck = reconnectCheck;
     }
 
-    private Stage createStage() {
+    private ScreenViewport createViewport() {
         ScreenViewport viewport = new ScreenViewport();
         float screenScale = 1;
         float minHeight = 850;
@@ -48,15 +49,15 @@ public class Gainea extends ApplicationAdapter {
             screenScale = Math.min(1.5f, (float) Gdx.graphics.getHeight() / minHeight);
         }
         viewport.setUnitsPerPixel(1 / screenScale);
-        return new Stage(viewport);
+        return viewport;
     }
 
     @Override
     public void create() {
         //new StretchViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight())
         client = new ClientHandler(this);
-        gameStage = createStage();
-        uiStage = createStage();
+        gameStage = new DepthStage(createViewport());
+        uiStage = new Stage(createViewport());
         state = new GameState(this);
         ui = new GameUI(this, new LoadingScreen(startScreen), reconnectCheck);
         client.setClientListener(ui);

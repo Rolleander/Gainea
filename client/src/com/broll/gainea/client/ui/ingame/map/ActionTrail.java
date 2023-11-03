@@ -5,18 +5,18 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.broll.gainea.Gainea;
+import com.broll.gainea.client.ui.ingame.DepthActor;
 import com.broll.gainea.server.core.map.Coordinates;
-import com.broll.gainea.server.core.map.Location;
 
-public class ActionTrail extends Actor {
+public class ActionTrail extends DepthActor {
 
     private float[] dotX, dotY;
     private TextureRegion dot;
     private float animationAngle;
 
     public ActionTrail(Gainea game, int nr, Coordinates from, Coordinates to) {
+        this.depth = 200;
         Texture texture = game.assets.get("textures/dot.png", Texture.class);
         dot = new TextureRegion(texture, 30 * nr, 0, 30, 30);
         setVisible(false);

@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.broll.gainea.Gainea;
+import com.broll.gainea.net.NT_BoardObject;
 import com.broll.gainea.net.NT_Monster;
 import com.broll.gainea.server.core.objects.monster.MonsterBehavior;
 
@@ -22,10 +23,17 @@ public class MonsterRender extends UnitRender {
         super(game, skin, unit);
         this.labelDisplacement = 25;
         this.timerStyle = new Label.LabelStyle(blackStyle.font, Color.LIGHT_GRAY);
-        int stars = unit.stars;
         setHeight(radius * 2 + 48);
-        starPlate = new TextureRegion(game.assets.get("textures/star_plates.png", Texture.class), stars * W, 0, W, H);
         bubble = game.assets.get("textures/bubble.png", Texture.class);
+    }
+
+
+    @Override
+    public void init(NT_BoardObject object) {
+        super.init(object);
+        NT_Monster monster = (NT_Monster) getUnit();
+        int stars = monster.stars;
+        starPlate = new TextureRegion(game.assets.get("textures/star_plates.png", Texture.class), stars * W, 0, W, H);
     }
 
     @Override

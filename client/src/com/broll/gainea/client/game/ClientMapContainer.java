@@ -1,12 +1,9 @@
 package com.broll.gainea.client.game;
 
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.broll.gainea.Gainea;
 import com.broll.gainea.client.ui.ingame.map.ExpansionDebugRender;
 import com.broll.gainea.client.ui.ingame.map.ExpansionRender;
 import com.broll.gainea.client.ui.ingame.map.WaterRender;
-import com.broll.gainea.client.ui.utils.LabelUtils;
-import com.broll.gainea.server.core.map.Coordinates;
 import com.broll.gainea.server.core.map.Expansion;
 import com.broll.gainea.server.core.map.ExpansionFactory;
 import com.broll.gainea.server.core.map.MapContainer;
@@ -53,15 +50,17 @@ public class ClientMapContainer extends MapContainer {
         this.renders.forEach(render -> game.gameStage.addActor(render));
         this.initSet.forEach(it -> {
             it.getSecond().getAllAreas().forEach(area -> {
-                Label label = LabelUtils.label(game.ui.skin, area.getName());
+                //todo add depth actor label class for area names
+               /* Label label = LabelUtils.label(game.ui.skin, area.getName());
                 Coordinates cords = area.getCoordinates();
                 label.pack();
                 label.setPosition(cords.getDisplayX() - label.getWidth() / 2, cords.getDisplayY());
-                game.gameStage.addActor(label);
+                game.gameStage.addActor(label);*/
             });
         });
         if (RENDER_DEBUG) {
             this.getExpansions().forEach(expansion -> game.gameStage.addActor(new ExpansionDebugRender(game, expansion)));
         }
     }
+
 }

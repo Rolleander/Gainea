@@ -1,19 +1,23 @@
 package com.broll.gainea.client.game;
 
+import static com.broll.gainea.net.NT_BoardObject.NO_LOCATION;
+
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.broll.gainea.client.ui.ingame.map.MapObjectRender;
 import com.broll.gainea.client.ui.ingame.unit.UnitRender;
 import com.broll.gainea.net.NT_Action_Attack;
 import com.broll.gainea.net.NT_Action_Move;
 import com.broll.gainea.net.NT_BoardObject;
+import com.broll.gainea.net.NT_Event;
 import com.broll.gainea.net.NT_Unit;
 import com.broll.gainea.server.core.map.Location;
 
 import org.apache.commons.collections4.map.MultiValueMap;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -24,15 +28,23 @@ public class MapObjectContainer {
     private static float CIRCLE_R = 55f;
     private static float STACK_DISTANCE = 15f;
     private GameState game;
-    private MultiValueMap<Location, MapObjectRender> objectRenders = new MultiValueMap<>();
+    private Map<Short, MapObjectRender> objectRenders = new HashMap<>();
 
     public MapObjectContainer(GameState game) {
         super();
         this.game = game;
     }
 
+    public void removeActions() {
+        objectRenders.values().forEach(it -> {
+            if (it instanceof UnitRender) {
+                ((UnitRender) it).setActionActive(false);
+            }
+        });
+    }
+
     public void updateActiveState(List<NT_Action_Move> moves, List<NT_Action_Attack> attacks) {
-        for (Object value : objectRenders.values()) {
+        for (MapObjectRender value : objectRenders.values()) {
             if (value instanceof UnitRender) {
                 UnitRender render = (UnitRender) value;
                 int id = render.getObject().id;
@@ -45,54 +57,77 @@ public class MapObjectContainer {
     }
 
     public void remove(NT_BoardObject obj) {
-        Iterator<Map.Entry<Location, MapObjectRender>> iterator = objectRenders.iterator();
-        while (iterator.hasNext()) {
-            Map.Entry<Location, MapObjectRender> entry = iterator.next();
-            if (entry.getValue().getObject().id == obj.id) {
-                entry.getValue().addAction(Actions.sequence(Actions.fadeOut(0.3f), Actions.removeActor()));
-                iterator.remove();
-                return;
-            }
+        MapObjectRender render = objectRenders.remove(obj.id);
+        if (render != null) {
+            render.addAction(Actions.sequence(Actions.fadeOut(0.3f), Actions.removeActor()));
         }
     }
 
     public MapObjectRender getObjectRender(NT_BoardObject object) {
-        for (Object value : objectRenders.values()) {
-            MapObjectRender render = (MapObjectRender) value;
-            if (object.equals(render.getObject())) {
-                return render;
+        return objectRenders.get(object.id);
+    }
+
+    private NT_BoardObject findObject(List<NT_BoardObject> objects, int id) {
+        for (NT_BoardObject object : objects) {
+            if (object.id == id) {
+                return object;
             }
         }
         return null;
     }
 
-    private void remove(MapObjectRender render) {
-        render.remove();
-        objectRenders.getCollection(render.getLocation()).remove(render);
+    private void updateRender(MapObjectRender render, NT_BoardObject nt, int effect) {
+        render.init(nt);
+        Location location = game.getMap().getLocation(nt.location);
+        render.setLocation(location);
+        boolean damage = effect == NT_Event.EFFECT_DAMAGE;
+        if (render instanceof UnitRender) {
+            UnitRender unitRender = (UnitRender) render;
+            if (unitRender.getUnit().health <= 0) {
+                if (damage) {
+                    unitRender.kill(true);
+                    //todo update stack after killed
+                } else {
+                    unitRender.remove();
+                }
+            } else {
+                if (damage) {
+                    unitRender.takeDamage(0);
+                } else if (effect == NT_Event.EFFECT_BUFF) {
+                    //todo show other effect animations
+                }
+            }
+        }
     }
 
-    public void update(List<NT_BoardObject> update) {
-        List<MapObjectRender> renders = new ArrayList<>();
-        this.objectRenders.keySet().forEach(location -> objectRenders.getCollection(location).forEach(render -> render.remove()));
-        this.objectRenders.clear();
-        update.stream().forEach(o -> {
-            Location location = game.getMap().getLocation(o.location);
-            if (location != null) {
-                MapObjectRender render = MapObjectRender.createRender(game.getContainer(), game.getContainer().ui.skin, o);
+    public void update(int effect, List<NT_BoardObject> update) {
+        for (MapObjectRender existingRender : objectRenders.values()) {
+            NT_BoardObject nt = findObject(update, existingRender.getObject().id);
+            if (nt != null) {
+                updateRender(existingRender, nt, effect);
+            }
+        }
+        update.forEach(nt -> {
+            MapObjectRender render = getObjectRender(nt);
+            if (render == null && nt.location != NO_LOCATION) {
+                Location location = game.getMap().getLocation(nt.location);
+                render = MapObjectRender.createRender(game.getContainer(), game.getContainer().ui.skin, nt);
                 render.selectionListener();
-                this.objectRenders.put(location, render);
-                renders.add(render);
+                render.setLocation(location);
+                this.objectRenders.put(nt.id, render);
+                game.getContainer().gameStage.addActor(render);
             }
         });
-        objectRenders.keySet().stream().distinct().forEach(this::arrange);
-        renders.sort((r1, r2) -> Float.compare(r1.getY(), r2.getY()));
-        renders.forEach(render -> {
-            game.getContainer().gameStage.addActor(render);
-        });
+        rearrangeStacks();
+    }
+
+    private void rearrangeStacks() {
+        objectRenders.values().stream().map(MapObjectRender::getLocation).distinct().forEach(this::arrange);
+        game.getContainer().gameStage.sort();
     }
 
     private void arrange(Location location) {
-        Collection<MapObjectRender> objects = objectRenders.getCollection(location);
+        Collection<MapObjectRender> objects = objectRenders.values().stream().filter(it -> it.getLocation() == location).collect(Collectors.toList());
         MultiValueMap<Integer, MapObjectRender> stacks = new MultiValueMap<>();
         objects.forEach(render -> {
             NT_BoardObject object = render.getObject();
@@ -131,7 +166,7 @@ public class MapObjectContainer {
     private void arrangeStack(Location location, float x, float y, Collection<MapObjectRender> renders) {
         float stackHeight = 0;
         MapObjectRender topOfStack = null;
-        for (MapObjectRender render : renders.stream().sorted((a, b) -> Integer.compare(a.getRank(), b.getRank())).collect(Collectors.toList())) {
+        for (MapObjectRender render : renders.stream().sorted(Comparator.comparingInt(MapObjectRender::getRank)).collect(Collectors.toList())) {
             render.setPosition(x, y);
             render.setLocation(location);
             render.setStack(renders, stackHeight);
@@ -142,5 +177,6 @@ public class MapObjectContainer {
         }
         topOfStack.setStackTop(true);
     }
+
 
 }

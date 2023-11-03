@@ -22,6 +22,7 @@ public class GameTurnSite extends AbstractGameSite {
         @Override
         public void none() {
             //player wants to end turn
+            game.state.getMapObjectsContainer().removeActions();
             client.sendTCP(new NT_EndTurn());
         }
 

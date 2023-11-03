@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Align;
 import com.broll.gainea.Gainea;
+import com.broll.gainea.client.ui.ingame.DepthActor;
 import com.broll.gainea.client.ui.ingame.unit.MonsterRender;
 import com.broll.gainea.client.ui.ingame.unit.UnitRender;
 import com.broll.gainea.client.ui.utils.LabelUtils;
@@ -27,7 +28,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collection;
 
-public class MapObjectRender extends Actor {
+public class MapObjectRender extends DepthActor {
 
     protected final static int R = 50;
     private final static int DESCRIPTION_WIDTH = 220;
@@ -46,12 +47,10 @@ public class MapObjectRender extends Actor {
     private float stackHeight;
 
     public MapObjectRender(Gainea game, Skin skin, NT_BoardObject object) {
+        depth = 50;
         this.game = game;
-        this.object = object;
         this.radius = R * object.scale;
         setSize(radius * 2, radius * 2);
-        init();
-        icon = TextureUtils.unitIcon(game, object.icon);
         if (StringUtils.isNotEmpty(object.description)) {
             infoLabel = LabelUtils.markup(skin, "[DARK_GRAY]" + object.description);
             infoLabel.setWidth(DESCRIPTION_WIDTH);
@@ -59,6 +58,8 @@ public class MapObjectRender extends Actor {
             LabelUtils.autoWrap(infoLabel, DESCRIPTION_WIDTH);
             infoLabel.setWidth(DESCRIPTION_WIDTH);
         }
+        setChipColor(0);
+        init(object);
     }
 
     public static MapObjectRender createRender(Gainea gainea, Skin skin, NT_BoardObject object) {
@@ -69,6 +70,14 @@ public class MapObjectRender extends Actor {
             return new UnitRender(gainea, skin, (NT_Unit) object);
         }
         return new MapObjectRender(gainea, skin, object);
+    }
+
+    public void init(NT_BoardObject object) {
+        this.object = object;
+        icon = TextureUtils.unitIcon(game, object.icon);
+        if (StringUtils.isNotEmpty(object.description)) {
+            infoLabel.setText("[DARK_GRAY]" + object.description);
+        }
     }
 
     public int getRank() {
@@ -118,9 +127,6 @@ public class MapObjectRender extends Actor {
         this.stackTop = stackTop;
     }
 
-    protected void init() {
-        setChipColor(0);
-    }
 
     protected void setChipColor(int color) {
         Texture texture = game.assets.get("textures/chips.png", Texture.class);
@@ -166,5 +172,6 @@ public class MapObjectRender extends Actor {
     public void setLocation(Location location) {
         this.location = location;
     }
+
 
 }

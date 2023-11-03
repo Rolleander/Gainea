@@ -1,21 +1,25 @@
 package com.broll.gainea.client.ui.ingame.map;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.broll.gainea.Gainea;
+import com.broll.gainea.client.ui.ingame.DepthActor;
 import com.broll.gainea.client.ui.utils.ActionListener;
 import com.broll.gainea.net.NT_Unit;
 
 import java.util.List;
 import java.util.Objects;
 
-public class MapAction extends Image {
+public class MapAction extends DepthActor {
 
+    public final static int DEPTH = 250;
+    public final static int TYPE_MOVE = 0;
+    public final static int TYPE_ATTACK = 1;
+    public final static int TYPE_PLACE = 2;
     private final static int SIZE = 100;
     private float animationAngle;
     private ActionTrail trail;
@@ -23,23 +27,19 @@ public class MapAction extends Image {
     private int from, to;
     private int type;
     private Object action;
-
     private List<NT_Unit> units;
 
-    public final static int TYPE_MOVE = 0;
-    public final static int TYPE_ATTACK = 1;
-    public final static int TYPE_PLACE = 2;
+    private TextureRegion region;
 
     public MapAction(Gainea game, int type, int locationId, ActionListener clicked) {
+        depth = 500;
         setVisible(false);
         this.type = type;
         this.locationId = locationId;
         Texture texture = game.assets.get("textures/map_actions.png", Texture.class);
-        TextureRegion region = new TextureRegion(texture, SIZE * type, 0, SIZE, SIZE);
-        setDrawable(new TextureRegionDrawable(region));
+        region = new TextureRegion(texture, SIZE * type, 0, SIZE, SIZE);
         setSize(SIZE, SIZE);
         setOrigin(Align.center);
-        setZIndex(10000);
         if (clicked != null) {
             addListener(new ClickListener() {
                 @Override
@@ -54,12 +54,17 @@ public class MapAction extends Image {
         }
     }
 
-    public void setUnits(List<NT_Unit> units) {
-        this.units = units;
+    @Override
+    public void draw(Batch batch, float parentAlpha) {
+        batch.draw(region, getX(), getY(), getOriginX(), getOriginY(), getWidth(), getHeight(), getScaleX(), getScaleY(), getRotation());
     }
 
     public List<NT_Unit> getUnits() {
         return units;
+    }
+
+    public void setUnits(List<NT_Unit> units) {
+        this.units = units;
     }
 
     @Override
@@ -75,12 +80,12 @@ public class MapAction extends Image {
         super.setPosition(x - SIZE / 2, y - SIZE / 2);
     }
 
-    public void setAction(Object action) {
-        this.action = action;
-    }
-
     public Object getAction() {
         return action;
+    }
+
+    public void setAction(Object action) {
+        this.action = action;
     }
 
     public void setFromTo(int from, int to) {

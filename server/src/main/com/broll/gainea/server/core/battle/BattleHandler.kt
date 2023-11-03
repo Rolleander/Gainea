@@ -12,8 +12,8 @@ import com.broll.gainea.server.core.objects.monster.Monster
 import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.core.player.isNeutral
 import com.broll.gainea.server.core.utils.ProcessingUtils
+import com.broll.gainea.server.core.utils.UnitControl.despawn
 import com.broll.gainea.server.core.utils.UnitControl.move
-import com.broll.gainea.server.core.utils.remove
 import com.broll.gainea.server.core.utils.sendUpdate
 import org.apache.commons.lang3.mutable.MutableBoolean
 import org.slf4j.LoggerFactory
@@ -206,7 +206,7 @@ class BattleHandler(private val game: Game, private val reactionResult: Reaction
         val fallenUnits = mutableListOf<Unit>()
         fallenUnits.addAll(result.killedAttackers.map { it.source })
         fallenUnits.addAll(result.killedDefenders.map { it.source })
-        fallenUnits.forEach { game.remove(it) }
+        game.despawn(fallenUnits)
         fallenUnits.forEach { it.onDeath(result) }
         fallenUnits.forEach { updateReceiver.unitKilled(it, result) }
         updateReceiver.battleResult(result)

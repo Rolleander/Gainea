@@ -5,7 +5,7 @@ import com.broll.gainea.net.NT_Event_FocusObject
 import com.broll.gainea.net.NT_Event_FocusObjects
 import com.broll.gainea.net.NT_Event_MovedObject
 import com.broll.gainea.net.NT_Event_PlacedObject
-import com.broll.gainea.net.NT_Event_RemoveObject
+import com.broll.gainea.net.NT_Event_RemoveObjects
 import com.broll.gainea.net.NT_Event_UpdateObjects
 import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.map.Area
@@ -143,10 +143,12 @@ object UnitControl {
         ProcessingUtils.pause(SPAWN_PAUSE)
     }
 
-    fun Game.despawn(obj: MapObject) {
-        remove(obj)
-        val nt = NT_Event_RemoveObject()
-        nt.`object` = obj.nt()
+    fun Game.despawn(obj: MapObject) = despawn(listOf(obj))
+
+    fun Game.despawn(objs: List<MapObject>) {
+        objs.forEach { remove(it) }
+        val nt = NT_Event_RemoveObjects()
+        nt.objects = objs.map { it.nt() }.toTypedArray()
         sendUpdate(nt)
     }
 

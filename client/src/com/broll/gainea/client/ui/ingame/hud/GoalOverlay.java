@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -13,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.broll.gainea.Gainea;
+import com.broll.gainea.client.ui.ingame.DepthActor;
 import com.broll.gainea.client.ui.utils.LabelUtils;
 import com.broll.gainea.client.ui.utils.TextureUtils;
 import com.broll.gainea.net.NT_Goal;
@@ -101,7 +101,7 @@ public class GoalOverlay extends Table {
         }
     }
 
-    private class TargetIndicator extends Actor {
+    private class TargetIndicator extends DepthActor {
 
         private final static int SIZE = 128;
         private TextureRegion texture;
@@ -118,7 +118,7 @@ public class GoalOverlay extends Table {
             setSize(SIZE, SIZE);
             setX(location.getCoordinates().getDisplayX());
             setY(location.getCoordinates().getDisplayY());
-            setZIndex(1000);
+            depth = 200;
         }
 
         @Override

@@ -107,11 +107,11 @@ public class GameState {
         this.objects = Lists.newArrayList(update.objects);
         this.players = Arrays.asList(update.players);
         this.effects = Lists.newArrayList(update.effects);
-        updateMapObjects();
+        updateMapObjects(0);
     }
 
-    public void updateMapObjects() {
-        mapObjectsContainer.update(Streams.concat(objects.stream(), players.stream().flatMap(p -> Arrays.stream(p.units))).collect(Collectors.toList()));
+    public void updateMapObjects(int effect) {
+        mapObjectsContainer.update(effect, Streams.concat(objects.stream(), players.stream().flatMap(p -> Arrays.stream(p.units))).collect(Collectors.toList()));
         mapEffectContainer.update(this.effects);
         game.ui.inGameUI.getRequiredActionHandler().toFront();
     }

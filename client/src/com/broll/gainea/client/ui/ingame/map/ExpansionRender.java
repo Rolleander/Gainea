@@ -5,13 +5,13 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.broll.gainea.Gainea;
+import com.broll.gainea.client.ui.ingame.DepthActor;
 import com.broll.gainea.server.core.map.Coordinates;
 import com.broll.gainea.server.core.map.Expansion;
 import com.broll.gainea.server.core.map.Ship;
 
-public class ExpansionRender extends Actor {
+public class ExpansionRender extends DepthActor {
 
     public final static float SIZE = 3120;
     private final static int SHIP_SIZE = 120;
@@ -29,6 +29,7 @@ public class ExpansionRender extends Actor {
     }
 
     public void init(Gainea game, Expansion expansion) {
+        depth = -100;
         this.game = game;
         this.expansion = expansion;
         texture = game.assets.get("textures/" + textureName, Texture.class);

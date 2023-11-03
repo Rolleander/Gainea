@@ -4,9 +4,6 @@ import com.broll.gainea.Gainea;
 import com.broll.gainea.client.ui.ingame.map.MapEffectRender;
 import com.broll.gainea.net.NT_BoardEffect;
 
-import org.apache.commons.lang3.ArrayUtils;
-
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,5 +35,6 @@ public class MapEffectContainer {
                         oldValue.remove();
                     });
         }
+        game.gameStage.sort();
     }
 }

@@ -7,13 +7,13 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.broll.gainea.Gainea;
+import com.broll.gainea.client.ui.ingame.DepthActor;
 import com.broll.gainea.client.ui.utils.TextureUtils;
 import com.broll.gainea.net.NT_BoardEffect;
 
-public class MapEffectRender extends Actor {
+public class MapEffectRender extends DepthActor {
 
     private final static int FIRE_WIDTH = 119;
     private final static int FIRE_HEIGHT = 188;
@@ -29,9 +29,9 @@ public class MapEffectRender extends Actor {
         if (this.effect == NT_BoardEffect.EFFECT_FIRE) {
             animation = new Animation<>(0.07f, TextureUtils.split(game.assets.get("textures/fire.png", Texture.class), FIRE_WIDTH, FIRE_HEIGHT));
             animation.setPlayMode(Animation.PlayMode.LOOP);
-            setZIndex(500);
+            depth = 100;
         } else if (this.effect == NT_BoardEffect.EFFECT_PORTAL) {
-            setZIndex(50);
+            depth = 0;
             texture = new TextureRegion(game.assets.get("textures/gate.png", Texture.class));
             addAction(Actions.alpha(0.8f));
             addAction(Actions.forever(Actions.rotateBy(150, 1)));

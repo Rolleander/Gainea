@@ -3,8 +3,8 @@ package com.broll.gainea.client.ui.ingame.map;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.broll.gainea.Gainea;
+import com.broll.gainea.client.ui.ingame.DepthActor;
 import com.broll.gainea.server.core.map.Area;
 import com.broll.gainea.server.core.map.Expansion;
 import com.broll.gainea.server.core.map.Location;
@@ -12,12 +12,14 @@ import com.broll.gainea.server.core.map.Ship;
 
 import java.util.Collection;
 
-public class ExpansionDebugRender extends Actor {
+public class ExpansionDebugRender extends DepthActor {
+
 
     private Expansion expansion;
     private Gainea game;
 
     public ExpansionDebugRender(Gainea game, Expansion expansion) {
+        depth = 150;
         this.game = game;
         this.expansion = expansion;
     }

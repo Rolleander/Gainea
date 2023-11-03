@@ -4,10 +4,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.broll.gainea.Gainea;
+import com.broll.gainea.client.ui.ingame.DepthActor;
 
-public class WaterRender extends Actor {
+public class WaterRender extends DepthActor {
 
     private final static int S = 256;
     private final static int XC = 40;
@@ -18,6 +18,7 @@ public class WaterRender extends Actor {
     private float displacement;
 
     public WaterRender(Gainea game) {
+        depth = -200;
         water = game.assets.get("textures/water.jpg", Texture.class);
         camera = (OrthographicCamera) game.gameStage.getCamera();
     }
