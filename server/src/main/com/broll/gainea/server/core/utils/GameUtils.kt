@@ -10,7 +10,8 @@ import com.broll.gainea.server.core.player.isNeutral
 
 
 fun Game.endTurn() = reactionHandler.actionHandlers.reactionActions.endTurn()
-fun Game.noActivePlayersRemaining() = activePlayers.isEmpty() || activePlayers.all { it.serverPlayer.isBot }
+fun Game.noActivePlayersRemaining() =
+    activePlayers.isEmpty() || activePlayers.all { it.serverPlayer.isBot }
 
 fun Game.isGameEnd(): Boolean {
     val maxScore = allPlayers.maxOf { it.goalHandler.score }
@@ -50,7 +51,6 @@ fun List<MapObject>.getUnits() = filterIsInstance<Unit>()
 
 fun Game.remove(target: MapObject): Boolean {
     target.location.inhabitants.remove(target)
-    target.owner
     val removed = if (target.owner.isNeutral()) {
         objects.remove(target)
     } else {

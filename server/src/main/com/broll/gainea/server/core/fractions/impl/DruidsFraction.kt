@@ -17,9 +17,14 @@ import com.broll.gainea.server.core.utils.UnitControl.spawn
 class DruidsFraction : Fraction(FractionType.DRUIDS) {
     override fun description(): FractionDescription {
         val desc = FractionDescription(
-                "",
-                soldier = UnitDescription(name = "Druidin", icon = 110),
-                commander = UnitDescription(name = "Druidenhaupt Zerus", icon = 102, power = 3, health = 3),
+            "",
+            soldier = UnitDescription(name = "Druidin", icon = 110),
+            commander = UnitDescription(
+                name = "Druidenhaupt Zerus",
+                icon = 102,
+                power = 3,
+                health = 3
+            ),
         )
         desc.plus("Gefallene Einheiten können zu unbeweglichen Wurzelgolems (1/2) werden")
         desc.contra("Auf Schiffen -1 Zahl")
@@ -52,7 +57,8 @@ class DruidsFraction : Fraction(FractionType.DRUIDS) {
         return commander
     }
 
-    private inner class DruidSoldier(owner: Player) : Soldier(owner, fraction = this@DruidsFraction) {
+    private inner class DruidSoldier(owner: Player) :
+        Soldier(owner, fraction = this@DruidsFraction) {
         override fun onDeath(throughBattle: BattleResult?) {
             if (RandomUtils.randomBoolean(SPAWN_CHANCE)) {
                 val tree = Tree(owner)
@@ -66,6 +72,7 @@ class DruidsFraction : Fraction(FractionType.DRUIDS) {
             setStats(1, 2)
             name = "Wurzelgolem"
             icon = 99
+            description = "Unbeweglich"
             //cant move or attack
             attacksPerTurn.value = 0
             movesPerTurn.value = 0

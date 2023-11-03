@@ -69,6 +69,7 @@ public class GameEventSite extends AbstractGameSite {
 
     @PackageReceiver
     public void received(NT_Event_TextInfo text) {
+        if (game.ui.inGameUI == null) return;
         logWindow().log(text.text);
         if (text.type == NT_Event_TextInfo.TYPE_MESSAGE_DISPLAY) {
             MessageUtils.showCenterMessage(game, text.text);
@@ -105,6 +106,8 @@ public class GameEventSite extends AbstractGameSite {
         for (NT_BoardObject obj : evt.objects) {
             game.state.getMapObjectsContainer().remove(obj);
         }
+        game.state.getMapObjectsContainer().rearrangeStacks();
+        GameUtils.removeObjects(game, evt.objects);
     }
 
     @PackageReceiver

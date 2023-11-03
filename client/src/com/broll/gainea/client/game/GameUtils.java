@@ -24,8 +24,19 @@ public class GameUtils {
         }
     }
 
+    public static void removeObjects(Gainea game, NT_BoardObject[] objects) {
+        for (NT_BoardObject object : objects) {
+            game.state.getObjects().remove(object);
+            game.state.getPlayers().forEach(player -> {
+                if (ArrayUtils.contains(player.units, object)) {
+                    player.units = ArrayUtils.removeElement(player.units, object);
+                }
+            });
+        }
+    }
+
     public static void updateMapEffects(GameState state, NT_BoardEffect[] effects) {
-        for(NT_BoardEffect effect: effects){
+        for (NT_BoardEffect effect : effects) {
             state.getEffects().remove(effect);
             state.getEffects().add(effect);
         }
@@ -62,5 +73,6 @@ public class GameUtils {
         }
         return null;
     }
+
 
 }

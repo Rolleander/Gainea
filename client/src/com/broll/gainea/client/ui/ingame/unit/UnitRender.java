@@ -23,21 +23,19 @@ import com.broll.gainea.net.NT_Unit;
 
 public class UnitRender extends MapObjectRender {
 
+    public static float GLOW_ANIMATION;
     private static int BLOOD_SIZE = 150;
     private static float ATTACK_MOVE = 50;
     protected Label numberLabel;
     protected Label.LabelStyle blackStyle, redStyle;
     private Texture plate;
     private Texture activeRing;
-
     private boolean actionActive = false;
     private boolean hidePlate;
     private boolean alwaysDrawPlate;
     private Animation<TextureRegion> blood;
     private float bloodAnimation;
     private boolean showBlood = false;
-    private float activeGlow;
-
 
     public UnitRender(Gainea game, Skin skin, NT_Unit unit) {
         super(game, skin, unit);
@@ -159,14 +157,13 @@ public class UnitRender extends MapObjectRender {
         super.draw(batch, parentAlpha);
 
         if (actionActive) {
-            //todo sync between instances
             Color c = batch.getColor();
-            batch.setColor(c.r, c.g, c.b, MathUtils.clamp((float) (Math.sin(activeGlow) * 0.5f + 0.7f), 0.2f, 1));
+            batch.setColor(c.r, c.g, c.b, MathUtils.clamp((float) (Math.sin(GLOW_ANIMATION) * 0.5f + 0.7f), 0.2f, 1));
             batch.draw(activeRing, getX() - activeRing.getWidth() / 2f, getY() - activeRing.getHeight() / 2f);
             batch.setColor(c.r, c.g, c.b, 1);
-            activeGlow += 0.07f;
         }
         if (showBlood) {
+            batch.setColor(renderColor.add(0, 0, 0, 1));
             bloodAnimation += Gdx.graphics.getDeltaTime();
             batch.draw(blood.getKeyFrame(bloodAnimation), getX() - BLOOD_SIZE / 2f, getY() - BLOOD_SIZE / 2f);
             if (blood.isAnimationFinished(bloodAnimation)) {

@@ -121,7 +121,7 @@ public class MapObjectContainer {
         rearrangeStacks();
     }
 
-    private void rearrangeStacks() {
+    public void rearrangeStacks() {
         objectRenders.values().stream().map(MapObjectRender::getLocation).distinct().forEach(this::arrange);
         game.getContainer().gameStage.sort();
     }
@@ -132,11 +132,14 @@ public class MapObjectContainer {
         objects.forEach(render -> {
             NT_BoardObject object = render.getObject();
             if (object instanceof NT_Unit) {
-                int owner = ((NT_Unit) object).owner;
-                stacks.put(owner, render);
-                return;
+                NT_Unit unit = ((NT_Unit) object);
+                if (unit.health > 0) {
+                    int owner = unit.owner;
+                    stacks.put(owner, render);
+                }
+            } else {
+                stacks.put((int) NT_Unit.NO_OWNER, render);
             }
-            stacks.put((int) NT_Unit.NO_OWNER, render);
         });
         arrange(location, objects, stacks);
     }

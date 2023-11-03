@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.broll.gainea.Gainea;
 import com.broll.gainea.client.ui.ingame.DepthActor;
+import com.broll.gainea.client.ui.ingame.unit.UnitRender;
 
 public class WaterRender extends DepthActor {
 
@@ -21,6 +22,11 @@ public class WaterRender extends DepthActor {
         depth = -200;
         water = game.assets.get("textures/water.jpg", Texture.class);
         camera = (OrthographicCamera) game.gameStage.getCamera();
+    }
+
+    @Override
+    public void act(float delta) {
+        UnitRender.GLOW_ANIMATION += 0.07f;
     }
 
     @Override
