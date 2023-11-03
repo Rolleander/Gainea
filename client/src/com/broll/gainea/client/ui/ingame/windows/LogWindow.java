@@ -40,6 +40,10 @@ public class LogWindow extends MenuWindow {
         addLog(iconLog(6, message));
     }
 
+    public void logStarEvent(String message) {
+        addLog(iconLog(2, message));
+    }
+
     private Table basicLog(String message) {
         Table log = new Table(skin);
         log.add(LabelUtils.autoWrap(LabelUtils.markup(skin, message), MESSAGE_LENGTH)).expandX().fillX();

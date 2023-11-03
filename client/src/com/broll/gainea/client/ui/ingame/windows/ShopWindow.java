@@ -90,10 +90,9 @@ public class ShopWindow extends MenuWindow {
             button.add(LabelUtils.label(skin, "" + price));
             button.add(new Image(TextureUtils.icon(game, 2))).spaceLeft(5);
             button.setDisabled(true);
-
             add(button).center();
             add(entry).spaceLeft(5);
-            addAction(Actions.alpha(0.7f));
+            addAction(Actions.alpha(0.6f));
         }
 
         public void activate(ActionListener listener) {

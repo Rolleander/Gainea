@@ -17,7 +17,7 @@ class GoalHandler(private val game: Game, private val player: Player) {
     private val previousGoals = mutableListOf<Goal>()
     var score = 0
         private set
-    var stars = 30
+    var stars = 0
         private set
 
     val goals = mutableListOf<Goal>()
@@ -54,7 +54,7 @@ class GoalHandler(private val game: Game, private val player: Player) {
         this.stars -= stars
         val nt = NT_Event_ReceivedStars()
         nt.player = player.serverPlayer.id
-        nt.stars = stars
+        nt.stars = -stars
         game.sendUpdate(nt)
     }
 

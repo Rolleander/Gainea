@@ -120,7 +120,8 @@ com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle: {
 	default: {
 		up: button
 		down: button-pressed
-		over: button-over
+		over: button-over,
+		disabled: button-disabled
 	}
 	close: {
 		up: button-close

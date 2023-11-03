@@ -113,18 +113,18 @@ fun Location.getWalkingDistance(to: Location, obj: MapObject) =
     obj.getWalkingDistance(this, to)
 
 fun Location.getConnectedLocations(maxDistance: Int): List<Location> {
-    val visited = mutableListOf<Location>()
-    var remaining = mutableListOf(this)
+    val visited = mutableSetOf<Location>()
+    var remaining = mutableSetOf(this)
     var distance = 0
     while (distance < maxDistance) {
         distance++
         visited.addAll(remaining)
-        remaining = remaining.flatMap { it.connectedLocations }.toMutableList()
+        remaining = remaining.flatMap { it.connectedLocations }.toMutableSet()
         remaining.removeAll(visited)
     }
     visited.addAll(remaining)
     visited.remove(this)
-    return visited
+    return visited.toList()
 }
 
 

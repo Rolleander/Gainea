@@ -13,6 +13,15 @@ button
   orig: 67, 29
   offset: 0, 0
   index: -1
+button-disabled
+  rotate: false
+  xy: 311, 264
+  size: 67, 29
+  split: 7, 7, 6, 8
+  pad: 7, 7, 4, 6
+  orig: 67, 29
+  offset: 0, 0
+  index: -1
 button-close
   rotate: false
   xy: 499, 498

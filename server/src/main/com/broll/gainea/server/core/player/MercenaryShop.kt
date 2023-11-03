@@ -51,12 +51,12 @@ private open class Mercenary(
 private class SoulStealer(owner: Player) : Mercenary(owner, 4 to 3, 18, "Seelensammler") {
 
     init {
-        description = "Erhält nach Kämpfen +1 Leben für jeden Kill"
+        description = "Erhält nach Kämpfen +1 Leben für jeden getöteten Feind"
     }
 
     override fun battleResult(result: BattleResult) {
         val addHealth = result.rounds.flatMap { it.damageTaken }.count {
-            it.source == this && it.lethalHit
+            it.source.owner == owner && it.lethalHit
         }
         if (addHealth > 0) {
             this.addHealth(addHealth)

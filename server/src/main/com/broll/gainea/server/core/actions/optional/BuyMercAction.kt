@@ -1,12 +1,13 @@
 package com.broll.gainea.server.core.actions.optional
 
 import com.broll.gainea.net.NT_Action_BuyMerc
+import com.broll.gainea.net.NT_Event_BoughtMerc
 import com.broll.gainea.net.NT_Reaction
 import com.broll.gainea.server.core.actions.AbstractActionHandler
 import com.broll.gainea.server.core.actions.ActionContext
 import com.broll.gainea.server.core.actions.required.PlaceUnitAction
 import com.broll.gainea.server.core.player.Player
-import com.broll.gainea.server.core.utils.gameLog
+import com.broll.gainea.server.core.utils.sendUpdate
 import org.slf4j.LoggerFactory
 
 class BuyMercAction : AbstractActionHandler<NT_Action_BuyMerc, BuyMercAction.Context>() {
@@ -39,8 +40,11 @@ class BuyMercAction : AbstractActionHandler<NT_Action_BuyMerc, BuyMercAction.Con
             val handler =
                 game.reactionHandler.actionHandlers.getHandler(PlaceUnitAction::class.java)
             handler.placeUnit(player, unit, player.controlledLocations.toList(), "Wähle einen Ort")
-            game.gameLog("${player.serverPlayer.name} hat ${unit.name} gekauft")
             player.goalHandler.removeStars(price)
+            val nt = NT_Event_BoughtMerc()
+            nt.unit = unit.nt()
+            nt.player = player.serverPlayer.id
+            game.sendUpdate(nt)
         }
     }
 

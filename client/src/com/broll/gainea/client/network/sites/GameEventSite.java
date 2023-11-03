@@ -18,6 +18,7 @@ import com.broll.gainea.client.ui.utils.TableUtils;
 import com.broll.gainea.net.NT_BoardObject;
 import com.broll.gainea.net.NT_Event;
 import com.broll.gainea.net.NT_Event_BoardEffect;
+import com.broll.gainea.net.NT_Event_BoughtMerc;
 import com.broll.gainea.net.NT_Event_FinishedGoal;
 import com.broll.gainea.net.NT_Event_FocusLocation;
 import com.broll.gainea.net.NT_Event_FocusObject;
@@ -182,6 +183,12 @@ public class GameEventSite extends AbstractGameSite {
     public void received(NT_Event_FocusLocation location) {
         game.ui.inGameUI.hideWindows();
         MapScrollUtils.showLocations(game, location.location);
+    }
+
+    @PackageReceiver
+    public void received(NT_Event_BoughtMerc nt) {
+        NT_Player owner = game.state.getPlayer(nt.player);
+        logWindow().logStarEvent(owner.name + " hat [ORANGE]" + nt.unit.name + "[] gekauft");
     }
 
     @PackageReceiver
