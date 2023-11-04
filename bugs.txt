@@ -7,4 +7,4 @@ karten steal update client ...  -> retest
 
 bot hat wilderer armee angreifen ohne das monster davon...??  -> 2 mal passiert
 
-kampf wurde nicht gestartet, nur move
+erster hit im kampf hat keinen sound

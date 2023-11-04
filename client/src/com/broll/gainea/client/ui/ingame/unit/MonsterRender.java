@@ -38,13 +38,14 @@ public class MonsterRender extends UnitRender {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        calcRenderColor(parentAlpha);
-        batch.setColor(renderColor);
+        setRenderColor(batch, parentAlpha);
         //draw star plate
         if (shouldDrawPlate()) {
             batch.draw(starPlate, getX() - radius - 26, getY() - radius + 48);
         }
+        resetRenderColor(batch);
         super.draw(batch, parentAlpha);
+        setRenderColor(batch, parentAlpha);
         NT_Monster monster = (NT_Monster) getUnit();
         MonsterBehavior behavior = MonsterBehavior.values()[monster.behavior];
         if (shouldDrawPlate() && behavior != MonsterBehavior.RESIDENT && monster.actionTimer > NT_Monster.NO_ACTION_TIMER) {
@@ -59,5 +60,6 @@ public class MonsterRender extends UnitRender {
             numberLabel.setText("" + timer);
             numberLabel.draw(batch, parentAlpha);
         }
+        resetRenderColor(batch);
     }
 }

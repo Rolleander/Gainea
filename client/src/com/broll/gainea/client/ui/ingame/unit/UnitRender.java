@@ -124,15 +124,11 @@ public class UnitRender extends MapObjectRender {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        calcRenderColor(parentAlpha);
-        batch.setColor(renderColor);
-        if (!isVisible()) {
-            return;
-        }
+        setRenderColor(batch, parentAlpha);
         if (shouldDrawPlate()) {
             NT_Unit unit = (NT_Unit) getObject();
             batch.draw(plate, getX() - 37 - radius, getY() + 20 - radius);
-            numberLabel.setColor(renderColor);
+            numberLabel.setColor(batch.getColor());
             numberLabel.setStyle(blackStyle);
             numberLabel.setPosition(getX() - 74, getY() - 16);
             numberLabel.setText("" + unit.power);
@@ -144,16 +140,16 @@ public class UnitRender extends MapObjectRender {
             }
             numberLabel.draw(batch, parentAlpha);
         }
+        resetRenderColor(batch);
         super.draw(batch, parentAlpha);
-
+        setRenderColor(batch, parentAlpha);
         if (actionActive) {
             Color c = batch.getColor();
             batch.setColor(c.r, c.g, c.b, MathUtils.clamp((float) (Math.sin(GLOW_ANIMATION) * 0.5f + 0.7f), 0.2f, 1));
             batch.draw(activeRing, getX() - activeRing.getWidth() / 2f, getY() - activeRing.getHeight() / 2f);
-            batch.setColor(c.r, c.g, c.b, 1);
         }
+        resetRenderColor(batch);
         if (showBlood) {
-            batch.setColor(renderColor.add(0, 0, 0, 1));
             bloodAnimation += Gdx.graphics.getDeltaTime();
             batch.draw(blood.getKeyFrame(bloodAnimation), getX() - BLOOD_SIZE / 2f, getY() - BLOOD_SIZE / 2f);
             if (blood.isAnimationFinished(bloodAnimation)) {

@@ -25,6 +25,6 @@ class RandomEventContainer {
     }
 
     companion object {
-        private const val PACKAGE_PATH = "com.broll.gainea.server.core.cards.events.random"
+        private const val PACKAGE_PATH = "com.broll.gainea.server.core.events.random"
     }
 }

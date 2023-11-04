@@ -44,8 +44,8 @@ object UnitControl {
         val movedObject = NT_Event_MovedObject()
         movedObject.objects = units.map { it.nt() }.toTypedArray()
         sendUpdate(movedObject)
-        updateReceiver.unitsMoved(units, location)
         ProcessingUtils.pause(MOVE_PAUSE)
+        updateReceiver.unitsMoved(units, location)
     }
 
     fun Game.kill(unit: Unit) = damage(unit, Int.MAX_VALUE)
@@ -68,6 +68,8 @@ object UnitControl {
             ProcessingUtils.pause(DAMAGE_PAUSE)
         }
     }
+
+    fun Game.update(obj: MapObject) = update(listOf(obj))
 
     fun Game.update(objects: List<MapObject>) {
         val nt = NT_Event_UpdateObjects()

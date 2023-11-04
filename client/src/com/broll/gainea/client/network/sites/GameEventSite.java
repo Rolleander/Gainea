@@ -144,7 +144,10 @@ public class GameEventSite extends AbstractGameSite {
             if (first) {
                 render.addAction(Actions.sequence(action, Actions.run(() -> {
                     //walking done
-                    GameUtils.findObject(game, object.id).location = (short) to;
+                    NT_BoardObject nt = GameUtils.findObject(game, object.id);
+                    if (nt != null) {
+                        nt.location = (short) to;
+                    }
                     game.state.updateMapObjects(NT_Event.EFFECT_MOVED);
                 })));
             } else {

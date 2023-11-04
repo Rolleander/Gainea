@@ -37,14 +37,18 @@ public class MapObjectRender extends DepthActor {
     protected Gainea game;
     protected Collection<MapObjectRender> stack;
     protected boolean stackTop = true;
-    protected Color renderColor = new Color();
     protected float labelDisplacement = 5;
+    private Color previousBatchColor;
+
+    private Color renderColor;
     private NT_BoardObject object;
     private TextureRegion chip;
     private Location location;
     private TextureRegion icon;
     private Label infoLabel;
     private float stackHeight;
+
+    private int drawCall;
 
     public MapObjectRender(Gainea game, Skin skin, NT_BoardObject object) {
         depth = 50;
@@ -148,18 +152,33 @@ public class MapObjectRender extends DepthActor {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        calcRenderColor(parentAlpha);
-        batch.setColor(renderColor);
+        setRenderColor(batch, parentAlpha);
         batch.draw(chip, getX() - radius, getY() - radius);
         batch.draw(icon, getX() - radius + 9, getY() - radius + 9);
         if (shouldDrawInfo()) {
             infoLabel.setPosition(getX() - infoLabel.getWidth() / 2, getY() + radius + labelDisplacement);
             infoLabel.draw(batch, parentAlpha);
         }
+        resetRenderColor(batch);
     }
 
-    protected void calcRenderColor(float parentAlpha) {
-        renderColor.set(this.getColor()).mul(1, 1, 1, parentAlpha);
+    protected void setRenderColor(Batch batch, float parentAlpha) {
+        if (drawCall == 0) {
+            previousBatchColor = batch.getColor().cpy();
+            renderColor = calcRenderColor(parentAlpha);
+        }
+        batch.setColor(renderColor);
+        drawCall++;
+    }
+
+    protected void resetRenderColor(Batch batch) {
+        drawCall--;
+        batch.setColor(previousBatchColor);
+    }
+
+    private Color calcRenderColor(float parentAlpha) {
+        Color c = getColor();
+        return new Color(c.r, c.g, c.b, c.a * parentAlpha);
     }
 
     public NT_BoardObject getObject() {
