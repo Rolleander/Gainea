@@ -22,6 +22,8 @@ public class RoundImageButton extends Button {
 
     private String text;
 
+    private boolean hover = false;
+
     public RoundImageButton(Skin skin, TextureRegion texture) {
         this.texture = texture;
         this.setStyle(new ButtonStyle());
@@ -50,6 +52,18 @@ public class RoundImageButton extends Button {
                 action.run();
                 event.stop();
             }
+
+            @Override
+            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                super.enter(event, x, y, pointer, fromActor);
+                hover = true;
+            }
+
+            @Override
+            public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                super.exit(event, x, y, pointer, toActor);
+                hover = false;
+            }
         });
     }
 
@@ -69,6 +83,9 @@ public class RoundImageButton extends Button {
         float a = 0.8f;
         if (isDisabled()) {
             a = 0.5f;
+        }
+        if (hover) {
+            a += 0.2f;
         }
         batch.setColor(color.r, color.g, color.b, a * parentAlpha);
         batch.draw(texture, getX(), getY());

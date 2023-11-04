@@ -106,6 +106,15 @@ com.badlogic.gdx.scenes.scene2d.ui.Skin$TintedDrawable: {
 			a: 0.75
 		}
 	},
+	info-msg: {
+		name: white
+		color: {
+			r: 0.7
+			g: 0.7
+			b: 1
+			a: 0.75
+		}
+	},
 	card-bg: {
 		name: white
 		color: {

@@ -5,6 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.broll.gainea.Gainea;
 import com.broll.gainea.client.AudioPlayer;
 import com.broll.gainea.client.game.PlayerPerformAction;
@@ -14,6 +15,7 @@ import com.broll.gainea.client.ui.ingame.actions.AttackAndMoveActionHandler;
 import com.broll.gainea.client.ui.ingame.actions.RequiredActionHandler;
 import com.broll.gainea.client.ui.ingame.battle.BattleHandler;
 import com.broll.gainea.client.ui.ingame.hud.GoalOverlay;
+import com.broll.gainea.client.ui.ingame.hud.InfoMessageContainer;
 import com.broll.gainea.client.ui.ingame.hud.MenuActions;
 import com.broll.gainea.client.ui.ingame.hud.PlayerOverlay;
 import com.broll.gainea.client.ui.ingame.map.MapObjectRender;
@@ -39,6 +41,7 @@ import java.util.stream.Collectors;
 
 public class InGameUI {
 
+    public InfoMessageContainer infoMessages;
     private Gainea game;
     private Skin skin;
     private Table centerOverlay;
@@ -47,13 +50,9 @@ public class InGameUI {
     private AttackAndMoveActionHandler attackAndMoveHandler;
     private RequiredActionHandler requiredActionHandler;
     private BattleHandler battleHandler;
-
     private GoalOverlay goalOverlay;
-
     private PlayerOverlay playerOverlay;
-
     private MenuActions menuActions;
-
     private boolean selectionOpen = false;
 
     private Location selectionLocation;
@@ -67,6 +66,7 @@ public class InGameUI {
         this.goalOverlay = new GoalOverlay(game);
         this.playerOverlay = new PlayerOverlay(game);
         this.menuActions = new MenuActions(game);
+        this.infoMessages = new InfoMessageContainer(game);
         centerOverlay = new Table(skin);
     }
 
@@ -86,7 +86,8 @@ public class InGameUI {
     }
 
     public void show() {
-        addCenterComponent(rightPanel).center().padTop(40).padBottom(40).top().right();
+        addCenterComponent(rightPanel).top().padTop(100).padBottom(40).right();
+        addCenterComponent(infoMessages).center().top().padTop(50);
         addCenterComponent(centerContent).center();
         addCenterComponent(centerOverlay).center().top().padTop(200);
         game.uiStage.addActor(playerOverlay);
@@ -94,7 +95,7 @@ public class InGameUI {
         menuActions.show();
     }
 
-    private Table addCenterComponent(Table component) {
+    private Table addCenterComponent(WidgetGroup component) {
         Table container = new Table();
         container.setFillParent(true);
         container.add(component);

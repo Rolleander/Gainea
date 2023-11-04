@@ -30,6 +30,8 @@ public class MapObjectContainer {
 
     private static float CIRCLE_R = 55f;
     private static float STACK_DISTANCE = 15f;
+
+    private static float ARRANGE_TIME = 0.3f;
     private GameState game;
     private Map<Short, MapObjectRender> objectRenders = new HashMap<>();
 
@@ -148,7 +150,11 @@ public class MapObjectContainer {
     public void rearrangeStacks() {
         refreshSelectionWindow();
         objectRenders.values().stream().map(MapObjectRender::getLocation).distinct().forEach(this::arrange);
-        game.getContainer().gameStage.sort();
+        if (!objectRenders.isEmpty()) {
+            objectRenders.values().iterator().next().addAction(Actions.delay(ARRANGE_TIME, Actions.run(
+                    () -> game.getContainer().gameStage.sort()
+            )));
+        }
     }
 
     private void arrange(Location location) {
@@ -193,7 +199,12 @@ public class MapObjectContainer {
         float stackHeight = 0;
         MapObjectRender topOfStack = null;
         for (MapObjectRender render : renders.stream().sorted(Comparator.comparingInt(MapObjectRender::getRank)).collect(Collectors.toList())) {
-            render.setPosition(x, y);
+            if (render.spawned) {
+                render.setPosition(x, y);
+                render.spawned = false;
+            } else {
+                render.addAction(Actions.moveTo(x, y, ARRANGE_TIME));
+            }
             render.setLocation(location);
             render.setStack(renders, stackHeight);
             render.setStackTop(false);

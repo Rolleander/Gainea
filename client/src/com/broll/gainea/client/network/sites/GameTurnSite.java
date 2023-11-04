@@ -1,7 +1,6 @@
 package com.broll.gainea.client.network.sites;
 
 import com.broll.gainea.client.game.PlayerPerformOptionalAction;
-import com.broll.gainea.client.ui.utils.MessageUtils;
 import com.broll.gainea.net.NT_Action;
 import com.broll.gainea.net.NT_EndTurn;
 import com.broll.gainea.net.NT_PlayerTurnActions;
@@ -83,7 +82,7 @@ public class GameTurnSite extends AbstractGameSite {
             message = turnPlayer.getName() + "'s Zug!";
         }
         game.ui.inGameUI.hideWindows();
-        MessageUtils.showCenterMessage(game, message);
+        game.ui.inGameUI.infoMessages.show(message);
     }
 
     private void playerPickAction() {

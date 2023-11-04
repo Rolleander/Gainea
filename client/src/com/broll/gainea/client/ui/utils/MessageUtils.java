@@ -12,10 +12,6 @@ public final class MessageUtils {
     private MessageUtils() {
     }
 
-    public static Popup showCenterMessage(Gainea game, String message) {
-        return Popup.info(game, LabelUtils.title(game.ui.skin, message));
-    }
-
     public static Popup showConfirmMessage(Gainea game, String message) {
         Table content = new Table();
         content.add(LabelUtils.title(game.ui.skin, message)).row();

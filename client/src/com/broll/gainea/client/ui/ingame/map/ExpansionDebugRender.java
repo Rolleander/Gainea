@@ -19,7 +19,7 @@ public class ExpansionDebugRender extends DepthActor {
     private Gainea game;
 
     public ExpansionDebugRender(Gainea game, Expansion expansion) {
-        depth = 150;
+        depth = -75;
         this.game = game;
         this.expansion = expansion;
     }

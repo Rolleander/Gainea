@@ -17,7 +17,11 @@ class G_Bridge : OccupyGoal(difficulty = MEDIUM, text = "") {
         for (i in 1..LENGTH) {
             val last = i == LENGTH
             current =
-                current.connectedLocations.filter { !locations.contains(it) && (!last || it !is Ship) }
+                current.connectedLocations.filter {
+                    !locations.contains(it)
+                            && it.connectedLocations.size > 1
+                            && (!last || it !is Ship)
+                }
                     .maxByOrNull {
                         start.getDistance(it) ?: -1
                     } ?: throw MissingExpansionException()

@@ -61,7 +61,8 @@ class GaineaMap : ExpansionFactory(ExpansionType.GAINEA, "expansion_0.png") {
     }
 
     private fun gainea() {
-        continent(Continents.GAINEA, "Gainea", listOf(
+        continent(
+            Continents.GAINEA, "Gainea", listOf(
                 area(Areas.KUESTENGEBIET, "Küstengebiet", AreaType.PLAINS, 41.4f, 23.6f),
                 area(Areas.FELSWALD, "Felswald", AreaType.MOUNTAIN, 55.9f, 20.7f),
                 area(Areas.FELSENWUESTE, "Felsenwüste", AreaType.DESERT, 72.1f, 23.5f),
@@ -74,7 +75,8 @@ class GaineaMap : ExpansionFactory(ExpansionType.GAINEA, "expansion_0.png") {
                 area(Areas.HIENGLAND, "Hiengland", AreaType.DESERT, 56.6f, 61.5f),
                 area(Areas.ZWINGSEE, "Zwingsee", AreaType.LAKE, 50.4f, 64.9f),
                 area(Areas.KORBERG, "Korberg", AreaType.MOUNTAIN, 54.8f, 69.3f)
-        ))
+            )
+        )
         connect(Areas.KUESTENGEBIET, Areas.FELSWALD)
         connect(Areas.KUESTENGEBIET, Areas.FELSENWUESTE)
         connect(Areas.KUESTENGEBIET, Areas.GRUENLAND)
@@ -98,12 +100,14 @@ class GaineaMap : ExpansionFactory(ExpansionType.GAINEA, "expansion_0.png") {
     }
 
     private fun moor() {
-        continent(Continents.MOOR, "Moor", listOf(
+        continent(
+            Continents.MOOR, "Moor", listOf(
                 area(Areas.MOORKUESTE, "Moorküste", AreaType.PLAINS, 74.2f, 46.8f),
                 area(Areas.MOOR, "Moor", AreaType.PLAINS, 81.3f, 49.2f),
                 area(Areas.MOORWUESTE, "Moorwüste", AreaType.DESERT, 71.8f, 63.8f),
                 area(Areas.MOORTEICH, "Moorteich", AreaType.LAKE, 73.5f, 56f)
-        ))
+            )
+        )
         connect(Areas.MOORKUESTE, Areas.MOOR)
         connect(Areas.MOORKUESTE, Areas.MOORWUESTE)
         connect(Areas.MOOR, Areas.MOORTEICH)
@@ -112,13 +116,22 @@ class GaineaMap : ExpansionFactory(ExpansionType.GAINEA, "expansion_0.png") {
     }
 
     private fun zuba() {
-        continent(Continents.ZUBA, "Zuba", listOf(
-                area(Areas.GROSSES_FELSGEBIRGE, "Großes Feslgebirge", AreaType.MOUNTAIN, 25.2f, 24.4f),
+        continent(
+            Continents.ZUBA, "Zuba", listOf(
+                area(
+                    Areas.GROSSES_FELSGEBIRGE,
+                    "Großes Feslgebirge",
+                    AreaType.MOUNTAIN,
+                    25.2f,
+                    24.4f
+                ),
                 area(Areas.UFERLAND, "Uferland", AreaType.PLAINS, 16.7f, 29.8f),
                 area(Areas.LANDSTRAND, "Landstrand", AreaType.PLAINS, 15f, 36.6f),
                 area(Areas.MANMAWUESTE, "Manma Wüste", AreaType.DESERT, 17.9f, 45.6f),
                 area(Areas.GROSSE_STEPPE, "Große Steppe", AreaType.PLAINS, 25.8f, 30.8f),
-                area(Areas.MITSUMA_SEE, "Mitsuma See", AreaType.LAKE, 26.5f, 36.6f)))
+                area(Areas.MITSUMA_SEE, "Mitsuma See", AreaType.LAKE, 26.5f, 36.6f)
+            )
+        )
         connect(Areas.GROSSES_FELSGEBIRGE, Areas.UFERLAND)
         connect(Areas.GROSSES_FELSGEBIRGE, Areas.GROSSE_STEPPE)
         connect(Areas.UFERLAND, Areas.LANDSTRAND)
@@ -130,23 +143,29 @@ class GaineaMap : ExpansionFactory(ExpansionType.GAINEA, "expansion_0.png") {
     }
 
     private fun vulkanInsel() {
-        island(Islands.VULKANINSEL, "Vulkaninsel", listOf(
+        island(
+            Islands.VULKANINSEL, "Vulkaninsel", listOf(
                 area(Areas.VULKANINSEL, "Vulkaninsel", AreaType.PLAINS, 25.8f, 49.2f),
                 area(Areas.VULKANBERG, "Vulkanberg", AreaType.MOUNTAIN, 29.1f, 44.9f)
-        ))
+            )
+        )
         connect(Areas.VULKANINSEL, Areas.VULKANBERG)
     }
 
     private fun totemInsel() {
-        island(Islands.TOTEMINSEL, "Toteminsel", listOf(
-                area(Areas.TOTEMGEBIRGE, "Totemgebirge / Insel", AreaType.MOUNTAIN, 34.6f, 71.2f)
-        ))
+        island(
+            Islands.TOTEMINSEL, "Toteminsel", listOf(
+                area(Areas.TOTEMGEBIRGE, "Totemgebirge", AreaType.MOUNTAIN, 34.6f, 71.2f)
+            )
+        )
     }
 
     private fun mistraInsel() {
-        island(Islands.MISTRAINSEL, "Mistrainsel", listOf(
-                area(Areas.MISTRAWUESTE, "Mistra Insel / Wüste", AreaType.DESERT, 86.3f, 62.8f)
-        ))
+        island(
+            Islands.MISTRAINSEL, "Mistrainsel", listOf(
+                area(Areas.MISTRAWUESTE, "Mistrawüste", AreaType.DESERT, 86.3f, 62.8f)
+            )
+        )
     }
 
     private fun ships() {
@@ -157,7 +176,12 @@ class GaineaMap : ExpansionFactory(ExpansionType.GAINEA, "expansion_0.png") {
         //from moor
         ship(Areas.MOOR, Areas.MISTRAWUESTE, 85.9f, 55.4f)
         ships(Areas.MOORKUESTE, Areas.XOMDELTA, floatArrayOf(65f, 60f), floatArrayOf(46.3f, 43.9f))
-        ships(Areas.MOORWUESTE, Areas.KIESSTRAND, floatArrayOf(72.6f, 69.4f, 63.6f, 59.5f), floatArrayOf(70f, 75.8f, 77f, 74.8f))
+        ships(
+            Areas.MOORWUESTE,
+            Areas.KIESSTRAND,
+            floatArrayOf(72.6f, 69.4f, 63.6f, 59.5f),
+            floatArrayOf(70f, 75.8f, 77f, 74.8f)
+        )
         //from zuba
         ship(Areas.GROSSE_STEPPE, Areas.KUESTENGEBIET, 33.7f, 25.7f)
         //from vulkaninsel
@@ -171,11 +195,26 @@ class GaineaMap : ExpansionFactory(ExpansionType.GAINEA, "expansion_0.png") {
 
     override fun connectWithExpansion(expansion: ExpansionFactory) {
         if (expansion is IcelandMap) {
-            ships(Areas.UFERLAND, IcelandMap.Areas.GRASSUMPF, floatArrayOf(8f, -0.5f), floatArrayOf(29.4f, 27.4f))
-            ships(Areas.MANMAWUESTE, IcelandMap.Areas.SCHOLL, floatArrayOf(10.9f, 2.7f, -5.5f), floatArrayOf(45f, 46.5f, 48.1f))
+            ships(
+                Areas.UFERLAND,
+                IcelandMap.Areas.GRASSUMPF,
+                floatArrayOf(8f, -0.5f),
+                floatArrayOf(29.4f, 27.4f)
+            )
+            ships(
+                Areas.MANMAWUESTE,
+                IcelandMap.Areas.SCHOLL,
+                floatArrayOf(10.9f, 2.7f, -5.5f),
+                floatArrayOf(45f, 46.5f, 48.1f)
+            )
         }
         if (expansion is BoglandMap) {
-            ships(Areas.KUESTENGEBIET, BoglandMap.Areas.STACHELWUESTE, floatArrayOf(38.2f, 33.8f, 34f), floatArrayOf(11.8f, 7f, 2f))
+            ships(
+                Areas.KUESTENGEBIET,
+                BoglandMap.Areas.STACHELWUESTE,
+                floatArrayOf(38.2f, 33.8f, 34f),
+                floatArrayOf(11.8f, 7f, 2f)
+            )
         }
     }
 }

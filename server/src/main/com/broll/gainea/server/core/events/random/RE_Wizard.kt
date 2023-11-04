@@ -24,6 +24,7 @@ class RE_Wizard : RandomEvent() {
                     }
                 }
             }
+            wizard.name = "Zaubermeister"
             wizard.description = "Verleiht 3 Zauber an Bezwinger"
             wizard.icon = 47
             wizard.setStats(4, 3)

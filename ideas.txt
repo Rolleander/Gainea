@@ -10,7 +10,6 @@ event / object ideas:
 
 unused cards:
 81 = parade
-82 = kneeling before king
 85 = knight duel
 
 unused units:

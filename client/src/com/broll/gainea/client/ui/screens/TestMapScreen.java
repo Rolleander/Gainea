@@ -8,6 +8,7 @@ import com.broll.gainea.client.AudioPlayer;
 import com.broll.gainea.client.game.ClientMapContainer;
 import com.broll.gainea.client.game.PlayerPerformOptionalAction;
 import com.broll.gainea.client.ui.Screen;
+import com.broll.gainea.client.ui.ingame.hud.InfoMessageContainer;
 import com.broll.gainea.misc.RandomUtils;
 import com.broll.gainea.net.NT_Action;
 import com.broll.gainea.net.NT_Action_Attack;
@@ -34,6 +35,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -124,8 +126,9 @@ public class TestMapScreen extends Screen {
         game.ui.inGameUI.getLogWindow().logGoalEvent("hat goal erhalten, mit sehr langem text der unbedingt"
                 + "umgebrochen werden sollte damit man noch etwas lesen kann im window....blablablabalbalbalbalabbla");
 
-        Executors.newSingleThreadScheduledExecutor().schedule(() -> Gdx.app.postRunnable(this::lateInit), 300, TimeUnit.MILLISECONDS);
-
+        ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
+        exec.schedule(() -> Gdx.app.postRunnable(this::lateInit), 300, TimeUnit.MILLISECONDS);
+        exec.scheduleWithFixedDelay(() -> Gdx.app.postRunnable(this::infoMessage), 1, 1, TimeUnit.SECONDS);
         return new Table();
     }
 
@@ -174,6 +177,23 @@ public class TestMapScreen extends Screen {
 
             }
         });
+
+    }
+
+    private void infoMessage() {
+        InfoMessageContainer msgs = game.ui.inGameUI.infoMessages;
+        String text = "test message: ";
+        for (int i = 0; i < MathUtils.random(20); i++) {
+            text += "-";
+        }
+        if (MathUtils.randomBoolean(0.5f)) {
+            NT_Card c = new NT_Card();
+            c.title = "Testkarte";
+            c.picture = (short) MathUtils.random(80);
+            msgs.showCardReceived(c);
+        } else {
+            msgs.show(text);
+        }
     }
 
     private short getAreaNum(AreaID area) {

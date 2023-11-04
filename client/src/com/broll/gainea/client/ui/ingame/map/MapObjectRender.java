@@ -32,6 +32,7 @@ public class MapObjectRender extends DepthActor {
 
     protected final static int R = 50;
     private final static int DESCRIPTION_WIDTH = 220;
+    public boolean spawned = true;
     public boolean showDescription = true;
     protected float radius;
     protected Gainea game;

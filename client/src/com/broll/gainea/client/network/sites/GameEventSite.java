@@ -6,7 +6,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.broll.gainea.client.AudioPlayer;
 import com.broll.gainea.client.game.GameUtils;
 import com.broll.gainea.client.ui.components.FinishedGoalDisplay;
-import com.broll.gainea.client.ui.components.Popup;
 import com.broll.gainea.client.ui.ingame.hud.GoalOverlay;
 import com.broll.gainea.client.ui.ingame.map.MapObjectRender;
 import com.broll.gainea.client.ui.ingame.map.MapScrollUtils;
@@ -14,7 +13,6 @@ import com.broll.gainea.client.ui.ingame.windows.CardWindow;
 import com.broll.gainea.client.ui.ingame.windows.LogWindow;
 import com.broll.gainea.client.ui.utils.LabelUtils;
 import com.broll.gainea.client.ui.utils.MessageUtils;
-import com.broll.gainea.client.ui.utils.TableUtils;
 import com.broll.gainea.net.NT_BoardObject;
 import com.broll.gainea.net.NT_Event;
 import com.broll.gainea.net.NT_Event_BoardEffect;
@@ -38,7 +36,6 @@ import com.broll.gainea.net.NT_Event_RemoveObjects;
 import com.broll.gainea.net.NT_Event_TextInfo;
 import com.broll.gainea.net.NT_Event_UpdateObjects;
 import com.broll.gainea.net.NT_Player;
-import com.broll.gainea.server.core.actions.optional.CardAction;
 import com.broll.gainea.server.core.map.Location;
 import com.broll.networklib.PackageReceiver;
 
@@ -72,7 +69,7 @@ public class GameEventSite extends AbstractGameSite {
         if (game.ui.inGameUI == null) return;
         logWindow().log(text.text);
         if (text.type == NT_Event_TextInfo.TYPE_MESSAGE_DISPLAY) {
-            MessageUtils.showCenterMessage(game, text.text);
+            game.ui.inGameUI.infoMessages.show(text.text);
         } else if (text.type == NT_Event_TextInfo.TYPE_CONFIRM_MESSAGE) {
             MessageUtils.showConfirmMessage(game, text.text);
         }
@@ -85,7 +82,7 @@ public class GameEventSite extends AbstractGameSite {
         Table table = new Table(game.ui.skin);
         table.add(LabelUtils.label(game.ui.skin, "Du hast eine Aktionskarte erhalten:")).padBottom(20).row();
         table.add(CardWindow.renderCard(game, card.card));
-        game.ui.inGameUI.showCenterOverlay(new Popup(game.ui.skin, table, 3f));
+        game.ui.inGameUI.infoMessages.showCardReceived(card.card);
         game.state.getCards().add(card.card);
         game.ui.inGameUI.updateWindows();
         logWindow().logCardEvent("Du hast [VIOLET]" + card.card.title + "[] erhalten!");
@@ -171,7 +168,7 @@ public class GameEventSite extends AbstractGameSite {
     public void received(NT_Event_PlayedCard card) {
         game.state.updateIdleState(false);
         game.ui.inGameUI.hideWindows();
-        game.ui.inGameUI.showCenterOverlay(TableUtils.removeAfter(CardWindow.renderCard(game, card.card), (float) CardAction.PLAY_CARD_DELAY / 1000f));
+        game.ui.inGameUI.infoMessages.show(CardWindow.renderCard(game, card.card));
         if (card.card.playable) {
             NT_Player owner = game.state.getPlayer(card.player);
             if (owner != null) {
@@ -206,7 +203,7 @@ public class GameEventSite extends AbstractGameSite {
     public void received(NT_Event_ReceivedGoal goal) {
         game.ui.inGameUI.hideWindows();
         Log.info("received goal");
-        game.ui.inGameUI.showCenterOverlay(TableUtils.removeAfter(GoalOverlay.renderGoal(game, goal.goal), 3));
+        game.ui.inGameUI.infoMessages.show(GoalOverlay.renderGoal(game, goal.goal));
         game.state.getGoals().add(goal.goal);
         game.ui.inGameUI.updateWindows();
         logWindow().logGoalEvent("Neues Ziel erhalten: [BROWN]" + goal.goal.description + "[]");
@@ -235,7 +232,7 @@ public class GameEventSite extends AbstractGameSite {
         owner.cards++;
         String info = owner.name + " hat eine Karte erhalten!";
         game.ui.inGameUI.updateWindows();
-        MessageUtils.showCenterMessage(game, info);
+        game.ui.inGameUI.infoMessages.show(info);
         logWindow().logCardEvent(owner.name + " hat eine Karte erhalten!");
     }
 
@@ -244,7 +241,7 @@ public class GameEventSite extends AbstractGameSite {
         game.ui.inGameUI.hideWindows();
         NT_Player owner = game.state.getPlayer(goal.player);
         String info = owner.name + " hat ein neues Ziel erhalten!";
-        MessageUtils.showCenterMessage(game, info);
+        game.ui.inGameUI.infoMessages.show(info);
         logWindow().logGoalEvent(owner.name + " hat ein neues Ziel erhalten!");
     }
 
@@ -272,7 +269,7 @@ public class GameEventSite extends AbstractGameSite {
             logWindow().logGoalEvent(owner.name + " hat ein Ziel erreicht: [BROWN]" + goal.goal.description + "[] (+" + goal.goal.points + " Punkte)");
         }
         FinishedGoalDisplay message = new FinishedGoalDisplay(game, goal, myGoal);
-        game.ui.inGameUI.showCenterOverlay(TableUtils.removeAfter(message, 4));
+        game.ui.inGameUI.infoMessages.show(message);
     }
 
     @PackageReceiver
