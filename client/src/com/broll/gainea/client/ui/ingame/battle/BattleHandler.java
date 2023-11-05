@@ -6,7 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.broll.gainea.Gainea;
 import com.broll.gainea.client.AudioPlayer;
-import com.broll.gainea.client.ui.components.Popup;
+import com.broll.gainea.client.ui.ingame.map.MapAction;
 import com.broll.gainea.client.ui.ingame.map.MapObjectRender;
 import com.broll.gainea.client.ui.ingame.unit.UnitRender;
 import com.broll.gainea.client.ui.utils.LabelUtils;
@@ -94,18 +94,26 @@ public class BattleHandler {
         });
     }
 
+    public void retreated() {
+        battleEnd("Rückzug der Angreifer!");
+    }
+
     private void checkBattleState(int state) {
-        battleBoard.addAction(Actions.delay(0.8f, Actions.run(() -> {
+        battleBoard.addAction(Actions.delay(0.3f, Actions.run(() -> {
             if (state == NT_Battle_Update.STATE_FIGHTING) {
                 if (allowRetreat) {
-                    Table dialog = new Table(game.ui.skin);
-                    dialog.setBackground("menu-bg");
-                    dialog.pad(10, 20, 10, 20);
-                    dialog.defaults().space(20);
-                    dialog.add(LabelUtils.label(game.ui.skin, "Eure Truppe erwartet Befehle!")).row();
-                    Popup popup = Popup.show(game, dialog);
-                    dialog.add(TableUtils.textButton(game.ui.skin, "Anrgiff fortfahren", () -> sendBattleResponse(popup, true))).left();
-                    dialog.add(TableUtils.textButton(game.ui.skin, "Rückzug", () -> sendBattleResponse(popup, false))).right();
+                    Table table = new Table(skin);
+                    MapAction action = new MapAction(game, 0, 0, () -> sendBattleResponse(table, false));
+                    action.setRotation(90);
+                    action.setVisible(true);
+                    table.add(action).spaceRight(75);
+                    action = new MapAction(game, 1, 0, () -> sendBattleResponse(table, true));
+                    action.setRotation(-90);
+                    action.setVisible(true);
+                    table.add(action);
+                    table.addAction(Actions.sequence(Actions.alpha(0), Actions.fadeIn(0.2f)));
+                    table.pack();
+                    battleBoard.add(table).center();
                 }
             } else {
                 //battle done
@@ -122,12 +130,23 @@ public class BattleHandler {
     }
 
     private void battleEnd(String text) {
-        Popup popup = new Popup(skin, LabelUtils.title(game.ui.skin, text));
-        popup.addAction(Actions.delay(0.8f, Actions.run(() -> {
-            clearBattleScreen();
-            game.state.turnIdle();
-        })));
-        battleBoard.add(popup).padTop(100).top();
+        Table overlay = new Table(skin);
+        overlay.pad(15);
+        overlay.setBackground("info-msg");
+        overlay.add(LabelUtils.title(game.ui.skin, text));
+        overlay.pack();
+        overlay.addAction(
+                Actions.sequence(
+                        Actions.alpha(0),
+                        Actions.fadeIn(0.2f),
+                        Actions.delay(1.2f),
+                        Actions.fadeOut(0.2f),
+                        Actions.run(() -> {
+                            clearBattleScreen();
+                            game.state.turnIdle();
+                        })
+                ));
+        battleBoard.add(overlay).center();
     }
 
     public void clearBattleScreen() {
@@ -136,14 +155,11 @@ public class BattleHandler {
         }
     }
 
-    private void sendBattleResponse(Popup dialog, boolean continueFight) {
-        dialog.remove();
+    private void sendBattleResponse(Table dialog, boolean continueFight) {
+        dialog.addAction(Actions.sequence(Actions.fadeOut(0.2f), Actions.removeActor()));
         NT_Battle_Reaction reaction = new NT_Battle_Reaction();
         reaction.keepAttacking = continueFight;
         game.client.getClient().sendTCP(reaction);
-        if (!continueFight) {
-            battleEnd("Rückzug der Angreifer!");
-        }
     }
 
     private class BattleBoard extends Table {

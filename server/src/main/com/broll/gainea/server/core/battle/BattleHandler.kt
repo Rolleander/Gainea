@@ -194,6 +194,12 @@ class BattleHandler(private val game: Game, private val reactionResult: Reaction
     }
 
     private fun battleFinished(retreated: Boolean) {
+        if (retreated) {
+            val nt = NT_Battle_Reaction()
+            nt.keepAttacking = false
+            game.sendUpdate(nt)
+            ProcessingUtils.pause(BATTLE_ANIMATION_DELAY)
+        }
         val result = BattleResult(retreated, context)
         Log.info(
             "Battle over! Surviving Attackers: (" + result.aliveAttackers.toInfoString() + ")" +

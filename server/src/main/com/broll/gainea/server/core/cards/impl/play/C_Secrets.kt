@@ -3,7 +3,8 @@ package com.broll.gainea.server.core.cards.impl.play
 import com.broll.gainea.server.core.cards.Card
 import com.broll.gainea.server.core.utils.displayConfirmMessage
 
-class C_Secrets : Card(40, "Bestechung", "Schaut euch die Ziele und Aktionskarten eines beliebigen Spielers an") {
+class C_Secrets :
+    Card(40, "Bestechung", "Schaut euch die Ziele und Aktionskarten eines beliebigen Spielers an") {
     init {
         drawChance = 0.8f
     }
@@ -18,7 +19,8 @@ class C_Secrets : Card(40, "Bestechung", "Schaut euch die Ziele und Aktionskarte
         val name = player.serverPlayer.name
         var text = "$name's Ziele: \n"
         for (goal in goals) {
-            text += " - " + goal.text + " ( " + goal.difficulty.points + "P " + goal.restrictionInfo + ")\n"
+            text += " - " + goal.text + " ( " + goal.difficulty.points + "P " + (goal.restrictionInfo
+                ?: "") + ")\n"
         }
         text += "$name's Aktionskarten: \n"
         for (card in cards) {

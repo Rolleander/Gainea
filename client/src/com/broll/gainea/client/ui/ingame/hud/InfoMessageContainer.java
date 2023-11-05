@@ -11,8 +11,8 @@ import com.broll.gainea.net.NT_Card;
 
 public class InfoMessageContainer extends WidgetGroup {
 
-    private final static float DURATION = 2;
-    private final static float FADE_OUT = 4;
+    private final static float DURATION = 2.5f;
+    private final static float FADE_OUT = 2f;
     private final Gainea game;
     private int stackHeight = 0;
 
@@ -27,15 +27,15 @@ public class InfoMessageContainer extends WidgetGroup {
         spawnMessage(msg);
     }
 
-    public void show(Table table) {
+    public void show(Table table, float duration) {
         InfoMessage msg = new InfoMessage(game, table);
-        spawnMessage(msg);
+        spawnMessage(msg, duration);
     }
 
     public void showCardReceived(NT_Card card) {
         InfoMessage msg = new InfoMessage(game, "'" + card.title + "' erhalten",
                 CardWindow.previewCard(game, card), Color.CYAN.cpy().mul(0.4f, 0.4f, 0.4f, 1));
-        spawnMessage(msg, 4);
+        spawnMessage(msg);
     }
 
     private void spawnMessage(InfoMessage msg) {
@@ -49,7 +49,7 @@ public class InfoMessageContainer extends WidgetGroup {
         addActor(msg);
         msg.toFront();
         stackHeight += msg.getHeight();
-        msg.setPosition(msg.getX() - msg.getWidth() / 2, msg.getY() - 50 - stackHeight);
+        msg.setPosition(msg.getX() - msg.getWidth() / 2, msg.getY() - 70 - stackHeight);
         stackHeight += +15;
         msg.addAction(Actions.delay(duration, Actions.moveBy(0, 50, FADE_OUT, Interpolation.sineIn)));
         msg.addAction(Actions.delay(duration, Actions.sequence(Actions.fadeOut(FADE_OUT, Interpolation.exp5In),

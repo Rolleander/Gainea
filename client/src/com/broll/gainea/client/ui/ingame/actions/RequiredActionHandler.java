@@ -10,7 +10,6 @@ import com.broll.gainea.client.ui.ingame.hud.GoalOverlay;
 import com.broll.gainea.client.ui.ingame.map.MapAction;
 import com.broll.gainea.client.ui.ingame.map.MapObjectRender;
 import com.broll.gainea.client.ui.ingame.windows.CardWindow;
-import com.broll.gainea.client.ui.ingame.windows.PlaceUnitWindow;
 import com.broll.gainea.client.ui.utils.LabelUtils;
 import com.broll.gainea.net.NT_Action;
 import com.broll.gainea.net.NT_Action_PlaceUnit;
@@ -42,15 +41,21 @@ public class RequiredActionHandler {
 
     public void handleAction(NT_Action action, PlayerPerformAction playerPerformAction) {
         mapActions.clear();
+        boolean center = true;
         RequiredActionContainer container = new RequiredActionContainer(mapActions, playerPerformAction, this::close);
         if (action instanceof NT_Action_PlaceUnit) {
             window = PlaceUnitWindow.create(game, skin, container, (NT_Action_PlaceUnit) action);
+            center = false;
         } else if (action instanceof NT_Action_SelectChoice) {
             handleSelectionAction((NT_Action_SelectChoice) action, container);
         }
         mapActions.forEach(it -> game.gameStage.addActor(it));
         if (window != null) {
-            game.ui.inGameUI.showCenter(new Popup(skin, window)).padTop(150);
+            if (center) {
+                game.ui.inGameUI.showCenter(new Popup(skin, window));
+            } else {
+                game.ui.inGameUI.showBottomCenter(new Popup(skin, window));
+            }
         }
     }
 
@@ -62,7 +67,7 @@ public class RequiredActionHandler {
             if (objectChoice instanceof Integer) {
                 //location
                 PlaceUnitWindow.showLocationMapActions(game, Arrays.stream(action.objectChoices).mapToInt(choice -> (Integer) choice).toArray(), action, container);
-                return;
+                options = new ArrayList<>();
             } else if (objectChoice instanceof NT_Goal) {
                 options = Arrays.stream(action.objectChoices).map(choice -> GoalOverlay.renderGoal(game, (NT_Goal) choice)).collect(Collectors.toList());
             } else if (objectChoice instanceof NT_Card) {

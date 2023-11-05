@@ -1,13 +1,4 @@
 
 fraktionsauswahl hängt?
 
-spion karte wurd zu kurz angezeigt  ->  retest
-
-karten steal update client ...  -> retest
-
 bot hat wilderer armee angreifen ohne das monster davon...??  -> 2 mal passiert
-
-sound buggy im kampf
-
-rekrutierte schildkröte kann von moorwüste
- auf schiff verkehrt herum drauf aber dann nicht weitergehen nach hiengland

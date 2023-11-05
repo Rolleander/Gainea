@@ -1,7 +1,6 @@
 package com.broll.gainea.client.network.sites;
 
 import com.broll.gainea.client.game.PlayerPerformAction;
-import com.broll.gainea.client.ui.utils.MessageUtils;
 import com.broll.gainea.net.NT_Action;
 import com.broll.gainea.net.NT_PlayerAction;
 import com.broll.gainea.net.NT_Reaction;
@@ -12,17 +11,14 @@ import org.slf4j.LoggerFactory;
 
 public class GameActionSite extends AbstractGameSite {
     private final static Logger Log = LoggerFactory.getLogger(GameActionSite.class);
-
+    public static NT_PlayerAction CURRENT_PLAYER_ACTION;
     private PlayerPerformAction playerPerformAction = this::performAction;
 
     //player has to perform this action
     @PackageReceiver
     public void received(NT_PlayerAction action) {
         Log.info("received action " + action);
-        if (action.text != null) {
-            //show instruction message to player
-            MessageUtils.showActionMessage(game, action.text);
-        }
+        CURRENT_PLAYER_ACTION = action;
         game.state.performAction(action.action, playerPerformAction);
     }
 

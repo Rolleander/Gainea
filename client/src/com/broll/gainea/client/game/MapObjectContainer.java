@@ -111,6 +111,7 @@ public class MapObjectContainer {
         MapObjectRender render = MapObjectRender.createRender(game.getContainer(), game.getContainer().ui.skin, nt);
         render.selectionListener();
         render.setLocation(location);
+        render.addAction(Actions.sequence(Actions.alpha(0), Actions.fadeIn(0.25f)));
         this.objectRenders.put(nt.id, render);
         game.getContainer().gameStage.addActor(render);
         return render;

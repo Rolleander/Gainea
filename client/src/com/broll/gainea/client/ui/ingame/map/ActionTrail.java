@@ -11,6 +11,7 @@ import com.broll.gainea.server.core.map.Coordinates;
 
 public class ActionTrail extends DepthActor {
 
+    public boolean hover = false;
     private float[] dotX, dotY;
     private TextureRegion dot;
     private float animationAngle;
@@ -22,7 +23,7 @@ public class ActionTrail extends DepthActor {
         setVisible(false);
         setPosition(to.getDisplayX(), to.getDisplayY());
         int distance = 50;
-        int count = (int) (Vector2.dst(from.getDisplayX(), from.getDisplayY(), getX(), getY()) / distance);
+        int count = (int) ((Vector2.dst(from.getDisplayX(), from.getDisplayY(), getX(), getY()) - 40) / distance);
         this.dotX = new float[count];
         this.dotY = new float[count];
         float angle = (float) (Math.atan2(to.getDisplayY() - from.getDisplayY(), to.getDisplayX() - from.getDisplayX()) + Math.PI);
@@ -38,10 +39,16 @@ public class ActionTrail extends DepthActor {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
+        float alpha = 0.65f;
+        if (hover) {
+            alpha = 1f;
+        }
+        setAlphaColor(batch, alpha * parentAlpha);
         animationAngle += 0.1;
         for (int i = 0; i < dotX.length; i++) {
             float dy = (float) (Math.sin(animationAngle + i) * 5);
             batch.draw(dot, dotX[i] - 15, dotY[i] - 15 + dy);
         }
+        resetAlphaColor(batch);
     }
 }

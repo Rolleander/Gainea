@@ -7,6 +7,7 @@ import com.broll.gainea.client.ui.ingame.map.MapAction;
 import com.broll.gainea.client.ui.ingame.map.MapScrollUtils;
 import com.broll.gainea.net.NT_Battle_Damage;
 import com.broll.gainea.net.NT_Battle_Intention;
+import com.broll.gainea.net.NT_Battle_Reaction;
 import com.broll.gainea.net.NT_Battle_Roll;
 import com.broll.gainea.net.NT_Battle_Start;
 import com.broll.gainea.net.NT_Battle_Update;
@@ -45,6 +46,7 @@ public class GameBattleSite extends AbstractGameSite {
         battleIntention.setRotation((float) Math.toDegrees(angle - Math.PI / 2));
         battleIntention.setFromTo(from.getNumber(), to.getNumber());
         battleIntentionTrail = new ActionTrail(game, 1, toC, fromC);
+        battleIntentionTrail.hover = true;
         game.gameStage.addActor(battleIntentionTrail);
         battleIntention.setTrail(battleIntentionTrail);
         battleIntention.setVisible(true);
@@ -76,5 +78,12 @@ public class GameBattleSite extends AbstractGameSite {
         Stack<NT_Battle_Damage> damage = new Stack<>();
         damage.addAll(Arrays.asList(battle.damage));
         game.ui.inGameUI.updateBattle(attackRolls, defenderRolls, damage, battle.state);
+    }
+
+    @PackageReceiver
+    public void received(NT_Battle_Reaction nt) {
+        if (!nt.keepAttacking) {
+            game.ui.inGameUI.getBattleHandler().retreated();
+        }
     }
 }

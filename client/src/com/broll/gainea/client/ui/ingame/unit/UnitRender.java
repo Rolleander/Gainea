@@ -72,8 +72,11 @@ public class UnitRender extends MapObjectRender {
         NT_Unit unit = getUnit();
         boolean wasAlive = unit.health > 0;
         unit.health -= amount;
-        if (wasAlive && unit.health <= 0) {
-            kill(false);
+        if (wasAlive) {
+            AudioPlayer.playSound("hit.ogg");
+            if (unit.health <= 0) {
+                kill(false);
+            }
         }
         bloodAnimation = 0;
         showBlood = true;
@@ -81,7 +84,6 @@ public class UnitRender extends MapObjectRender {
 
     public void kill(boolean removeActor) {
         NT_Unit unit = getUnit();
-        AudioPlayer.playSound("hit.ogg");
         deathSound(unit);
         unit.health = 0;
         if (removeActor) {

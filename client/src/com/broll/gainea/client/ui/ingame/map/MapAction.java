@@ -3,10 +3,12 @@ package com.broll.gainea.client.ui.ingame.map;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.broll.gainea.Gainea;
+import com.broll.gainea.client.AudioPlayer;
 import com.broll.gainea.client.ui.ingame.DepthActor;
 import com.broll.gainea.client.ui.utils.ActionListener;
 import com.broll.gainea.net.NT_Unit;
@@ -29,6 +31,8 @@ public class MapAction extends DepthActor {
     private Object action;
     private List<NT_Unit> units;
 
+    private boolean hover = true;
+
     private TextureRegion region;
 
     public MapAction(Gainea game, int type, int locationId, ActionListener clicked) {
@@ -41,6 +45,7 @@ public class MapAction extends DepthActor {
         setSize(SIZE, SIZE);
         setOrigin(Align.center);
         if (clicked != null) {
+            hover = false;
             addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
@@ -48,7 +53,26 @@ public class MapAction extends DepthActor {
                     if (trail != null) {
                         trail.remove();
                     }
+                    AudioPlayer.playSound("select.ogg");
                     remove();
+                }
+
+                @Override
+                public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                    super.enter(event, x, y, pointer, fromActor);
+                    hover = true;
+                    if (trail != null) {
+                        trail.hover = true;
+                    }
+                }
+
+                @Override
+                public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                    super.exit(event, x, y, pointer, toActor);
+                    hover = false;
+                    if (trail != null) {
+                        trail.hover = false;
+                    }
                 }
             });
         }
@@ -56,7 +80,13 @@ public class MapAction extends DepthActor {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
+        float alpha = 0.65f;
+        if (hover) {
+            alpha = 1f;
+        }
+        setAlphaColor(batch, alpha * parentAlpha);
         batch.draw(region, getX(), getY(), getOriginX(), getOriginY(), getWidth(), getHeight(), getScaleX(), getScaleY(), getRotation());
+        resetAlphaColor(batch);
     }
 
     public List<NT_Unit> getUnits() {

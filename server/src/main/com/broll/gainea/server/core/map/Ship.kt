@@ -15,9 +15,10 @@ class Ship(coordinates: Coordinates) : Location(coordinates) {
             field = value
         }
 
-    fun passable(from: Location) = this.from === from
+    fun goesFrom(from: Location) = this.from == from
 
-
+    fun goesTo(to: Location) = this.to == to
+    
     override fun toString(): String {
         return "Schiff"
     }

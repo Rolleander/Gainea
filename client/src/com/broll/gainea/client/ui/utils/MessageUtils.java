@@ -14,17 +14,11 @@ public final class MessageUtils {
 
     public static Popup showConfirmMessage(Gainea game, String message) {
         Table content = new Table();
-        content.add(LabelUtils.title(game.ui.skin, message)).row();
+        content.add(LabelUtils.label(game.ui.skin, message)).row();
         Button close = TableUtils.textButton(game.ui.skin, "Ok", () ->
                 content.getParent().addAction(Actions.sequence(Actions.fadeOut(0.3f), Actions.removeActor())));
         content.add(close).row();
         return Popup.show(game, content);
-    }
-
-    public static Popup showActionMessage(Gainea game, String message) {
-        Popup popup = new Popup(game.ui.skin, LabelUtils.title(game.ui.skin, message));
-        game.ui.inGameUI.showCenterOverlay(popup).padBottom(350);
-        return popup;
     }
 
 }

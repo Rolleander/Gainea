@@ -45,14 +45,10 @@ abstract class MapObject(var owner: Player) : GameUpdateReceiverAdapter() {
             return false
         }
         if (to is Ship) {
-            if (!to.passable(location)) {
-                return false
-            }
+            return to.goesFrom(location)
         }
         if (location is Ship) {
-            if ((location as Ship).to !== to) {
-                return false
-            }
+            return (location as Ship).goesTo(to)
         }
         return true
     }

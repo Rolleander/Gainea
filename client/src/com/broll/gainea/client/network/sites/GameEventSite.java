@@ -168,7 +168,7 @@ public class GameEventSite extends AbstractGameSite {
     public void received(NT_Event_PlayedCard card) {
         game.state.updateIdleState(false);
         game.ui.inGameUI.hideWindows();
-        game.ui.inGameUI.infoMessages.show(CardWindow.renderCard(game, card.card));
+        game.ui.inGameUI.infoMessages.show(CardWindow.renderCard(game, card.card), 4f);
         if (card.card.playable) {
             NT_Player owner = game.state.getPlayer(card.player);
             if (owner != null) {
@@ -203,7 +203,7 @@ public class GameEventSite extends AbstractGameSite {
     public void received(NT_Event_ReceivedGoal goal) {
         game.ui.inGameUI.hideWindows();
         Log.info("received goal");
-        game.ui.inGameUI.infoMessages.show(GoalOverlay.renderGoal(game, goal.goal));
+        game.ui.inGameUI.infoMessages.show(GoalOverlay.renderGoal(game, goal.goal), 3f);
         game.state.getGoals().add(goal.goal);
         game.ui.inGameUI.updateWindows();
         logWindow().logGoalEvent("Neues Ziel erhalten: [BROWN]" + goal.goal.description + "[]");
@@ -269,7 +269,7 @@ public class GameEventSite extends AbstractGameSite {
             logWindow().logGoalEvent(owner.name + " hat ein Ziel erreicht: [BROWN]" + goal.goal.description + "[] (+" + goal.goal.points + " Punkte)");
         }
         FinishedGoalDisplay message = new FinishedGoalDisplay(game, goal, myGoal);
-        game.ui.inGameUI.infoMessages.show(message);
+        game.ui.inGameUI.infoMessages.show(message, 4f);
     }
 
     @PackageReceiver

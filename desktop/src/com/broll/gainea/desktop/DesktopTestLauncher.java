@@ -10,7 +10,7 @@ import com.broll.gainea.client.ui.screens.TestMapScreen;
 public class DesktopTestLauncher {
     public static void main(String[] arg) {
         AudioPlayer.changeMusicVolume(0);
-        AudioPlayer.changeSoundVolume(0.2);
+        AudioPlayer.changeSoundVolume(0.3);
         System.setProperty("log4j.configuration", "log4j_client.properties");
         Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
         if (arg.length > 0 && "test".equals(arg[0])) {

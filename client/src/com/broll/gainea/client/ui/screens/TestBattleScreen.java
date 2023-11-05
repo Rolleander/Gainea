@@ -10,6 +10,7 @@ import com.broll.gainea.net.NT_Battle_Roll;
 import com.broll.gainea.net.NT_BoardEffect;
 import com.broll.gainea.net.NT_BoardObject;
 import com.broll.gainea.net.NT_BoardUpdate;
+import com.broll.gainea.net.NT_MercShop;
 import com.broll.gainea.net.NT_Player;
 import com.broll.gainea.net.NT_Unit;
 import com.broll.gainea.server.init.ExpansionSetting;
@@ -51,6 +52,8 @@ public class TestBattleScreen extends Screen {
         nt.objects = new NT_BoardObject[0];
         nt.effects = new NT_BoardEffect[0];
         nt.round = 0;
+        game.state.shop = new NT_MercShop();
+        game.state.shop.units = new NT_Unit[0];
         game.ui.initInGameUi();
         game.state.update(nt);
         game.ui.inGameUI.show();
@@ -75,7 +78,7 @@ public class TestBattleScreen extends Screen {
         defenders.add(battler());
         defenders.add(battler());
 
-        game.ui.inGameUI.startBattle(attackers, defenders, game.state.getMap().getLocation(5), false);
+        game.ui.inGameUI.startBattle(attackers, defenders, game.state.getMap().getLocation(5), true);
 
         NT_Battle_Roll[] arolls = new NT_Battle_Roll[7];
         arolls[0] = roll(attackers.get(0));
@@ -92,7 +95,6 @@ public class TestBattleScreen extends Screen {
         Arrays.sort(arolls, (a, b) -> b.number - a.number);
         Arrays.sort(drolls, (a, b) -> b.number - a.number);
         game.ui.inGameUI.updateBattle(arolls, drolls, damages(arolls, drolls), 0);
-
     }
 
     private Stack<NT_Battle_Damage> damages(NT_Battle_Roll[] arolls, NT_Battle_Roll[] drolls) {

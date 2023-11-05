@@ -44,14 +44,13 @@ open class Monster(owner: Player) : Unit(owner) {
     }
 
     override fun canMoveTo(to: Location): Boolean {
-        val canMove = motion.canMoveTo(location, to)
-        return if (!canMove && !owner.isNeutral()) {
-            //allow controlled monsters to walk with the players army
-            super.canMoveTo(to)
-        } else canMove
+        val canMove = motion.canMoveTo(currentLocation = location, newLocation = to)
+        //allow controlled monsters to walk with the players army
+        return if (!canMove && !owner.isNeutral()) super.canMoveTo(to) else canMove
     }
 
-    fun mightAttackSoon() = actionTimer == 1 && behavior != MonsterBehavior.RESIDENT && behavior != MonsterBehavior.FRIENDLY
+    fun mightAttackSoon() =
+        actionTimer == 1 && behavior != MonsterBehavior.RESIDENT && behavior != MonsterBehavior.FRIENDLY
 
 
     private val isBehaviorActive: Boolean

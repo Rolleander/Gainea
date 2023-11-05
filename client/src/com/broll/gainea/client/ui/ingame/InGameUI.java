@@ -1,6 +1,7 @@
 package com.broll.gainea.client.ui.ingame;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -44,9 +45,11 @@ public class InGameUI {
     public InfoMessageContainer infoMessages;
     private Gainea game;
     private Skin skin;
-    private Table centerOverlay;
+    private Table topCenter = new Table();
+    private Table bottomCenter = new Table();
     private Table rightPanel = new Table();
     private Table centerContent = new Table();
+
     private AttackAndMoveActionHandler attackAndMoveHandler;
     private RequiredActionHandler requiredActionHandler;
     private BattleHandler battleHandler;
@@ -67,7 +70,6 @@ public class InGameUI {
         this.playerOverlay = new PlayerOverlay(game);
         this.menuActions = new MenuActions(game);
         this.infoMessages = new InfoMessageContainer(game);
-        centerOverlay = new Table(skin);
     }
 
     public Cell<Actor> showCenter(Actor actor) {
@@ -75,21 +77,33 @@ public class InGameUI {
         return centerContent.add(actor);
     }
 
-    public Cell<Actor> showCenterOverlay(Actor actor) {
-        centerOverlay.clear();
-        return centerOverlay.add(actor);
+    public Cell<Actor> showTopCenter(Actor actor) {
+        topCenter.clear();
+        return topCenter.add(actor);
+    }
+
+    public Cell<Actor> showBottomCenter(Actor actor) {
+        bottomCenter.clear();
+        return bottomCenter.add(actor);
     }
 
     public void clearCenter() {
-        centerContent.clear();
-        centerOverlay.clear();
+        fadeActors(centerContent);
+        fadeActors(topCenter);
+        fadeActors(bottomCenter);
+    }
+
+    private void fadeActors(Table table) {
+        table.getChildren().forEach(it ->
+                it.addAction(Actions.sequence(Actions.fadeOut(0.3f), Actions.removeActor())));
     }
 
     public void show() {
         addCenterComponent(rightPanel).top().padTop(100).padBottom(40).right();
         addCenterComponent(infoMessages).center().top().padTop(50);
         addCenterComponent(centerContent).center();
-        addCenterComponent(centerOverlay).center().top().padTop(200);
+        addCenterComponent(topCenter).center().top().padTop(200);
+        addCenterComponent(bottomCenter).center().bottom().padBottom(200);
         game.uiStage.addActor(playerOverlay);
         game.uiStage.addActor(goalOverlay);
         menuActions.show();

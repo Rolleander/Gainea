@@ -20,7 +20,7 @@ abstract class Location(val coordinates: Coordinates) {
     val walkableNeighbours: List<Location>
         get() = connectedLocations.filter { it.traversable }.filter {
             if (it is Ship) {
-                return@filter it.passable(this)
+                return@filter it.goesFrom(this)
             }
             true
         }
