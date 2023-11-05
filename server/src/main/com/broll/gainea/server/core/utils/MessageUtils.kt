@@ -11,10 +11,11 @@ fun Game.gameLog(text: String) {
     sendUpdate(info)
 }
 
-fun Game.displayMessage(text: String) {
+fun Game.displayMessage(text: String, sound: String? = null) {
     val info = NT_Event_TextInfo()
     info.type = NT_Event_TextInfo.TYPE_MESSAGE_DISPLAY
     info.text = text
+    info.sound = sound
     sendUpdate(info)
 }
 

@@ -4,6 +4,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.broll.gainea.Gainea;
+import com.broll.gainea.client.AudioPlayer;
 import com.broll.gainea.client.game.PlayerPerformAction;
 import com.broll.gainea.client.ui.components.Popup;
 import com.broll.gainea.client.ui.ingame.hud.GoalOverlay;
@@ -42,6 +43,7 @@ public class RequiredActionHandler {
     public void handleAction(NT_Action action, PlayerPerformAction playerPerformAction) {
         mapActions.clear();
         boolean center = true;
+        AudioPlayer.playSound("place.ogg");
         RequiredActionContainer container = new RequiredActionContainer(mapActions, playerPerformAction, this::close);
         if (action instanceof NT_Action_PlaceUnit) {
             window = PlaceUnitWindow.create(game, skin, container, (NT_Action_PlaceUnit) action);

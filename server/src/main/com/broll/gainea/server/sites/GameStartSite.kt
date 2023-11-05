@@ -55,7 +55,7 @@ class GameStartSite : GameSite() {
     private fun drawStartingCards(game: Game, player: Player) {
         STARTING_CARDS.forEach { cardClass ->
             val card = game.cardStorage.getCard(cardClass)
-            card.init(game, player, game.newObjectId())
+            card.init(game, player)
             player.cardHandler.cards.add(card)
         }
     }

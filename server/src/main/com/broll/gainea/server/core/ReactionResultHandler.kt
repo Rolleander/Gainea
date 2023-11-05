@@ -17,7 +17,10 @@ import com.broll.gainea.server.init.PlayerData
 import com.broll.networklib.server.impl.ServerLobby
 import org.slf4j.LoggerFactory
 
-class ReactionResultHandler(private val game: Game, private val lobby: ServerLobby<LobbyData, PlayerData>) : ReactionActions {
+class ReactionResultHandler(
+    private val game: Game,
+    private val lobby: ServerLobby<LobbyData, PlayerData>
+) : ReactionActions {
     override fun sendGameUpdate(update: Any) {
         lobby.sendToAllTCP(update)
     }
@@ -52,7 +55,10 @@ class ReactionResultHandler(private val game: Game, private val lobby: ServerLob
             var delay = 0
             if (player.active) {
                 //send aussetzen info to all players
-                game.displayMessage(player.serverPlayer.name + " muss aussetzen!")
+                game.displayMessage(
+                    player.serverPlayer.name + " muss aussetzen!",
+                    sound = "smash.ogg"
+                )
                 delay = 3000
             }
             //auto start next round after delay
@@ -84,7 +90,10 @@ class ReactionResultHandler(private val game: Game, private val lobby: ServerLob
         sendGameUpdate(game.nt())
     }
 
-    override fun requireAction(player: Player, action: RequiredActionContext<out NT_Action>): ActionContext<out NT_Action> {
+    override fun requireAction(
+        player: Player,
+        action: RequiredActionContext<out NT_Action>
+    ): ActionContext<out NT_Action> {
         Log.trace("Require action for " + player + " : " + action.action)
         game.reactionHandler.requireAction(player, action)
         player.serverPlayer.sendTCP(action.nt())

@@ -2,6 +2,7 @@ package com.broll.gainea.client.network.sites;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.broll.gainea.client.AudioPlayer;
 import com.broll.gainea.client.ui.ingame.map.ActionTrail;
 import com.broll.gainea.client.ui.ingame.map.MapAction;
 import com.broll.gainea.client.ui.ingame.map.MapScrollUtils;
@@ -51,6 +52,7 @@ public class GameBattleSite extends AbstractGameSite {
         battleIntention.setTrail(battleIntentionTrail);
         battleIntention.setVisible(true);
         game.gameStage.addActor(battleIntention);
+        AudioPlayer.playSound("attack_intent.ogg");
     }
 
     @PackageReceiver

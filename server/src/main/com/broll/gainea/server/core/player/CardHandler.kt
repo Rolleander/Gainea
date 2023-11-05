@@ -4,9 +4,9 @@ import com.broll.gainea.net.NT_Event_OtherPlayerReceivedCard
 import com.broll.gainea.net.NT_Event_ReceivedCard
 import com.broll.gainea.net.NT_Event_RemoveCard
 import com.broll.gainea.server.core.Game
-import com.broll.gainea.server.core.actions.optional.CardAction
 import com.broll.gainea.server.core.cards.Card
 import com.broll.gainea.server.core.cards.DirectlyPlayedCard
+import com.broll.gainea.server.core.cards.playCard
 import com.broll.gainea.server.core.utils.sendUpdate
 
 class CardHandler(private val game: Game, private val player: Player) {
@@ -17,9 +17,9 @@ class CardHandler(private val game: Game, private val player: Player) {
 
     fun receiveCard(card: Card) {
         if (player.isNeutral()) return
-        card.init(game, player, game.newObjectId())
+        card.init(game, player)
         if (card is DirectlyPlayedCard) {
-            game.reactionHandler.actionHandlers.getHandler(CardAction::class.java).playCard(player, card)
+            game.playCard(card)
             return
         }
         cards.add(card)

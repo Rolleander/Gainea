@@ -19,7 +19,7 @@ class RandomEventContainer {
     }
 
     fun run(game: Game) {
-        game.displayMessage("Zufallsereignis!")
+        game.displayMessage("Zufallsereignis!", sound = "long_bwoam.ogg")
         ProcessingUtils.pause(1000)
         getRandomEvent().run(game)
     }

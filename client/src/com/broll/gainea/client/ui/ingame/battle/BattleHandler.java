@@ -156,7 +156,7 @@ public class BattleHandler {
     }
 
     private void sendBattleResponse(Table dialog, boolean continueFight) {
-        dialog.addAction(Actions.sequence(Actions.fadeOut(0.2f), Actions.removeActor()));
+        dialog.remove();
         NT_Battle_Reaction reaction = new NT_Battle_Reaction();
         reaction.keepAttacking = continueFight;
         game.client.getClient().sendTCP(reaction);

@@ -58,7 +58,7 @@ class TurnBuilder(private val game: Game, private val actionHandlers: ActionHand
     private fun buildCardActions(player: Player): List<ActionContext<out NT_Action>> {
         val cardAction = actionHandlers.getHandler(CardAction::class.java)
         return player.cardHandler.cards.filter { it.isPlayable }
-            .map { cardAction.playableCard(player, it) }
+            .map { cardAction.playableCard(it) }
     }
 
     private fun buildMercActions(player: Player) =

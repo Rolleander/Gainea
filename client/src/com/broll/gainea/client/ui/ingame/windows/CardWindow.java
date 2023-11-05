@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Scaling;
 import com.broll.gainea.Gainea;
+import com.broll.gainea.client.AudioPlayer;
 import com.broll.gainea.client.game.GameStateListener;
 import com.broll.gainea.client.game.PlayerPerformOptionalAction;
 import com.broll.gainea.client.ui.utils.ActionListener;
@@ -174,7 +175,10 @@ public class CardWindow extends MenuWindow {
                 )));
             }
             if (listener != null) {
-                TableUtils.onClick(this, listener);
+                TableUtils.onClick(this, () -> {
+                    AudioPlayer.playSound("button.ogg");
+                    listener.action();
+                });
             }
             setSelected(false);
         }

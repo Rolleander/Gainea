@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.broll.gainea.Gainea;
+import com.broll.gainea.client.AudioPlayer;
 import com.broll.gainea.client.ui.ingame.windows.CardWindow;
 import com.broll.gainea.net.NT_Card;
 
@@ -45,6 +46,7 @@ public class InfoMessageContainer extends WidgetGroup {
     private void spawnMessage(InfoMessage msg, float duration) {
         msg.index = count;
         count++;
+        AudioPlayer.playSound("infomsg.ogg");
         msg.pack();
         addActor(msg);
         msg.toFront();

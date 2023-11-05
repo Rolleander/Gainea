@@ -14,8 +14,8 @@ public class DesktopLauncher {
         if (arg.length > 0 && "test".equals(arg[0])) {
             StartScreen.PLAYER_NAME = "tester";
             StartScreen.SERVER = "localhost";
-            AudioPlayer.changeMusicVolume(0);
-            AudioPlayer.changeSoundVolume(0);
+            AudioPlayer.changeMusicVolume(0.15);
+            AudioPlayer.changeSoundVolume(0.3f);
         }
         config.setWindowedMode(1280, 900);
         config.setResizable(true);

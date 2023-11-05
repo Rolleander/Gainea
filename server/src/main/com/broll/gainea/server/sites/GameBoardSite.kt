@@ -53,8 +53,9 @@ class GameBoardSite : GameSite() {
     fun endTurn(nt: NT_EndTurn) {
         //only react to if its players turn and no action is running right now
         if (lobby.data.isGameRoundsStarted &&
-                !game.isGameOver && playersTurn() &&
-                !game.processingCore.isBusy) {
+            !game.isGameOver && playersTurn() &&
+            !game.processingCore.isBusy
+        ) {
             //dont allow next turn if there are required actions for the player remaining
             if (!game.reactionHandler.hasRequiredActionFor(gamePlayer)) {
                 nextTurn()
@@ -79,7 +80,7 @@ class GameBoardSite : GameSite() {
             game.processingCore.shutdown()
             game.reactionHandler.finishedProcessing()
         } else {
-            game.displayMessage(player.name + " hat aufgegeben!")
+            game.displayMessage(player.name + " hat aufgegeben!", sound = "smash.ogg")
             endTurn(NT_EndTurn())
         }
     }

@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Scaling;
 import com.broll.gainea.Gainea;
+import com.broll.gainea.client.AudioPlayer;
 import com.broll.gainea.client.ui.components.IconLabel;
 import com.broll.gainea.client.ui.ingame.map.MapObjectRender;
 import com.broll.gainea.client.ui.ingame.unit.MenuUnit;
@@ -162,6 +163,7 @@ public class MapObjectSelection extends Table {
 
         public void selectable(ActionListener onSelect) {
             TableUtils.onClick(this, () -> {
+                        AudioPlayer.playSound("button.ogg");
                         setSelected(!selectionImage.selected);
                         onSelect.action();
                     }

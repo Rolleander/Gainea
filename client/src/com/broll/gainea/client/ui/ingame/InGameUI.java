@@ -171,7 +171,8 @@ public class InGameUI {
     }
 
     public void hideWindows() {
-        menuActions.hideWindows();
+        //dont hide
+        //menuActions.hideWindows();
     }
 
     public LogWindow getLogWindow() {

@@ -51,7 +51,20 @@ public class Assets {
                 "button.ogg",
                 "death_female.ogg",
                 "death_male.ogg",
-                "battle.ogg"
+                "battle.ogg",
+                "dark_chime.ogg",
+                "domm.ogg",
+                "domm2.ogg",
+                "dwooom.ogg",
+                "glitter.ogg",
+                "long_bwoam.ogg",
+                "pauke.ogg",
+                "place.ogg",
+                "smash.ogg",
+                "smith.ogg",
+                "swush.ogg",
+                "infomsg.ogg",
+                "attack_intent.ogg",
         }).forEach(it -> manager.load(SOUNDS + it, Sound.class));
     }
 

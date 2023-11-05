@@ -5,14 +5,15 @@ import com.badlogic.gdx.audio.Sound;
 
 public final class AudioPlayer {
 
+    private static float soundVolume = 0.5f;
+    private static float musicVolume = 0.5f;
+    private static float musicLower = 0.7f;
+    private static Assets assets;
+    private static Music current;
+
     private AudioPlayer() {
 
     }
-
-    private static float soundVolume = 0.5f;
-    private static float musicVolume = 0.5f;
-    private static Assets assets;
-    private static Music current;
 
     public static void init(Assets assets) {
         AudioPlayer.assets = assets;
@@ -24,7 +25,7 @@ public final class AudioPlayer {
         }
         current = assets.get(song, Music.class);
         current.setLooping(true);
-        current.setVolume(musicVolume);
+        current.setVolume(musicLower * musicVolume);
         current.play();
     }
 
@@ -41,7 +42,7 @@ public final class AudioPlayer {
     public static void changeMusicVolume(double volume) {
         musicVolume = (float) volume;
         if (current != null) {
-            current.setVolume(musicVolume);
+            current.setVolume(musicLower * musicVolume);
         }
     }
 

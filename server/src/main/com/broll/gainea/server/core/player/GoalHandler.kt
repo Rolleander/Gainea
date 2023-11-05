@@ -74,7 +74,7 @@ class GoalHandler(private val game: Game, private val player: Player) {
         goals.add(goal)
         game.updateReceiver.register(goal)
         val nt = NT_Event_ReceivedGoal()
-        nt.sound = "chime.ogg"
+        nt.sound = "swush.ogg"
         nt.goal = goal.nt()
         val nt2 = NT_Event_OtherPlayerReceivedGoal()
         nt2.player = player.serverPlayer.id

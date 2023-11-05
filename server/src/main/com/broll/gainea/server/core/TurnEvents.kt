@@ -7,6 +7,7 @@ import com.broll.gainea.server.core.events.E_SpawnGoddrake
 import com.broll.gainea.server.core.events.E_SpawnMonster
 import com.broll.gainea.server.core.events.EventCard
 import com.broll.gainea.server.core.events.RandomEventContainer
+import com.broll.gainea.server.core.events.runEvent
 import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.core.processing.GameUpdateReceiverAdapter
 import com.broll.gainea.server.core.utils.countNeutralMonsters
@@ -22,7 +23,7 @@ class TurnEvents(private val game: Game) : GameUpdateReceiverAdapter() {
         val nt = NT_PlayerWait()
         nt.playersTurn = -1
         game.sendUpdate(nt)
-        EventCard.run(event, game)
+        game.runEvent(event)
     }
 
     override fun roundStarted() {

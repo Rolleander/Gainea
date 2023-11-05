@@ -1,5 +1,6 @@
 package com.broll.gainea.client.network.sites;
 
+import com.broll.gainea.client.AudioPlayer;
 import com.broll.gainea.client.game.PlayerPerformOptionalAction;
 import com.broll.gainea.net.NT_Action;
 import com.broll.gainea.net.NT_EndTurn;
@@ -77,6 +78,7 @@ public class GameTurnSite extends AbstractGameSite {
         if (turnPlayer == getPlayer()) {
             //your turn
             message = "Du bist dran!";
+            AudioPlayer.playSound("domm.ogg");
         } else {
             //other players turn
             message = turnPlayer.getName() + "'s Zug!";
