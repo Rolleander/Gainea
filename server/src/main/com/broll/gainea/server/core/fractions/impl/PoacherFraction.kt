@@ -15,9 +15,9 @@ import com.broll.gainea.server.core.utils.UnitControl.recruit
 class PoacherFraction : Fraction(FractionType.POACHER) {
     override fun description(): FractionDescription {
         val desc = FractionDescription(
-                "",
-                soldier = UnitDescription(name = "Wilderer", icon = 42),
-                commander = UnitDescription(name = "Monsterzähmer", icon = 44, power = 1, health = 5),
+            "",
+            soldier = UnitDescription(name = "Wilderer", icon = 42),
+            commander = UnitDescription(name = "Monsterzähmer", icon = 44, power = 1, health = 5),
         )
         desc.plus("Besiegte Monster werden rekrutiert, wenn nach dem Kampf ein Soldat überlebt")
         desc.contra("Gegen menschliche Truppen -1 Zahl für eigene Soldaten")
@@ -31,7 +31,7 @@ class PoacherFraction : Fraction(FractionType.POACHER) {
         }
         return power
     }
-
+    
     override fun battleResult(result: BattleResult) {
         val units = result.getUnits(owner)
         if (units.isEmpty()) {
@@ -39,7 +39,8 @@ class PoacherFraction : Fraction(FractionType.POACHER) {
         }
         val enemies = result.getOpposingUnits(owner)
         if (units.any { it.alive && it.isFromFraction() }) {
-            val deadMonsters = enemies.filter { it.source.isNeutralMonster() && it.dead }.map { it.source }
+            val deadMonsters =
+                enemies.filter { it.source.isNeutralMonster() && it.dead }.map { it.source }
             game.recruit(owner, deadMonsters)
         }
     }

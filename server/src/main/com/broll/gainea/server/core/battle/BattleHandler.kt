@@ -234,13 +234,13 @@ class BattleHandler(private val game: Game, private val reactionResult: Reaction
         if (killer.isNeutral()) {
             return
         }
-        units.map { it.source }.filterIsInstance(Monster::class.java)
-            .forEach {
-                killer.goalHandler.addStars(it.stars)
-                if (it.owner.isNeutral()) {
-                    killer.fraction.killedNeutralMonster(it)
-                }
+        units.filter { it.source is Monster }.forEach {
+            val monster = it.source as Monster
+            killer.goalHandler.addStars(monster.stars)
+            if (it.owner.isNeutral()) {
+                killer.fraction.killedNeutralMonster(monster)
             }
+        }
     }
 
     companion object {
