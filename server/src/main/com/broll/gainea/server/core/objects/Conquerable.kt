@@ -7,16 +7,12 @@ import com.broll.gainea.server.core.player.isNeutral
 import com.broll.gainea.server.core.utils.UnitControl.despawn
 import com.broll.gainea.server.core.utils.UnitControl.update
 
-class Conquerable(game: Game, val despawn: Boolean = true) : MapObject(game.neutralPlayer) {
+class Conquerable(game: Game, val despawn: Boolean = true) : Building(game.neutralPlayer) {
 
     var holdForRounds = 1
     lateinit var afterConquer: ((Player) -> kotlin.Unit)
 
     private var holdingTurns = 0
-
-    init {
-        scale = 1.2f
-    }
 
     private fun updateState() {
         val owners = location.units.map { it.owner }.filter { !it.isNeutral() }.distinct()

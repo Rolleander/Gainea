@@ -1,9 +1,7 @@
 package com.broll.gainea.server.core.fractions.impl
 
 import com.broll.gainea.misc.RandomUtils
-import com.broll.gainea.server.core.battle.BattleContext
 import com.broll.gainea.server.core.battle.BattleResult
-import com.broll.gainea.server.core.battle.FightingPower
 import com.broll.gainea.server.core.battle.UnitSnapshot
 import com.broll.gainea.server.core.fractions.Fraction
 import com.broll.gainea.server.core.fractions.FractionDescription
@@ -67,11 +65,8 @@ class ShadowFraction : Fraction(FractionType.SHADOW) {
     }
 
     private fun summon(location: Location) {
-        val skeleton: Soldier = object : Soldier(owner, fraction = this@ShadowFraction) {
-            override fun calcFightingPower(context: BattleContext): FightingPower {
-                return super.calcFightingPower(context).changeNumberPlus(-1)
-            }
-        }
+        val skeleton = Soldier(owner, fraction = this@ShadowFraction)
+        skeleton.numberPlus.value = -1
         skeleton.setStats(SOLDIER_POWER, SOLDIER_HEALTH)
         skeleton.icon = 94
         skeleton.name = "Skelett"

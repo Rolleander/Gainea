@@ -19,9 +19,12 @@ class RandomEventContainer {
     }
 
     fun run(game: Game) {
-        game.displayMessage("Zufallsereignis!", sound = "long_bwoam.ogg")
-        ProcessingUtils.pause(1000)
-        getRandomEvent().run(game)
+        val event = getRandomEvent()
+        if (event.init(game)) {
+            game.displayMessage("Zufallsereignis!", sound = "long_bwoam.ogg")
+            ProcessingUtils.pause(1000)
+            event.run()
+        }
     }
 
     companion object {

@@ -8,7 +8,11 @@ import com.broll.gainea.server.core.objects.buffs.TimedEffect
 import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.core.utils.UnitControl.spawn
 
-class C_Necromanty : Card(70, "Nekromantie", "Für diesen Zug werden bei euren Angriffen eure gefallenen Soldaten zu Skeletten (1/1)") {
+class C_Necromanty : Card(
+    70,
+    "Nekromantie",
+    "Für diesen Zug werden bei euren Angriffen eure gefallenen Soldaten zu Skeletten (1/1)"
+) {
     override val isPlayable: Boolean
         get() = true
 
@@ -18,7 +22,7 @@ class C_Necromanty : Card(70, "Nekromantie", "Für diesen Zug werden bei euren A
                 if (result.isAttacker(owner)) {
                     val summonLocation = result.attackerEndLocation
                     result.killedAttackers.map { it.source }.filter { it !is Skeleton }
-                            .forEach { _ -> summonSkeleton(summonLocation) }
+                        .forEach { _ -> summonSkeleton(summonLocation) }
                 }
             }
         })
@@ -32,6 +36,7 @@ class C_Necromanty : Card(70, "Nekromantie", "Für diesen Zug werden bei euren A
         init {
             icon = 94
             name = "Skelett"
+            numberPlus.value = -1
             setHealth(1)
             setPower(1)
         }

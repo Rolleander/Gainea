@@ -15,6 +15,10 @@ class CardHandler(private val game: Game, private val player: Player) {
         game.cardStorage.drawRandomCard(player)
     }
 
+    fun drawRandomPlayableCard() {
+        receiveCard(game.cardStorage.getRandomPlayableCard())
+    }
+
     fun receiveCard(card: Card) {
         if (player.isNeutral()) return
         card.init(game, player)

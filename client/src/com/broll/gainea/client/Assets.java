@@ -86,6 +86,7 @@ public class Assets {
         manager.load("textures/chips.png", Texture.class);
         manager.load("textures/icons.png", Texture.class);
         manager.load("textures/units.png", Texture.class);
+        manager.load("textures/buildings.png", Texture.class);
         manager.load("textures/ship.png", Texture.class);
         manager.load("textures/blood.png", Texture.class);
         manager.load("textures/roll_back.png", Texture.class);

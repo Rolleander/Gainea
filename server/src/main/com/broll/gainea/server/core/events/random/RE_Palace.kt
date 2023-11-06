@@ -5,18 +5,19 @@ import com.broll.gainea.server.core.events.freeBuildingSpot
 import com.broll.gainea.server.core.objects.Conquerable
 import com.broll.gainea.server.core.utils.UnitControl.spawn
 
-class RE_Tower : RandomEvent() {
+class RE_Palace : RandomEvent() {
 
-    override fun pickSpot() = game.freeBuildingSpot()
+    override fun pickSpot() = game.freeBuildingSpot(onlyContinents = true)
     override fun run() {
-        val obj = Conquerable(game, despawn = false)
+        val obj = Conquerable(game)
         obj.afterConquer = { player ->
-            player.goalHandler.addStars(3)
+            player.goalHandler.addPoints(1)
         }
-        obj.name = "Turmspitze"
+        obj.holdForRounds = 3
+        obj.name = "Schloss " + location.container.name
         obj.description =
-            "Besetzender Spieler erhält jede Runde 3 Sterne"
-        obj.icon = 1
+            "Verleiht 1 Siegpunkt an den für drei Runden besitzenden Spieler"
+        obj.icon = 0
         game.spawn(obj, location)
     }
 

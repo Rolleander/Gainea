@@ -5,18 +5,19 @@ import com.broll.gainea.server.core.events.freeBuildingSpot
 import com.broll.gainea.server.core.objects.Conquerable
 import com.broll.gainea.server.core.utils.UnitControl.spawn
 
-class RE_Tower : RandomEvent() {
+class RE_Market : RandomEvent() {
 
     override fun pickSpot() = game.freeBuildingSpot()
     override fun run() {
         val obj = Conquerable(game, despawn = false)
         obj.afterConquer = { player ->
-            player.goalHandler.addStars(3)
+            player.cardHandler.drawRandomPlayableCard()
         }
-        obj.name = "Turmspitze"
+        obj.holdForRounds = 2
+        obj.name = "Marktplatz"
         obj.description =
-            "Besetzender Spieler erhält jede Runde 3 Sterne"
-        obj.icon = 1
+            "Besetzer erhält alle 2 Runden eine Karte"
+        obj.icon = 5
         game.spawn(obj, location)
     }
 

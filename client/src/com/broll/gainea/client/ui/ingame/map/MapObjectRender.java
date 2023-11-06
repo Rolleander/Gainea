@@ -49,6 +49,8 @@ public class MapObjectRender extends DepthActor {
     private Label infoLabel;
     private float stackHeight;
 
+    private float borderDiff = 0;
+
     private float scale;
     private int drawCall;
 
@@ -57,6 +59,11 @@ public class MapObjectRender extends DepthActor {
         this.game = game;
         this.scale = 1f;
         this.radius = R * scale;
+        if (object.building) {
+            this.radius += 9 * scale;
+            this.borderDiff = 9;
+            this.labelDisplacement += 5;
+        }
         setSize(radius * 2, radius * 2);
         if (StringUtils.isNotEmpty(object.description)) {
             infoLabel = LabelUtils.markup(skin, "[DARK_GRAY]" + object.description);
@@ -87,7 +94,11 @@ public class MapObjectRender extends DepthActor {
 
     public void init(NT_BoardObject object) {
         this.object = object;
-        icon = TextureUtils.unitIcon(game, object.icon);
+        if (object.building) {
+            icon = TextureUtils.buildingIcon(game, object.icon);
+        } else {
+            icon = TextureUtils.unitIcon(game, object.icon);
+        }
         if (StringUtils.isNotEmpty(object.description)) {
             infoLabel.setText("[DARK_GRAY]" + object.description);
         }
@@ -162,8 +173,8 @@ public class MapObjectRender extends DepthActor {
     @Override
     public void draw(Batch batch, float parentAlpha) {
         setRenderColor(batch, parentAlpha);
-        batch.draw(chip, getX() - radius, getY() - radius, chip.getRegionWidth() * scale, chip.getRegionHeight() * scale);
-        batch.draw(icon, getX() - radius + 9 * scale, getY() - radius + 9 * scale, icon.getRegionWidth() * scale, icon.getRegionHeight() * scale);
+        batch.draw(chip, getX() - radius - borderDiff, getY() - radius - borderDiff, chip.getRegionWidth() * scale + (borderDiff * 2), chip.getRegionHeight() * scale + (borderDiff * 2));
+        batch.draw(icon, getX() - radius + 9 - borderDiff, getY() - radius + 9 - borderDiff, icon.getRegionWidth(), icon.getRegionHeight());
         if (shouldDrawInfo()) {
             infoLabel.setPosition(getX() - infoLabel.getWidth() / 2, getY() + radius + labelDisplacement);
             infoLabel.draw(batch, parentAlpha);

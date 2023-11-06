@@ -8,6 +8,7 @@ public class NT_BoardObject {
     public final static byte NO_OWNER = -1;
     public short owner = NO_OWNER;
 
+    public boolean building = false;
     public String name;
     public float scale = 1;
     public short icon;

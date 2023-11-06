@@ -10,17 +10,17 @@ import com.broll.gainea.server.core.objects.monster.Monster
 import com.broll.gainea.server.core.utils.UnitControl.spawn
 
 class RE_TreasureHunt : RandomEvent() {
-    override fun run(game: Game) {
-        game.freeArea { area ->
-            game.spawn(TreasureMap(game), area)
-        }
+
+    override fun pickSpot() = game.freeArea()
+    override fun run() {
+        game.spawn(TreasureMap(game), location)
     }
 
     private class TreasureMap(game: Game, step: Int = 0) : Collectible(game) {
 
         init {
             onPickup = {
-                game.freeArea { area ->
+                game.freeArea()?.let { area ->
                     val nextStep = step + 1
                     if (nextStep < 3) {
                         game.spawn(TreasureMap(game, nextStep), area)

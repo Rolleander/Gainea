@@ -148,7 +148,13 @@ public class MapObjectSelection extends Table {
             super(game.ui.skin);
             this.obj = obj;
             TextureRegion icon = TextureUtils.unitIcon(game, obj.icon);
+            if (obj.building) {
+                icon = TextureUtils.buildingIcon(game, obj.icon);
+            }
             selectionImage = new SelectionImage(game, icon);
+            if (obj.building) {
+                selectionImage.setScale(0.847f);
+            }
             add(selectionImage).spaceRight(8);
             if (obj instanceof NT_Unit) {
                 NT_Unit unit = (NT_Unit) obj;
