@@ -1,6 +1,7 @@
 package com.broll.gainea.server.core.objects
 
 import com.broll.gainea.server.core.Game
+import com.broll.gainea.server.core.battle.BattleResult
 import com.broll.gainea.server.core.map.Location
 import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.core.player.isNeutral
@@ -18,14 +19,14 @@ class Conquerable(game: Game, val despawn: Boolean = true) : Building(game.neutr
         val owners = location.units.map { it.owner }.filter { !it.isNeutral() }.distinct()
         if (owners.isEmpty() || owners.size > 1) {
             updateOwner(game.neutralPlayer)
-            holdingTurns = 0
-            return
+        } else {
+            updateOwner(owners.first())
         }
-        updateOwner(owners.first())
     }
 
     private fun updateOwner(newOwner: Player) {
         if (owner == newOwner) return
+        holdingTurns = 0
         owner = newOwner
         game.update(this)
     }
@@ -50,6 +51,10 @@ class Conquerable(game: Game, val despawn: Boolean = true) : Building(game.neutr
     }
 
     override fun unitSpawned(obj: MapObject, location: Location) {
+        updateState()
+    }
+
+    override fun unitKilled(unit: Unit, throughBattle: BattleResult?) {
         updateState()
     }
 

@@ -4,6 +4,7 @@ import com.broll.gainea.server.core.objects.Soldier
 import com.broll.gainea.server.core.objects.buffs.BuffType.ADD
 import com.broll.gainea.server.core.objects.buffs.BuffType.MULTIPLY
 import com.broll.gainea.server.core.objects.buffs.IntBuff
+import org.amshove.kluent.`should be equal to`
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -47,6 +48,25 @@ class BuffTest {
         buff2.remove()
 
         assertEquals(10, unit.health.value)
+    }
+
+    @Test
+    fun `freezing buffs works`() {
+        val unit = Soldier(game.neutralPlayer)
+        unit.setStats(2, 2)
+
+        val buff = IntBuff(ADD, 3)
+        unit.addHealthBuff(buff)
+
+        unit.health.value `should be equal to` 5
+
+        val frozenCopy = unit.health.frozenCopy(unit)
+
+        frozenCopy.value `should be equal to` 5
+
+        buff.remove()
+        unit.health.value `should be equal to` 2
+        frozenCopy.value `should be equal to` 5
 
     }
 

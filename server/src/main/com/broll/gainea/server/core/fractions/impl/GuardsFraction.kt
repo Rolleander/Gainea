@@ -15,11 +15,12 @@ import com.broll.gainea.server.core.player.Player
 class GuardsFraction : Fraction(FractionType.GUARDS) {
     override fun description(): FractionDescription {
         val desc = FractionDescription(
-                "",
-                soldier = UnitDescription(name = "Gardistenwache", icon = 19),
-                commander = UnitDescription(name = "Elitegardist", icon = 15, power = 3, health = 3),
+            "",
+            soldier = UnitDescription(name = "Gardistenwache", icon = 19),
+            commander = UnitDescription(name = "Elitegardist", icon = 15, power = 3, health = 3),
         )
         desc.plus("Als Verteidiger ist die niedrigste Würfelzahl 3")
+        //todo geht nicht mehr?
         desc.plus("Zahl +1 für Verteidiger, die ihr Feld mindestens eine Runde\nnicht verlassen haben")
         desc.contra("Als Angreifer Zahl -1")
         return desc
@@ -52,7 +53,8 @@ class GuardsFraction : Fraction(FractionType.GUARDS) {
         return commander
     }
 
-    private inner class GuardSoldier(owner: Player) : Soldier(owner, fraction = this@GuardsFraction) {
+    private inner class GuardSoldier(owner: Player) :
+        Soldier(owner, fraction = this@GuardsFraction) {
         private var buff: IntBuff? = null
         private var lastLocation: Location? = null
         override fun prepareForTurnStart() {

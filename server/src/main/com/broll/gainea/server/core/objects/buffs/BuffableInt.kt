@@ -14,6 +14,7 @@ class BuffableInt<T>(target: T, value: Int) : BuffableValue<T, Int, IntBuff>(tar
         copy.minValue = minValue
         copy.maxValue = maxValue
         copy.buffs = buffs
+        copy.recalc()
         return copy
     }
 

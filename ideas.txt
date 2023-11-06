@@ -8,6 +8,10 @@ card ideas:
 event / object ideas:
 - spawn random moving object that deals damage to all units it walks upon
 
+
+- monster different attack sound
+
+
 unused cards:
 81 = parade
 85 = knight duel

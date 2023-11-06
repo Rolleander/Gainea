@@ -1,5 +1,6 @@
 package com.broll.gainea.server.core.goals
 
+import com.broll.gainea.server.core.battle.BattleResult
 import com.broll.gainea.server.core.bot.strategy.GoalStrategy
 import com.broll.gainea.server.core.map.Area
 import com.broll.gainea.server.core.map.AreaID
@@ -9,6 +10,7 @@ import com.broll.gainea.server.core.map.IslandID
 import com.broll.gainea.server.core.map.Location
 import com.broll.gainea.server.core.map.MapContainer
 import com.broll.gainea.server.core.objects.MapObject
+import com.broll.gainea.server.core.objects.Unit
 import org.slf4j.LoggerFactory
 
 abstract class OccupyGoal(difficulty: GoalDifficulty, text: String) : Goal(difficulty, text) {
@@ -182,16 +184,20 @@ abstract class OccupyGoal(difficulty: GoalDifficulty, text: String) : Goal(diffi
         }
     }
 
-    override fun unitsMoved(units: List<MapObject>, location: Location) {
-        if (units.any { it.owner === player }) {
-            //unit of this player moved, check occupy condition
+    override fun unitsMoved(objects: List<MapObject>, location: Location) {
+        if (objects.any { it.owner === player }) {
             check()
         }
     }
 
-    override fun unitSpawned(`object`: MapObject, location: Location) {
-        if (`object`.owner === player) {
-            //unit of this player spawned, check occupy condition
+    override fun unitSpawned(obj: MapObject, location: Location) {
+        if (obj.owner === player) {
+            check()
+        }
+    }
+
+    override fun unitKilled(unit: Unit, throughBattle: BattleResult?) {
+        if (unit.owner == player) {
             check()
         }
     }
