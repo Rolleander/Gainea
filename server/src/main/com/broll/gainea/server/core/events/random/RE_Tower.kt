@@ -6,18 +6,17 @@ import com.broll.gainea.server.core.events.freeContinentArea
 import com.broll.gainea.server.core.objects.Conquerable
 import com.broll.gainea.server.core.utils.UnitControl.spawn
 
-class RE_Castle : RandomEvent() {
+class RE_Tower : RandomEvent() {
     override fun run(game: Game) {
         game.freeContinentArea { area ->
-            val obj = Conquerable(game)
+            val obj = Conquerable(game, despawn = false)
             obj.afterConquer = { player ->
-                player.goalHandler.addPoints(1)
+                player.goalHandler.addStars(3)
             }
-            obj.holdForRounds = 3
-            obj.name = "Schloss " + area.container.name
+            obj.name = "Turmspitze"
             obj.description =
-                "Verleiht 1 Siegpunkt an den für drei Runden besitzenden Spieler"
-            obj.icon = 133
+                "Besetzender Spieler erhält jede Runde 3 Sterne"
+            obj.icon = 139
             game.spawn(obj, area)
         }
     }

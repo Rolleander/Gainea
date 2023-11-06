@@ -49,12 +49,14 @@ public class MapObjectRender extends DepthActor {
     private Label infoLabel;
     private float stackHeight;
 
+    private float scale;
     private int drawCall;
 
     public MapObjectRender(Gainea game, Skin skin, NT_BoardObject object) {
         depth = 50;
         this.game = game;
-        this.radius = R * object.scale;
+        this.scale = 1f;
+        this.radius = R * scale;
         setSize(radius * 2, radius * 2);
         if (StringUtils.isNotEmpty(object.description)) {
             infoLabel = LabelUtils.markup(skin, "[DARK_GRAY]" + object.description);
@@ -75,6 +77,12 @@ public class MapObjectRender extends DepthActor {
             return new UnitRender(gainea, skin, (NT_Unit) object);
         }
         return new MapObjectRender(gainea, skin, object);
+    }
+
+    public void respectScale() {
+        this.scale = object.scale;
+        this.radius = R * scale;
+        setSize(radius * 2, radius * 2);
     }
 
     public void init(NT_BoardObject object) {
@@ -154,8 +162,8 @@ public class MapObjectRender extends DepthActor {
     @Override
     public void draw(Batch batch, float parentAlpha) {
         setRenderColor(batch, parentAlpha);
-        batch.draw(chip, getX() - radius, getY() - radius);
-        batch.draw(icon, getX() - radius + 9, getY() - radius + 9);
+        batch.draw(chip, getX() - radius, getY() - radius, chip.getRegionWidth() * scale, chip.getRegionHeight() * scale);
+        batch.draw(icon, getX() - radius + 9 * scale, getY() - radius + 9 * scale, icon.getRegionWidth() * scale, icon.getRegionHeight() * scale);
         if (shouldDrawInfo()) {
             infoLabel.setPosition(getX() - infoLabel.getWidth() / 2, getY() + radius + labelDisplacement);
             infoLabel.draw(batch, parentAlpha);

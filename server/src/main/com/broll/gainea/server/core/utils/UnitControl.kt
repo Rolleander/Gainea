@@ -203,6 +203,10 @@ object UnitControl {
             it.owner = newOwner
             if (it.dead) {
                 it.heal()
+                it.location.inhabitants += it
+                if (newLocation == null) {
+                    updateReceiver.unitSpawned(it, it.location)
+                }
             }
             if (it is Monster) {
                 it.removeActionTimer()

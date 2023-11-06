@@ -39,7 +39,7 @@ class BuyMercAction : AbstractActionHandler<NT_Action_BuyMerc, BuyMercAction.Con
             }
             val handler =
                 game.reactionHandler.actionHandlers.getHandler(PlaceUnitAction::class.java)
-            handler.placeUnit(player, unit, player.controlledLocations.toList(), "Wähle einen Ort")
+            handler.placeUnit(player, unit, player.controlledLocations.toList(), "WÃ¤hle einen Ort")
             player.goalHandler.removeStars(price)
             val nt = NT_Event_BoughtMerc()
             nt.unit = unit.nt()

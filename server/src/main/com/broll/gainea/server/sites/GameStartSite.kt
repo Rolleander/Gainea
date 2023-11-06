@@ -7,6 +7,7 @@ import com.broll.gainea.server.core.actions.required.PlaceUnitAction
 import com.broll.gainea.server.core.cards.Card
 import com.broll.gainea.server.core.cards.impl.play.C_PickCard
 import com.broll.gainea.server.core.cards.impl.play.C_ReplaceGoal
+import com.broll.gainea.server.core.goals.impl.all.G_WinStreak
 import com.broll.gainea.server.core.map.Location
 import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.core.utils.ProcessingUtils
@@ -86,6 +87,11 @@ class GameStartSite : GameSite() {
                 game.goalStorage.assignNewRandomGoal(player)
                 ProcessingUtils.pause(DELAY)
             }
+        }
+        game.allPlayers.forEach {
+            val g = G_WinStreak()
+            g.init(game, it)
+            it.goalHandler.newGoal(g)
         }
     }
 

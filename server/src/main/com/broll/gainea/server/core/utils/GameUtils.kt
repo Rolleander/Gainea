@@ -6,7 +6,6 @@ import com.broll.gainea.server.core.objects.MapObject
 import com.broll.gainea.server.core.objects.Unit
 import com.broll.gainea.server.core.objects.monster.Monster
 import com.broll.gainea.server.core.player.Player
-import com.broll.gainea.server.core.player.isNeutral
 
 
 fun Game.endTurn() = reactionHandler.actionHandlers.reactionActions.endTurn()
@@ -51,15 +50,9 @@ fun List<MapObject>.getUnits() = filterIsInstance<Unit>()
 
 fun Game.remove(target: MapObject): Boolean {
     target.location.inhabitants.remove(target)
-    val removed = if (target.owner.isNeutral()) {
-        objects.remove(target)
-    } else {
-        target.owner.units.remove(target)
-    }
-    if (removed) {
-        updateReceiver.unregister(target)
-    }
-    return removed
+    updateReceiver.unregister(target)
+    return objects.remove(target) ||
+            allPlayers.any { it.units.remove(target) }
 }
 
 fun MapObject.place(location: Location) {

@@ -19,14 +19,24 @@ open class Collectible(
 
     override fun unitsMoved(objects: List<MapObject>, location: Location) {
         if (location == this.location && objects.getUnits().isNotEmpty()) {
-            val owner = objects.getUnits().owner()
-            if (!owner.isNeutral() || affectNeutral) {
-                if (despawn) {
-                    game.despawn(this)
-                }
-                onPickup(owner)
-            }
+            checkActivation(objects.getUnits().owner())
         }
     }
+
+    override fun unitSpawned(obj: MapObject, location: Location) {
+        if (location == this.location && obj is Unit) {
+            checkActivation(obj.owner)
+        }
+    }
+
+    private fun checkActivation(player: Player) {
+        if (!player.isNeutral() || affectNeutral) {
+            if (despawn) {
+                game.despawn(this)
+            }
+            onPickup(player)
+        }
+    }
+
 
 }

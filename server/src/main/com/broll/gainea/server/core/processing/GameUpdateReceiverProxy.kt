@@ -61,8 +61,8 @@ class GameUpdateReceiverProxy : IGameUpdateReceiver {
     override fun unitsMoved(units: List<MapObject>, location: Location) =
         run { it.unitsMoved(units, location) }
 
-    override fun unitSpawned(mapObject: MapObject, location: Location) =
-        run { it.unitSpawned(mapObject, location) }
+    override fun unitSpawned(obj: MapObject, location: Location) =
+        run { it.unitSpawned(obj, location) }
 
     override fun unitDamaged(unit: Unit, damage: Int) = run { it.unitDamaged(unit, damage) }
 

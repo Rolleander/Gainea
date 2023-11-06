@@ -169,22 +169,6 @@ abstract class Unit(owner: Player) : MapObject(owner), IUnit {
 
     fun rank() = power.value + health.value
 
-    companion object {
-        fun copy(from: Unit, to: Unit) {
-            to.maxHealth = from.maxHealth.copy(to)
-            to.power = from.power.copy(to)
-            to.health = from.health.copy(to)
-            to.owner = from.owner
-            to.attackCount = from.attackCount
-            to.moveCount = from.moveCount
-            to.attacksPerTurn = from.attacksPerTurn.copy(to)
-            to.movesPerTurn = from.movesPerTurn.copy(to)
-            to.numberPlus = from.numberPlus.copy(to)
-            to.isMoveOrAttackRestriction = from.isMoveOrAttackRestriction
-            to.icon = from.icon
-            to.location = from.location
-            to.name = from.name
-            to.scale = from.scale
-        }
-    }
+    override fun equals(other: Any?) = super.equals(other) || (other is IUnit && other.id == id)
+
 }

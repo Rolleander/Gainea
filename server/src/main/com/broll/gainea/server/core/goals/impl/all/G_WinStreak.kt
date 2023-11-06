@@ -8,7 +8,7 @@ import com.broll.gainea.server.core.goals.GoalDifficulty
 open class G_WinStreak(
     difficulty: GoalDifficulty = GoalDifficulty.EASY,
     private val winTarget: Int = 3
-) : Goal(difficulty, "Gewinne $winTarget Kämpfe in Folge, ohne eine Einheit dabei zu verlieren") {
+) : Goal(difficulty, "Gewinne $winTarget KÃ¤mpfe in Folge, ohne eine Einheit dabei zu verlieren") {
     private var wins = 0
 
     init {

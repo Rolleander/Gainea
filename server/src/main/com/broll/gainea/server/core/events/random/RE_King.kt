@@ -19,7 +19,7 @@ class RE_King : RandomEvent() {
                 }
             }
             king.description = "Bezwinger erhält eine Reichtum-Karte"
-            king.setStats(1, 1)
+            king.setStats(1, 2)
             king.icon = 25
             king.name = "Händlerfürst"
             game.spawn(king, area)

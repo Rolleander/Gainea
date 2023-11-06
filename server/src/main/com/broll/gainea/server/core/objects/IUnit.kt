@@ -21,6 +21,7 @@ interface IUnit {
         get() = health.value <= 0
     val alive: Boolean
         get() = !dead
+    
 }
 
 fun IUnit.resolve() = if (this is UnitSnapshot) source else this as Unit

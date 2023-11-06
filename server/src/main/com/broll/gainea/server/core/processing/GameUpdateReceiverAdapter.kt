@@ -15,8 +15,8 @@ abstract class GameUpdateReceiverAdapter : IGameUpdateReceiver {
     override fun battleBegin(context: BattleContext, rollManipulator: RollManipulator) {}
     override fun battleResult(result: BattleResult) {}
     override fun playedCard(card: Card) {}
-    override fun unitsMoved(units: List<MapObject>, location: Location) {}
-    override fun unitSpawned(`object`: MapObject, location: Location) {}
+    override fun unitsMoved(objects: List<MapObject>, location: Location) {}
+    override fun unitSpawned(obj: MapObject, location: Location) {}
     override fun unitDamaged(unit: Unit, damage: Int) {}
     override fun earnedStars(player: Player, stars: Int) {}
     override fun turnStarted(player: Player) {}

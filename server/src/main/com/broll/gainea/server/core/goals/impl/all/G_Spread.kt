@@ -5,13 +5,20 @@ import com.broll.gainea.server.core.goals.CustomOccupyGoal
 import com.broll.gainea.server.core.goals.GoalDifficulty
 import com.broll.gainea.server.core.map.Ship
 
-class G_Spread : CustomOccupyGoal(GoalDifficulty.MEDIUM, "Kontrolliere Einheiten auf " + COUNT + " verschiedenen Landmassen") {
+class G_Spread : CustomOccupyGoal(
+    GoalDifficulty.MEDIUM,
+    "Kontrolliere Einheiten auf $COUNT verschiedenen Landmassen"
+) {
     init {
         progressionGoal = COUNT
     }
 
+    override fun validForGame() = game.map.allContainers.size >= COUNT
+
     override fun check() {
-        val containers = player.controlledLocations.filter { it !is Ship }.map { it.container }.distinct().count()
+        val containers =
+            player.controlledLocations.filter { it !is Ship }.map { it.container }.distinct()
+                .count()
         updateProgression(containers)
         if (containers >= COUNT) {
             success()

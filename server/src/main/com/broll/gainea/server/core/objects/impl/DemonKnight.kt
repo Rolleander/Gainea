@@ -12,7 +12,7 @@ class DemonKnight(owner: Player) : Monster(owner) {
         controllable = false
         behavior = AGGRESSIVE
         activity = OFTEN
-        name = "Dämonenkrieger"
+        name = "DÃ¤monenkrieger"
         description = "Unkontrollierbar"
         setStats(4, 4)
     }

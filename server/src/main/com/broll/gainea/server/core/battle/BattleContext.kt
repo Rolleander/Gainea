@@ -13,7 +13,7 @@ abstract class AbstractBattleContext<U : IUnit>(
     val rounds: MutableList<BattleRound> = mutableListOf()
 ) {
 
-    
+
     var location: Location
         protected set
     var sourceLocation: Location
@@ -51,7 +51,7 @@ abstract class AbstractBattleContext<U : IUnit>(
 
     fun hasSurvivingDefenders() = aliveDefenders.isNotEmpty()
 
-    fun getFightingArmy(unit: U): List<U> {
+    fun getFightingArmy(unit: IUnit): List<U> {
         if (isAttacking(unit)) {
             return aliveAttackers
         } else if (isDefending(unit)) {
@@ -78,7 +78,7 @@ abstract class AbstractBattleContext<U : IUnit>(
         return listOf()
     }
 
-    fun getOpposingFightingArmy(unit: U): List<U> {
+    fun getOpposingFightingArmy(unit: IUnit): List<U> {
         if (isAttacking(unit)) {
             return aliveDefenders
         } else if (isDefending(unit)) {
@@ -88,15 +88,16 @@ abstract class AbstractBattleContext<U : IUnit>(
     }
 
     fun isParticipating(player: Player) = isAttacker(player) || isDefender(player)
-
+    
+    fun isParticipating(unit: IUnit) = attackers.contains(unit) || defenders.contains(unit)
 
     fun isAttacker(player: Player) = attackingPlayers.contains(player)
 
 
-    fun isAttacking(unit: U) = attackers.any { it.id == unit.id }
+    fun isAttacking(unit: IUnit) = attackers.contains(unit)
 
 
-    fun isDefending(unit: U) = defenders.any { it.id == unit.id }
+    fun isDefending(unit: IUnit) = defenders.contains(unit)
 
 
     fun isDefender(player: Player) = defendingPlayers.contains(player)

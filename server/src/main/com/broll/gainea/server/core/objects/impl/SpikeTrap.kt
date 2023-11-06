@@ -11,24 +11,24 @@ class SpikeTrap(game: Game, var damage: Int = 3) :
 
     init {
         name = "Stachelfalle"
-        updateDesciption()
+        updateDescription()
         icon = 137
         onPickup = {
             dealDamage()
         }
     }
 
-    private fun updateDesciption() {
-        description = "Teilt $damage Schaden aus, danach zerfällt sie"
+    private fun updateDescription() {
+        description = "Teilt $damage Schaden aus, danach zerfÃ¤llt sie"
     }
 
     private fun dealDamage() {
         game.damage(location.units.random())
         damage--
-        updateDesciption()
+        updateDescription()
         if (damage > 0) {
             if (location.units.isEmpty()) {
-                updateDesciption()
+                updateDescription()
                 game.update(this)
             } else {
                 dealDamage()

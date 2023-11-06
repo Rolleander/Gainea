@@ -76,6 +76,9 @@ abstract class MapObject(var owner: Player) : GameUpdateReceiverAdapter() {
         }
     }
 
+    override fun equals(other: Any?) = other is MapObject && other.id == id
+     
+
     override fun toString(): String {
         return "MapObject{" +
                 "id=" + id +

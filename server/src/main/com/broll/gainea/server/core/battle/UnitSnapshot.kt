@@ -16,5 +16,9 @@ class UnitSnapshot(val source: Unit) : IUnit {
     override var numberPlus: BuffableInt<MapObject> = source.numberPlus.frozenCopy(source)
     override var location = source.location
     override var kills = source.kills
+
+    override fun equals(other: Any?): Boolean {
+        return other is IUnit && other.id == id
+    }
 }
 

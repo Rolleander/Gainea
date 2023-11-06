@@ -2,6 +2,7 @@ package com.broll.gainea.server
 
 import com.broll.gainea.NetworkSetup
 import com.broll.gainea.server.core.Game
+import com.broll.gainea.server.core.events.RandomEventContainer
 import com.broll.gainea.server.core.objects.MapObject
 import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.core.utils.endTurn
@@ -21,7 +22,8 @@ class GaineaServer(version: String) {
     init {
         com.esotericsoftware.minlog.Log.INFO()
         Log.info("Start Gainea Server $version")
-        server = LobbyGameServer("GaineaServer", CustomLobbySite()) { NetworkSetup.registerNetwork(it) }
+        server =
+            LobbyGameServer("GaineaServer", CustomLobbySite()) { NetworkSetup.registerNetwork(it) }
         server.setVersion(version)
         ServerSetup.setup(server)
         server.open()
@@ -29,11 +31,14 @@ class GaineaServer(version: String) {
     }
 
     fun appendCLI() {
-        LobbyServerCLI.open(server, nextTurn(), gameInfo(), giveCard())
+        LobbyServerCLI.open(server, nextTurn(), triggerEvent(), gameInfo(), giveCard())
     }
 
     private fun giveCard(): CliCommand {
-        return LobbyServerCLI.cmd("givecard", "gives current player a specific card") { options: List<String> ->
+        return LobbyServerCLI.cmd(
+            "givecard",
+            "gives current player a specific card"
+        ) { options: List<String> ->
             if (options.size < 2) {
                 System.err.println("givecard needs to be followed by a lobby id and card picture id")
                 return@cmd
@@ -44,6 +49,19 @@ class GaineaServer(version: String) {
                 game.cardStorage.allCards.find { card -> card.picture == picId }?.let { card ->
                     game.currentPlayer.cardHandler.receiveCard(card)
                 }
+            }
+        }
+    }
+
+    private fun triggerEvent(): CliCommand {
+        return LobbyServerCLI.cmd("event", "triggers random event") { options: List<String> ->
+            if (options.size < 1) {
+                System.err.println("event must be followed by a lobby id")
+                return@cmd
+            }
+            val id = options[0].toInt()
+            getGame(id)?.let { game ->
+                RandomEventContainer().run(game)
             }
         }
     }
@@ -72,17 +90,29 @@ class GaineaServer(version: String) {
             val id = options[0].toInt()
             getGame(id)?.let { game ->
                 val settings = game.gameSettings
-                print("> Game Settings: Map:" + settings.expansionSetting.getName() + " Goals:" + settings.goalTypes.goalName + " PointLimit:" + settings.pointLimit + " MonsterCount:" + settings.monsterCount
-                        + " StartGoals:" + settings.startGoals + " StartLocations:" + settings.startLocations)
+                print(
+                    "> Game Settings: Map:" + settings.expansionSetting.getName() + " Goals:" + settings.goalTypes.goalName + " PointLimit:" + settings.pointLimit + " MonsterCount:" + settings.monsterCount
+                            + " StartGoals:" + settings.startGoals + " StartLocations:" + settings.startLocations
+                )
                 print("> Round:" + game.rounds + " Turn:" + (game.currentTurn + 1) + "/" + game.allPlayers.size + " Player:" + if (game.currentTurn >= 0) game.currentPlayer.serverPlayer.name else "None")
                 print("> State: ProcessingCore.Busy=" + game.processingCore.isBusy + " BattleHandler.Active=" + game.battleHandler.isBattleActive)
                 print("> Game Objects [" + game.objects.size + "]:")
                 game.objects.forEach(Consumer { `object`: MapObject? -> print(">> " + `object`.toString()) })
                 game.allPlayers.forEach(Consumer { player: Player ->
-                    print("> Player [" + player.toString() + " Points:" + player.goalHandler.score
-                            + " Stars:" + player.goalHandler.stars + " Online=" + player.serverPlayer.isOnline + "]:")
-                    print(">> Goals (" + player.goalHandler.goals.size + "):" + player.goalHandler.goals.joinToString(","))
-                    print(">> Cards (" + player.cardHandler.cards.size + "): " + player.cardHandler.cards.joinToString(","))
+                    print(
+                        "> Player [" + player.toString() + " Points:" + player.goalHandler.score
+                                + " Stars:" + player.goalHandler.stars + " Online=" + player.serverPlayer.isOnline + "]:"
+                    )
+                    print(
+                        ">> Goals (" + player.goalHandler.goals.size + "):" + player.goalHandler.goals.joinToString(
+                            ","
+                        )
+                    )
+                    print(
+                        ">> Cards (" + player.cardHandler.cards.size + "): " + player.cardHandler.cards.joinToString(
+                            ","
+                        )
+                    )
                     print(">> Controlled Locations: [" + player.controlledLocations.joinToString(",") + "]")
                     print(">> Objects [" + player.units.size + "]:")
                     player.units.forEach { print(">>> $it") }

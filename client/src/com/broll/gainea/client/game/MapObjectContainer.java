@@ -10,7 +10,6 @@ import com.broll.gainea.net.NT_Action_Attack;
 import com.broll.gainea.net.NT_Action_Move;
 import com.broll.gainea.net.NT_BoardObject;
 import com.broll.gainea.net.NT_Event;
-import com.broll.gainea.net.NT_Unit;
 import com.broll.gainea.server.core.map.Location;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -111,6 +110,7 @@ public class MapObjectContainer {
         MapObjectRender render = MapObjectRender.createRender(game.getContainer(), game.getContainer().ui.skin, nt);
         render.selectionListener();
         render.setLocation(location);
+        render.respectScale();
         render.addAction(Actions.sequence(Actions.alpha(0), Actions.fadeIn(0.25f)));
         this.objectRenders.put(nt.id, render);
         game.getContainer().gameStage.addActor(render);
@@ -163,13 +163,7 @@ public class MapObjectContainer {
         MultiValueMap<Integer, MapObjectRender> stacks = new MultiValueMap<>();
         objects.forEach(render -> {
             NT_BoardObject object = render.getObject();
-            if (object instanceof NT_Unit) {
-                NT_Unit unit = ((NT_Unit) object);
-                int owner = unit.owner;
-                stacks.put(owner, render);
-            } else {
-                stacks.put((int) NT_BoardObject.NO_OWNER, render);
-            }
+            stacks.put((int) object.owner, render);
         });
         arrange(location, objects, stacks);
     }

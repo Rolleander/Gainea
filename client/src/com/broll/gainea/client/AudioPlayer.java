@@ -5,9 +5,9 @@ import com.badlogic.gdx.audio.Sound;
 
 public final class AudioPlayer {
 
+    private static final float musicLower = 0.6f;
     private static float soundVolume = 0.5f;
     private static float musicVolume = 0.5f;
-    private static float musicLower = 0.7f;
     private static Assets assets;
     private static Music current;
 

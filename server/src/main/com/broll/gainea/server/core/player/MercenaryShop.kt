@@ -15,8 +15,8 @@ class MercenaryShop(val game: Game, val owner: Player) {
 
     val units: List<ShopUnit>
         get() = listOf(
-            ShopUnit(4, Mercenary(owner, 1 to 1, 10, "Leichter Söldner")),
-            ShopUnit(7, Mercenary(owner, 2 to 2, 28, "Schwerer Söldner")),
+            ShopUnit(4, Mercenary(owner, 1 to 1, 10, "Leichter SÃ¶ldner")),
+            ShopUnit(7, Mercenary(owner, 2 to 2, 28, "Schwerer SÃ¶ldner")),
             ShopUnit(8, DemonKnight(owner)),
             ShopUnit(10, owner.fraction.createCommander(), !owner.isCommanderAlive()),
             ShopUnit(13, SoulStealer(owner)),
@@ -51,10 +51,11 @@ private open class Mercenary(
 private class SoulStealer(owner: Player) : Mercenary(owner, 4 to 3, 18, "Seelensammler") {
 
     init {
-        description = "Erhält nach Kämpfen +1 Leben für jeden getöteten Feind"
+        description = "ErhÃ¤lt nach KÃ¤mpfen +1 Leben fÃ¼r jeden getÃ¶teten Feind"
     }
 
     override fun battleResult(result: BattleResult) {
+        if (!result.isParticipating(this)) return
         val addHealth = result.rounds.flatMap { it.damageTaken }.count {
             it.source.owner == owner && it.lethalHit
         }

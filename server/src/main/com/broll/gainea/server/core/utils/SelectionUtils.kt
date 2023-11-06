@@ -33,7 +33,7 @@ fun Game.selectUnit(selectingPlayer: Player, text: String, units: List<Unit>): U
 fun Game.selectPlayerUnit(player: Player, text: String, predicate: (Unit) -> Boolean = { true }) =
     selectUnitFromLocations(
         player.getPlayerUnitLocations(predicate),
-        { it.owner === player && predicate(it) },
+        { it.owner == player && predicate(it) },
         text
     )
 
@@ -57,8 +57,9 @@ fun Game.selectOtherPlayersUnit(
     text: String,
     predicate: (Unit) -> Boolean = { true }
 ) =
-    selectUnitFromLocations(getOtherPlayers(player)
-        .flatMap { p -> p.getPlayerUnitLocations(predicate) },
+    selectUnitFromLocations(
+        getOtherPlayers(player)
+            .flatMap { p -> p.getPlayerUnitLocations(predicate) },
         { it.owner !== player && !it.owner.isNeutral() && predicate(it) }, text
     )
 

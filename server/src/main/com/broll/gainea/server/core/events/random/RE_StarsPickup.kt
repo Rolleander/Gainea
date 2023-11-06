@@ -14,7 +14,7 @@ class RE_StarsPickup : RandomEvent() {
                 it.goalHandler.addStars(9)
             }
             obj.name = "Schatztruhe"
-            obj.description = "Eroberer erh‰lt 9 Sterne"
+            obj.description = "Eroberer erh√§lt 9 Sterne"
             obj.icon = 131
             game.spawn(obj, area)
         }
