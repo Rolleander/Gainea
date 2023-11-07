@@ -1,7 +1,6 @@
 package com.broll.gainea.server.core.fractions.impl
 
 import com.broll.gainea.misc.RandomUtils
-import com.broll.gainea.server.core.actions.ActionHandlers
 import com.broll.gainea.server.core.battle.BattleContext
 import com.broll.gainea.server.core.fractions.Fraction
 import com.broll.gainea.server.core.fractions.FractionDescription
@@ -53,7 +52,8 @@ class MonkFraction : Fraction(FractionType.MONKS) {
         super.killedNeutralMonster(monster)
     }
 
-    override fun turnStarted(actionHandlers: ActionHandlers) {
+    override fun prepareTurn() {
+        super.prepareTurn()
         val randomUnit = RandomUtils.pickRandom(owner.units)
         if (randomUnit != null) {
             //inc life
@@ -61,9 +61,8 @@ class MonkFraction : Fraction(FractionType.MONKS) {
             //heal
             game.heal(randomUnit, 1)
         }
-        super.turnStarted(actionHandlers)
     }
-
+    
     override fun createSoldier(): Soldier {
         val soldier: Soldier = MonkSoldier(owner)
         soldier.setStats(SOLDIER_POWER, SOLDIER_HEALTH)

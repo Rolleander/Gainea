@@ -6,7 +6,11 @@ import com.broll.gainea.server.core.map.Location
 import com.broll.gainea.server.core.objects.monster.Monster
 import com.broll.gainea.server.core.utils.emptyOrWildMonster
 
-class C_PlaceWatersnake : Card(49, "Verseuchte Gewässer", "Platziert eine wilde Seeschlange auf ein beliebiges unbesetztes Meer") {
+class C_PlaceWatersnake : Card(
+    49,
+    "Verseuchte Gewässer",
+    "Platziert eine wilde Seeschlange auf ein beliebiges unbesetztes Meer"
+) {
     init {
         drawChance = 0.8f
     }
@@ -22,6 +26,6 @@ class C_PlaceWatersnake : Card(49, "Verseuchte Gewässer", "Platziert eine wilde
         monster.icon = 120
         monster.setPower(4)
         monster.setHealth(4)
-        placeUnitHandler.placeUnit(owner, monster, locations, "Platziert die Seeschlange")
+        placeUnitHandler.placeUnit(owner, monster, locations)
     }
 }

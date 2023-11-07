@@ -24,12 +24,7 @@ class C_BattleSummon :
         val buff = IntBuff(BuffType.ADD, 3)
         demon.addHealthBuff(buff)
         demon.prepareForTurnStart()
-        placeUnitHandler.placeUnit(
-            owner,
-            demon,
-            locations.toList(),
-            "Wählt einen Ort für die Beschwörung"
-        )
+        placeUnitHandler.placeUnit(owner, demon, locations.toList())
         game.buffProcessor.timeoutBuff(buff, 1)
     }
 }

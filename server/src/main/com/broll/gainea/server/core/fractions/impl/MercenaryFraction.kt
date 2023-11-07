@@ -1,7 +1,6 @@
 package com.broll.gainea.server.core.fractions.impl
 
 import com.broll.gainea.misc.RandomUtils
-import com.broll.gainea.server.core.actions.ActionHandlers
 import com.broll.gainea.server.core.battle.BattleContext
 import com.broll.gainea.server.core.battle.FightingPower
 import com.broll.gainea.server.core.fractions.Fraction
@@ -14,9 +13,14 @@ class MercenaryFraction : Fraction(FractionType.MERCENARY) {
     private var turns = 0
     override fun description(): FractionDescription {
         val desc = FractionDescription(
-                "",
-                soldier = UnitDescription(name = "Söldner", icon = 2),
-                commander = UnitDescription(name = "Söldnerkommandant", icon = 5, power = 3, health = 3),
+            "",
+            soldier = UnitDescription(name = "Söldner", icon = 2),
+            commander = UnitDescription(
+                name = "Söldnerkommandant",
+                icon = 5,
+                power = 3,
+                health = 3
+            ),
         )
         desc.plus("Jeden zweiten Zug erhaltet Ihr einen weiteren Soldat")
         desc.plus("Minimale Zahl beim Würfeln ist 2")
@@ -28,14 +32,14 @@ class MercenaryFraction : Fraction(FractionType.MERCENARY) {
         return super.calcFightingPower(soldier, context).withHighestNumber(5).withLowestNumber(2)
     }
 
-    override fun prepareTurn(actionHandlers: ActionHandlers) {
-        super.prepareTurn(actionHandlers)
+    override fun prepareTurn() {
         turns++
         if (turns >= SPAWN_TURN) {
             //spawn another soldier
-            super.prepareTurn(actionHandlers)
+            placeSoldier()
             turns = 0
         }
+        super.prepareTurn()
     }
 
     override fun createSoldier(): Soldier {
@@ -56,7 +60,30 @@ class MercenaryFraction : Fraction(FractionType.MERCENARY) {
     }
 
     companion object {
-        private val ICONS = intArrayOf(2, 4, 8, 9, 13, 14, 17, 20, 26, 27, 29, 30, 31, 32, 34, 36, 37, 38, 39, 40, 41, 43)
+        private val ICONS = intArrayOf(
+            2,
+            4,
+            8,
+            9,
+            13,
+            14,
+            17,
+            20,
+            26,
+            27,
+            29,
+            30,
+            31,
+            32,
+            34,
+            36,
+            37,
+            38,
+            39,
+            40,
+            41,
+            43
+        )
         private const val SPAWN_TURN = 2
     }
 }

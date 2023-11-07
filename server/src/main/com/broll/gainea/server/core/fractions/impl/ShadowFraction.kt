@@ -82,6 +82,6 @@ class ShadowFraction : Fraction(FractionType.SHADOW) {
     }
 
     companion object {
-        private const val SUMMON_CHANCE = 0.4f
+        private const val SUMMON_CHANCE = 0.7f
     }
 }

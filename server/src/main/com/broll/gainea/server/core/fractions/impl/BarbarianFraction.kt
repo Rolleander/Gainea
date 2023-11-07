@@ -1,6 +1,5 @@
 package com.broll.gainea.server.core.fractions.impl
 
-import com.broll.gainea.server.core.actions.ActionHandlers
 import com.broll.gainea.server.core.battle.BattleContext
 import com.broll.gainea.server.core.battle.BattleResult
 import com.broll.gainea.server.core.battle.FightingPower
@@ -20,9 +19,14 @@ class BarbarianFraction : Fraction(FractionType.BARBARIANS) {
     private var brother: BarbarianBrother? = null
     override fun description(): FractionDescription {
         val desc = FractionDescription(
-                "",
-                soldier = UnitDescription(name = "Barbarenrkieger", icon = 45),
-                commander = UnitDescription(name = "Barbarenanführer", icon = 45, power = 3, health = 3),
+            "",
+            soldier = UnitDescription(name = "Barbarenrkieger", icon = 45),
+            commander = UnitDescription(
+                name = "Barbarenanführer",
+                icon = 45,
+                power = 3,
+                health = 3
+            ),
         )
         desc.plus("Nach " + SUMMON_TURN + " Runden ruft der Kommandant seine zweite Hand (2/3) herbei")
         desc.plus("+1 Zahl, wenn Kommandant und zweite Hand zusammen kämpfen")
@@ -37,7 +41,7 @@ class BarbarianFraction : Fraction(FractionType.BARBARIANS) {
             power.changeNumberPlus(-1)
         }
         if (army.any { it.isCommander() }
-                && army.any { it is BarbarianBrother }) {
+            && army.any { it is BarbarianBrother }) {
             power.changeNumberPlus(1)
         }
         return power
@@ -65,8 +69,8 @@ class BarbarianFraction : Fraction(FractionType.BARBARIANS) {
         return commander
     }
 
-    override fun prepareTurn(actionHandlers: ActionHandlers) {
-        super.prepareTurn(actionHandlers)
+    override fun prepareTurn() {
+        super.prepareTurn()
         if (turns == SUMMON_TURN) {
             if (brother == null || brother!!.dead) {
                 summon()

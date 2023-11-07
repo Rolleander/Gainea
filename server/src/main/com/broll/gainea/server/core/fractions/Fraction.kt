@@ -1,7 +1,6 @@
 package com.broll.gainea.server.core.fractions
 
 import com.broll.gainea.server.core.Game
-import com.broll.gainea.server.core.actions.ActionHandlers
 import com.broll.gainea.server.core.actions.required.PlaceUnitAction
 import com.broll.gainea.server.core.battle.BattleContext
 import com.broll.gainea.server.core.battle.FightingPower
@@ -13,7 +12,8 @@ import com.broll.gainea.server.core.objects.monster.Monster
 import com.broll.gainea.server.core.objects.resolve
 import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.core.processing.GameUpdateReceiverAdapter
-import com.broll.gainea.server.core.utils.getRandomFree
+import com.broll.gainea.server.core.utils.getActionHandler
+import com.broll.gainea.server.core.utils.getSpawnLocations
 
 abstract class Fraction(val type: FractionType) : GameUpdateReceiverAdapter() {
     val description: FractionDescription
@@ -30,21 +30,20 @@ abstract class Fraction(val type: FractionType) : GameUpdateReceiverAdapter() {
         this.owner = owner
     }
 
-    open fun prepareTurn(actionHandlers: ActionHandlers) {
-        //default place one new soldier on an occupied location
-        val spawnLocations = owner.controlledLocations.toMutableSet()
-        if (spawnLocations.isEmpty()) {
-            //player has no more controlled locations. give him a random free one
-            val location = game.map.allAreas.getRandomFree()
-                ?: //no more free locations, just skip
-                return
-            spawnLocations.add(location)
-        }
-        val placeUnitAction = actionHandlers.getHandler(PlaceUnitAction::class.java)
-        placeUnitAction.placeSoldier(owner, spawnLocations.toList())
+    open fun prepareTurn() {
+        placeSoldier()
+        prepareUnits()
     }
 
-    open fun turnStarted(actionHandlers: ActionHandlers) {}
+    fun placeSoldier() {
+        val locations = game.getSpawnLocations(owner)
+        if (locations.isNotEmpty()) {
+            game.getActionHandler(PlaceUnitAction::class.java)
+                .placeUnit(owner, createSoldier(), locations)
+        }
+    }
+
+    protected fun prepareUnits() = owner.units.forEach { it.prepareForTurnStart() }
 
     open fun killedNeutralMonster(monster: Monster) {
         owner.cardHandler.drawRandomCard()

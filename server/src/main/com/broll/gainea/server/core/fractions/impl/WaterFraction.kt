@@ -1,6 +1,5 @@
 package com.broll.gainea.server.core.fractions.impl
 
-import com.broll.gainea.server.core.actions.ActionHandlers
 import com.broll.gainea.server.core.battle.BattleContext
 import com.broll.gainea.server.core.battle.BattleResult
 import com.broll.gainea.server.core.battle.FightingPower
@@ -23,13 +22,20 @@ class WaterFraction : Fraction(FractionType.WATER) {
     private val spawns = mutableListOf<Unit>()
     override fun description(): FractionDescription {
         val desc = FractionDescription(
-                "",
-                soldier = UnitDescription(name = "Wassermagier", icon = 46),
-                commander = UnitDescription(name = "Frostbeschwörer Arn", icon = 116, power = 3, health = 3),
+            "",
+            soldier = UnitDescription(name = "Wassermagier", icon = 46),
+            commander = UnitDescription(
+                name = "Frostbeschwörer Arn",
+                icon = 116,
+                power = 3,
+                health = 3
+            ),
         )
-        desc.plus("""Fällt Arn wird er in eurem nächsten Zug als Eiskoloss (2/4) wiederbelebt
+        desc.plus(
+            """Fällt Arn wird er in eurem nächsten Zug als Eiskoloss (2/4) wiederbelebt
 Der Eiskoloss kann für $FROZEN_ROUNDS Runden nicht angreifen oder sich bewegen
-Fällt der Eiskoloss kehrt Arn in eruem nächsten Zug zurück""")
+Fällt der Eiskoloss kehrt Arn in eruem nächsten Zug zurück"""
+        )
         desc.plus("Einheiten auf Seen können eine weitere Aktion durchführen")
         desc.contra("Auf Wüsten und Bergen -1 Zahl")
         return desc
@@ -41,7 +47,8 @@ Fällt der Eiskoloss kehrt Arn in eruem nächsten Zug zurück""")
         }
     }
 
-    override fun turnStarted(actionHandlers: ActionHandlers) {
+    override fun prepareTurn() {
+        super.prepareTurn()
         spawns.forEach { unit: Unit -> game.spawn(unit, unit.location) }
         spawns.clear()
     }
@@ -70,7 +77,8 @@ Fällt der Eiskoloss kehrt Arn in eruem nächsten Zug zurück""")
         return commander
     }
 
-    private open inner class WaterSoldier(owner: Player) : Soldier(owner, fraction = this@WaterFraction) {
+    private open inner class WaterSoldier(owner: Player) :
+        Soldier(owner, fraction = this@WaterFraction) {
         override fun moved(fromPlayerAction: Boolean) {
             super.moved(fromPlayerAction)
             if (location.isAreaType(AreaType.LAKE)) {

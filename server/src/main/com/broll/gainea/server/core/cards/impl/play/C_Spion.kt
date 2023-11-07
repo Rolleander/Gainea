@@ -3,12 +3,16 @@ package com.broll.gainea.server.core.cards.impl.play
 import com.broll.gainea.server.core.cards.Card
 import com.broll.gainea.server.core.utils.getEnemyLocations
 
-class C_Spion : Card(8, "Spion", "Platziert einen Soldat auf ein besetztes Land eines anderen Spielers ohne einen Kampf.") {
+class C_Spion : Card(
+    8,
+    "Spion",
+    "Platziert einen Soldat auf ein besetztes Land eines anderen Spielers ohne einen Kampf."
+) {
     override val isPlayable: Boolean
         get() = true
 
     override fun play() {
         val locations = game.getEnemyLocations(owner)
-        placeUnitHandler.placeSoldier(owner, locations.toList())
+        placeUnitHandler.placeUnit(owner, owner.fraction.createSoldier(), locations.toList())
     }
 }

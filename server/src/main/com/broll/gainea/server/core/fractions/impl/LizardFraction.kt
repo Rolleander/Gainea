@@ -1,6 +1,5 @@
 package com.broll.gainea.server.core.fractions.impl
 
-import com.broll.gainea.server.core.actions.ActionHandlers
 import com.broll.gainea.server.core.battle.FightingPower
 import com.broll.gainea.server.core.fractions.Fraction
 import com.broll.gainea.server.core.fractions.FractionDescription
@@ -15,9 +14,14 @@ class LizardFraction : Fraction(FractionType.LIZARDS) {
     private var turns = 0
     override fun description(): FractionDescription {
         val desc = FractionDescription(
-                "",
-                soldier = UnitDescription(name = "Echsenkrieger", icon = 122, power = 2, health = 2),
-                commander = UnitDescription(name = "Grash der Vernichter", icon = 123, power = 3, health = 5),
+            "",
+            soldier = UnitDescription(name = "Echsenkrieger", icon = 122, power = 2, health = 2),
+            commander = UnitDescription(
+                name = "Grash der Vernichter",
+                icon = 123,
+                power = 3,
+                health = 5
+            ),
         )
         desc.plus("Einheiten können Laufen und Angreifen im gleichen Zug")
         desc.contra("Erhält nur jeden zweiten Zug einen Soldat")
@@ -25,13 +29,14 @@ class LizardFraction : Fraction(FractionType.LIZARDS) {
         return desc
     }
 
-    override fun prepareTurn(actionHandlers: ActionHandlers) {
+    override fun prepareTurn() {
         turns++
         if (turns >= SPAWN_TURN || owner.controlledLocations.isEmpty()) {
             //spawn  soldier
-            super.prepareTurn(actionHandlers)
+            placeSoldier()
             turns = 0
         }
+        prepareUnits()
     }
 
     override fun powerMutatorArea(power: FightingPower, area: Area) {

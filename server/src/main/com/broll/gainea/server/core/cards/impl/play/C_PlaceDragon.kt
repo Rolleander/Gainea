@@ -8,7 +8,11 @@ import com.broll.gainea.server.core.objects.monster.MonsterActivity
 import com.broll.gainea.server.core.objects.monster.MonsterBehavior
 import com.broll.gainea.server.core.utils.emptyOrWildMonster
 
-class C_PlaceDragon : Card(32, "Drachenhort", "Platziert einen wilden Feuerdrachen auf einen beliebigen unbesetzten Berg") {
+class C_PlaceDragon : Card(
+    32,
+    "Drachenhort",
+    "Platziert einen wilden Feuerdrachen auf einen beliebigen unbesetzten Berg"
+) {
     init {
         drawChance = 0.7f
     }
@@ -26,6 +30,6 @@ class C_PlaceDragon : Card(32, "Drachenhort", "Platziert einen wilden Feuerdrach
         monster.setHealth(5)
         monster.activity = MonsterActivity.RARELY
         monster.behavior = MonsterBehavior.AGGRESSIVE
-        placeUnitHandler.placeUnit(owner, monster, locations, "Platziert den Feuerdrachen")
+        placeUnitHandler.placeUnit(owner, monster, locations)
     }
 }

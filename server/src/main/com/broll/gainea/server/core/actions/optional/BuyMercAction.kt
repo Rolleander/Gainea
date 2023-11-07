@@ -7,6 +7,7 @@ import com.broll.gainea.server.core.actions.AbstractActionHandler
 import com.broll.gainea.server.core.actions.ActionContext
 import com.broll.gainea.server.core.actions.required.PlaceUnitAction
 import com.broll.gainea.server.core.player.Player
+import com.broll.gainea.server.core.utils.getActionHandler
 import com.broll.gainea.server.core.utils.sendUpdate
 import org.slf4j.LoggerFactory
 
@@ -37,9 +38,8 @@ class BuyMercAction : AbstractActionHandler<NT_Action_BuyMerc, BuyMercAction.Con
                 Log.error("Not allowed to buy")
                 return
             }
-            val handler =
-                game.reactionHandler.actionHandlers.getHandler(PlaceUnitAction::class.java)
-            handler.placeUnit(player, unit, player.controlledLocations.toList(), "Wähle einen Ort")
+            val handler = game.getActionHandler(PlaceUnitAction::class.java)
+            handler.placeUnit(player, unit, player.controlledLocations.toList())
             player.goalHandler.removeStars(price)
             val nt = NT_Event_BoughtMerc()
             nt.unit = unit.nt()

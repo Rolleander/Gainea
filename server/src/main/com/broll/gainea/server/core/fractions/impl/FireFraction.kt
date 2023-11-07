@@ -1,6 +1,5 @@
 package com.broll.gainea.server.core.fractions.impl
 
-import com.broll.gainea.server.core.actions.ActionHandlers
 import com.broll.gainea.server.core.battle.FightingPower
 import com.broll.gainea.server.core.cards.Card
 import com.broll.gainea.server.core.fractions.Fraction
@@ -40,13 +39,13 @@ class FireFraction : Fraction(FractionType.FIRE) {
         }
     }
 
-    override fun prepareTurn(actionHandlers: ActionHandlers) {
+    override fun prepareTurn() {
         turns++
         if (turns == 3) {
             owner.cardHandler.receiveCard(FireRain())
             turns = 0
         }
-        super.prepareTurn(actionHandlers)
+        super.prepareTurn()
     }
 
     override fun createSoldier(): Soldier {

@@ -115,10 +115,9 @@ class GameStartSite : GameSite() {
         } else {
             player.fraction.createSoldier()
         }
-        val text = "Setze " + unitToPlace.name + " auf einen Startpunkt"
         val actionHandlers = game.reactionHandler.actionHandlers
         val placeUnitAction = actionHandlers.getHandler(PlaceUnitAction::class.java)
-        val result = placeUnitAction.placeUnit(player, unitToPlace, locations, text)
+        val result = placeUnitAction.placeUnit(player, unitToPlace, locations)
         placedUnit(result.right)
     }
 

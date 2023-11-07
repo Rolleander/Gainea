@@ -10,6 +10,12 @@ import com.broll.gainea.server.core.objects.resolve
 import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.core.player.isNeutral
 
+
+fun Game.getSpawnLocations(player: Player) =
+    if (player.controlledLocations.isEmpty())
+        listOfNotNull(map.allAreas.getRandomFree())
+    else player.controlledLocations.toList()
+
 fun Game.getWeakestPlayer() =
     activePlayers.minBy { it.goalHandler.score * 15 + it.units.sumOf { unit -> unit.rank() } }
 

@@ -20,6 +20,7 @@ open class Player(game: Game, val fraction: Fraction, val serverPlayer: LobbyPla
     private var surrendered = false
 
     init {
+        fraction.init(game, this)
         goalHandler = GoalHandler(game, this)
         cardHandler = CardHandler(game, this)
         mercenaryShop = MercenaryShop(game, this)

@@ -20,7 +20,6 @@ class GuardsFraction : Fraction(FractionType.GUARDS) {
             commander = UnitDescription(name = "Elitegardist", icon = 15, power = 3, health = 3),
         )
         desc.plus("Als Verteidiger ist die niedrigste Würfelzahl 3")
-        //todo geht nicht mehr?
         desc.plus("Zahl +1 für Verteidiger, die ihr Feld mindestens eine Runde\nnicht verlassen haben")
         desc.contra("Als Angreifer Zahl -1")
         return desc
@@ -55,29 +54,21 @@ class GuardsFraction : Fraction(FractionType.GUARDS) {
 
     private inner class GuardSoldier(owner: Player) :
         Soldier(owner, fraction = this@GuardsFraction) {
-        private var buff: IntBuff? = null
+        private val buff = IntBuff(BuffType.ADD, 1)
         private var lastLocation: Location? = null
         override fun prepareForTurnStart() {
-            if (location === lastLocation) {
-                buff = IntBuff(BuffType.ADD, 1)
-                numberPlus.addBuff(buff!!)
+            if (location == lastLocation) {
+                numberPlus.addBuff(buff)
             } else {
+                numberPlus.clearBuff(buff)
                 lastLocation = location
-                clearBuff()
             }
             super.prepareForTurnStart()
         }
 
-        private fun clearBuff() {
-            if (buff != null) {
-                buff!!.remove()
-                buff = null
-            }
-        }
-
         override fun calcFightingPower(context: BattleContext): FightingPower {
             if (context.isAttacking(this)) {
-                clearBuff()
+                numberPlus.clearBuff(buff)
             }
             return super.calcFightingPower(context)
         }

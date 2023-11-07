@@ -73,17 +73,11 @@ class ReactionResultHandler(
         wait.playersTurn = player.serverPlayer.id
         game.sendUpdate(player, NT_PlayerTurnStart(), wait)
         ProcessingUtils.pause(1000)
-        val fraction = player.fraction
-        val actionsHandler = game.reactionHandler.actionHandlers
-        //do fraction turn prepare
-        fraction!!.prepareTurn(actionsHandler)
+        player.fraction.prepareTurn()
         //send turn actions to player
-        player.units.forEach { it.prepareForTurnStart() }
         val turn = game.turnBuilder.build(player)
         Log.trace("Send optional turn actions (" + turn.actions.size + ") to player " + player)
         player.serverPlayer.sendTCP(turn)
-        //do fraction turn started
-        fraction.turnStarted(actionsHandler)
     }
 
     override fun sendBoardUpdate() {
