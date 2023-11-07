@@ -2,13 +2,15 @@ package com.broll.gainea.client.ui.ingame.windows;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.broll.gainea.Gainea;
-import com.broll.gainea.client.ui.components.IconLabel;
 import com.broll.gainea.client.ui.ingame.unit.MenuUnit;
 import com.broll.gainea.client.ui.utils.LabelUtils;
 import com.broll.gainea.client.ui.utils.TableUtils;
+import com.broll.gainea.client.ui.utils.TextureUtils;
 import com.broll.gainea.net.NT_Unit;
 import com.broll.gainea.server.core.fractions.Fraction;
 import com.broll.gainea.server.core.fractions.FractionDescription;
@@ -62,8 +64,17 @@ public class FractionWindow extends MenuWindow {
         FractionDescription description = fraction.getDescription();
         int w = 450;
         table.add(LabelUtils.autoWrap(LabelUtils.info(skin, description.getGeneral()), w)).left().spaceTop(20).padBottom(20).width(w).row();
-        description.getPlus().forEach(text -> table.add(new IconLabel(game, 4, text)).left().spaceTop(10).row());
-        description.getContra().forEach(text -> table.add(new IconLabel(game, 5, text)).left().spaceTop(10).row());
+        description.getPlus().forEach(text -> table.add(info(4, text)).left().spaceTop(10).row());
+        description.getContra().forEach(text -> table.add(info(5, text)).left().spaceTop(10).row());
+        return table;
+    }
+
+    private Table info(int icon, String text) {
+        Table table = new Table();
+        table.add(new Image(TextureUtils.icon(game, icon))).center().spaceRight(15);
+        Label label = LabelUtils.info(skin, text);
+        int w = 700;
+        table.add(LabelUtils.autoWrap(label, w)).width(w);
         return table;
     }
 

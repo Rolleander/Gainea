@@ -32,11 +32,11 @@ class ShadowFraction : Fraction(FractionType.SHADOW) {
         return desc
     }
 
-    override fun killedNeutralMonster(monster: Monster) {
+    override fun killedMonster(monster: Monster, battleResult: BattleResult) {
         if (monster.location.isAreaType(AreaType.PLAINS)) {
             return
         }
-        super.killedNeutralMonster(monster)
+        super.killedMonster(monster, battleResult)
     }
 
     override fun createSoldier(): Soldier {
@@ -49,7 +49,7 @@ class ShadowFraction : Fraction(FractionType.SHADOW) {
 
     override fun createCommander(): Soldier {
         val commander = Soldier(owner, fraction = this)
-        commander.isCommander = true
+        commander.commander = true
         commander.setStats(COMMANDER_POWER, COMMANDER_HEALTH)
         commander.name = "Erznekromant Bal"
         commander.icon = 21

@@ -33,9 +33,9 @@ fun Player.isCommanderAlive() = getCommander() != null
 
 fun Game.getOtherPlayers(player: Player) = allPlayers.filter { it !== player }
 
-fun Player.getCommander() = units.filterIsInstance(Soldier::class.java).find { it.isCommander }
+fun Player.getCommander() = units.filterIsInstance(Soldier::class.java).find { it.commander }
 
-fun IUnit.isCommander() = resolve().run { this is Soldier && this.isCommander }
+fun IUnit.isCommander() = resolve().run { this is Soldier && this.commander }
 
 fun Player.getUnits(location: Location) =
     location.units.filter { it.owner == this }

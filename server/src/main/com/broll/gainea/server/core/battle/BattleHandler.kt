@@ -224,22 +224,22 @@ class BattleHandler(private val game: Game, private val reactionResult: Reaction
         //find dead monsters to give killing player rewards
         if (grantRewards) {
             result.getNonNeutralAttackers()
-                .forEach { rewardKilledMonsters(it, result.killedDefenders) }
+                .forEach { rewardKilledMonsters(it, result.killedDefenders, result) }
             result.getNonNeutralDefenders()
-                .forEach { rewardKilledMonsters(it, result.killedAttackers) }
+                .forEach { rewardKilledMonsters(it, result.killedAttackers, result) }
         }
     }
 
-    private fun rewardKilledMonsters(killer: Player, units: List<UnitSnapshot>) {
+    private fun rewardKilledMonsters(
+        killer: Player,
+        units: List<UnitSnapshot>,
+        result: BattleResult
+    ) {
         if (killer.isNeutral()) {
             return
         }
         units.filter { it.source is Monster }.forEach {
-            val monster = it.source as Monster
-            killer.goalHandler.addStars(monster.stars)
-            if (it.owner.isNeutral()) {
-                killer.fraction.killedNeutralMonster(monster)
-            }
+            killer.fraction.killedMonster(it.source as Monster, result)
         }
     }
 

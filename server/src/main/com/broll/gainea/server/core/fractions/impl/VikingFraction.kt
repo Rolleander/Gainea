@@ -16,9 +16,9 @@ import com.broll.gainea.server.core.utils.isAreaType
 class VikingFraction : Fraction(FractionType.VIKINGS) {
     override fun description(): FractionDescription {
         val desc = FractionDescription(
-                "",
-                soldier = UnitDescription(name = "Wikinger", icon = 106),
-                commander = UnitDescription(name = "Jarl Olaf", icon = 104, power = 3, health = 3),
+            "",
+            soldier = UnitDescription(name = "Wikinger", icon = 106),
+            commander = UnitDescription(name = "Jarl Olaf", icon = 104, power = 3, health = 3),
         )
         desc.plus("Können Schiffe in jede Richtung gehen")
         desc.plus("Auf Schiffen Zahl +1")
@@ -49,14 +49,15 @@ class VikingFraction : Fraction(FractionType.VIKINGS) {
 
     override fun createCommander(): Soldier {
         val commander: Soldier = VikingSoldier(owner)
-        commander.isCommander = true
+        commander.commander = true
         commander.setStats(COMMANDER_POWER, COMMANDER_HEALTH)
         commander.name = "Jarl Olaf"
         commander.icon = 104
         return commander
     }
 
-    private inner class VikingSoldier(owner: Player) : Soldier(owner, fraction = this@VikingFraction) {
+    private inner class VikingSoldier(owner: Player) :
+        Soldier(owner, fraction = this@VikingFraction) {
         override fun canMoveTo(to: Location): Boolean {
             return to.traversable
         }

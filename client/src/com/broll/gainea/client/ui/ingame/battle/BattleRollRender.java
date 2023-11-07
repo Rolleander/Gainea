@@ -12,7 +12,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.broll.gainea.Gainea;
-import com.broll.gainea.client.AudioPlayer;
 import com.broll.gainea.client.ui.ingame.unit.UnitRender;
 import com.broll.gainea.client.ui.utils.LabelUtils;
 import com.broll.gainea.net.NT_Battle_Roll;
@@ -75,7 +74,6 @@ public class BattleRollRender extends WidgetGroup {
         showRolls = 0;
         rollAnimation = 0;
         showAnimation = 0;
-        AudioPlayer.playSound("roll.ogg");
     }
 
     private void placeInCircle(List<BattleRoll> rolls) {
@@ -107,7 +105,6 @@ public class BattleRollRender extends WidgetGroup {
                 defenderRolls.forEach(it -> it.currentRoll = it.nt.number);
                 listener.rollingDone();
             } else if (showRolls > 1) {
-                AudioPlayer.playSound("roll.ogg");
                 listener.diceSet();
             }
         }

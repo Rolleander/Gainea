@@ -73,7 +73,7 @@ public class UnitRender extends MapObjectRender {
         boolean wasAlive = unit.health > 0;
         unit.health -= amount;
         if (wasAlive) {
-            AudioPlayer.playSound("hit.ogg");
+            AudioPlayer.playSound("damage.ogg");
             if (unit.health <= 0) {
                 kill(false);
             }
@@ -101,10 +101,10 @@ public class UnitRender extends MapObjectRender {
     }
 
     private void deathSound(NT_Unit unit) {
+        AudioPlayer.playSound("kill.ogg");
         if (unit instanceof NT_Monster) {
             AudioPlayer.playSound("monster_death.ogg");
         } else {
-            AudioPlayer.playSound("damage.ogg");
             int type = unit.type;
             if (type == NT_Unit.TYPE_MALE) {
                 AudioPlayer.playSound("death_male.ogg");

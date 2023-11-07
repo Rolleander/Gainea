@@ -22,9 +22,8 @@ class KnightsFraction : Fraction(FractionType.KNIGHTS) {
                 health = 3
             ),
         )
-        desc.plus("In Unterzahl +1 Zahl")
         desc.plus("Im 1v1 +1 Zahl, als Angreifer +2 Zahl")
-        desc.contra("Auf Sümpfen und Seen -1 Zahl")
+        desc.contra("Auf Sümpfen -1 Zahl")
         return desc
     }
 
@@ -32,15 +31,12 @@ class KnightsFraction : Fraction(FractionType.KNIGHTS) {
         val power = super.calcFightingPower(soldier, context)
         val army = context.getFightingArmy(soldier)
         val opponents = context.getOpposingFightingArmy(soldier)
-        if (army.size < opponents.size) {
-            // smaller army +1 Z
-            power.changeNumberPlus(1)
-        } else if (army.size == 1 && opponents.size == 1) {
+        if (army.size == 1 && opponents.size == 1) {
             //1v1  +2 Z (atk) / +1 Z (def)
             val plus = if (context.isAttacking(army.first())) 2 else 1
             power.changeNumberPlus(plus)
         }
-        if (context.location.isAreaType(AreaType.BOG, AreaType.LAKE)) {
+        if (context.location.isAreaType(AreaType.BOG)) {
             power.changeNumberPlus(-1)
         }
         return power
@@ -56,7 +52,7 @@ class KnightsFraction : Fraction(FractionType.KNIGHTS) {
 
     override fun createCommander(): Soldier {
         val commander = Soldier(owner, fraction = this)
-        commander.isCommander = true
+        commander.commander = true
         commander.setStats(COMMANDER_POWER, COMMANDER_HEALTH)
         commander.name = "Kreuzritterchampion"
         commander.icon = 7

@@ -31,7 +31,7 @@ class PoacherFraction : Fraction(FractionType.POACHER) {
         }
         return power
     }
-    
+
     override fun battleResult(result: BattleResult) {
         val units = result.getUnits(owner)
         if (units.isEmpty()) {
@@ -55,7 +55,7 @@ class PoacherFraction : Fraction(FractionType.POACHER) {
 
     override fun createCommander(): Soldier {
         val commander = Soldier(owner, fraction = this)
-        commander.isCommander = true
+        commander.commander = true
         commander.name = "Monsterzähmer"
         commander.icon = 44
         commander.setStats(1, 5)

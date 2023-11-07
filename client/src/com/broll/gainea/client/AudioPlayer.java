@@ -39,6 +39,12 @@ public final class AudioPlayer {
         assets.get(sound, Sound.class).play(soundVolume);
     }
 
+    public static Sound loopSound(String sound) {
+        Sound s = assets.get(sound, Sound.class);
+        s.loop(soundVolume);
+        return s;
+    }
+
     public static void changeMusicVolume(double volume) {
         musicVolume = (float) volume;
         if (current != null) {

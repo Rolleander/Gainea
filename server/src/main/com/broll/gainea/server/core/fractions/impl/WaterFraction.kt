@@ -70,7 +70,7 @@ Fällt der Eiskoloss kehrt Arn in eruem nächsten Zug zurück"""
                 spawns.add(summon)
             }
         }
-        commander.isCommander = true
+        commander.commander = true
         commander.setStats(COMMANDER_POWER, COMMANDER_HEALTH)
         commander.name = "Frostbeschwörer Arn"
         commander.icon = 116

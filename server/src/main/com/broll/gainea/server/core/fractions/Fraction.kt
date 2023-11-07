@@ -3,6 +3,7 @@ package com.broll.gainea.server.core.fractions
 import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.actions.required.PlaceUnitAction
 import com.broll.gainea.server.core.battle.BattleContext
+import com.broll.gainea.server.core.battle.BattleResult
 import com.broll.gainea.server.core.battle.FightingPower
 import com.broll.gainea.server.core.map.Area
 import com.broll.gainea.server.core.objects.IUnit
@@ -11,6 +12,7 @@ import com.broll.gainea.server.core.objects.Unit
 import com.broll.gainea.server.core.objects.monster.Monster
 import com.broll.gainea.server.core.objects.resolve
 import com.broll.gainea.server.core.player.Player
+import com.broll.gainea.server.core.player.isNeutral
 import com.broll.gainea.server.core.processing.GameUpdateReceiverAdapter
 import com.broll.gainea.server.core.utils.getActionHandler
 import com.broll.gainea.server.core.utils.getSpawnLocations
@@ -45,8 +47,11 @@ abstract class Fraction(val type: FractionType) : GameUpdateReceiverAdapter() {
 
     protected fun prepareUnits() = owner.units.forEach { it.prepareForTurnStart() }
 
-    open fun killedNeutralMonster(monster: Monster) {
-        owner.cardHandler.drawRandomCard()
+    open fun killedMonster(monster: Monster, battleResult: BattleResult) {
+        owner.goalHandler.addStars(monster.stars)
+        if (monster.owner.isNeutral()) {
+            owner.cardHandler.drawRandomCard()
+        }
     }
 
     open fun isHostile(unit: Unit): Boolean {

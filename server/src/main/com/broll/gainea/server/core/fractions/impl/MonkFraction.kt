@@ -2,6 +2,7 @@ package com.broll.gainea.server.core.fractions.impl
 
 import com.broll.gainea.misc.RandomUtils
 import com.broll.gainea.server.core.battle.BattleContext
+import com.broll.gainea.server.core.battle.BattleResult
 import com.broll.gainea.server.core.fractions.Fraction
 import com.broll.gainea.server.core.fractions.FractionDescription
 import com.broll.gainea.server.core.fractions.FractionType
@@ -43,13 +44,13 @@ class MonkFraction : Fraction(FractionType.MONKS) {
         }
     }
 
-    override fun killedNeutralMonster(monster: Monster) {
+    override fun killedMonster(monster: Monster, battleResult: BattleResult) {
         killedMonsters++
         if (killedMonsters == 3) {
             killedMonsters = 0
             return
         }
-        super.killedNeutralMonster(monster)
+        super.killedMonster(monster, battleResult)
     }
 
     override fun prepareTurn() {
@@ -62,7 +63,7 @@ class MonkFraction : Fraction(FractionType.MONKS) {
             game.heal(randomUnit, 1)
         }
     }
-    
+
     override fun createSoldier(): Soldier {
         val soldier: Soldier = MonkSoldier(owner)
         soldier.setStats(SOLDIER_POWER, SOLDIER_HEALTH)
@@ -73,7 +74,7 @@ class MonkFraction : Fraction(FractionType.MONKS) {
 
     override fun createCommander(): Soldier {
         val commander: Soldier = MonkSoldier(owner)
-        commander.isCommander = true
+        commander.commander = true
         commander.setStats(COMMANDER_POWER, COMMANDER_HEALTH)
         commander.name = "Großmeister Eron"
         commander.icon = 107

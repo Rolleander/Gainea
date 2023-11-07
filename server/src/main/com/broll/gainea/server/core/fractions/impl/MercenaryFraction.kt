@@ -23,13 +23,13 @@ class MercenaryFraction : Fraction(FractionType.MERCENARY) {
             ),
         )
         desc.plus("Jeden zweiten Zug erhaltet Ihr einen weiteren Soldat")
-        desc.plus("Minimale Zahl beim Würfeln ist 2")
+        desc.plus("Minimale Zahl beim Würfeln ist 3")
         desc.contra("Maximale Zahl beim Würfeln ist 5")
         return desc
     }
 
     override fun calcFightingPower(soldier: Soldier, context: BattleContext): FightingPower {
-        return super.calcFightingPower(soldier, context).withHighestNumber(5).withLowestNumber(2)
+        return super.calcFightingPower(soldier, context).withHighestNumber(5).withLowestNumber(3)
     }
 
     override fun prepareTurn() {
@@ -52,7 +52,7 @@ class MercenaryFraction : Fraction(FractionType.MERCENARY) {
 
     override fun createCommander(): Soldier {
         val commander = Soldier(owner, fraction = this)
-        commander.isCommander = true
+        commander.commander = true
         commander.setStats(COMMANDER_POWER, COMMANDER_HEALTH)
         commander.name = "Söldnerkommandant"
         commander.icon = 5

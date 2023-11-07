@@ -12,6 +12,7 @@ import com.broll.gainea.server.core.fractions.impl.PoacherFraction
 import com.broll.gainea.server.core.fractions.impl.RangerFraction
 import com.broll.gainea.server.core.fractions.impl.SamuraiFraction
 import com.broll.gainea.server.core.fractions.impl.ShadowFraction
+import com.broll.gainea.server.core.fractions.impl.SpartanFraction
 import com.broll.gainea.server.core.fractions.impl.VikingFraction
 import com.broll.gainea.server.core.fractions.impl.WaterFraction
 
@@ -30,6 +31,7 @@ enum class FractionType(val displayName: String, private val factory: () -> Frac
     GUARDS("Königsgarde", { GuardsFraction() }),
     FIRE("Feuermagier", { FireFraction() }),
     WATER("Wassermagier", { WaterFraction() }),
+    SPARTANS("Spartaner", { SpartanFraction() }),
     LIZARDS("Echsenvolk", { LizardFraction() });
 
     fun create(): Fraction {

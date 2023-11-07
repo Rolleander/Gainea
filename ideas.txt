@@ -24,5 +24,3 @@ unused units:
 101 = druid wizard
 109 = shaman witch
 112 = samurai warrior
-139 = spartan warrior
-133 = spartan leader

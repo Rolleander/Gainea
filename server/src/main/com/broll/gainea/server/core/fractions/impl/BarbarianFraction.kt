@@ -48,7 +48,7 @@ class BarbarianFraction : Fraction(FractionType.BARBARIANS) {
     }
 
     private fun isPlainBarbarianSoldier(unit: Unit): Boolean {
-        return unit is Soldier && !unit.isCommander &&
+        return unit is Soldier && !unit.commander &&
                 unit !is BarbarianBrother && unit.fraction === this
     }
 
@@ -62,7 +62,7 @@ class BarbarianFraction : Fraction(FractionType.BARBARIANS) {
 
     override fun createCommander(): Soldier {
         val commander = Soldier(owner, fraction = this)
-        commander.isCommander = true
+        commander.commander = true
         commander.setStats(COMMANDER_POWER, COMMANDER_HEALTH)
         commander.name = "Barbarenanführer"
         commander.icon = 45
@@ -100,6 +100,6 @@ class BarbarianFraction : Fraction(FractionType.BARBARIANS) {
     }
 
     companion object {
-        private const val SUMMON_TURN = 3
+        private const val SUMMON_TURN = 2
     }
 }

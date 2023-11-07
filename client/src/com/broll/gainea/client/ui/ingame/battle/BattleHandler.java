@@ -1,5 +1,6 @@
 package com.broll.gainea.client.ui.ingame.battle;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -8,6 +9,7 @@ import com.broll.gainea.Gainea;
 import com.broll.gainea.client.AudioPlayer;
 import com.broll.gainea.client.ui.ingame.map.MapAction;
 import com.broll.gainea.client.ui.ingame.map.MapObjectRender;
+import com.broll.gainea.client.ui.ingame.unit.MonsterRender;
 import com.broll.gainea.client.ui.ingame.unit.UnitRender;
 import com.broll.gainea.client.ui.utils.LabelUtils;
 import com.broll.gainea.client.ui.utils.TableUtils;
@@ -37,6 +39,8 @@ public class BattleHandler {
     private BattleBoard battleBoard;
     private List<NT_Unit> attackers;
     private List<NT_Unit> defenders;
+
+    private Sound rollSound;
     private boolean allowRetreat = false;
 
     public BattleHandler(Gainea game, Skin skin) {
@@ -48,7 +52,7 @@ public class BattleHandler {
         if (battleBoard != null) {
             battleBoard.remove();
         }
-        AudioPlayer.playSound("battle.ogg");
+        // AudioPlayer.playSound("battle.ogg");
         this.allowRetreat = allowRetreat;
         this.attackers = attackers;
         this.defenders = defenders;
@@ -58,9 +62,11 @@ public class BattleHandler {
     }
 
     public void updateBattle(NT_Battle_Roll[] attackRolls, NT_Battle_Roll[] defenderRolls, Stack<NT_Battle_Damage> damage, int state) {
+        rollSound = AudioPlayer.loopSound("roll.ogg");
         battleBoard.attackRolls(attackRolls, defenderRolls, new IRollAnimationListener() {
             @Override
             public void diceSet() {
+                AudioPlayer.playSound("roll_end.ogg");
                 if (!damage.empty()) {
                     damage(damage.pop());
                 }
@@ -68,6 +74,8 @@ public class BattleHandler {
 
             @Override
             public void rollingDone() {
+                AudioPlayer.playSound("roll_end.ogg");
+                rollSound.stop();
                 while (!damage.empty()) {
                     damage(damage.pop());
                 }
@@ -88,6 +96,11 @@ public class BattleHandler {
             private void damage(NT_Battle_Damage damage) {
                 UnitRender source = getUnit(damage.source);
                 UnitRender target = getUnit(damage.target);
+                if (source instanceof MonsterRender) {
+                    AudioPlayer.playSound("hit_monster.ogg");
+                } else {
+                    AudioPlayer.playSound("hit.ogg");
+                }
                 target.takeDamage(1);
                 source.attack(target);
             }

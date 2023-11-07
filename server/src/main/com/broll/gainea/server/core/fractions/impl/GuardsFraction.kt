@@ -45,7 +45,7 @@ class GuardsFraction : Fraction(FractionType.GUARDS) {
 
     override fun createCommander(): Soldier {
         val commander: Soldier = GuardSoldier(owner)
-        commander.isCommander = true
+        commander.commander = true
         commander.setStats(COMMANDER_POWER, COMMANDER_HEALTH)
         commander.name = "Elitegardist"
         commander.icon = 15

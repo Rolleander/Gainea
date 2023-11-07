@@ -8,12 +8,13 @@ abstract class AreaCollection(val name: String) {
 
     val ships = mutableListOf<Ship>()
 
-     
+
     fun init(container: Expansion) {
         expansion = container
     }
 
     fun getArea(id: AreaID) =
-            areas.firstOrNull { it.id == id }
+        areas.firstOrNull { it.id == id }
 
+    fun units() = listOf(areas.flatMap { it.units }, ships.flatMap { it.units }).flatten()
 }

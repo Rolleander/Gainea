@@ -7,9 +7,11 @@ import com.broll.gainea.server.core.fractions.Fraction
 import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.core.player.isNeutral
 
-open class Soldier(owner: Player,
-                   var fraction: Fraction? = null,
-                   var isCommander: Boolean = false) : Unit(owner) {
+open class Soldier(
+    owner: Player,
+    var fraction: Fraction? = null,
+    var commander: Boolean = false
+) : Unit(owner) {
 
     init {
         if (owner.isNeutral()) {
@@ -19,7 +21,7 @@ open class Soldier(owner: Player,
 
     override fun init(game: Game) {
         super.init(game)
-        if (isCommander) {
+        if (commander) {
             description = "Feldherr"
         }
     }

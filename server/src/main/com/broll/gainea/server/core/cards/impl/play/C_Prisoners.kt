@@ -6,7 +6,11 @@ import com.broll.gainea.server.core.objects.Soldier
 import com.broll.gainea.server.core.objects.buffs.TimedEffect
 import com.broll.gainea.server.core.utils.UnitControl.recruit
 
-class C_Prisoners : Card(20, "Kriegsgefangene", "Rekrutiert alle besiegte feindliche Soldaten beim nächsten siegreichen Kampf in diesem Zug (Ausser Feldherren)") {
+class C_Prisoners : Card(
+    20,
+    "Kriegsgefangene",
+    "Rekrutiert alle besiegte feindliche Soldaten beim nächsten siegreichen Kampf in diesem Zug (Ausser Feldherren)"
+) {
     init {
         drawChance = 0.6f
     }
@@ -18,7 +22,9 @@ class C_Prisoners : Card(20, "Kriegsgefangene", "Rekrutiert alle besiegte feindl
         TimedEffect.forCurrentTurn(game, object : TimedEffect() {
             override fun battleResult(result: BattleResult) {
                 if (result.isWinner(owner)) {
-                    val killedSoldiers = result.getOpposingUnits(owner).filter { it.dead && it.source is Soldier && !it.source.isCommander }.map { it.source }
+                    val killedSoldiers = result.getOpposingUnits(owner)
+                        .filter { it.dead && it.source is Soldier && !it.source.commander }
+                        .map { it.source }
                     game.recruit(owner, killedSoldiers, result.getEndLocation(owner))
                     unregister()
                 }

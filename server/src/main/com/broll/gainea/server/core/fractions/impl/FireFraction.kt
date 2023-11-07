@@ -1,5 +1,6 @@
 package com.broll.gainea.server.core.fractions.impl
 
+import com.broll.gainea.server.core.battle.BattleResult
 import com.broll.gainea.server.core.battle.FightingPower
 import com.broll.gainea.server.core.cards.Card
 import com.broll.gainea.server.core.fractions.Fraction
@@ -58,19 +59,19 @@ class FireFraction : Fraction(FractionType.FIRE) {
 
     override fun createCommander(): Soldier {
         val commander = Soldier(owner, fraction = this)
-        commander.isCommander = true
+        commander.commander = true
         commander.setStats(COMMANDER_POWER, COMMANDER_HEALTH)
         commander.name = "Flammenschürer Duras"
         commander.icon = 48
         return commander
     }
 
-    override fun killedNeutralMonster(monster: Monster) {
+    override fun killedMonster(monster: Monster, battleResult: BattleResult) {
         if (monster.location.isAreaType(AreaType.SNOW, AreaType.LAKE)) {
             //no card when monster on ice or water
             return
         }
-        super.killedNeutralMonster(monster)
+        super.killedMonster(monster, battleResult)
     }
 
 

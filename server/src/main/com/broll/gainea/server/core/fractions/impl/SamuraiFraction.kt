@@ -13,9 +13,9 @@ import com.broll.gainea.server.core.utils.isAreaType
 class SamuraiFraction : Fraction(FractionType.SAMURAI) {
     override fun description(): FractionDescription {
         val desc = FractionDescription(
-                "",
-                soldier = UnitDescription(name = "Samurai", icon = 111),
-                commander = UnitDescription(name = "Ronin", icon = 113, power = 3, health = 3),
+            "",
+            soldier = UnitDescription(name = "Samurai", icon = 111),
+            commander = UnitDescription(name = "Ronin", icon = 113, power = 3, health = 3),
         )
         desc.plus("Als Angreifer +1 Zahl")
         desc.plus("Auf Bergen +1 Zahl")
@@ -46,7 +46,7 @@ class SamuraiFraction : Fraction(FractionType.SAMURAI) {
 
     override fun createCommander(): Soldier {
         val commander = Soldier(owner, fraction = this)
-        commander.isCommander = true
+        commander.commander = true
         commander.setStats(COMMANDER_POWER, COMMANDER_HEALTH)
         commander.name = "Ronin"
         commander.icon = 113

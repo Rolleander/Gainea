@@ -50,7 +50,7 @@ class DruidsFraction : Fraction(FractionType.DRUIDS) {
 
     override fun createCommander(): Soldier {
         val commander: Soldier = DruidSoldier(owner)
-        commander.isCommander = true
+        commander.commander = true
         commander.setStats(COMMANDER_POWER, COMMANDER_HEALTH)
         commander.name = "Druidenhaupt Zerus"
         commander.icon = 102
