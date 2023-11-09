@@ -18,6 +18,8 @@ class TurnEvents(private val game: Game) : GameUpdateReceiverAdapter() {
 
     private val randomEvents = RandomEventContainer()
     private val randomEventChance = 0.08f
+    private val eventPromisedAfterTurns = 12
+    private var turnsWithoutEvent = 0
 
     private fun turnEvent(event: EventCard) {
         val nt = NT_PlayerWait()
@@ -51,8 +53,14 @@ class TurnEvents(private val game: Game) : GameUpdateReceiverAdapter() {
 
 
     override fun turnStarted(player: Player) {
-        if (game.rounds > 1 && RandomUtils.randomBoolean(randomEventChance)) {
-            randomEvents.run(game)
+        turnsWithoutEvent++
+        if (game.rounds > 1 &&
+            (RandomUtils.randomBoolean(randomEventChance) ||
+                    turnsWithoutEvent > eventPromisedAfterTurns)
+        ) {
+            if (randomEvents.run(game)) {
+                turnsWithoutEvent = 0
+            }
         }
     }
 

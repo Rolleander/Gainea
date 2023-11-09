@@ -8,10 +8,10 @@ import com.broll.gainea.server.core.player.isNeutral
 import com.broll.gainea.server.core.utils.UnitControl.despawn
 import com.broll.gainea.server.core.utils.UnitControl.update
 
-class Conquerable(game: Game, val despawn: Boolean = true) : Building(game.neutralPlayer) {
+open class Conquerable(game: Game, val despawn: Boolean = false) : Building(game.neutralPlayer) {
 
     var holdForRounds = 1
-    lateinit var afterConquer: ((Player) -> kotlin.Unit)
+    var whenRoundsHold: ((Player) -> kotlin.Unit)? = null
 
     private var holdingTurns = 0
 
@@ -36,7 +36,7 @@ class Conquerable(game: Game, val despawn: Boolean = true) : Building(game.neutr
         if (despawn) {
             game.despawn(this)
         }
-        afterConquer(owner)
+        whenRoundsHold?.let { it(owner) }
     }
 
     override fun turnStarted(player: Player) {

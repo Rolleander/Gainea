@@ -11,6 +11,7 @@ import com.broll.gainea.server.core.fractions.FractionType
 import com.broll.gainea.server.core.fractions.UnitDescription
 import com.broll.gainea.server.core.map.Ship
 import com.broll.gainea.server.core.objects.Soldier
+import com.broll.gainea.server.core.objects.monster.Monster
 import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.core.utils.UnitControl.spawn
 
@@ -67,7 +68,7 @@ class DruidsFraction : Fraction(FractionType.DRUIDS) {
         }
     }
 
-    private inner class Tree(owner: Player) : Soldier(owner, fraction = this@DruidsFraction) {
+    private inner class Tree(owner: Player) : Monster(owner) {
         init {
             setStats(1, 2)
             name = "Wurzelgolem"

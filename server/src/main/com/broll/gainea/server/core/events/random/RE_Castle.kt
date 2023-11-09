@@ -12,7 +12,7 @@ class RE_Castle : RandomEvent() {
     override fun pickSpot() = game.freeBuildingSpot(onlyContinents = true)
     override fun run() {
         val obj = Conquerable(game, despawn = false)
-        obj.afterConquer = { player ->
+        obj.whenRoundsHold = { _ ->
             val unit = obj.location.units.random()
             unit.power.addValue(1)
             game.focus(unit, EFFECT_BUFF)

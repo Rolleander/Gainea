@@ -8,26 +8,26 @@ import com.broll.gainea.server.core.player.isNeutral
 
 
 abstract class AbstractBattleContext<U : IUnit>(
-    var attackers: List<U>,
-    var defenders: List<U>,
+    attackers: List<U>,
+    defenders: List<U>,
     val rounds: MutableList<BattleRound> = mutableListOf()
 ) {
 
-
-    var location: Location
+    var attackers: List<U> = attackers
         protected set
-    var sourceLocation: Location
+    var defenders: List<U> = defenders
         protected set
 
-    protected val attackingPlayers: List<Player>
-    protected val defendingPlayers: List<Player>
+    val location: Location
+        get() = defenders[0].location
+    val sourceLocation: Location
+        get() = attackers[0].location
 
-    init {
-        location = defenders[0].location
-        sourceLocation = attackers[0].location
-        attackingPlayers = attackers.map { it.owner }.distinct()
-        defendingPlayers = defenders.map { it.owner }.distinct()
-    }
+    val attackingPlayers: List<Player>
+        get() = attackers.map { it.owner }.distinct()
+    val defendingPlayers: List<Player>
+        get() = defenders.map { it.owner }.distinct()
+
 
     fun getLocation(player: Player): Location? {
         if (isAttacker(player)) {
@@ -88,7 +88,7 @@ abstract class AbstractBattleContext<U : IUnit>(
     }
 
     fun isParticipating(player: Player) = isAttacker(player) || isDefender(player)
-    
+
     fun isParticipating(unit: IUnit) = attackers.contains(unit) || defenders.contains(unit)
 
     fun isAttacker(player: Player) = attackingPlayers.contains(player)
@@ -129,4 +129,14 @@ abstract class AbstractBattleContext<U : IUnit>(
 data class BattleRound(val damageTaken: List<FightResult.AttackDamage>)
 
 class BattleContext(attackers: List<Unit>, defenders: List<Unit>) :
-    AbstractBattleContext<Unit>(attackers, defenders)
+    AbstractBattleContext<Unit>(attackers, defenders) {
+
+    fun addAttacker(unit: Unit) {
+        this.attackers = this.attackers.toMutableList().also { it.add(unit) }
+    }
+
+    fun addDefender(unit: Unit) {
+        this.defenders = this.defenders.toMutableList().also { it.add(unit) }
+    }
+
+}

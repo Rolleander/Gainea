@@ -18,13 +18,15 @@ class RandomEventContainer {
         return randomEvents.removeFirst()
     }
 
-    fun run(game: Game) {
+    fun run(game: Game): Boolean {
         val event = getRandomEvent()
         if (event.init(game)) {
             game.displayMessage("Zufallsereignis!", sound = "long_bwoam.ogg")
             ProcessingUtils.pause(1000)
             event.run()
+            return true
         }
+        return false
     }
 
     companion object {

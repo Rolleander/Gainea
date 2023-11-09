@@ -19,7 +19,6 @@ unused cards:
 unused units:
 22 = shield wielder
 35 = lone fighter
-96 = lava golem
 100 = druid witch
 101 = druid wizard
 109 = shaman witch

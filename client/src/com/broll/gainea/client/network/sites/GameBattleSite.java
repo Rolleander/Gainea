@@ -53,6 +53,7 @@ public class GameBattleSite extends AbstractGameSite {
         battleIntention.setVisible(true);
         game.gameStage.addActor(battleIntention);
         AudioPlayer.playSound("attack_intent.ogg");
+        AudioPlayer.playSound("battle.ogg");
     }
 
     @PackageReceiver

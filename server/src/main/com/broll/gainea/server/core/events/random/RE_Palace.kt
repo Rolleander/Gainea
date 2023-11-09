@@ -9,8 +9,8 @@ class RE_Palace : RandomEvent() {
 
     override fun pickSpot() = game.freeBuildingSpot(onlyContinents = true)
     override fun run() {
-        val obj = Conquerable(game)
-        obj.afterConquer = { player ->
+        val obj = Conquerable(game, despawn = true)
+        obj.whenRoundsHold = { player ->
             player.goalHandler.addPoints(1)
         }
         obj.holdForRounds = 3

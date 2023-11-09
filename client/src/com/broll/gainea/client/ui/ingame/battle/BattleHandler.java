@@ -52,7 +52,6 @@ public class BattleHandler {
         if (battleBoard != null) {
             battleBoard.remove();
         }
-        // AudioPlayer.playSound("battle.ogg");
         this.allowRetreat = allowRetreat;
         this.attackers = attackers;
         this.defenders = defenders;

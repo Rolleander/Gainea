@@ -12,8 +12,8 @@ class RE_ShadowMansion : RandomEvent() {
 
     override fun pickSpot() = game.freeBuildingSpot()
     override fun run() {
-        val obj = Conquerable(game, despawn = false)
-        obj.afterConquer = { player ->
+        val obj = Conquerable(game)
+        obj.whenRoundsHold = { player ->
             val skeleton = Monster(player)
             skeleton.setStats(1, 1)
             skeleton.icon = 89
@@ -23,7 +23,7 @@ class RE_ShadowMansion : RandomEvent() {
             skeleton.name = "Skelett"
             game.spawn(skeleton, obj.location)
         }
-        obj.name = "Schatten"
+        obj.name = "Nekropolis"
         obj.description =
             "Beschwört jede Runde ein unkontrollierbares Skelett für den Besetzer"
         obj.icon = 4

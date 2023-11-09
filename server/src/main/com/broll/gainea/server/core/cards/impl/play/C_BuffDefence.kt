@@ -9,7 +9,8 @@ import com.broll.gainea.server.core.cards.Card
 import com.broll.gainea.server.core.utils.UnitControl.focus
 import com.broll.gainea.server.core.utils.selectPlayerUnit
 
-class C_BuffDefence : Card(52, "Schildformation", "Verleiht einer Einheit +" + BUFF + " Leben"), ICardStrategy {
+class C_BuffDefence : Card(52, "Schildformation", "Verleiht einer Einheit +$BUFF Leben"),
+    ICardStrategy {
     override val isPlayable: Boolean
         get() = owner.units.isNotEmpty()
 

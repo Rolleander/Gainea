@@ -9,8 +9,8 @@ class RE_Tower : RandomEvent() {
 
     override fun pickSpot() = game.freeBuildingSpot()
     override fun run() {
-        val obj = Conquerable(game, despawn = false)
-        obj.afterConquer = { player ->
+        val obj = Conquerable(game)
+        obj.whenRoundsHold = { player ->
             player.goalHandler.addStars(3)
         }
         obj.name = "Turmspitze"

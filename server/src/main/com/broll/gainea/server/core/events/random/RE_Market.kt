@@ -9,8 +9,8 @@ class RE_Market : RandomEvent() {
 
     override fun pickSpot() = game.freeBuildingSpot()
     override fun run() {
-        val obj = Conquerable(game, despawn = false)
-        obj.afterConquer = { player ->
+        val obj = Conquerable(game)
+        obj.whenRoundsHold = { player ->
             player.cardHandler.drawRandomPlayableCard()
         }
         obj.holdForRounds = 2
