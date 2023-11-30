@@ -49,7 +49,7 @@ abstract class Fraction(val type: FractionType) : GameUpdateReceiverAdapter() {
 
     open fun killedMonster(monster: Monster, battleResult: BattleResult) {
         owner.goalHandler.addStars(monster.stars)
-        if (monster.owner.isNeutral()) {
+        if (battleResult.getSnapshot(monster).owner.isNeutral()) {
             owner.cardHandler.drawRandomCard()
         }
     }

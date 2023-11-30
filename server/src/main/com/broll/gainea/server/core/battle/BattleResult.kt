@@ -2,6 +2,7 @@ package com.broll.gainea.server.core.battle
 
 import com.broll.gainea.server.core.map.Location
 import com.broll.gainea.server.core.objects.IUnit
+import com.broll.gainea.server.core.objects.Unit
 import com.broll.gainea.server.core.player.Player
 
 class BattleResult(val retreated: Boolean, context: BattleContext) :
@@ -126,4 +127,6 @@ class BattleResult(val retreated: Boolean, context: BattleContext) :
         }
         return listOf()
     }
+
+    fun getSnapshot(unit: Unit) = listOf(attackers, defenders).flatten().first { it.source == unit }
 }

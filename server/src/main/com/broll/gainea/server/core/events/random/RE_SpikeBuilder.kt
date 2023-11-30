@@ -20,7 +20,7 @@ class RE_SpikeBuilder : RandomEvent() {
                     ?.let {
                         game.move(this, it)
                         if (alive && !it.hasTrap()) {
-                            game.spawn(SpikeTrap(game, 3), it)
+                            game.spawn(SpikeTrap(game, 2), it)
                         }
                     }
             }
@@ -30,7 +30,7 @@ class RE_SpikeBuilder : RandomEvent() {
         builder.icon = 95
         builder.name = "Grubenschleicher"
         game.spawn(builder, location)
-        game.spawn(SpikeTrap(game, 3), location)
+        game.spawn(SpikeTrap(game, 2), location)
     }
 
 

@@ -17,8 +17,8 @@ class RE_ShadowMansion : RandomEvent() {
             val skeleton = Monster(player)
             skeleton.setStats(1, 1)
             skeleton.icon = 89
-            skeleton.activity = ALWAYS
             skeleton.behavior = RANDOM
+            skeleton.activity = ALWAYS
             skeleton.controllable = false
             skeleton.name = "Skelett"
             game.spawn(skeleton, obj.location)

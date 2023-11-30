@@ -38,6 +38,13 @@ object UnitControl {
 
     fun Game.move(units: List<MapObject>, location: Location, fromPlayerAction: Boolean = false) {
         if (units.isEmpty()) return
+        val sourceLocations = units.map { it.location }.distinct()
+        if (sourceLocations.size > 1) {
+            units.groupBy { it.location }.forEach {
+                move(it.value, it.key, fromPlayerAction)
+            }
+            return
+        }
         Log.trace("UnitControl: move units [" + units.size + "] to " + location)
         units.forEach { it.place(location) }
         units.forEach { it.moved(fromPlayerAction) }

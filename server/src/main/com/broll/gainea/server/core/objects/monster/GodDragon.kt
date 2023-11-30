@@ -17,6 +17,6 @@ class GodDragon(owner: Player) : Monster(owner) {
 
     override fun onDeath(throughBattle: BattleResult?) {
         throughBattle?.getKillingPlayers(this)
-                ?.forEach { player -> player.goalHandler.addPoints(1) }
+            ?.forEach { player -> player.goalHandler.addPoints(1) }
     }
 }

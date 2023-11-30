@@ -6,19 +6,32 @@ import com.broll.gainea.server.core.objects.buffs.BuffType
 import com.broll.gainea.server.core.objects.buffs.GlobalBuff
 import com.broll.gainea.server.core.objects.buffs.IntBuff
 
-class C_Speed : Card(21, "Friedliche Eroberung", "Eure Einheiten können diesen Zug ein zusätzliches Feld bewegt werden. Während dieses Zuges könnt ihr nicht angreifen.") {
-    init {
-        drawChance = 0.7f
-    }
-
+class C_Speed : Card(
+    21,
+    "Friedliche Eroberung",
+    "Eure Einheiten können diesen Zug um zwei zusätzliche Felder bewegt werden. Während dieses Zuges könnt ihr nicht mehr angreifen."
+) {
+    
     override val isPlayable: Boolean
         get() = true
 
     override fun play() {
-        val buffSpeed = IntBuff(BuffType.ADD, 1)
+        val buffSpeed = IntBuff(BuffType.ADD, 2)
         val buffNoAttaks = IntBuff(BuffType.SET, 0)
-        GlobalBuff.createForPlayer(game, owner, buffSpeed, { it.movesPerTurn.addBuff(buffSpeed) }, NT_Event.EFFECT_BUFF)
-        GlobalBuff.createForPlayer(game, owner, buffNoAttaks, { it.attacksPerTurn.addBuff(buffNoAttaks) }, NT_Event.EFFECT_DEBUFF)
+        GlobalBuff.createForPlayer(
+            game,
+            owner,
+            buffSpeed,
+            { it.movesPerTurn.addBuff(buffSpeed) },
+            NT_Event.EFFECT_BUFF
+        )
+        GlobalBuff.createForPlayer(
+            game,
+            owner,
+            buffNoAttaks,
+            { it.attacksPerTurn.addBuff(buffNoAttaks) },
+            NT_Event.EFFECT_DEBUFF
+        )
         game.buffProcessor.timeoutBuff(buffSpeed, 1)
         game.buffProcessor.timeoutBuff(buffNoAttaks, 1)
     }

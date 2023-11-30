@@ -8,7 +8,9 @@ import com.broll.gainea.server.core.fractions.FractionDescription
 import com.broll.gainea.server.core.fractions.FractionType
 import com.broll.gainea.server.core.fractions.UnitDescription
 import com.broll.gainea.server.core.objects.Soldier
+import com.broll.gainea.server.core.objects.monster.GodDragon
 import com.broll.gainea.server.core.objects.monster.Monster
+import com.broll.gainea.server.core.player.isNeutral
 import com.broll.gainea.server.core.utils.UnitControl.isNeutralMonster
 import com.broll.gainea.server.core.utils.UnitControl.recruit
 
@@ -21,6 +23,7 @@ class PoacherFraction : Fraction(FractionType.POACHER) {
         )
         desc.plus("Besiegte Monster werden rekrutiert, wenn nach dem Kampf ein Soldat überlebt")
         desc.contra("Gegen menschliche Truppen -1 Zahl für eigene Soldaten")
+        desc.contra("Erhalten keine Sterne für besiegte Monster, die rekrutiert werden")
         return desc
     }
 
@@ -32,6 +35,15 @@ class PoacherFraction : Fraction(FractionType.POACHER) {
         return power
     }
 
+    override fun killedMonster(monster: Monster, battleResult: BattleResult) {
+        if (monster.owner.isNeutral()) {
+            owner.goalHandler.addStars(monster.stars)
+        }
+        if (battleResult.getSnapshot(monster).owner.isNeutral()) {
+            owner.cardHandler.drawRandomCard()
+        }
+    }
+
     override fun battleResult(result: BattleResult) {
         val units = result.getUnits(owner)
         if (units.isEmpty()) {
@@ -40,7 +52,8 @@ class PoacherFraction : Fraction(FractionType.POACHER) {
         val enemies = result.getOpposingUnits(owner)
         if (units.any { it.alive && it.isFromFraction() }) {
             val deadMonsters =
-                enemies.filter { it.source.isNeutralMonster() && it.dead }.map { it.source }
+                enemies.filter { it.source.isNeutralMonster() && it.dead && it.source !is GodDragon }
+                    .map { it.source }
             game.recruit(owner, deadMonsters)
         }
     }
