@@ -20,7 +20,7 @@ class GuardsFraction : Fraction(FractionType.GUARDS) {
             commander = UnitDescription(name = "Elitegardist", icon = 15, power = 3, health = 3),
         )
         desc.plus("Als Verteidiger ist die niedrigste Würfelzahl 3")
-        desc.plus("Zahl +1 für Verteidiger, die ihr Feld mindestens eine Runde\nnicht verlassen haben")
+        desc.plus("Zahl +1 für Verteidiger, die ihr Feld mindestens eine Runde nicht verlassen haben")
         desc.contra("Als Angreifer Zahl -1")
         return desc
     }

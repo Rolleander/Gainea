@@ -5,13 +5,16 @@ import com.broll.gainea.server.core.bot.strategy.GoalStrategy
 import com.broll.gainea.server.core.goals.CustomOccupyGoal
 import com.broll.gainea.server.core.goals.GoalDifficulty
 import com.broll.gainea.server.core.map.Area
-import com.broll.gainea.server.core.map.AreaType
+import com.broll.gainea.server.core.map.AreaType.SNOW
 import com.broll.gainea.server.core.map.ExpansionType
 import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.core.utils.getUnits
 import com.broll.gainea.server.core.utils.isAreaType
 
-class G_IcePlates : CustomOccupyGoal(GoalDifficulty.EASY, "Besetze alle Eisgebiete mit jeweils " + COUNT + " Einheiten") {
+class G_IcePlates : CustomOccupyGoal(
+    GoalDifficulty.EASY,
+    "Besetze alle Eisgebiete mit jeweils " + COUNT + " Einheiten"
+) {
     init {
         setExpansionRestriction(ExpansionType.BOGLANDS)
     }
@@ -25,20 +28,19 @@ class G_IcePlates : CustomOccupyGoal(GoalDifficulty.EASY, "Besetze alle Eisgebie
     }
 
     private val targets: List<Area>
-        get() = game.map.getExpansion(ExpansionType.BOGLANDS)!!.allAreas
+        get() = game.map.getExpansion(ExpansionType.BOGLANDS)!!.allAreas.filter { it.isAreaType(SNOW) }
 
     override fun check() {
         val playerUnits = targets
-                .filter { it.isAreaType(AreaType.SNOW) }
-                .sumOf { Math.min(COUNT, player.getUnits(it).size) }
+            .sumOf { Math.min(COUNT, player.getUnits(it).size) }
         updateProgression(playerUnits)
-        if (playerUnits >= COUNT) {
+        if (playerUnits >= COUNT * targets.size) {
             success()
         }
     }
 
     override fun botStrategy(strategy: GoalStrategy) {
-        val locations = targets.filter { it.type == AreaType.SNOW }.toSet()
+        val locations = targets.toSet()
         strategy.updateTargets(locations)
         strategy.setRequiredUnits(locations.size * COUNT)
     }

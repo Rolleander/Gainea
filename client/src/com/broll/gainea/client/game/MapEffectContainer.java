@@ -30,6 +30,7 @@ public class MapEffectContainer {
         }
         if (renders.size() > effects.size()) {
             renders.keySet().stream().filter(key -> effects.stream().map(effect -> effect.id).noneMatch(id -> id == key))
+                    //todo concurrent mod exception 
                     .forEach(oldKey -> {
                         MapEffectRender oldValue = renders.remove(oldKey);
                         oldValue.remove();

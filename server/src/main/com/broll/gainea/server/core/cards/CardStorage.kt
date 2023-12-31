@@ -55,21 +55,13 @@ class CardStorage(private val game: Game) {
         }
     }
 
-    fun getPlayableCards(count: Int): List<Card> {
-        val classes = ArrayList(loader.classes)
-        classes.shuffle()
-        val cards = mutableListOf<Card>()
-        for (i in classes.indices) {
-            val card = loader.instantiate(classes[i])
-            if (card !is DirectlyPlayedCard) {
-                cards.add(card)
-                if (cards.size == count) {
-                    break
-                }
-            }
-        }
-        return cards
-    }
+    fun getPlayableCards(count: Int) =
+        ArrayList(loader.classes).filter { !it.isInstance(DirectlyPlayedCard::class.java) }
+            .shuffled().take(count).map { getCard(it) }
+
+    fun getDirectlyPlayedCards(count: Int) =
+        ArrayList(loader.classes).filter { it.isInstance(DirectlyPlayedCard::class.java) }
+            .shuffled().take(count).map { getCard(it) }
 
 
     fun getCard(cardClass: Class<out Card>): Card {

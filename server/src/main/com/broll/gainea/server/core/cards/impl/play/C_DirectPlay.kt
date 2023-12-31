@@ -10,7 +10,7 @@ class C_DirectPlay :
         get() = true
 
     override fun play() {
-        val cards = (1..OPTIONS).map { game.cardStorage.getRandomDirectlyPlayedCard() }
+        val cards = game.cardStorage.getDirectlyPlayedCards(OPTIONS)
         val card =
             cards[selectHandler.selectObject("Wählt eine Event-Karte", cards.map { it.nt() })]
         card.init(game, owner)

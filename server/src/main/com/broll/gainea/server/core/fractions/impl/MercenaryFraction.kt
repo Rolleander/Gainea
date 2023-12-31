@@ -7,7 +7,9 @@ import com.broll.gainea.server.core.fractions.Fraction
 import com.broll.gainea.server.core.fractions.FractionDescription
 import com.broll.gainea.server.core.fractions.FractionType
 import com.broll.gainea.server.core.fractions.UnitDescription
+import com.broll.gainea.server.core.map.AreaType
 import com.broll.gainea.server.core.objects.Soldier
+import com.broll.gainea.server.core.utils.isAreaType
 
 class MercenaryFraction : Fraction(FractionType.MERCENARY) {
     private var turns = 0
@@ -23,14 +25,20 @@ class MercenaryFraction : Fraction(FractionType.MERCENARY) {
             ),
         )
         desc.plus("Jeden zweiten Zug erhaltet Ihr einen weiteren Soldat")
-        desc.plus("Minimale Zahl beim Würfeln ist 3")
-        desc.contra("Maximale Zahl beim Würfeln ist 5")
+        desc.contra("In Unterzahl höchste Würfelzahl 5")
         return desc
     }
 
     override fun calcFightingPower(soldier: Soldier, context: BattleContext): FightingPower {
-        return super.calcFightingPower(soldier, context).withHighestNumber(5).withLowestNumber(3)
+        val power = super.calcFightingPower(soldier, context)
+        val army = context.getFightingArmy(soldier)
+        val opponents = context.getOpposingFightingArmy(soldier)
+        if (army.size < opponents.size) {
+            power.withHighestNumber(5)
+        }
+        return power
     }
+
 
     override fun prepareTurn() {
         turns++

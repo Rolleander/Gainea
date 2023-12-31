@@ -20,7 +20,7 @@ class BarbarianFraction : Fraction(FractionType.BARBARIANS) {
     override fun description(): FractionDescription {
         val desc = FractionDescription(
             "",
-            soldier = UnitDescription(name = "Barbarenrkieger", icon = 45),
+            soldier = UnitDescription(name = "Barbarenrkieger", icon = 103),
             commander = UnitDescription(
                 name = "Barbarenanführer",
                 icon = 45,
