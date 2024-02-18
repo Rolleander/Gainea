@@ -31,6 +31,7 @@ class RE_IceCastle : RandomEvent() {
             icon = 6
         }
 
+        //todo stirbt nach kampf,  behavior kaputt
         override fun battleIntention(context: BattleContext, cancelFight: MutableBoolean) {
             if (!owner.isNeutral() && context.defendingPlayers.contains(owner)) {
                 val m = Monster(owner)

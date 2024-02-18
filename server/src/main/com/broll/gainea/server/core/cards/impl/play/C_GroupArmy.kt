@@ -22,6 +22,7 @@ class C_GroupArmy : Card(
     override val isPlayable: Boolean
         get() = targets.isNotEmpty()
 
+    //todo bug nix hat sich bewegt
     override fun play() {
         val location = selectHandler.selectLocation("Sammelpunkt auswählen",
             owner.controlledLocations.map { it.container.expansion }.distinct()

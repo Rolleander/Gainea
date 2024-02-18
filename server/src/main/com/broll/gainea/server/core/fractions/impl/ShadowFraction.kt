@@ -8,13 +8,10 @@ import com.broll.gainea.server.core.fractions.FractionDescription
 import com.broll.gainea.server.core.fractions.FractionType
 import com.broll.gainea.server.core.fractions.UnitDescription
 import com.broll.gainea.server.core.map.Area
-import com.broll.gainea.server.core.map.AreaType
 import com.broll.gainea.server.core.map.AreaType.BOG
 import com.broll.gainea.server.core.map.Location
 import com.broll.gainea.server.core.objects.Soldier
-import com.broll.gainea.server.core.objects.monster.Monster
 import com.broll.gainea.server.core.utils.UnitControl.spawn
-import com.broll.gainea.server.core.utils.isAreaType
 
 class ShadowFraction : Fraction(FractionType.SHADOW) {
     override fun description(): FractionDescription {
@@ -38,13 +35,6 @@ class ShadowFraction : Fraction(FractionType.SHADOW) {
         if (area.type == BOG) {
             power.changeNumberPlus(1)
         }
-    }
-    
-    override fun killedMonster(monster: Monster, battleResult: BattleResult) {
-        if (monster.location.isAreaType(AreaType.PLAINS)) {
-            return
-        }
-        super.killedMonster(monster, battleResult)
     }
 
     override fun createSoldier(): Soldier {
