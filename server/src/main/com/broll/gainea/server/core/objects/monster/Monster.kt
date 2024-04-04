@@ -3,12 +3,22 @@ package com.broll.gainea.server.core.objects.monster
 import com.broll.gainea.net.NT_Monster
 import com.broll.gainea.server.core.map.Location
 import com.broll.gainea.server.core.objects.Unit
+import com.broll.gainea.server.core.objects.monster.MonsterActivity.SOMETIMES
+import com.broll.gainea.server.core.objects.monster.MonsterBehavior.RESIDENT
 import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.core.player.isNeutral
 
 open class Monster(owner: Player) : Unit(owner) {
-    var behavior = MonsterBehavior.RESIDENT
-    var activity: MonsterActivity = MonsterActivity.SOMETIMES
+    var behavior = RESIDENT
+        set(value) {
+            field = value
+            if (value == RESIDENT) {
+                removeActionTimer()
+            } else if (actionTimer == NT_Monster.NO_ACTION_TIMER.toInt()) {
+                actionTimer = activity.turnTimer
+            }
+        }
+    var activity: MonsterActivity = SOMETIMES
         set(value) {
             field = value
             resetActionTimer()
@@ -23,7 +33,7 @@ open class Monster(owner: Player) : Unit(owner) {
         get() = getStars(this)
 
     private fun resetActionTimer() {
-        if (behavior != MonsterBehavior.RESIDENT) {
+        if (behavior != RESIDENT) {
             actionTimer = activity.turnTimer
         }
     }
@@ -46,11 +56,14 @@ open class Monster(owner: Player) : Unit(owner) {
     override fun canMoveTo(to: Location): Boolean {
         val canMove = motion.canMoveTo(currentLocation = location, newLocation = to)
         //allow controlled monsters to walk with the players army
-        return if (!canMove && !owner.isNeutral()) super.canMoveTo(to) else canMove
+        if (!owner.isNeutral()) {
+            return canMove || super.canMoveTo(to)
+        }
+        return canMove
     }
 
     fun mightAttackSoon() =
-        actionTimer == 1 && behavior != MonsterBehavior.RESIDENT && behavior != MonsterBehavior.FRIENDLY
+        actionTimer == 1 && behavior != RESIDENT && behavior != MonsterBehavior.FRIENDLY
 
 
     private val isBehaviorActive: Boolean

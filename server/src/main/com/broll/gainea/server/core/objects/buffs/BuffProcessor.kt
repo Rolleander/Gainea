@@ -6,13 +6,13 @@ import com.broll.gainea.server.core.objects.Unit
 import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.core.player.isNeutral
 import com.broll.gainea.server.core.processing.GameUpdateReceiverAdapter
+import com.broll.gainea.server.core.processing.TurnDuration
 import com.broll.gainea.server.core.utils.UnitControl.kill
 import com.broll.gainea.server.core.utils.UnitControl.update
-import org.apache.commons.collections4.map.MultiValueMap
 
 class BuffProcessor(private val game: Game) : GameUpdateReceiverAdapter() {
-    private var currentTurnCount = 0
-    private val timedBuffs = MultiValueMap<Int, Buff<*>>()
+
+    private val timedBuffs = mutableListOf<Pair<TurnDuration, Buff<*>>>()
     private val globalBuffs: MutableMap<Buff<*>, GlobalBuff> = HashMap()
 
     init {
@@ -20,11 +20,14 @@ class BuffProcessor(private val game: Game) : GameUpdateReceiverAdapter() {
     }
 
     override fun turnStarted(player: Player) {
-        currentTurnCount++
-        timedBuffs.keys.flatMap { timedBuffs.getCollection(it) }.forEach { it.turnsActive += 1 }
-        timedBuffs.getCollection(currentTurnCount)?.let { timedout ->
-            timedout.forEach { timedout(it) }
-            timedBuffs.remove(currentTurnCount)
+        val iterator = timedBuffs.iterator()
+        while (iterator.hasNext()) {
+            val timedBuff = iterator.next()
+            timedBuff.first.progress()
+            if (timedBuff.first.completed()) {
+                timedout(timedBuff.second)
+                iterator.remove()
+            }
         }
     }
 
@@ -46,9 +49,9 @@ class BuffProcessor(private val game: Game) : GameUpdateReceiverAdapter() {
         game.update(update)
     }
 
-    fun timeoutBuff(buff: Buff<*>, rounds: Int) {
-        val timeoutTurn = currentTurnCount + game.allPlayers.size * Math.max(1, rounds)
-        timedBuffs[timeoutTurn] = buff
+    fun timeoutBuff(buff: Buff<*>, duration: TurnDuration) {
+        timedBuffs += duration to buff
+        duration.register(game)
     }
 
     fun addGlobalBuff(globalBuff: GlobalBuff, effect: Int) {
@@ -66,8 +69,8 @@ class BuffProcessor(private val game: Game) : GameUpdateReceiverAdapter() {
     }
 
     fun applyGlobalBuffs(unit: Unit) =
-            globalBuffs.values.filter { it.targets.contains(unit.owner) }.forEach {
-                it.apply(unit)
-            }
+        globalBuffs.values.filter { it.targets.contains(unit.owner) }.forEach {
+            it.apply(unit)
+        }
 
 }

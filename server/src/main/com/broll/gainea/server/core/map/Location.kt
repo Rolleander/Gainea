@@ -1,5 +1,6 @@
 package com.broll.gainea.server.core.map
 
+import com.broll.gainea.server.core.objects.Collectible
 import com.broll.gainea.server.core.objects.MapObject
 import com.broll.gainea.server.core.objects.Unit
 import com.broll.gainea.server.core.utils.getUnits
@@ -16,7 +17,7 @@ abstract class Location(val coordinates: Coordinates) {
     val connectedLocations = mutableSetOf<Location>()
 
     val free: Boolean
-        get() = inhabitants.isEmpty() && traversable
+        get() = traversable && (inhabitants.isEmpty() || inhabitants.all { it is Collectible })
     val walkableNeighbours: List<Location>
         get() = connectedLocations.filter { it.traversable }.filter {
             if (it is Ship) {

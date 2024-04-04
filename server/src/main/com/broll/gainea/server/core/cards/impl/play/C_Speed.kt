@@ -5,13 +5,14 @@ import com.broll.gainea.server.core.cards.Card
 import com.broll.gainea.server.core.objects.buffs.BuffType
 import com.broll.gainea.server.core.objects.buffs.GlobalBuff
 import com.broll.gainea.server.core.objects.buffs.IntBuff
+import com.broll.gainea.server.core.processing.thisTurn
 
 class C_Speed : Card(
     21,
     "Friedliche Eroberung",
     "Eure Einheiten können diesen Zug um zwei zusätzliche Felder bewegt werden. Während dieses Zuges könnt ihr nicht mehr angreifen."
 ) {
-    
+
     override val isPlayable: Boolean
         get() = true
 
@@ -32,7 +33,7 @@ class C_Speed : Card(
             { it.attacksPerTurn.addBuff(buffNoAttaks) },
             NT_Event.EFFECT_DEBUFF
         )
-        game.buffProcessor.timeoutBuff(buffSpeed, 1)
-        game.buffProcessor.timeoutBuff(buffNoAttaks, 1)
+        game.buffProcessor.timeoutBuff(buffSpeed, thisTurn())
+        game.buffProcessor.timeoutBuff(buffNoAttaks, thisTurn())
     }
 }

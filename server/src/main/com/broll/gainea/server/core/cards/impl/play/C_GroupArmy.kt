@@ -16,18 +16,15 @@ class C_GroupArmy : Card(
     }
 
     val targets: List<Location>
-        get() = owner.controlledLocations.map { it.container }.distinct().flatMap { it.areas }
+        get() = owner.controlledLocations.map { it.container.expansion }.distinct()
+            .flatMap { it.allAreas }
             .filter { it.free }
 
     override val isPlayable: Boolean
         get() = targets.isNotEmpty()
 
-    //todo bug nix hat sich bewegt
     override fun play() {
-        val location = selectHandler.selectLocation("Sammelpunkt auswählen",
-            owner.controlledLocations.map { it.container.expansion }.distinct()
-                .flatMap { it.allAreas }
-                .filter { it.free })
+        val location = selectHandler.selectLocation("Sammelpunkt auswählen", targets)
         game.move(
             owner.units.filter { it.location.container.expansion == location.container.expansion },
             location

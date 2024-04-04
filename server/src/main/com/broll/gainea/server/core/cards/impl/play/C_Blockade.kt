@@ -6,6 +6,7 @@ import com.broll.gainea.server.core.objects.buffs.BuffType
 import com.broll.gainea.server.core.objects.buffs.IntBuff
 import com.broll.gainea.server.core.objects.buffs.roundsActive
 import com.broll.gainea.server.core.player.Player
+import com.broll.gainea.server.core.processing.rounds
 import com.broll.gainea.server.core.utils.UnitControl.spawn
 
 class C_Blockade : Card(
@@ -28,7 +29,7 @@ class C_Blockade : Card(
         val location =
             selectHandler.selectLocation("Wo soll die Befestigung errichtet werden?", locations)
         game.spawn(soldier, location)
-        game.buffProcessor.timeoutBuff(buff, ROUNDS)
+        game.buffProcessor.timeoutBuff(buff, rounds(ROUNDS))
     }
 
     private inner class Blockade(val buff: IntBuff) : Unit(game.neutralPlayer) {

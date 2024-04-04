@@ -4,6 +4,7 @@ import com.broll.gainea.server.core.cards.Card
 import com.broll.gainea.server.core.objects.Soldier
 import com.broll.gainea.server.core.objects.buffs.BuffType
 import com.broll.gainea.server.core.objects.buffs.IntBuff
+import com.broll.gainea.server.core.processing.thisRound
 
 class C_BattleSummon :
     Card(66, "Rachedämon", "Beschwört einen Rachedämon (5/3) der nächste Runde stirbt.") {
@@ -25,6 +26,6 @@ class C_BattleSummon :
         demon.addHealthBuff(buff)
         demon.prepareForTurnStart()
         placeUnitHandler.placeUnit(owner, demon, locations.toList())
-        game.buffProcessor.timeoutBuff(buff, 1)
+        game.buffProcessor.timeoutBuff(buff, thisRound())
     }
 }

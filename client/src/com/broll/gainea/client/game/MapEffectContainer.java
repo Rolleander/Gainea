@@ -7,6 +7,7 @@ import com.broll.gainea.net.NT_BoardEffect;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class MapEffectContainer {
 
@@ -29,12 +30,12 @@ public class MapEffectContainer {
             }
         }
         if (renders.size() > effects.size()) {
-            renders.keySet().stream().filter(key -> effects.stream().map(effect -> effect.id).noneMatch(id -> id == key))
-                    //todo concurrent mod exception 
-                    .forEach(oldKey -> {
-                        MapEffectRender oldValue = renders.remove(oldKey);
-                        oldValue.remove();
-                    });
+            List<Integer> oldKeys = renders.keySet().stream().filter(key -> effects.stream()
+                    .map(effect -> effect.id).noneMatch(id -> id.equals(key))).collect(Collectors.toList());
+            oldKeys.forEach(oldKey -> {
+                MapEffectRender oldValue = renders.remove(oldKey);
+                oldValue.remove();
+            });
         }
         game.gameStage.sort();
     }

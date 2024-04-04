@@ -5,16 +5,28 @@ import com.broll.gainea.server.core.cards.Card
 import com.broll.gainea.server.core.objects.buffs.BuffType
 import com.broll.gainea.server.core.objects.buffs.GlobalBuff
 import com.broll.gainea.server.core.objects.buffs.IntBuff
+import com.broll.gainea.server.core.processing.rounds
 
-class C_PlayerNoAttacks : Card(14, "Wachpatrouille", "Wählt einen Gegner, dieser kann " + DURATION + " Runden keine Angriffe ausführen.") {
+class C_PlayerNoAttacks : Card(
+    14,
+    "Wachpatrouille",
+    "Wählt einen Gegner, dieser kann " + DURATION + " Runden keine Angriffe ausführen."
+) {
     override val isPlayable: Boolean
         get() = true
 
     override fun play() {
-        val player = selectHandler.selectOtherPlayer(owner, "Welcher Spieler darf nicht mehr angreifen?")
+        val player =
+            selectHandler.selectOtherPlayer(owner, "Welcher Spieler darf nicht mehr angreifen?")
         val buff = IntBuff(BuffType.SET, 0)
-        GlobalBuff.createForPlayer(game, player, buff, { it.attacksPerTurn.addBuff(buff) }, NT_Event.EFFECT_DEBUFF)
-        game.buffProcessor.timeoutBuff(buff, DURATION)
+        GlobalBuff.createForPlayer(
+            game,
+            player,
+            buff,
+            { it.attacksPerTurn.addBuff(buff) },
+            NT_Event.EFFECT_DEBUFF
+        )
+        game.buffProcessor.timeoutBuff(buff, rounds(DURATION))
     }
 
     companion object {

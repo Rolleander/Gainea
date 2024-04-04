@@ -36,7 +36,7 @@ class PoacherFraction : Fraction(FractionType.POACHER) {
     }
 
     override fun killedMonster(monster: Monster, battleResult: BattleResult) {
-        if (monster.owner.isNeutral()) {
+        if (monster.owner != owner) {
             owner.goalHandler.addStars(monster.stars)
         }
         if (battleResult.getSnapshot(monster).owner.isNeutral()) {

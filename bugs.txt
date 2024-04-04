@@ -1,10 +1,6 @@
 
 fraktionsauswahl hängt?
 
-bot hat wilderer armee angreifen ohne das monster davon...??  -> 2 mal passiert
-
-wilderer bekommt keine sterne wenn er monster von anderem spieler killt
+bot hat wilderer armee angegriffen ohne das monster davon...??  -> 2 mal passiert
 
 monster kann nicht von schiff runter dass es in falsche richtung hoch ist
-
-collectible sollte als freies/bewegbares land zählen

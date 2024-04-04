@@ -15,6 +15,7 @@ import com.broll.gainea.server.core.objects.buffs.BuffType
 import com.broll.gainea.server.core.objects.buffs.IntBuff
 import com.broll.gainea.server.core.objects.monster.Monster
 import com.broll.gainea.server.core.player.Player
+import com.broll.gainea.server.core.processing.rounds
 import com.broll.gainea.server.core.utils.UnitControl.spawn
 import com.broll.gainea.server.core.utils.isAreaType
 
@@ -95,7 +96,7 @@ Fällt der Eiskoloss kehrt Arn in eruem nächsten Zug zurück"""
             val debuff = IntBuff(BuffType.SET, 0)
             movesPerTurn.addBuff(debuff)
             attacksPerTurn.addBuff(debuff)
-            this@WaterFraction.game.buffProcessor.timeoutBuff(debuff, FROZEN_ROUNDS)
+            this@WaterFraction.game.buffProcessor.timeoutBuff(debuff, rounds(FROZEN_ROUNDS))
         }
 
         override fun calcFightingPower(context: BattleContext): FightingPower {
