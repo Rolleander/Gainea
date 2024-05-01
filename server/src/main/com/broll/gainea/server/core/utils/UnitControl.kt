@@ -45,6 +45,9 @@ object UnitControl {
             }
             return
         }
+        if (sourceLocations[0] == location) {
+            return
+        }
         Log.trace("UnitControl: move units [" + units.size + "] to " + location)
         units.forEach { it.place(location) }
         units.forEach { it.moved(fromPlayerAction) }

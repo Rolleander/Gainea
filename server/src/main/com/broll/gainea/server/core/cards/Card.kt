@@ -12,7 +12,12 @@ import com.broll.gainea.server.core.player.isNeutral
 import com.broll.gainea.server.core.utils.ProcessingUtils
 import com.broll.gainea.server.core.utils.sendUpdate
 
-abstract class Card(val picture: Int, val title: String, val text: String) {
+abstract class Card(
+    val picture: Int,
+    val effectType: EffectType,
+    val title: String,
+    val text: String,
+) {
     var id = 0
         private set
     protected lateinit var game: Game

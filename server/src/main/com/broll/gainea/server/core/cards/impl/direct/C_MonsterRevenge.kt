@@ -1,6 +1,7 @@
 package com.broll.gainea.server.core.cards.impl.direct
 
 import com.broll.gainea.server.core.cards.DirectlyPlayedCard
+import com.broll.gainea.server.core.cards.EffectType.OTHER
 import com.broll.gainea.server.core.objects.buffs.BuffType
 import com.broll.gainea.server.core.objects.buffs.IntBuff
 import com.broll.gainea.server.core.objects.monster.Monster
@@ -8,7 +9,7 @@ import com.broll.gainea.server.core.processing.rounds
 import com.broll.gainea.server.core.utils.UnitControl.update
 
 class C_MonsterRevenge : DirectlyPlayedCard(
-    33,
+    33, OTHER,
     "Gesetz des Stärkeren",
     "Für " + ROUNDS + " Runden erhalten alle wilden Monster +" + BUFF + "/+" + BUFF
 ) {

@@ -1,8 +1,9 @@
 package com.broll.gainea.server.core.cards.impl.play
 
 import com.broll.gainea.server.core.cards.Card
+import com.broll.gainea.server.core.cards.EffectType.OTHER
 
-class C_Treasury : Card(3, "Reichtum", "Erhaltet ein weiteres Ziel") {
+class C_Treasury : Card(3, OTHER, "Reichtum", "Erhaltet ein weiteres Ziel") {
     init {
         drawChance = 0.5f
     }

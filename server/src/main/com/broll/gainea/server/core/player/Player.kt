@@ -5,6 +5,7 @@ import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.fractions.Fraction
 import com.broll.gainea.server.core.map.Location
 import com.broll.gainea.server.core.objects.Unit
+import com.broll.gainea.server.core.shop.MercenaryShop
 import com.broll.gainea.server.init.PlayerData
 import com.broll.networklib.server.impl.LobbyPlayer
 

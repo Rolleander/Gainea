@@ -2,12 +2,18 @@ package com.broll.gainea.server.core.cards.impl.play
 
 import com.broll.gainea.net.NT_BoardEffect
 import com.broll.gainea.server.core.cards.Card
+import com.broll.gainea.server.core.cards.EffectType.DISRUPTION
 import com.broll.gainea.server.core.map.AreaType
 import com.broll.gainea.server.core.map.Location
 import com.broll.gainea.server.core.objects.MapEffect
 import com.broll.gainea.server.core.objects.buffs.TimedEffect
 
-class C_Fire : Card(75, "Drachenfeuer", "Wählt ein unbesetztes Gebiet (ausser Seen), dieses kann für " + ROUNDS + " Runden nicht besetzt werden.") {
+class C_Fire : Card(
+    75,
+    DISRUPTION,
+    "Drachenfeuer",
+    "Wählt ein unbesetztes Gebiet (ausser Seen), dieses kann für " + ROUNDS + " Runden nicht besetzt werden."
+) {
 
     override val isPlayable: Boolean
         get() = targets.isNotEmpty()

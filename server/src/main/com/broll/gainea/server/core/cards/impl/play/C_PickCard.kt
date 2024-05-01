@@ -1,9 +1,10 @@
 package com.broll.gainea.server.core.cards.impl.play
 
 import com.broll.gainea.server.core.cards.Card
+import com.broll.gainea.server.core.cards.EffectType.OTHER
 
 class C_PickCard : Card(
-    2, "Arkane Bibliothek",
+    2, OTHER, "Arkane Bibliothek",
     "Wählt zwischen $OPTIONS verschiedenen Aktionskarten aus."
 ) {
     override val isPlayable: Boolean

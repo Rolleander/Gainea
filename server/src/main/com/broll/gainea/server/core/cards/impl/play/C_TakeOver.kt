@@ -1,6 +1,7 @@
 package com.broll.gainea.server.core.cards.impl.play
 
 import com.broll.gainea.server.core.cards.Card
+import com.broll.gainea.server.core.cards.EffectType.SUMMON
 import com.broll.gainea.server.core.objects.Unit
 import com.broll.gainea.server.core.utils.UnitControl.recruit
 import com.broll.gainea.server.core.utils.getCommander
@@ -9,8 +10,10 @@ import com.broll.gainea.server.core.utils.isCommander
 import com.broll.gainea.server.core.utils.isCommanderAlive
 import com.broll.gainea.server.core.utils.selectUnit
 
-class C_TakeOver : Card(17, "Treueschwur", "Übernehmt die Einheit eines anderen Spielers (Ausser Feldherr)" +
-        " und teleportiert sie zu eurem Feldherr.") {
+class C_TakeOver : Card(
+    17, SUMMON, "Treueschwur", "Übernehmt die Einheit eines anderen Spielers (Ausser Feldherr)" +
+            " und teleportiert sie zu eurem Feldherr."
+) {
     init {
         drawChance = 0.5f
     }

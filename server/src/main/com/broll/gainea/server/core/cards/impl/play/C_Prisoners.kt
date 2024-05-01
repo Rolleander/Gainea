@@ -2,12 +2,13 @@ package com.broll.gainea.server.core.cards.impl.play
 
 import com.broll.gainea.server.core.battle.BattleResult
 import com.broll.gainea.server.core.cards.Card
+import com.broll.gainea.server.core.cards.EffectType.OTHER
 import com.broll.gainea.server.core.objects.Soldier
 import com.broll.gainea.server.core.objects.buffs.TimedEffect
 import com.broll.gainea.server.core.utils.UnitControl.recruit
 
 class C_Prisoners : Card(
-    20,
+    20, OTHER,
     "Kriegsgefangene",
     "Rekrutiert alle besiegte feindliche Soldaten beim nächsten siegreichen Kampf in diesem Zug (Ausser Feldherren)"
 ) {

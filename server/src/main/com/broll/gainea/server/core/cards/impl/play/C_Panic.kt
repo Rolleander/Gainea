@@ -1,10 +1,12 @@
 package com.broll.gainea.server.core.cards.impl.play
 
 import com.broll.gainea.server.core.cards.Card
+import com.broll.gainea.server.core.cards.EffectType.DISRUPTION
 import com.broll.gainea.server.core.utils.UnitControl.move
 
 class C_Panic : Card(
     46,
+    DISRUPTION,
     "Massenpanik",
     "Wählt ein Land mit mindestens einer Einheit. Alle Einheiten des gewählten Ortes werden auf angrenzende Orte verteilt."
 ) {

@@ -1,6 +1,7 @@
 package com.broll.gainea.server.core.cards.impl.play
 
 import com.broll.gainea.server.core.cards.Card
+import com.broll.gainea.server.core.cards.EffectType.DISRUPTION
 import com.broll.gainea.server.core.objects.Unit
 import com.broll.gainea.server.core.objects.buffs.BuffType
 import com.broll.gainea.server.core.objects.buffs.IntBuff
@@ -11,6 +12,7 @@ import com.broll.gainea.server.core.utils.UnitControl.spawn
 
 class C_Blockade : Card(
     54,
+    DISRUPTION,
     "Burgfried",
     "Platziert eine neutrale Befestigung (3/10) auf ein beliebiges freies Feld. Sie zerfällt nach " + ROUNDS + " Runden."
 ) {

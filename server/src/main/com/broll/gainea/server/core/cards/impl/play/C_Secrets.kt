@@ -1,10 +1,16 @@
 package com.broll.gainea.server.core.cards.impl.play
 
 import com.broll.gainea.server.core.cards.Card
+import com.broll.gainea.server.core.cards.EffectType.OTHER
 import com.broll.gainea.server.core.utils.displayConfirmMessage
 
 class C_Secrets :
-    Card(40, "Bestechung", "Schaut euch die Ziele und Aktionskarten eines beliebigen Spielers an") {
+    Card(
+        40,
+        OTHER,
+        "Bestechung",
+        "Schaut euch die Ziele und Aktionskarten eines beliebigen Spielers an"
+    ) {
     init {
         drawChance = 0.8f
     }

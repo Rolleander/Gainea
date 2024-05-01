@@ -1,11 +1,12 @@
 package com.broll.gainea.server.core.cards.impl.play
 
 import com.broll.gainea.server.core.cards.Card
+import com.broll.gainea.server.core.cards.EffectType.SUMMON
 import com.broll.gainea.server.core.utils.getSpawnLocations
 import com.broll.gainea.server.core.utils.isCommanderAlive
 
 class C_ResurrectCommander :
-    Card(61, "Auferstehung", "Lasst euren gefallenen Feldherr zurückkehren") {
+    Card(61, SUMMON, "Auferstehung", "Lasst euren gefallenen Feldherr zurückkehren") {
     init {
         drawChance = 2f
     }

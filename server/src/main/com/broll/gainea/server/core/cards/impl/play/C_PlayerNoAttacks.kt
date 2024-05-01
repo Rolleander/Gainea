@@ -2,13 +2,14 @@ package com.broll.gainea.server.core.cards.impl.play
 
 import com.broll.gainea.net.NT_Event
 import com.broll.gainea.server.core.cards.Card
+import com.broll.gainea.server.core.cards.EffectType.DISRUPTION
 import com.broll.gainea.server.core.objects.buffs.BuffType
 import com.broll.gainea.server.core.objects.buffs.GlobalBuff
 import com.broll.gainea.server.core.objects.buffs.IntBuff
 import com.broll.gainea.server.core.processing.rounds
 
 class C_PlayerNoAttacks : Card(
-    14,
+    14, DISRUPTION,
     "Wachpatrouille",
     "Wählt einen Gegner, dieser kann " + DURATION + " Runden keine Angriffe ausführen."
 ) {

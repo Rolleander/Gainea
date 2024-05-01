@@ -1,10 +1,11 @@
 package com.broll.gainea.server.core.cards.impl.play
 
 import com.broll.gainea.server.core.cards.Card
+import com.broll.gainea.server.core.cards.EffectType.SUMMON
 import com.broll.gainea.server.core.utils.getEnemyLocations
 
 class C_Spion : Card(
-    8,
+    8, SUMMON,
     "Spion",
     "Platziert einen Soldat auf ein besetztes Land eines anderen Spielers ohne einen Kampf."
 ) {

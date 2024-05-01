@@ -1,11 +1,12 @@
 package com.broll.gainea.server.core.cards.impl.play
 
 import com.broll.gainea.server.core.cards.Card
+import com.broll.gainea.server.core.cards.EffectType.DISRUPTION
 import com.broll.gainea.server.core.objects.impl.SpikeTrap
 import com.broll.gainea.server.core.utils.UnitControl.spawn
 
 class C_SpikeTrap : Card(
-    87,
+    87, DISRUPTION,
     "Fallgrube",
     "Platziert eine Stachelfalle (verursacht 3 Schaden) auf ein beliebiges freies Feld"
 ) {

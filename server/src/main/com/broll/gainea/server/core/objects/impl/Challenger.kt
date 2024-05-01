@@ -9,7 +9,7 @@ class Challenger(owner: Player) : Soldier(owner) {
         name = "Der Fremde"
         icon = 126
         setStats(7, 7)
-        description = "Bezwinger erh‰lt einen Siegespunkt"
+        description = "Bezwinger erh√§lt einen Siegespunkt"
     }
 
     override fun onDeath(throughBattle: BattleResult?) {

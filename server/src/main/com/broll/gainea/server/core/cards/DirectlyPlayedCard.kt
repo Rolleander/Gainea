@@ -2,7 +2,12 @@ package com.broll.gainea.server.core.cards
 
 import com.broll.gainea.net.NT_Card
 
-abstract class DirectlyPlayedCard(picture: Int, title: String, text: String) : Card(picture, title, text) {
+abstract class DirectlyPlayedCard(
+    picture: Int,
+    effectType: EffectType,
+    title: String,
+    text: String
+) : Card(picture, effectType, title, text) {
     override val isPlayable: Boolean
         get() = true
 

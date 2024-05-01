@@ -1,4 +1,4 @@
-package com.broll.gainea.server.core.player
+package com.broll.gainea.server.core.shop
 
 import com.broll.gainea.net.NT_Event
 import com.broll.gainea.net.NT_MercShop
@@ -8,6 +8,7 @@ import com.broll.gainea.server.core.objects.Soldier
 import com.broll.gainea.server.core.objects.Unit
 import com.broll.gainea.server.core.objects.impl.Challenger
 import com.broll.gainea.server.core.objects.impl.DemonKnight
+import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.core.utils.UnitControl.focus
 import com.broll.gainea.server.core.utils.isCommanderAlive
 
@@ -32,7 +33,18 @@ class MercenaryShop(val game: Game, val owner: Player) {
 
 }
 
-data class ShopUnit(val price: Int, val unit: Unit, val available: Boolean = true)
+
+interface ShopItem {
+    val price: Int
+    val available: Boolean
+}
+
+data class ShopUnit(
+    override val price: Int,
+    val unit: Unit,
+    override val available: Boolean = true
+) : ShopItem
+
 private open class Mercenary(
     owner: Player,
     stats: Pair<Int, Int> = 1 to 1,

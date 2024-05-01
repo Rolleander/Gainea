@@ -1,12 +1,13 @@
 package com.broll.gainea.server.core.cards.impl.play
 
 import com.broll.gainea.server.core.cards.Card
+import com.broll.gainea.server.core.cards.EffectType.OTHER
 import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.core.utils.getOtherPlayers
 import com.broll.gainea.server.core.utils.sendUpdate
 
 class C_StealCard :
-    Card(13, "Bekehrung", "Übernehmt eine Aktionskarte von einem beliebigen Spieler") {
+    Card(13, OTHER, "Bekehrung", "Übernehmt eine Aktionskarte von einem beliebigen Spieler") {
     init {
         drawChance = 0.5f
     }

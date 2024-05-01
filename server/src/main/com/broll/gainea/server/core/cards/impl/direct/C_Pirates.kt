@@ -2,11 +2,13 @@ package com.broll.gainea.server.core.cards.impl.direct
 
 import com.broll.gainea.misc.RandomUtils
 import com.broll.gainea.server.core.cards.DirectlyPlayedCard
+import com.broll.gainea.server.core.cards.EffectType.CHAOS
 import com.broll.gainea.server.core.objects.Soldier
 import com.broll.gainea.server.core.utils.UnitControl.spawn
 import com.broll.gainea.server.core.utils.noPlayerUnits
 
-class C_Pirates : DirectlyPlayedCard(38, "Piraten!", "Piraten befallen zufällige unbesetzte Schiffe") {
+class C_Pirates :
+    DirectlyPlayedCard(38, CHAOS, "Piraten!", "Piraten befallen zufällige unbesetzte Schiffe") {
     init {
         drawChance = 0.8f
     }

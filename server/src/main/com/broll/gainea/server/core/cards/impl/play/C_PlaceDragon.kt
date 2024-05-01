@@ -1,6 +1,7 @@
 package com.broll.gainea.server.core.cards.impl.play
 
 import com.broll.gainea.server.core.cards.Card
+import com.broll.gainea.server.core.cards.EffectType.SUMMON
 import com.broll.gainea.server.core.map.AreaType
 import com.broll.gainea.server.core.map.Location
 import com.broll.gainea.server.core.objects.monster.Monster
@@ -9,7 +10,7 @@ import com.broll.gainea.server.core.objects.monster.MonsterBehavior
 import com.broll.gainea.server.core.utils.emptyOrWildMonster
 
 class C_PlaceDragon : Card(
-    32,
+    32, SUMMON,
     "Drachenhort",
     "Platziert einen wilden Feuerdrachen auf einen beliebigen unbesetzten Berg"
 ) {

@@ -1,11 +1,13 @@
 package com.broll.gainea.server.core.cards
 
+import com.broll.gainea.server.core.cards.EffectType.MOVEMENT
 import com.broll.gainea.server.core.map.Location
 import com.broll.gainea.server.core.utils.UnitControl.move
 import com.broll.gainea.server.core.utils.emptyOrControlledBy
 import com.broll.gainea.server.core.utils.getUnits
 
-abstract class TeleportCard(picture: Int, title: String, text: String) : Card(picture, title, text) {
+abstract class TeleportCard(picture: Int, title: String, text: String) :
+    Card(picture, MOVEMENT, title, text) {
     abstract fun getTeleportTargets(from: Location): List<Location>
     override val isPlayable: Boolean
         get() = targets.isNotEmpty()

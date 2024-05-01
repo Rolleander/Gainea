@@ -3,9 +3,15 @@ package com.broll.gainea.server.core.cards.impl.play
 import com.broll.gainea.server.core.battle.BattleContext
 import com.broll.gainea.server.core.battle.RollManipulator
 import com.broll.gainea.server.core.cards.Card
+import com.broll.gainea.server.core.cards.EffectType.DEBUFF
 import com.broll.gainea.server.core.objects.buffs.TimedEffect
 
-class C_BattleDebuff : Card(53, "Pfeilhagel", "-1 Zahl für die feindliche Armee bei eurem nächsten Kampf diesen Zug.") {
+class C_BattleDebuff : Card(
+    53,
+    DEBUFF,
+    "Pfeilhagel",
+    "-1 Zahl für die feindliche Armee bei eurem nächsten Kampf diesen Zug."
+) {
     init {
         drawChance = 0.6f
     }

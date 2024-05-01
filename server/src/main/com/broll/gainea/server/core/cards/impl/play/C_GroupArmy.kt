@@ -1,11 +1,13 @@
 package com.broll.gainea.server.core.cards.impl.play
 
 import com.broll.gainea.server.core.cards.Card
+import com.broll.gainea.server.core.cards.EffectType.MOVEMENT
 import com.broll.gainea.server.core.map.Location
 import com.broll.gainea.server.core.utils.UnitControl.move
 
 class C_GroupArmy : Card(
     81,
+    MOVEMENT,
     "Ruhmreiche Parade",
     "Wählt ein beliebiges freies Feld von einer Karte, auf der ihr Einheiten besitzt." +
             " Bewegt alle eure Einheiten der gleichen Karte dorthin."

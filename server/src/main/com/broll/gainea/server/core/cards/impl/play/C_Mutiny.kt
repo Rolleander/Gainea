@@ -1,9 +1,15 @@
 package com.broll.gainea.server.core.cards.impl.play
 
 import com.broll.gainea.server.core.cards.Card
+import com.broll.gainea.server.core.cards.EffectType.DISRUPTION
 import com.broll.gainea.server.core.objects.buffs.TimedEffect
 
-class C_Mutiny : Card(15, "Meuterei", "Alle Schiffe sind für " + ROUNDS + " Runden nicht mehr begehbar") {
+class C_Mutiny : Card(
+    15,
+    DISRUPTION,
+    "Meuterei",
+    "Alle Schiffe sind für " + ROUNDS + " Runden nicht mehr begehbar"
+) {
     init {
         drawChance = 0.6f
     }

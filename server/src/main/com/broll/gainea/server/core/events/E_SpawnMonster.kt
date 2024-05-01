@@ -1,9 +1,13 @@
 package com.broll.gainea.server.core.events
 
+import com.broll.gainea.misc.RandomUtils
 import com.broll.gainea.server.core.utils.UnitControl.spawnMonsters
 
-class E_SpawnMonster : EventCard(60, "Rückkehr der Natur", "Ein wildes Monster taucht auf!") {
+class E_SpawnMonster : EventCard(60, "Rückkehr der Natur", "Neue Monster tauchen auf!") {
     override fun play() {
-        game.spawnMonsters(1)
+        val playerCount = game.activePlayers.size
+        val min = Math.max(1.0, playerCount * 0.5).toInt()
+        val max = playerCount * 2
+        game.spawnMonsters(RandomUtils.random(min, max))
     }
 }

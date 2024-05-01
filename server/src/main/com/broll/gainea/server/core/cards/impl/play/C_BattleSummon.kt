@@ -1,13 +1,14 @@
 package com.broll.gainea.server.core.cards.impl.play
 
 import com.broll.gainea.server.core.cards.Card
+import com.broll.gainea.server.core.cards.EffectType.SUMMON
 import com.broll.gainea.server.core.objects.Soldier
 import com.broll.gainea.server.core.objects.buffs.BuffType
 import com.broll.gainea.server.core.objects.buffs.IntBuff
 import com.broll.gainea.server.core.processing.thisRound
 
 class C_BattleSummon :
-    Card(66, "Rachedämon", "Beschwört einen Rachedämon (5/3) der nächste Runde stirbt.") {
+    Card(66, SUMMON, "Rachedämon", "Beschwört einen Rachedämon (5/3) der nächste Runde stirbt.") {
     init {
         drawChance = 0.6f
     }

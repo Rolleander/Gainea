@@ -1,6 +1,7 @@
 package com.broll.gainea.server.core.cards.impl.play
 
 import com.broll.gainea.server.core.cards.Card
+import com.broll.gainea.server.core.cards.EffectType.DISRUPTION
 import com.broll.gainea.server.core.map.Location
 import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.core.utils.getHostileUnits
@@ -10,7 +11,7 @@ import com.broll.gainea.server.core.utils.isHostile
 import com.broll.gainea.server.core.utils.owner
 
 class C_ForceAttack : Card(
-    86,
+    86, DISRUPTION,
     "Wahnsinniger Angriff",
     "Wählt eine feindliche Armee, greift damit einen ihrer benachbarten Feinde an."
 ) {

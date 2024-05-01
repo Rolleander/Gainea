@@ -1,12 +1,14 @@
 package com.broll.gainea.server.core.cards.impl.play
 
 import com.broll.gainea.server.core.cards.Card
+import com.broll.gainea.server.core.cards.EffectType.DISRUPTION
 import com.broll.gainea.server.core.player.isNeutral
 import com.broll.gainea.server.core.utils.UnitControl.move
 import com.broll.gainea.server.core.utils.getEnemyLocations
 
 class C_MoveEnemy : Card(
     19,
+    DISRUPTION,
     "Zwangsmarsch",
     "Versetzt eine feindliche Truppe auf ein beliebiges freies Feld der gleichen Landmasse."
 ) {

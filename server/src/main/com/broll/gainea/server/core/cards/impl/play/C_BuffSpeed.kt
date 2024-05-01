@@ -1,11 +1,17 @@
 package com.broll.gainea.server.core.cards.impl.play
 
 import com.broll.gainea.server.core.cards.Card
+import com.broll.gainea.server.core.cards.EffectType.BUFF
 import com.broll.gainea.server.core.objects.buffs.BuffType
 import com.broll.gainea.server.core.objects.buffs.IntBuff
 import com.broll.gainea.server.core.utils.selectPlayerUnit
 
-class C_BuffSpeed : Card(28, "Reittier", "Verleiht einer eurer Einheiten eine zusätzliche Bewegungsaktion pro Zug") {
+class C_BuffSpeed : Card(
+    28,
+    BUFF,
+    "Reittier",
+    "Verleiht einer eurer Einheiten eine zusätzliche Bewegungsaktion pro Zug"
+) {
     override val isPlayable: Boolean
         get() = owner.units.isNotEmpty()
 

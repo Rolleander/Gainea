@@ -1,6 +1,7 @@
 package com.broll.gainea.server.core.cards.impl.play
 
 import com.broll.gainea.server.core.cards.Card
+import com.broll.gainea.server.core.cards.EffectType.OTHER
 import com.broll.gainea.server.core.map.Location
 import com.broll.gainea.server.core.objects.MapObject
 import com.broll.gainea.server.core.objects.monster.Monster
@@ -9,7 +10,7 @@ import com.broll.gainea.server.core.utils.UnitControl.recruit
 import com.broll.gainea.server.core.utils.selectUnitFromLocations
 
 class C_MonsterRecruit :
-    Card(71, "Tierfreund", "Rekrutiert ein benachbartes Monster mit maximal 4 Sternen") {
+    Card(71, OTHER, "Tierfreund", "Rekrutiert ein benachbartes Monster mit maximal 4 Sternen") {
     init {
         drawChance = 0.8f
     }

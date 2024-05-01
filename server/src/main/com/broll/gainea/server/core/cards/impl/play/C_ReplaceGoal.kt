@@ -1,9 +1,10 @@
 package com.broll.gainea.server.core.cards.impl.play
 
 import com.broll.gainea.server.core.cards.Card
+import com.broll.gainea.server.core.cards.EffectType.OTHER
 
 class C_ReplaceGoal : Card(
-    39,
+    39, OTHER,
     "Zielstrategie",
     "Wähle aus drei neuen Zielen und ersetze damit ein vorhandenes Ziel"
 ) {

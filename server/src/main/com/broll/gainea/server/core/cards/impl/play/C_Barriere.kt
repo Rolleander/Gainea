@@ -2,6 +2,7 @@ package com.broll.gainea.server.core.cards.impl.play
 
 import com.broll.gainea.net.NT_Event
 import com.broll.gainea.server.core.cards.Card
+import com.broll.gainea.server.core.cards.EffectType
 import com.broll.gainea.server.core.objects.buffs.BuffType
 import com.broll.gainea.server.core.objects.buffs.GlobalBuff
 import com.broll.gainea.server.core.objects.buffs.IntBuff
@@ -9,6 +10,7 @@ import com.broll.gainea.server.core.processing.rounds
 
 class C_Barriere : Card(
     41,
+    EffectType.BUFF,
     "Magische Barriere",
     "Eure Einheiten erhalten +" + BUFF + " Leben für " + DURATION + " Runden, können solange aber nicht mehr angreifen."
 ) {

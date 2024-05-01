@@ -1,10 +1,12 @@
 package com.broll.gainea.server.core.cards.impl.direct
 
 import com.broll.gainea.server.core.cards.DirectlyPlayedCard
+import com.broll.gainea.server.core.cards.EffectType.SUMMON
 import com.broll.gainea.server.core.objects.Soldier
 import com.broll.gainea.server.core.player.Player
 
-class C_EliteSoldier : DirectlyPlayedCard(25, "Profi anheuern", "Rekrutiert einen Elitekrieger") {
+class C_EliteSoldier :
+    DirectlyPlayedCard(25, SUMMON, "Profi anheuern", "Rekrutiert einen Elitekrieger") {
     override fun play() {
         val soldier = EliteSoldier(owner)
         placeUnitHandler.placeUnit(owner, soldier, owner.controlledLocations.toList())

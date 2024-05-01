@@ -2,10 +2,12 @@ package com.broll.gainea.server.core.cards.impl.play
 
 import com.broll.gainea.net.NT_Event
 import com.broll.gainea.server.core.cards.Card
+import com.broll.gainea.server.core.cards.EffectType.BUFF
 import com.broll.gainea.server.core.utils.UnitControl.focus
 import com.broll.gainea.server.core.utils.selectPlayerUnit
 
-class C_BuffMighty : Card(10, "Excaliburs Macht", "Verdoppelt Angriff und Leben einer Einheit") {
+class C_BuffMighty :
+    Card(10, BUFF, "Excaliburs Macht", "Verdoppelt Angriff und Leben einer Einheit") {
     init {
         drawChance = 0.2f
     }

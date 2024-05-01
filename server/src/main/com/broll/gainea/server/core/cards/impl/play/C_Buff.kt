@@ -6,10 +6,11 @@ import com.broll.gainea.server.core.bot.impl.BotSelect
 import com.broll.gainea.server.core.bot.strategy.BotStrategy
 import com.broll.gainea.server.core.bot.strategy.ICardStrategy
 import com.broll.gainea.server.core.cards.Card
+import com.broll.gainea.server.core.cards.EffectType.BUFF
 import com.broll.gainea.server.core.utils.UnitControl.focus
 import com.broll.gainea.server.core.utils.selectPlayerUnit
 
-class C_Buff : Card(30, "Aufstieg", "Verleiht einer eurer Einheiten +1/+1"), ICardStrategy {
+class C_Buff : Card(30, BUFF, "Aufstieg", "Verleiht einer eurer Einheiten +1/+1"), ICardStrategy {
     override val isPlayable: Boolean
         get() = owner.units.isNotEmpty()
 
