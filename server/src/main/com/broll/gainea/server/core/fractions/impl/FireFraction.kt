@@ -3,6 +3,7 @@ package com.broll.gainea.server.core.fractions.impl
 import com.broll.gainea.server.core.battle.BattleResult
 import com.broll.gainea.server.core.battle.FightingPower
 import com.broll.gainea.server.core.cards.Card
+import com.broll.gainea.server.core.cards.EffectType.DISRUPTION
 import com.broll.gainea.server.core.fractions.Fraction
 import com.broll.gainea.server.core.fractions.FractionDescription
 import com.broll.gainea.server.core.fractions.FractionType
@@ -78,7 +79,7 @@ class FireFraction : Fraction(FractionType.FIRE) {
 }
 
 class FireRain :
-    Card(76, "Feuerregen", "Verursacht 1 Schaden an einer beliebigen Einheit") {
+    Card(76, DISRUPTION, "Feuerregen", "Verursacht 1 Schaden an einer beliebigen Einheit") {
     override val isPlayable: Boolean
         get() = true
 
