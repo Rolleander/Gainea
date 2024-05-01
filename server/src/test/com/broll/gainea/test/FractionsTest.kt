@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test
 class FractionsTest {
     val game = testGame()
     private fun initFraction(f: Fraction): Fraction {
-        val lp = DummyLobbyPlayer<PlayerData>()
+        val lp = DummyLobbyPlayer<PlayerData>(0)
         lp.data = PlayerData(f.type)
         Player(game, f, lp)
         return f

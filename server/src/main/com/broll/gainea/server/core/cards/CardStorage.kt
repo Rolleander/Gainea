@@ -56,13 +56,16 @@ class CardStorage(private val game: Game) {
     }
 
     fun getPlayableCards(count: Int) =
-        ArrayList(loader.classes).filter { !it.isInstance(DirectlyPlayedCard::class.java) }
+        loader.classes.filter { !it.isDirectlyPlayedCard() }
             .shuffled().take(count).map { getCard(it) }
+
 
     fun getDirectlyPlayedCards(count: Int) =
-        ArrayList(loader.classes).filter { it.isInstance(DirectlyPlayedCard::class.java) }
+        loader.classes.filter { it.isDirectlyPlayedCard() }
             .shuffled().take(count).map { getCard(it) }
 
+    private fun Class<out Card>.isDirectlyPlayedCard() =
+        DirectlyPlayedCard::class.java.isAssignableFrom(this)
 
     fun getCard(cardClass: Class<out Card>): Card {
         return loader.instantiate(cardClass)

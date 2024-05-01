@@ -38,7 +38,7 @@ object NeutralFraction : Fraction(type = DRUIDS) {
 
 }
 
-object NeutralServerPlayer : DummyLobbyPlayer<PlayerData>() {
+object NeutralServerPlayer : DummyLobbyPlayer<PlayerData>(-1) {
 
     init {
         data = PlayerData(DRUIDS)

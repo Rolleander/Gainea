@@ -51,9 +51,8 @@ class Game(val lobby: ServerLobby<LobbyData, PlayerData>) {
 
     lateinit var battleHandler: BattleHandler
 
-    lateinit var goalStorage: GoalStorage
-
-    lateinit var cardStorage: CardStorage
+    val goalStorage: GoalStorage
+    val cardStorage: CardStorage
     lateinit var processingCore: ProcessingCore
 
     val monsterFactory: MonsterFactory
@@ -73,6 +72,8 @@ class Game(val lobby: ServerLobby<LobbyData, PlayerData>) {
         buffProcessor = BuffProcessor(this)
         statistic = GameStatistic(this)
         updateReceiver.register(statistic)
+        goalStorage = GoalStorage(this, lobby.data.goalTypes)
+        cardStorage = CardStorage(this)
     }
 
     fun initHandlers(reactionResult: ReactionActions) {
@@ -81,10 +82,7 @@ class Game(val lobby: ServerLobby<LobbyData, PlayerData>) {
         processingCore = ProcessingCore(this, { reactionHandler.finishedProcessing() }, lobby)
         turnBuilder = TurnBuilder(this, actionHandlers)
         battleHandler = BattleHandler(this, reactionResult)
-        goalStorage = GoalStorage(this, lobby.data.goalTypes)
-        cardStorage = CardStorage(this)
     }
-
 
     fun newObjectId() = boardObjectCounter.incrementAndGet()
 

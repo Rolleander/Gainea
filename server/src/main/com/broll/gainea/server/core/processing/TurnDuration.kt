@@ -4,7 +4,7 @@ import com.broll.gainea.server.core.Game
 import kotlin.math.max
 
 
-class TurnDuration(val turns: Int? = 0, val rounds: Int? = 0) {
+class TurnDuration(val turns: Int? = null, val rounds: Int? = null) {
 
     private lateinit var game: Game
     private var registeredRound = 0

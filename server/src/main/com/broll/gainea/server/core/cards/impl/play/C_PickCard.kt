@@ -2,7 +2,10 @@ package com.broll.gainea.server.core.cards.impl.play
 
 import com.broll.gainea.server.core.cards.Card
 
-class C_PickCard : Card(2, "Arkane Bibliothek", "Wählt zwischen " + OPTIONS + " verschiedenen Aktionskarten aus.") {
+class C_PickCard : Card(
+    2, "Arkane Bibliothek",
+    "Wählt zwischen $OPTIONS verschiedenen Aktionskarten aus."
+) {
     override val isPlayable: Boolean
         get() = true
 
