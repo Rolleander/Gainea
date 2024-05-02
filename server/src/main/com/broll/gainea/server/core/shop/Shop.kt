@@ -13,12 +13,12 @@ class Shop(val game: Game, val owner: Player) {
 
     val items: List<ShopItem>
         get() = listOf(
-            ShopUnit(4, Mercenary(owner, 1 to 1, 10, "Leichter Söldner")),
-            ShopUnit(7, Mercenary(owner, 2 to 2, 28, "Schwerer Söldner")),
-            ShopUnit(8, DemonKnight(owner)),
+            ShopUnit(3, Mercenary(owner, 1 to 1, 10, "Leichter Söldner")),
+            ShopUnit(5, Mercenary(owner, 2 to 2, 28, "Schwerer Söldner")),
+            ShopUnit(6, DemonKnight(owner)),
             ShopUnit(10, owner.fraction.createCommander(), !owner.isCommanderAlive()),
-            ShopUnit(13, SoulStealer(owner)),
-            ShopUnit(20, Challenger(owner)),
+            ShopUnit(14, SoulStealer(owner)),
+            ShopUnit(18, Challenger(owner)),
             MovementCard,
             PickCard
         )

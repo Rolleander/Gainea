@@ -29,7 +29,7 @@ class CardAction : AbstractActionHandler<NT_Action_Card, CardAction.Context>() {
     }
 
     companion object {
-        const val PLAY_CARD_DELAY = 5000
+        const val PLAY_CARD_DELAY = 3500
         private val Log = LoggerFactory.getLogger(CardAction::class.java)
     }
 }
