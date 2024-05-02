@@ -5,7 +5,7 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.broll.gainea.Gainea;
 import com.broll.gainea.client.AudioPlayer;
 import com.broll.gainea.client.ui.screens.StartScreen;
-import com.broll.gainea.client.ui.screens.TestBattleScreen;
+import com.broll.gainea.client.ui.screens.TestMapScreen;
 
 public class DesktopTestLauncher {
     public static void main(String[] arg) {
@@ -22,6 +22,6 @@ public class DesktopTestLauncher {
         config.setWindowedMode(1280, 900);
         config.setResizable(true);
         config.setWindowIcon("ui/icon_large.png", "ui/icon_small.png");
-        new Lwjgl3Application(new Gainea(new TestBattleScreen(), false), config);
+        new Lwjgl3Application(new Gainea(new TestMapScreen(), false), config);
     }
 }

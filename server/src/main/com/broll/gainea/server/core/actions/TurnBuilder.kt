@@ -4,9 +4,9 @@ import com.broll.gainea.net.NT_Action
 import com.broll.gainea.net.NT_PlayerTurnActions
 import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.actions.optional.AttackAction
-import com.broll.gainea.server.core.actions.optional.BuyMercAction
 import com.broll.gainea.server.core.actions.optional.CardAction
 import com.broll.gainea.server.core.actions.optional.MoveUnitAction
+import com.broll.gainea.server.core.actions.optional.ShopAction
 import com.broll.gainea.server.core.map.Location
 import com.broll.gainea.server.core.objects.Unit
 import com.broll.gainea.server.core.player.Player
@@ -21,7 +21,7 @@ class TurnBuilder(private val game: Game, private val actionHandlers: ActionHand
         actions.addAll(buildMoveAndAttackActions(player))
         actions.addAll(buildCardActions(player))
         if (player.units.isNotEmpty()) {
-            actions += buildMercActions(player)
+            actions += buildShopActions(player)
         }
         turn.actions = actions.map { it.action }.toTypedArray()
         actions.forEach { game.pushAction(it) }
@@ -61,12 +61,12 @@ class TurnBuilder(private val game: Game, private val actionHandlers: ActionHand
             .map { cardAction.playableCard(it) }
     }
 
-    private fun buildMercActions(player: Player) =
-        with(player.mercenaryShop.units) {
+    private fun buildShopActions(player: Player) =
+        with(player.shop.items) {
             filter { it.available && it.price <= player.goalHandler.stars }
                 .map {
-                    actionHandlers.getHandler(BuyMercAction::class.java)
-                        .purchasableMerc(player, this.indexOf(it))
+                    actionHandlers.getHandler(ShopAction::class.java)
+                        .purchasableItem(player, this.indexOf(it))
                 }
         }
 }

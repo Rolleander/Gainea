@@ -2,16 +2,16 @@ package com.broll.gainea.server.core.actions
 
 import com.broll.gainea.net.NT_Action
 import com.broll.gainea.net.NT_Action_Attack
-import com.broll.gainea.net.NT_Action_BuyMerc
 import com.broll.gainea.net.NT_Action_Card
 import com.broll.gainea.net.NT_Action_Move
 import com.broll.gainea.net.NT_Action_PlaceUnit
 import com.broll.gainea.net.NT_Action_SelectChoice
+import com.broll.gainea.net.NT_Action_Shop
 import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.actions.optional.AttackAction
-import com.broll.gainea.server.core.actions.optional.BuyMercAction
 import com.broll.gainea.server.core.actions.optional.CardAction
 import com.broll.gainea.server.core.actions.optional.MoveUnitAction
+import com.broll.gainea.server.core.actions.optional.ShopAction
 import com.broll.gainea.server.core.actions.required.PlaceUnitAction
 import com.broll.gainea.server.core.actions.required.SelectChoiceAction
 
@@ -30,7 +30,7 @@ class ActionHandlers(private val game: Game, val reactionActions: ReactionAction
         initHandler(NT_Action_Attack::class.java, AttackAction())
         initHandler(NT_Action_Card::class.java, CardAction())
         initHandler(NT_Action_SelectChoice::class.java, SelectChoiceAction())
-        initHandler(NT_Action_BuyMerc::class.java, BuyMercAction())
+        initHandler(NT_Action_Shop::class.java, ShopAction())
     }
 
     private fun initHandler(

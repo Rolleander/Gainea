@@ -5,7 +5,7 @@ import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.fractions.Fraction
 import com.broll.gainea.server.core.map.Location
 import com.broll.gainea.server.core.objects.Unit
-import com.broll.gainea.server.core.shop.MercenaryShop
+import com.broll.gainea.server.core.shop.Shop
 import com.broll.gainea.server.init.PlayerData
 import com.broll.networklib.server.impl.LobbyPlayer
 
@@ -13,7 +13,7 @@ open class Player(game: Game, val fraction: Fraction, val serverPlayer: LobbyPla
     val units = mutableListOf<Unit>()
     val goalHandler: GoalHandler
     val cardHandler: CardHandler
-    val mercenaryShop: MercenaryShop
+    val shop: Shop
 
     var skipRounds = 0
         private set
@@ -24,7 +24,7 @@ open class Player(game: Game, val fraction: Fraction, val serverPlayer: LobbyPla
         fraction.init(game, this)
         goalHandler = GoalHandler(game, this)
         cardHandler = CardHandler(game, this)
-        mercenaryShop = MercenaryShop(game, this)
+        shop = Shop(game, this)
         serverPlayer.data.joinedGame(this)
     }
 

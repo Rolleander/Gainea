@@ -114,7 +114,7 @@ class Game(val lobby: ServerLobby<LobbyData, PlayerData>) {
         nt.pointLimit = lobby.data.pointLimit
         nt.roundLimit = lobby.data.roundLimit
         nt.cards = player.cardHandler.ntCards()
-        nt.shop = player.mercenaryShop.nt()
+        nt.shop = player.shop.nt()
         return nt
     }
 
@@ -134,7 +134,7 @@ class Game(val lobby: ServerLobby<LobbyData, PlayerData>) {
         nt.goals = player.goalHandler.ntGoals()
         nt.pointLimit = lobby.data.pointLimit
         nt.roundLimit = lobby.data.roundLimit
-        nt.shop = player.mercenaryShop.nt()
+        nt.shop = player.shop.nt()
         return nt
     }
 

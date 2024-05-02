@@ -8,8 +8,8 @@ import com.broll.gainea.net.NT_BoardUpdate;
 import com.broll.gainea.net.NT_Card;
 import com.broll.gainea.net.NT_GameStatistic;
 import com.broll.gainea.net.NT_Goal;
-import com.broll.gainea.net.NT_MercShop;
 import com.broll.gainea.net.NT_Player;
+import com.broll.gainea.net.NT_Shop;
 import com.broll.gainea.net.NT_Unit;
 import com.broll.gainea.server.init.ExpansionSetting;
 import com.broll.networklib.client.impl.LobbyPlayer;
@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 
 public class GameState {
 
-    public NT_MercShop shop;
+    public NT_Shop shop;
     private Gainea game;
     //game data:
     private int round;

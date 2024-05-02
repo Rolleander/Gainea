@@ -12,18 +12,21 @@ import com.broll.gainea.client.ui.ingame.hud.InfoMessageContainer;
 import com.broll.gainea.misc.RandomUtils;
 import com.broll.gainea.net.NT_Action;
 import com.broll.gainea.net.NT_Action_Attack;
-import com.broll.gainea.net.NT_Action_BuyMerc;
 import com.broll.gainea.net.NT_Action_Card;
 import com.broll.gainea.net.NT_Action_Move;
+import com.broll.gainea.net.NT_Action_Shop;
 import com.broll.gainea.net.NT_BoardEffect;
 import com.broll.gainea.net.NT_BoardObject;
 import com.broll.gainea.net.NT_BoardUpdate;
 import com.broll.gainea.net.NT_Card;
 import com.broll.gainea.net.NT_Event_FinishedGoal;
 import com.broll.gainea.net.NT_Goal;
-import com.broll.gainea.net.NT_MercShop;
 import com.broll.gainea.net.NT_Monster;
 import com.broll.gainea.net.NT_Player;
+import com.broll.gainea.net.NT_Shop;
+import com.broll.gainea.net.NT_ShopItem;
+import com.broll.gainea.net.NT_ShopOther;
+import com.broll.gainea.net.NT_ShopUnit;
 import com.broll.gainea.net.NT_Unit;
 import com.broll.gainea.server.core.map.AreaID;
 import com.broll.gainea.server.core.map.impl.GaineaMap;
@@ -52,13 +55,20 @@ public class TestMapScreen extends Screen {
         ClientMapContainer.RENDER_DEBUG = true;
         game.state.init(ExpansionSetting.FULL, 0, 30, new DummyLobbyPlayer(0, null));
 
-        NT_MercShop shop = new NT_MercShop();
-        shop.prices = new short[6];
-        shop.units = new NT_Unit[6];
-        for (int i = 0; i < shop.units.length; i++) {
-            shop.units[i] = unit();
-            shop.units[i].description = "langer kauftext ok passt";
-            shop.prices[i] = (short) (5 + i);
+        NT_Shop shop = new NT_Shop();
+        shop.items = new NT_ShopItem[8];
+        for (int i = 0; i < shop.items.length; i++) {
+            NT_ShopItem item;
+            if (i <= 5) {
+                item = new NT_ShopUnit();
+                ((NT_ShopUnit) item).unit = unit();
+                ((NT_ShopUnit) item).unit.description = "langer kauftext ok passt";
+            } else {
+                item = new NT_ShopOther();
+                ((NT_ShopOther) item).description = "langer text für spell zum kaufen ok passt bestimmt";
+            }
+            item.price = (short) (5 + i);
+            shop.items[i] = item;
         }
         game.state.shop = shop;
 
@@ -162,7 +172,7 @@ public class TestMapScreen extends Screen {
         atk.location = getAreaNum(GaineaMap.Areas.WEIDESTEPPE);
         actions.add(atk);
 
-        NT_Action_BuyMerc buy = new NT_Action_BuyMerc();
+        NT_Action_Shop buy = new NT_Action_Shop();
         buy.index = 5;
         actions.add(buy);
 

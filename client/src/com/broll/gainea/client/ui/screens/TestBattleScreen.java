@@ -10,9 +10,10 @@ import com.broll.gainea.net.NT_Battle_Roll;
 import com.broll.gainea.net.NT_BoardEffect;
 import com.broll.gainea.net.NT_BoardObject;
 import com.broll.gainea.net.NT_BoardUpdate;
-import com.broll.gainea.net.NT_MercShop;
 import com.broll.gainea.net.NT_Monster;
 import com.broll.gainea.net.NT_Player;
+import com.broll.gainea.net.NT_Shop;
+import com.broll.gainea.net.NT_ShopItem;
 import com.broll.gainea.net.NT_Unit;
 import com.broll.gainea.server.init.ExpansionSetting;
 
@@ -53,8 +54,8 @@ public class TestBattleScreen extends Screen {
         nt.objects = new NT_BoardObject[0];
         nt.effects = new NT_BoardEffect[0];
         nt.round = 0;
-        game.state.shop = new NT_MercShop();
-        game.state.shop.units = new NT_Unit[0];
+        game.state.shop = new NT_Shop();
+        game.state.shop.items = new NT_ShopItem[0];
         game.ui.initInGameUi();
         game.state.update(nt);
         game.ui.inGameUI.show();

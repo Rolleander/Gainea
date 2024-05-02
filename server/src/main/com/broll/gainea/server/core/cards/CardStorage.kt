@@ -7,52 +7,46 @@ import com.broll.gainea.server.core.player.Player
 
 class CardStorage(private val game: Game) {
     private val loader: PackageLoader<Card> = PackageLoader(Card::class.java, PACKAGE_PATH)
-    private val drawChances: FloatArray
     val allCards: List<Card>
-    private val totalDrawChances: Float
 
     init {
         loader.dropClassesOf {
             !it.validFor(game)
         }
         allCards = loader.instantiateAll()
-        drawChances = allCards.map { it.drawChance }.toFloatArray()
-        totalDrawChances = allCards.map { it.drawChance }.sum()
     }
 
     fun drawRandomCard(player: Player) {
-        val card = getRandomCard()
-        player.cardHandler.receiveCard(card)
+        player.cardHandler.receiveCard(getRandomCard())
     }
 
-    fun getRandomCard(): Card {
+    fun getRandomCard() =
+        allCards.cloneRandomEntry()
+
+    fun getRandomPlayableCard() =
+        allCards.filter { !it.isDirectlyPlayedCard() }.cloneRandomEntry()
+
+
+    fun getRandomPlayableCard(type: EffectType) =
+        allCards.filter { !it.isDirectlyPlayedCard() && it.effectType == type }.cloneRandomEntry()
+
+
+    fun getRandomDirectlyPlayedCard() =
+        allCards.filter { it.isDirectlyPlayedCard() }.cloneRandomEntry()
+
+
+    private fun List<Card>.cloneRandomEntry(): Card {
+        val drawChances = map { it.drawChance }.toFloatArray()
+        val totalDrawChances = map { it.drawChance }.sum()
         var chanceSum = 0f
         val chance = RandomUtils.random(0f, totalDrawChances)
         for (i in drawChances.indices) {
             if (chance <= chanceSum) {
-                return loader.instantiate(i)
+                return getCard(get(i).javaClass)
             }
             chanceSum += drawChances[i]
         }
-        return getRandomCard()
-    }
-
-    fun getRandomPlayableCard(): Card {
-        while (true) {
-            val card = getRandomCard()
-            if (card !is DirectlyPlayedCard) {
-                return card
-            }
-        }
-    }
-
-    fun getRandomDirectlyPlayedCard(): Card {
-        while (true) {
-            val card = getRandomCard()
-            if (card is DirectlyPlayedCard) {
-                return card
-            }
-        }
+        return getCard(random().javaClass)
     }
 
     fun getPlayableCards(count: Int) =
@@ -63,6 +57,8 @@ class CardStorage(private val game: Game) {
     fun getDirectlyPlayedCards(count: Int) =
         loader.classes.filter { it.isDirectlyPlayedCard() }
             .shuffled().take(count).map { getCard(it) }
+
+    private fun Card.isDirectlyPlayedCard() = this is DirectlyPlayedCard
 
     private fun Class<out Card>.isDirectlyPlayedCard() =
         DirectlyPlayedCard::class.java.isAssignableFrom(this)
