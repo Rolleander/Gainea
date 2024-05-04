@@ -11,6 +11,12 @@ import com.broll.gainea.server.core.player.Player
 fun <T : AbstractActionHandler<*, *>> Game.getActionHandler(handlerClass: Class<T>) =
     reactionHandler.actionHandlers.getHandler(handlerClass)
 
+fun Game.endPlayersTurn(player: Player) {
+    if (currentPlayer == player && lobby.data.gameRoundsStarted) {
+        endTurn()
+    }
+}
+
 fun Game.endTurn() = reactionHandler.actionHandlers.reactionActions.endTurn()
 fun Game.noActivePlayersRemaining() =
     activePlayers.isEmpty() || activePlayers.all { it.serverPlayer.isBot }

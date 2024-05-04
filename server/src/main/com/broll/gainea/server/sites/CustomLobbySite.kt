@@ -10,15 +10,16 @@ import com.broll.networklib.server.impl.LobbySite
 class CustomLobbySite : LobbySite<LobbyData, PlayerData>() {
     val CMD_PREIFX = "/"
     val CMDS = listOf(
-            "nextturn" to { game: Game ->
-                game.battleHandler.reset()
-                game.endTurn()
-            }
+        "nextturn" to { game: Game ->
+            game.battleHandler.reset()
+            game.endTurn()
+        }
     )
 
     val game: Game?
         get() = lobby.data.game
 
+    //todo check if it still works
     override fun chat(chatMessage: NT_ChatMessage) {
         //check for commands
         val cmd = CMDS.find { CMD_PREIFX + it.first == chatMessage.message.trim().lowercase() }

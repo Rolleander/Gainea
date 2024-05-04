@@ -5,6 +5,7 @@ import com.broll.gainea.net.NT_EndTurn
 import com.broll.gainea.net.NT_Reaction
 import com.broll.gainea.net.NT_Surrender
 import com.broll.gainea.server.core.utils.displayMessage
+import com.broll.gainea.server.core.utils.endPlayersTurn
 import com.broll.gainea.server.core.utils.noActivePlayersRemaining
 import com.broll.networklib.PackageReceiver
 import com.broll.networklib.server.ConnectionRestriction
@@ -52,7 +53,7 @@ class GameBoardSite : GameSite() {
     @ConnectionRestriction(RestrictionType.LOBBY_LOCKED)
     fun endTurn(nt: NT_EndTurn) {
         //only react to if its players turn and no action is running right now
-        if (lobby.data.isGameRoundsStarted &&
+        if (lobby.data.gameRoundsStarted &&
             !game.isGameOver && playersTurn() &&
             !game.processingCore.isBusy
         ) {
@@ -81,7 +82,7 @@ class GameBoardSite : GameSite() {
             game.reactionHandler.finishedProcessing()
         } else {
             game.displayMessage(player.name + " hat aufgegeben!", sound = "smash.ogg")
-            endTurn(NT_EndTurn())
+            game.endPlayersTurn(gamePlayer)
         }
     }
 
@@ -89,3 +90,5 @@ class GameBoardSite : GameSite() {
         private val Log = LoggerFactory.getLogger(GameBoardSite::class.java)
     }
 }
+
+

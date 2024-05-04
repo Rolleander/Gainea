@@ -7,6 +7,13 @@ public class RandomUtils {
 
     private static Random random = new Random();
 
+    public static int randomIndex(List<?> list) {
+        if (list.isEmpty()) {
+            return 0;
+        }
+        return (int) (random.nextDouble() * list.size());
+    }
+
     public static <T> T pickRandom(List<T> list) {
         if (list.isEmpty()) {
             return null;
@@ -14,15 +21,19 @@ public class RandomUtils {
         return list.get(random(0, list.size() - 1));
     }
 
-    static public int random (int end) {
+    static public double random() {
+        return random.nextDouble();
+    }
+
+    static public int random(int end) {
         return random(0, end);
     }
 
-    static public int random (int start, int end) {
+    static public int random(int start, int end) {
         return (int) (start + (random.nextDouble() * (end - start)));
     }
 
-    static public float random (float start, float end) {
+    static public float random(float start, float end) {
         return start + random.nextFloat() * (end - start);
     }
 

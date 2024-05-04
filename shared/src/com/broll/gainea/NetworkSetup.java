@@ -66,6 +66,11 @@ import com.broll.gainea.net.NT_StartGame;
 import com.broll.gainea.net.NT_Surrender;
 import com.broll.gainea.net.NT_Unit;
 import com.broll.gainea.net.NT_UpdateLobbySettings;
+import com.broll.gainea.net.NT_Vote;
+import com.broll.gainea.net.NT_VotePending;
+import com.broll.gainea.net.NT_Vote_Base;
+import com.broll.gainea.net.NT_Vote_KickPlayer;
+import com.broll.gainea.net.NT_Vote_SkipTurn;
 import com.broll.networklib.NetworkRegister;
 import com.google.common.collect.Lists;
 
@@ -99,6 +104,8 @@ public class NetworkSetup {
                 NT_Action[].class, NT_BoardObject[].class, NT_Unit[].class, NT_Player[].class,
                 NT_Goal[].class, NT_Card[].class, Integer[].class, int[].class, short[].class, byte[].class,
                 String[].class, Object[].class, NT_RoundStatistic[].class, NT_BoardEffect[].class,
+                NT_Vote.class, NT_Vote_KickPlayer.class, NT_Vote_SkipTurn.class,
+                NT_Vote_Base.class, NT_VotePending.class,
                 NT_ShopItem.class, NT_ShopItem[].class, NT_ShopOther.class, NT_ShopUnit.class);
         classes.forEach(register::registerNetworkType);
     }

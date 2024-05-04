@@ -9,6 +9,7 @@ import com.broll.gainea.client.network.sites.GameBoardSite;
 import com.broll.gainea.client.network.sites.GameEventSite;
 import com.broll.gainea.client.network.sites.GameStateSite;
 import com.broll.gainea.client.network.sites.GameTurnSite;
+import com.broll.gainea.client.network.sites.GameVoteSite;
 import com.broll.networklib.client.ClientSite;
 import com.broll.networklib.client.LobbyGameClient;
 import com.broll.networklib.client.impl.GameLobby;
@@ -50,7 +51,7 @@ public class ClientHandler {
     private void initGameSites(Gainea game) {
         client.clearSites();
         GameActionSite actionSite = new GameActionSite();
-        Lists.newArrayList(actionSite, new GameBattleSite(), new GameBoardSite(), new GameEventSite(), new GameStateSite(), new GameTurnSite(actionSite)).forEach(site -> {
+        Lists.newArrayList(actionSite, new GameBattleSite(), new GameBoardSite(), new GameEventSite(), new GameStateSite(), new GameTurnSite(actionSite), new GameVoteSite()).forEach(site -> {
             site.init(game);
             client.register(site);
         });
@@ -61,7 +62,13 @@ public class ClientHandler {
     }
 
     public void listLobbies(String ip) {
-        clientExecute(() -> client.listLobbies(ip), lobbies -> clientListener.discoveredLobbies(lobbies), "Failed to list lobbies");
+        clientExecute(() -> client.listLobbies(ip), result -> {
+            if (result.getReconnectedLobby() != null) {
+                listenLobbyUpdates(result.getReconnectedLobby());
+            } else {
+                clientListener.discoveredLobbies(result.getLobbies());
+            }
+        }, "Failed to list lobbies");
     }
 
     public void joinLobby(String playerName, GameLobby lobby) {
@@ -79,7 +86,7 @@ public class ClientHandler {
 
     public void reconnectCheck() {
         clientExecute(() -> client.reconnectCheck(), lobby -> {
-            //joins game directly, so dont call join lobby listener , will receive a game reconnect message in site and open game directly
+            //actual reconnect happens in GameStateSite
             if (lobby != null) {
                 listenLobbyUpdates(lobby);
             }

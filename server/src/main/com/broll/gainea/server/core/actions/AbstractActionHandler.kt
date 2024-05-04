@@ -11,7 +11,8 @@ abstract class AbstractActionHandler<T : NT_Action, C : ActionContext<out T>> {
     protected lateinit var player: Player
     protected lateinit var reactionResult: ReactionActions
     protected lateinit var actionHandlers: ActionHandlers
-    protected var processingBlock = ProcessingBlock()
+    protected val processingBlock = ProcessingBlock()
+
     fun init(game: Game, reactionResult: ReactionActions, actionHandlers: ActionHandlers) {
         this.game = game
         this.reactionResult = reactionResult
@@ -22,5 +23,10 @@ abstract class AbstractActionHandler<T : NT_Action, C : ActionContext<out T>> {
         this.player = player
     }
 
+    fun skip() {
+        processingBlock.resume()
+    }
+
     abstract fun handleReaction(context: C, action: T, reaction: NT_Reaction)
 }
+

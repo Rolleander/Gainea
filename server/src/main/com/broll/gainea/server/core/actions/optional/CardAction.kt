@@ -23,7 +23,7 @@ class CardAction : AbstractActionHandler<NT_Action_Card, CardAction.Context>() {
         game.processingCore.execute { playCard(context.card) }
     }
 
-    fun playCard(card: Card) {
+    private fun playCard(card: Card) {
         Log.trace("Handle card reaction")
         game.playCard(card)
     }

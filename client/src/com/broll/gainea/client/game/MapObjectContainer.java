@@ -136,7 +136,7 @@ public class MapObjectContainer {
 
     private void refreshSelectionWindow() {
         InGameUI ui = game.getContainer().ui.inGameUI;
-        if (ui.isSelectionOpen()) {
+        if (ui != null && ui.isSelectionOpen()) {
             Location lastSelection = ui.getSelectionLocation();
             for (MapObjectRender render : objectRenders.values()) {
                 if (render.getLocation() == lastSelection) {

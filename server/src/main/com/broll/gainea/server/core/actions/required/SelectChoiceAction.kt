@@ -1,17 +1,19 @@
 package com.broll.gainea.server.core.actions.required
 
+import com.broll.gainea.misc.RandomUtils
 import com.broll.gainea.net.NT_Action_SelectChoice
 import com.broll.gainea.net.NT_Reaction
 import com.broll.gainea.server.core.actions.AbstractActionHandler
 import com.broll.gainea.server.core.actions.ActionContext
 import com.broll.gainea.server.core.actions.RequiredActionContext
+import com.broll.gainea.server.core.actions.required.SelectChoiceAction.Context
 import com.broll.gainea.server.core.map.Location
 import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.core.utils.getOtherPlayers
 import org.slf4j.LoggerFactory
 
 class SelectChoiceAction :
-    AbstractActionHandler<NT_Action_SelectChoice, SelectChoiceAction.Context>() {
+    AbstractActionHandler<NT_Action_SelectChoice, Context>() {
     inner class Context(
         action: NT_Action_SelectChoice,
         var selectedOption: Int = 0
@@ -30,6 +32,9 @@ class SelectChoiceAction :
         )
         Log.trace("Wait for select choice reaction")
         processingBlock.waitFor(player)
+        if (processingBlock.playerLeft) {
+            context.selectedOption = RandomUtils.randomIndex(choices)
+        }
         return context.selectedOption
     }
 
@@ -49,6 +54,9 @@ class SelectChoiceAction :
         )
         Log.trace("Wait for select choice reaction")
         processingBlock.waitFor(player)
+        if (processingBlock.playerLeft) {
+            context.selectedOption = RandomUtils.randomIndex(choices)
+        }
         return context.selectedOption
     }
 
@@ -69,6 +77,9 @@ class SelectChoiceAction :
         )
         Log.trace("Wait for select choice reaction")
         processingBlock.waitFor(player)
+        if (processingBlock.playerLeft) {
+            context.selectedOption = RandomUtils.randomIndex(choices)
+        }
         return distinctLocations[context.selectedOption]
     }
 
@@ -85,6 +96,9 @@ class SelectChoiceAction :
         )
         Log.trace("Wait for select choice reaction")
         processingBlock.waitFor(player)
+        if (processingBlock.playerLeft) {
+            context.selectedOption = RandomUtils.randomIndex(options)
+        }
         return options[context.selectedOption]
     }
 
@@ -110,8 +124,10 @@ class SelectChoiceAction :
         context.selectedOption = reaction.option
         processingBlock.resume()
     }
-
+    
     companion object {
         private val Log = LoggerFactory.getLogger(SelectChoiceAction::class.java)
     }
+
+
 }

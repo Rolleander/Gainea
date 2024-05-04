@@ -19,6 +19,8 @@ class ActionHandlers(private val game: Game, val reactionActions: ReactionAction
     private val handlers: MutableMap<Class<out NT_Action>, AbstractActionHandler<*, *>> = HashMap()
     private val handlers2: MutableMap<Class<out AbstractActionHandler<*, *>>, AbstractActionHandler<*, *>> =
         HashMap()
+    val all: List<AbstractActionHandler<*, *>>
+        get() = handlers.values.toList()
 
     init {
         initHandlers()

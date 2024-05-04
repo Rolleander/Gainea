@@ -12,7 +12,8 @@ import org.slf4j.LoggerFactory
 import java.util.Collections
 
 class ReactionHandler(private val game: Game, val actionHandlers: ActionHandlers) {
-    private val requiredActions = Collections.synchronizedMap(HashMap<RequiredActionContext<out NT_Action>, RequiredAction>())
+    private val requiredActions =
+        Collections.synchronizedMap(HashMap<RequiredActionContext<out NT_Action>, RequiredAction>())
     private var gameStopped = false
     fun requireAction(target: Player, context: RequiredActionContext<out NT_Action>) {
         val action = RequiredAction(context, target)
@@ -39,6 +40,13 @@ class ReactionHandler(private val game: Game, val actionHandlers: ActionHandlers
                 actionHandlers.reactionActions.endTurn()
             }
         }
+    }
+
+    fun skipRequiredActions() {
+        actionHandlers.all.forEach {
+            it.skip()
+        }
+        requiredActions.clear()
     }
 
     private fun stopGame() {
@@ -86,7 +94,11 @@ class ReactionHandler(private val game: Game, val actionHandlers: ActionHandlers
     @Synchronized
     fun hasRequiredActionFor(player: Player) = requiredActions.values.any { it.player == player }
 
-    fun handle(gamePlayer: Player, actionContext: ActionContext<out NT_Action>, reaction: NT_Reaction) {
+    fun handle(
+        gamePlayer: Player,
+        actionContext: ActionContext<out NT_Action>,
+        reaction: NT_Reaction
+    ) {
         if (game.battleHandler.isBattleActive) {
             //ignore reactions while fight is going on
             Log.warn("Ignore player reaction because of fight!")
@@ -118,7 +130,11 @@ class ReactionHandler(private val game: Game, val actionHandlers: ActionHandlers
         }
     }
 
-    private fun handleReaction(gamePlayer: Player, actionContext: ActionContext<out NT_Action>, reaction: NT_Reaction) {
+    private fun handleReaction(
+        gamePlayer: Player,
+        actionContext: ActionContext<out NT_Action>,
+        reaction: NT_Reaction
+    ) {
         val action = actionContext.action
         val customHandler = actionContext.customHandler
         if (customHandler != null) {
@@ -137,8 +153,8 @@ class ReactionHandler(private val game: Game, val actionHandlers: ActionHandlers
     }
 
     private inner class RequiredAction(
-            val context: RequiredActionContext<out NT_Action>,
-            val player: Player
+        val context: RequiredActionContext<out NT_Action>,
+        val player: Player
     )
 
     companion object {

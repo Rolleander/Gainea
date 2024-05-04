@@ -57,8 +57,8 @@ public class GameStateSite extends AbstractGameSite {
         game.state.getCards().addAll(Arrays.asList(start.cards));
         game.state.shop = start.shop;
         //switch to game screen
-        game.ui.showScreen(new GameScreen());
         game.state.update(start);
+        game.ui.showScreen(new GameScreen());
         game.ui.inGameUI.updateWindows();
         //player has loaded
         finishedLoading();

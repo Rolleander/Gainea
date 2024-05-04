@@ -1,10 +1,12 @@
 package com.broll.gainea.server.core.actions.required
 
+import com.broll.gainea.misc.RandomUtils
 import com.broll.gainea.net.NT_Action_PlaceUnit
 import com.broll.gainea.net.NT_Reaction
 import com.broll.gainea.server.core.actions.AbstractActionHandler
 import com.broll.gainea.server.core.actions.ActionContext
 import com.broll.gainea.server.core.actions.RequiredActionContext
+import com.broll.gainea.server.core.actions.required.PlaceUnitAction.Context
 import com.broll.gainea.server.core.map.Location
 import com.broll.gainea.server.core.objects.Unit
 import com.broll.gainea.server.core.player.Player
@@ -13,7 +15,7 @@ import com.broll.gainea.server.core.utils.getLocationNumbers
 import org.apache.commons.lang3.tuple.Pair
 import org.slf4j.LoggerFactory
 
-class PlaceUnitAction : AbstractActionHandler<NT_Action_PlaceUnit, PlaceUnitAction.Context>() {
+class PlaceUnitAction : AbstractActionHandler<NT_Action_PlaceUnit, Context>() {
     var unitToPlace: Unit? = null
         private set
 
@@ -44,6 +46,9 @@ class PlaceUnitAction : AbstractActionHandler<NT_Action_PlaceUnit, PlaceUnitActi
         )
         Log.trace("Wait for place unit reaction")
         processingBlock.waitFor(player)
+        if (processingBlock.playerLeft) {
+            context.selectedLocation = RandomUtils.pickRandom(context.locations)
+        }
         game.spawn(context.unitToPlace, context.selectedLocation)
         return Pair.of(unit, context.selectedLocation)
     }
@@ -63,4 +68,6 @@ class PlaceUnitAction : AbstractActionHandler<NT_Action_PlaceUnit, PlaceUnitActi
     companion object {
         private val Log = LoggerFactory.getLogger(PlaceUnitAction::class.java)
     }
+
+
 }

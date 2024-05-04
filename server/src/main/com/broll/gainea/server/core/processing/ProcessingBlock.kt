@@ -8,8 +8,12 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
 
 class ProcessingBlock {
+    var playerLeft = false
+        private set
+
     private var future: CompletableFuture<*>? = null
     fun waitFor(player: Player) {
+        playerLeft = false
         var recheck: Boolean
         do {
             recheck = false
@@ -22,12 +26,13 @@ class ProcessingBlock {
                 Log.error("Failed waiting for processing block", e)
             } catch (e: TimeoutException) {
                 recheck = player.active
+                playerLeft = !player.active
             }
         } while (recheck)
     }
 
     fun resume() {
-        future!!.complete(null)
+        future?.complete(null)
     }
 
     companion object {

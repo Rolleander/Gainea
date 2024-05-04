@@ -120,7 +120,7 @@ class GaineaMap : ExpansionFactory(ExpansionType.GAINEA, "expansion_0.png") {
             Continents.ZUBA, "Zuba", listOf(
                 area(
                     Areas.GROSSES_FELSGEBIRGE,
-                    "Großes Feslgebirge",
+                    "Großes Felsgebirge",
                     AreaType.MOUNTAIN,
                     25.2f,
                     24.4f

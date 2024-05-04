@@ -123,9 +123,9 @@ public class TestMapScreen extends Screen {
         nt.objects[0].description = "unit mit langer description die korrekt umgebrochen werden sollte ohne das ui zu verstopfen";
         nt.effects = new NT_BoardEffect[0];
         nt.round = 0;
+        game.state.update(nt);
         game.ui.initInGameUi();
         game.state.getMap().displayRenders();
-        game.state.update(nt);
         game.ui.inGameUI.show();
         game.ui.inGameUI.updateWindows();
         NT_Event_FinishedGoal evt = new NT_Event_FinishedGoal();

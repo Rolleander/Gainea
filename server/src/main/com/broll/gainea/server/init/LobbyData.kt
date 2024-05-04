@@ -14,7 +14,7 @@ class LobbyData : ILobbyData {
     var roundLimit = ROUND_LIMIT_DEFAULT
     var game: Game? = null
     var gameStartListener: IGameStartListener? = null
-    var isGameRoundsStarted = false
+    var gameRoundsStarted = false
     override fun nt(): NT_LobbySettings {
         val settings = NT_LobbySettings()
         settings.expansionSetting = expansionSetting.ordinal

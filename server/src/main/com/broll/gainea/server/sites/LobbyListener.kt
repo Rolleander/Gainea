@@ -2,6 +2,7 @@ package com.broll.gainea.server.sites
 
 import com.broll.gainea.net.NT_Battle_Reaction
 import com.broll.gainea.server.core.fractions.FractionType
+import com.broll.gainea.server.core.utils.endPlayersTurn
 import com.broll.gainea.server.core.utils.gameLog
 import com.broll.gainea.server.init.LobbyData
 import com.broll.gainea.server.init.PlayerData
@@ -31,6 +32,7 @@ class LobbyListener : IServerLobbyListener<LobbyData, PlayerData> {
         lobby: ServerLobby<LobbyData, PlayerData>,
         player: Player<PlayerData>
     ) {
+        lobby.data.game?.endPlayersTurn(player.data.gamePlayer)
     }
 
     override fun playerDisconnected(

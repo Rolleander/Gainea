@@ -10,6 +10,7 @@ import com.broll.gainea.server.core.cards.impl.play.C_ReplaceGoal
 import com.broll.gainea.server.core.map.Location
 import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.core.utils.ProcessingUtils
+import com.broll.gainea.server.core.utils.UnitControl.spawn
 import com.broll.gainea.server.core.utils.UnitControl.spawnMonsters
 import com.broll.gainea.server.core.utils.pickRandomEmpty
 import com.broll.networklib.PackageReceiver
@@ -23,13 +24,11 @@ import org.slf4j.LoggerFactory
 class GameStartSite : GameSite() {
     private inner class GameStartData {
         var loading = true
-        var startUnitsPlaced = 0
         val playerData = HashMap<Player, PlayerStartData>()
     }
 
     private inner class PlayerStartData {
         var loaded = false
-        val startLocations = mutableListOf<Location>()
     }
 
     @Autoshared(ShareLevel.LOBBY)
@@ -42,7 +41,6 @@ class GameStartSite : GameSite() {
         lobby.data.gameStartListener?.gameStarted()
         game.initHandlers(ReactionResultHandler(game, lobby))
         gameStart.loading = true
-        gameStart.startUnitsPlaced = 0
         lobby.players.forEach { p ->
             val player = p.data.gamePlayer
             gameStart.playerData[player] = PlayerStartData()
@@ -69,10 +67,14 @@ class GameStartSite : GameSite() {
             game.spawnMonsters(totalMonsters)
             ProcessingUtils.pause(DELAY)
             //give random goals and start locations to everyone
-            drawStartLocations()
             assignGoals()
             //players start placing units
-            placeUnit()
+            placeUnits()
+            //all start units placed, start first turn
+            ProcessingUtils.MAX_PAUSE *= 3
+            lobby.data.gameRoundsStarted = true
+            Log.info("Start first turn")
+            nextTurn()
         }, DELAY)
     }
 
@@ -89,7 +91,7 @@ class GameStartSite : GameSite() {
         }
     }
 
-    private fun drawStartLocations() {
+    private fun placeUnits() {
         Log.info("Draw start locations")
         val game = game
         val startLocationsCount = lobby.data.startLocations
@@ -97,54 +99,27 @@ class GameStartSite : GameSite() {
         val startLocations =
             game.map.pickRandomEmpty(playerCount * startLocationsCount).toMutableList()
         for (player in game.allPlayers) {
+            if (!player.active) {
+                continue
+            }
             val playerStartLocations = startLocations.take(startLocationsCount)
             startLocations.removeAll(playerStartLocations)
-            gameStart.playerData[player]!!.startLocations += playerStartLocations
+            placePlayerUnits(player, playerStartLocations)
         }
     }
 
-    private fun placeUnit() {
-        Log.info("placeUnit")
+    private fun placePlayerUnits(player: Player, locations: List<Location>) {
+        Log.info("placePlayerUnits $player")
         val game = game
-        val playerCount = playersCount
-        val placingRound = gameStart.startUnitsPlaced / playerCount
-        val player = placingPlayer
-        val locations = gameStart.playerData[player]!!.startLocations
-        val unitToPlace = if (placingRound == 0) {
-            player.fraction.createCommander()
-        } else {
-            player.fraction.createSoldier()
-        }
+        val unitToPlace = player.fraction.createCommander()
         val actionHandlers = game.reactionHandler.actionHandlers
         val placeUnitAction = actionHandlers.getHandler(PlaceUnitAction::class.java)
         val result = placeUnitAction.placeUnit(player, unitToPlace, locations)
-        placedUnit(result.right)
-    }
-
-    private fun placedUnit(location: Location) {
-        Log.info("player placedUnit")
-        val game = game
-        val startLocationsCount = lobby.data.startLocations
-        val player = placingPlayer
-        //remove selected location from start locations
-        gameStart.playerData[player]!!.startLocations.remove(location)
-        gameStart.startUnitsPlaced++
-        if (gameStart.startUnitsPlaced < game.allPlayers.size * startLocationsCount) {
-            //next player places unit
-            placeUnit()
-        } else {
-            //all start units placed, start first turn
-            ProcessingUtils.MAX_PAUSE *= 3
-            nextTurn()
-            lobby.data.isGameRoundsStarted = true
+        val pickedLocation = result.right
+        locations.filter { it != pickedLocation }.forEach {
+            game.spawn(player.fraction.createSoldier(), it)
         }
     }
-
-    private val placingPlayer: Player
-        get() {
-            val playerNr = gameStart.startUnitsPlaced % playersCount
-            return game.allPlayers[playerNr]
-        }
 
     @PackageReceiver //   @ConnectionRestriction(RestrictionType.LOBBY_LOCKED)
     fun playerLoaded(loadedGame: NT_LoadedGame) {

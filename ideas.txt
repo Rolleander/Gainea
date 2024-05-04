@@ -1,3 +1,5 @@
+- speedup start (only place commander)
+networklib: make rejoin possible on demand (if initial fails)
 
 card ideas:
 - alle einheiten auf einen platz
