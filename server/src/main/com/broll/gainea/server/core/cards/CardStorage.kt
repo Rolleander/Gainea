@@ -26,14 +26,11 @@ class CardStorage(private val game: Game) {
     fun getRandomPlayableCard() =
         allCards.filter { !it.isDirectlyPlayedCard() }.cloneRandomEntry()
 
-
     fun getRandomPlayableCard(type: EffectType) =
         allCards.filter { !it.isDirectlyPlayedCard() && it.effectType == type }.cloneRandomEntry()
 
-
     fun getRandomDirectlyPlayedCard() =
         allCards.filter { it.isDirectlyPlayedCard() }.cloneRandomEntry()
-
 
     private fun List<Card>.cloneRandomEntry(): Card {
         val drawChances = map { it.drawChance }.toFloatArray()

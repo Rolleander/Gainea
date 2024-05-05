@@ -66,7 +66,7 @@ public class ClientHandler {
             if (result.getReconnectedLobby() != null) {
                 listenLobbyUpdates(result.getReconnectedLobby());
             } else {
-                clientListener.discoveredLobbies(result.getLobbies());
+                clientListener.discoveredLobbies(result.getServer());
             }
         }, "Failed to list lobbies");
     }

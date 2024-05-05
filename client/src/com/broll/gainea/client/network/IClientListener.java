@@ -1,10 +1,10 @@
 package com.broll.gainea.client.network;
 
 import com.broll.networklib.client.impl.GameLobby;
-import com.broll.networklib.client.tasks.DiscoveredLobbies;
+import com.broll.networklib.client.tasks.ServerInformation;
 
 public interface IClientListener {
-    void discoveredLobbies(DiscoveredLobbies discoveredLobbies);
+    void discoveredLobbies(ServerInformation info);
 
     void connectedLobby(GameLobby lobby);
 

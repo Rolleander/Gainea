@@ -17,6 +17,13 @@ fun Game.endPlayersTurn(player: Player) {
     }
 }
 
+fun Game.skipTurn() {
+    battleHandler.reset()
+    reactionHandler.skipRequiredActions()
+    displayMessage("Zug übersrprungen!", sound = "smash.ogg")
+    endTurn()
+}
+
 fun Game.endTurn() = reactionHandler.actionHandlers.reactionActions.endTurn()
 fun Game.noActivePlayersRemaining() =
     activePlayers.isEmpty() || activePlayers.all { it.serverPlayer.isBot }

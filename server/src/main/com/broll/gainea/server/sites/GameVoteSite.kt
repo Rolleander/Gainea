@@ -8,7 +8,7 @@ import com.broll.gainea.net.NT_Vote_SkipTurn
 import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.core.utils.displayMessage
-import com.broll.gainea.server.core.utils.endTurn
+import com.broll.gainea.server.core.utils.skipTurn
 import com.broll.gainea.server.init.LobbyData
 import com.broll.gainea.server.init.PlayerData
 import com.broll.networklib.PackageReceiver
@@ -29,9 +29,7 @@ class GameVoteSite : GameSite() {
             game.displayMessage(player.name + " musste aufgeben!", sound = "smash.ogg")
         },
         action(NT_Vote_SkipTurn::class) {
-            game.reactionHandler.skipRequiredActions()
-            game.displayMessage("Zug übersrprungen!", sound = "smash.ogg")
-            game.endTurn()
+            game.skipTurn()
         }
     )
 

@@ -35,7 +35,6 @@ class GameStartSite : GameSite() {
     private lateinit var gameStart: GameStartData
 
     fun startGame() {
-        val lobby = lobby
         lobby.chat(null, "Starte Spiel...")
         val game = Game(lobby)
         lobby.data.gameStartListener?.gameStarted()

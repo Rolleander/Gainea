@@ -18,22 +18,20 @@ import com.broll.gainea.client.ui.Screen;
 import com.broll.gainea.client.ui.utils.LabelUtils;
 import com.broll.gainea.client.ui.utils.TableUtils;
 import com.broll.networklib.client.impl.GameLobby;
-import com.broll.networklib.client.tasks.DiscoveredLobbies;
+import com.broll.networklib.client.tasks.ServerInformation;
 
 public class StartScreen extends Screen {
-
-    private TextField serverIp;
-    private TextField name;
-    private Table lobbies;
-
-    private Button discover, connect;
-    private boolean connecting = false;
-    private Label loadingInfo;
 
     public static String PLAYER_NAME =
             "";
     public static String SERVER =
             "gainea.de";
+    private TextField serverIp;
+    private TextField name;
+    private Table lobbies;
+    private Button discover, connect;
+    private boolean connecting = false;
+    private Label loadingInfo;
 
     public StartScreen() {
 
@@ -57,15 +55,15 @@ public class StartScreen extends Screen {
         }
     }
 
-    public void showLobbies(DiscoveredLobbies lobbies) {
+    public void showLobbies(ServerInformation info) {
         this.lobbies.clear();
-        lobbies.getLobbies().forEach(lobby -> {
+        info.getLobbies().forEach(lobby -> {
             Table table = new Table(skin);
             table.setFillParent(true);
             table.setBackground("highlight");
             table.pad(10);
             table.add(info(lobby.getName())).padRight(50);
-            table.add(info(lobbies.getServerName() + " [" + lobby.getServerIp() + "]")).padRight(50);
+            table.add(info(info.getServerName() + " [" + lobby.getServerIp() + "]")).padRight(50);
             table.add(info(lobby.getPlayerCount() + " Players"));
             table.addListener(new ClickListener() {
                 @Override
@@ -77,7 +75,7 @@ public class StartScreen extends Screen {
             StartScreen.this.lobbies.add(table);
             StartScreen.this.lobbies.row();
         });
-        if (lobbies.getLobbies().isEmpty()) {
+        if (info.getLobbies().isEmpty()) {
             this.lobbies.add(LabelUtils.label(skin, "Keine offenen Lobbies auf dem Server gefunden!")).row();
         }
         this.lobbies.add(TableUtils.textButton(skin, "Lobby erstellen", this::createLobby));
