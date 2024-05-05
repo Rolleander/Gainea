@@ -16,16 +16,15 @@ import com.broll.gainea.server.core.utils.UnitControl.damage
 import com.broll.gainea.server.core.utils.isAreaType
 
 class RangerFraction : Fraction(FractionType.RANGER) {
-    override fun description(): FractionDescription {
-        val desc = FractionDescription(
-            "",
-            soldier = UnitDescription(name = "Waldläuferin", icon = 114),
-            commander = UnitDescription(name = "Elfenschützin", icon = 115, power = 3, health = 3),
-        )
-        desc.plus("Gegen Monster +1 Zahl")
-        desc.plus("Immer wenn ihr ein Monster besiegt, wird einer zufälligen feindlichen Einheit auf der gleichen Landmasse 1 Schaden zugefügt")
-        desc.contra("Auf Schnee und Wüste -1 Zahl")
-        return desc
+
+    override val description: FractionDescription = FractionDescription(
+        "",
+        soldier = UnitDescription(name = "Waldläuferin", icon = 114),
+        commander = UnitDescription(name = "Elfenschützin", icon = 115, power = 3, health = 3),
+    ).apply {
+        plus("Gegen Monster +1 Zahl")
+        plus("Immer wenn ihr ein Monster besiegt, wird einer zufälligen feindlichen Einheit auf der gleichen Landmasse 1 Schaden zugefügt")
+        contra("Auf Schnee und Wüste -1 Zahl")
     }
 
     override fun killedMonster(monster: Monster, battleResult: BattleResult) {
@@ -47,22 +46,12 @@ class RangerFraction : Fraction(FractionType.RANGER) {
         return power
     }
 
-    override fun createSoldier(): Soldier {
-        val soldier = Soldier(owner, fraction = this)
-        soldier.setStats(SOLDIER_POWER, SOLDIER_HEALTH)
-        soldier.name = "Waldläuferin"
-        soldier.setType(NT_Unit.TYPE_FEMALE.toInt())
-        soldier.icon = 114
-        return soldier
+    override fun createCommander(): Soldier = super.createCommander().apply {
+        setType(NT_Unit.TYPE_FEMALE.toInt())
     }
 
-    override fun createCommander(): Soldier {
-        val commander = Soldier(owner, fraction = this)
-        commander.commander = true
-        commander.setStats(COMMANDER_POWER, COMMANDER_HEALTH)
-        commander.name = "Elfenschützin"
-        commander.setType(NT_Unit.TYPE_FEMALE.toInt())
-        commander.icon = 115
-        return commander
+    override fun createSoldier(): Soldier = super.createSoldier().apply {
+        setType(NT_Unit.TYPE_FEMALE.toInt())
     }
+
 }

@@ -10,7 +10,6 @@ import com.broll.gainea.server.core.fractions.FractionType
 import com.broll.gainea.server.core.fractions.UnitDescription
 import com.broll.gainea.server.core.map.Area
 import com.broll.gainea.server.core.map.AreaType
-import com.broll.gainea.server.core.objects.Soldier
 import com.broll.gainea.server.core.objects.monster.Monster
 import com.broll.gainea.server.core.utils.UnitControl.damage
 import com.broll.gainea.server.core.utils.isAreaType
@@ -18,21 +17,20 @@ import com.broll.gainea.server.core.utils.selectHostileUnit
 
 class FireFraction : Fraction(FractionType.FIRE) {
     private var turns = 0
-    override fun description(): FractionDescription {
-        val desc = FractionDescription(
-            "",
-            soldier = UnitDescription(name = "Feuermagier", icon = 23),
-            commander = UnitDescription(
-                name = "Flammenschürer Duras",
-                icon = 48,
-                power = 3,
-                health = 3
-            ),
-        )
-        desc.plus("Erhält jede dritte Runde eine Feuerregen-Karte\n(Verursacht 1 Schaden an einer beliebigen feindlichen Einheit)")
-        desc.plus("Zahl +1 auf Wüsten")
-        desc.contra("Erhält keine Belohnung für besiegte Monster auf Schnee oder Seen")
-        return desc
+
+    override val description: FractionDescription = FractionDescription(
+        "",
+        soldier = UnitDescription(name = "Feuermagier", icon = 23),
+        commander = UnitDescription(
+            name = "Flammenschürer Duras",
+            icon = 48,
+            power = 3,
+            health = 3
+        ),
+    ).apply {
+        plus("Erhält jede dritte Runde eine Feuerregen-Karte\n(Verursacht 1 Schaden an einer beliebigen feindlichen Einheit)")
+        plus("Zahl +1 auf Wüsten")
+        contra("Erhält keine Belohnung für besiegte Monster auf Schnee oder Seen")
     }
 
     override fun powerMutatorArea(power: FightingPower, area: Area) {
@@ -50,23 +48,6 @@ class FireFraction : Fraction(FractionType.FIRE) {
         super.prepareTurn()
     }
 
-    override fun createSoldier(): Soldier {
-        val soldier = Soldier(owner, fraction = this)
-        soldier.setStats(SOLDIER_POWER, SOLDIER_HEALTH)
-        soldier.name = "Feuermagier"
-        soldier.icon = 23
-        return soldier
-    }
-
-    override fun createCommander(): Soldier {
-        val commander = Soldier(owner, fraction = this)
-        commander.commander = true
-        commander.setStats(COMMANDER_POWER, COMMANDER_HEALTH)
-        commander.name = "Flammenschürer Duras"
-        commander.icon = 48
-        return commander
-    }
-
     override fun killedMonster(monster: Monster, battleResult: BattleResult) {
         if (monster.location.isAreaType(AreaType.SNOW, AreaType.LAKE)) {
             //no card when monster on ice or water
@@ -74,7 +55,6 @@ class FireFraction : Fraction(FractionType.FIRE) {
         }
         super.killedMonster(monster, battleResult)
     }
-
 
 }
 

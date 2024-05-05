@@ -18,15 +18,11 @@ import com.broll.gainea.server.core.utils.getActionHandler
 import com.broll.gainea.server.core.utils.getSpawnLocations
 
 abstract class Fraction(val type: FractionType) : GameUpdateReceiverAdapter() {
-    val description: FractionDescription
+    abstract val description: FractionDescription
     protected lateinit var game: Game
     protected lateinit var owner: Player
 
-    init {
-        description = description()
-    }
 
-    protected abstract fun description(): FractionDescription
     fun init(game: Game, owner: Player) {
         this.game = game
         this.owner = owner
@@ -58,8 +54,26 @@ abstract class Fraction(val type: FractionType) : GameUpdateReceiverAdapter() {
         return unit.owner !== owner
     }
 
-    abstract fun createSoldier(): Soldier
-    abstract fun createCommander(): Soldier
+    open fun createSoldier(): Soldier {
+        val soldier = Soldier(owner, fraction = this)
+        soldier.initFrom(description.soldier)
+        return soldier
+    }
+
+    open fun createCommander(): Soldier {
+        val commander = Soldier(owner, fraction = this)
+        commander.commander = true
+        commander.initFrom(description.commander)
+        return commander
+    }
+
+    protected fun Soldier.initFrom(desc: UnitDescription) {
+        setStats(desc.power, desc.health)
+        name = desc.name
+        icon = desc.icon
+        description = desc.description
+    }
+
     open fun calcFightingPower(soldier: Soldier, context: BattleContext): FightingPower {
         val power = FightingPower(soldier)
         if (context.location is Area) {

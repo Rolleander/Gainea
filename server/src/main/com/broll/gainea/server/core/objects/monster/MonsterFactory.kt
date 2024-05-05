@@ -82,20 +82,63 @@ class MonsterFactory {
         add(name, icon, AQUARIAN, power, health, RESIDENT, SOMETIMES, listOf(LAKE))
     }
 
-    private fun add(name: String, icon: Int, motion: MonsterMotion, power: Int, health: Int, behavior: MonsterBehavior, spawnAreas: List<AreaType>) {
+    private fun add(
+        name: String,
+        icon: Int,
+        motion: MonsterMotion,
+        power: Int,
+        health: Int,
+        behavior: MonsterBehavior,
+        spawnAreas: List<AreaType>
+    ) {
         add(name, icon, motion, power, health, behavior, SOMETIMES, spawnAreas)
     }
 
-    private fun add(name: String, icon: Int, power: Int, health: Int, behavior: MonsterBehavior, spawnAreas: List<AreaType>) {
+    private fun add(
+        name: String,
+        icon: Int,
+        power: Int,
+        health: Int,
+        behavior: MonsterBehavior,
+        spawnAreas: List<AreaType>
+    ) {
         add(name, icon, TERRESTRIAL, power, health, behavior, SOMETIMES, spawnAreas)
     }
 
-    private fun add(name: String, icon: Int, motion: MonsterMotion, power: Int, health: Int, behavior: MonsterBehavior, activity: MonsterActivity, spawnAreas: List<AreaType>) {
+    private fun add(
+        name: String,
+        icon: Int,
+        motion: MonsterMotion,
+        power: Int,
+        health: Int,
+        behavior: MonsterBehavior,
+        activity: MonsterActivity,
+        spawnAreas: List<AreaType>
+    ) {
         monsters.add(MonsterInit(name, icon, motion, power, health, behavior, activity, spawnAreas))
     }
 
-    private fun add(name: String, icon: Int, power: Int, health: Int, behavior: MonsterBehavior, activity: MonsterActivity, spawnAreas: List<AreaType>) {
-        monsters.add(MonsterInit(name, icon, TERRESTRIAL, power, health, behavior, activity, spawnAreas))
+    private fun add(
+        name: String,
+        icon: Int,
+        power: Int,
+        health: Int,
+        behavior: MonsterBehavior,
+        activity: MonsterActivity,
+        spawnAreas: List<AreaType>
+    ) {
+        monsters.add(
+            MonsterInit(
+                name,
+                icon,
+                TERRESTRIAL,
+                power,
+                health,
+                behavior,
+                activity,
+                spawnAreas
+            )
+        )
     }
 
     fun spawn(owner: Player, areaType: AreaType, activeMonsters: List<Monster>): Monster? {
@@ -111,24 +154,30 @@ class MonsterFactory {
         if (init == null) {
             return null
         }
-        val monster = Monster(owner)
-        monster.name = init.name
-        monster.icon = init.icon
-        monster.setStats(init.power, init.health)
-        monster.behavior = init.behavior
-        monster.activity = init.activity
-        monster.motion = init.motion
-        return monster
+        return init.create(owner)
     }
 
-    private data class MonsterInit(val name: String,
-                                   val icon: Int,
-                                   val motion: MonsterMotion,
-                                   val power: Int = 1,
-                                   val health: Int = 1,
-                                   val behavior: MonsterBehavior,
-                                   val activity: MonsterActivity,
-                                   val spawnAreas: List<AreaType>)
+    fun createAll(owner: Player) = monsters.map { it.create(owner) }
+
+    private fun MonsterInit.create(owner: Player) = Monster(owner).also { monster ->
+        monster.name = name
+        monster.icon = icon
+        monster.setStats(power, health)
+        monster.behavior = behavior
+        monster.activity = activity
+        monster.motion = motion
+    }
+
+    private data class MonsterInit(
+        val name: String,
+        val icon: Int,
+        val motion: MonsterMotion,
+        val power: Int = 1,
+        val health: Int = 1,
+        val behavior: MonsterBehavior,
+        val activity: MonsterActivity,
+        val spawnAreas: List<AreaType>
+    )
 
     private fun statistic() {
         val areas = AreaType.entries.associateWith { Stat() }
@@ -148,10 +197,10 @@ class MonsterFactory {
     }
 
     private data class Stat(
-            var count: Float = 0f,
-            var power: Float = 0f,
-            var health: Float = 0f,
-            var stars: Float = 0f
+        var count: Float = 0f,
+        var power: Float = 0f,
+        var health: Float = 0f,
+        var stars: Float = 0f
     )
 
     companion object {

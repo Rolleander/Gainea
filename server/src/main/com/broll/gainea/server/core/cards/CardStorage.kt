@@ -65,6 +65,6 @@ class CardStorage(private val game: Game) {
     }
 
     companion object {
-        private const val PACKAGE_PATH = "com.broll.gainea.server.core.cards.impl"
+        const val PACKAGE_PATH = "com.broll.gainea.server.core.cards.impl"
     }
 }

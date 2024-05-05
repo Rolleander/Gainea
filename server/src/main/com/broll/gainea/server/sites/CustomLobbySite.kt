@@ -15,7 +15,7 @@ class CustomLobbySite : LobbySite<LobbyData, PlayerData>() {
         "nextturn" to { game: Game, player: Player<PlayerData> ->
             game.skipTurn()
         },
-        "givecard" to { game: Game, player: Player<PlayerData> ->
+        "drawcard" to { game: Game, player: Player<PlayerData> ->
             player.data.gamePlayer.cardHandler.drawRandomPlayableCard()
         }
     )

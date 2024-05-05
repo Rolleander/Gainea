@@ -21,26 +21,26 @@ import com.broll.gainea.server.core.utils.isAreaType
 
 class WaterFraction : Fraction(FractionType.WATER) {
     private val spawns = mutableListOf<Unit>()
-    override fun description(): FractionDescription {
-        val desc = FractionDescription(
-            "",
-            soldier = UnitDescription(name = "Wassermagier", icon = 46),
-            commander = UnitDescription(
-                name = "Frostbeschwörer Arn",
-                icon = 116,
-                power = 3,
-                health = 3
-            ),
-        )
-        desc.plus(
+
+    override val description: FractionDescription = FractionDescription(
+        "",
+        soldier = UnitDescription(name = "Wassermagier", icon = 46),
+        commander = UnitDescription(
+            name = "Frostbeschwörer Arn",
+            icon = 116,
+            power = 3,
+            health = 3
+        ),
+    ).apply {
+        plus(
             """Fällt Arn wird er in eurem nächsten Zug als Eiskoloss (2/4) wiederbelebt
 Der Eiskoloss kann für $FROZEN_ROUNDS Runden nicht angreifen oder sich bewegen
 Fällt der Eiskoloss kehrt Arn in eruem nächsten Zug zurück"""
         )
-        desc.plus("Einheiten auf Seen können eine weitere Aktion durchführen")
-        desc.contra("Auf Wüsten und Bergen -1 Zahl")
-        return desc
+        plus("Einheiten auf Seen können eine weitere Aktion durchführen")
+        contra("Auf Wüsten und Bergen -1 Zahl")
     }
+
 
     override fun powerMutatorArea(power: FightingPower, area: Area) {
         if (area.type == AreaType.DESERT || area.type == AreaType.MOUNTAIN) {
@@ -54,16 +54,8 @@ Fällt der Eiskoloss kehrt Arn in eruem nächsten Zug zurück"""
         spawns.clear()
     }
 
-    override fun createSoldier(): Soldier {
-        val soldier: Soldier = WaterSoldier(owner)
-        soldier.setStats(SOLDIER_POWER, SOLDIER_HEALTH)
-        soldier.name = "Wassermagier"
-        soldier.icon = 46
-        return soldier
-    }
-
     override fun createCommander(): Soldier {
-        val commander: Soldier = object : WaterSoldier(owner) {
+        val commander = object : WaterSoldier(owner) {
             override fun onDeath(throughBattle: BattleResult?) {
                 val summon: Unit = IceSummon(owner)
                 summon.owner = owner
@@ -72,10 +64,14 @@ Fällt der Eiskoloss kehrt Arn in eruem nächsten Zug zurück"""
             }
         }
         commander.commander = true
-        commander.setStats(COMMANDER_POWER, COMMANDER_HEALTH)
-        commander.name = "Frostbeschwörer Arn"
-        commander.icon = 116
+        commander.initFrom(description.commander)
         return commander
+    }
+
+    override fun createSoldier(): Soldier {
+        val soldier = WaterSoldier(owner)
+        soldier.initFrom(description.soldier)
+        return soldier
     }
 
     private open inner class WaterSoldier(owner: Player) :

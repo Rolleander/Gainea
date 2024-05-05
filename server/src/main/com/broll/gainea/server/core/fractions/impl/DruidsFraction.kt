@@ -16,8 +16,8 @@ import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.core.utils.UnitControl.spawn
 
 class DruidsFraction : Fraction(FractionType.DRUIDS) {
-    override fun description(): FractionDescription {
-        val desc = FractionDescription(
+    override val description: FractionDescription =
+        FractionDescription(
             "",
             soldier = UnitDescription(name = "Druidin", icon = 110),
             commander = UnitDescription(
@@ -26,11 +26,10 @@ class DruidsFraction : Fraction(FractionType.DRUIDS) {
                 power = 3,
                 health = 3
             ),
-        )
-        desc.plus("Gefallene Einheiten können zu unbeweglichen Wurzelgolems (1/2) werden")
-        desc.contra("Auf Schiffen -1 Zahl")
-        return desc
-    }
+        ).apply {
+            plus("Gefallene Einheiten können zu unbeweglichen Wurzelgolems (1/2) werden")
+            contra("Auf Schiffen -1 Zahl")
+        }
 
     override fun calcFightingPower(soldier: Soldier, context: BattleContext): FightingPower {
         val power = super.calcFightingPower(soldier, context)
@@ -40,22 +39,18 @@ class DruidsFraction : Fraction(FractionType.DRUIDS) {
         return power
     }
 
+    override fun createCommander(): Soldier {
+        val commander = DruidSoldier(owner)
+        commander.commander = true
+        commander.initFrom(description.commander)
+        return commander
+    }
+    
     override fun createSoldier(): Soldier {
-        val soldier: Soldier = DruidSoldier(owner)
-        soldier.setStats(SOLDIER_POWER, SOLDIER_HEALTH)
-        soldier.name = "Druidin"
-        soldier.icon = 110
+        val soldier = DruidSoldier(owner)
+        soldier.initFrom(description.soldier)
         soldier.setType(NT_Unit.TYPE_FEMALE.toInt())
         return soldier
-    }
-
-    override fun createCommander(): Soldier {
-        val commander: Soldier = DruidSoldier(owner)
-        commander.commander = true
-        commander.setStats(COMMANDER_POWER, COMMANDER_HEALTH)
-        commander.name = "Druidenhaupt Zerus"
-        commander.icon = 102
-        return commander
     }
 
     private inner class DruidSoldier(owner: Player) :

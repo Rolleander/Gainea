@@ -2,8 +2,10 @@ package com.broll.gainea.server.sites
 
 import com.broll.gainea.net.NT_Battle_Reaction
 import com.broll.gainea.server.core.fractions.FractionType
+import com.broll.gainea.server.core.utils.ProcessingUtils
 import com.broll.gainea.server.core.utils.endPlayersTurn
 import com.broll.gainea.server.core.utils.gameLog
+import com.broll.gainea.server.init.ContentLibrary
 import com.broll.gainea.server.init.LobbyData
 import com.broll.gainea.server.init.PlayerData
 import com.broll.networklib.server.impl.IServerLobbyListener
@@ -20,6 +22,7 @@ class LobbyListener : IServerLobbyListener<LobbyData, PlayerData> {
             playerData = PlayerData(findOpenFraction(lobby))
             player.data = playerData
         }
+        player.sendTCP(ContentLibrary.nt)
     }
 
     private fun findOpenFraction(lobby: ServerLobby<LobbyData, PlayerData>): FractionType {
@@ -58,7 +61,8 @@ class LobbyListener : IServerLobbyListener<LobbyData, PlayerData> {
                 //send game reconnect update to reconnecting player
                 val gamePlayer = player.data.gamePlayer
                 player.sendTCP(game.reconnect(gamePlayer))
-
+                ProcessingUtils.pause(200)
+                player.sendTCP(ContentLibrary.nt)
             }, 100)
         }
     }

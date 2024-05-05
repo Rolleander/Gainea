@@ -11,20 +11,19 @@ import com.broll.gainea.server.core.objects.Soldier
 import com.broll.gainea.server.core.utils.isAreaType
 
 class KnightsFraction : Fraction(FractionType.KNIGHTS) {
-    override fun description(): FractionDescription {
-        val desc = FractionDescription(
-            "",
-            soldier = UnitDescription(name = "Kreuzritter", icon = 11),
-            commander = UnitDescription(
-                name = "Kreuzritterchampion",
-                icon = 7,
-                power = 3,
-                health = 3
-            ),
-        )
-        desc.plus("Im 1v1 +1 Zahl, als Angreifer +2 Zahl")
-        desc.contra("Auf Sümpfen -1 Zahl")
-        return desc
+
+    override val description: FractionDescription = FractionDescription(
+        "",
+        soldier = UnitDescription(name = "Kreuzritter", icon = 11),
+        commander = UnitDescription(
+            name = "Kreuzritterchampion",
+            icon = 7,
+            power = 3,
+            health = 3
+        ),
+    ).apply {
+        plus("Im 1v1 +1 Zahl, als Angreifer +2 Zahl")
+        contra("Auf Sümpfen -1 Zahl")
     }
 
     override fun calcFightingPower(soldier: Soldier, context: BattleContext): FightingPower {
@@ -42,20 +41,4 @@ class KnightsFraction : Fraction(FractionType.KNIGHTS) {
         return power
     }
 
-    override fun createSoldier(): Soldier {
-        val soldier = Soldier(owner, fraction = this)
-        soldier.setStats(SOLDIER_POWER, SOLDIER_HEALTH)
-        soldier.name = "Kreuzritter"
-        soldier.icon = 11
-        return soldier
-    }
-
-    override fun createCommander(): Soldier {
-        val commander = Soldier(owner, fraction = this)
-        commander.commander = true
-        commander.setStats(COMMANDER_POWER, COMMANDER_HEALTH)
-        commander.name = "Kreuzritterchampion"
-        commander.icon = 7
-        return commander
-    }
 }

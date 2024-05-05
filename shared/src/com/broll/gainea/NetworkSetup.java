@@ -44,6 +44,11 @@ import com.broll.gainea.net.NT_GameOver;
 import com.broll.gainea.net.NT_GameStatistic;
 import com.broll.gainea.net.NT_Goal;
 import com.broll.gainea.net.NT_GoalProgression;
+import com.broll.gainea.net.NT_Lib;
+import com.broll.gainea.net.NT_Lib_Card;
+import com.broll.gainea.net.NT_Lib_Fraction;
+import com.broll.gainea.net.NT_Lib_Goal;
+import com.broll.gainea.net.NT_Lib_Monster;
 import com.broll.gainea.net.NT_LoadedGame;
 import com.broll.gainea.net.NT_LobbySettings;
 import com.broll.gainea.net.NT_Monster;
@@ -106,7 +111,10 @@ public class NetworkSetup {
                 String[].class, Object[].class, NT_RoundStatistic[].class, NT_BoardEffect[].class,
                 NT_Vote.class, NT_Vote_KickPlayer.class, NT_Vote_SkipTurn.class,
                 NT_Vote_Base.class, NT_VotePending.class,
-                NT_ShopItem.class, NT_ShopItem[].class, NT_ShopOther.class, NT_ShopUnit.class);
+                NT_ShopItem.class, NT_ShopItem[].class, NT_ShopOther.class, NT_ShopUnit.class,
+                NT_Lib.class, NT_Lib_Fraction[].class, NT_Lib_Fraction.class, NT_Lib_Card[].class, NT_Lib_Card.class,
+                NT_Lib_Monster[].class, NT_Lib_Monster.class, NT_Lib_Goal[].class, NT_Lib_Goal.class
+        );
         classes.forEach(register::registerNetworkType);
     }
 }

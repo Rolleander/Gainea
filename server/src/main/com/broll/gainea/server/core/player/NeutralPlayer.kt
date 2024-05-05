@@ -20,12 +20,10 @@ fun Player.isNeutral() = this is NeutralPlayer
 
 object NeutralFraction : Fraction(type = DRUIDS) {
 
-    override fun isHostile(unit: Unit): Boolean = true
+    override val description: FractionDescription
+        get() = throw RuntimeException("invalid for neutral")
 
-    override fun description(): FractionDescription {
-        val dummyDescription = UnitDescription("", 0, 0, 0)
-        return FractionDescription("", dummyDescription, dummyDescription)
-    }
+    override fun isHostile(unit: Unit): Boolean = true
 
     override fun createSoldier(): Soldier {
         throw RuntimeException("invalid for neutral")

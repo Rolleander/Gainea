@@ -37,6 +37,10 @@ class GameStartSite : GameSite() {
     fun startGame() {
         lobby.chat(null, "Starte Spiel...")
         val game = Game(lobby)
+        lobby.data.game = game
+        game.allPlayers.forEach {
+            it.serverPlayer.data.gamePlayer = it
+        }
         lobby.data.gameStartListener?.gameStarted()
         game.initHandlers(ReactionResultHandler(game, lobby))
         gameStart.loading = true

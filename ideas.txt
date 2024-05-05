@@ -1,5 +1,4 @@
-- speedup start (only place commander)
-networklib: make rejoin possible on demand (if initial fails)
+- send fractions and cards at lobby join
 
 card ideas:
 - alle einheiten auf einen platz

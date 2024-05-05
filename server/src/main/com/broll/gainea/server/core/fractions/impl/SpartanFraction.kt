@@ -16,22 +16,21 @@ import com.broll.gainea.server.core.utils.UnitControl.focus
 import com.broll.gainea.server.core.utils.isAreaType
 
 class SpartanFraction : Fraction(FractionType.SPARTANS) {
-    override fun description(): FractionDescription {
-        val desc = FractionDescription(
-            "",
-            soldier = UnitDescription(name = "Spartaner", icon = 139),
-            commander = UnitDescription(
-                name = "Leonidas",
-                icon = 133,
-                power = 3,
-                health = 3
-            ),
-        )
-        desc.plus("Jede Runde erhält eine Einheit +1 Angriff")
-        desc.plus("In Unterzahl +1 Zahl")
-        desc.contra("Auf Schnee und Seen -1 Zahl")
-        desc.contra("Besiegte Monster geben nur noch die Hälfte der Sterne (abgerundet)")
-        return desc
+
+    override val description: FractionDescription = FractionDescription(
+        "",
+        soldier = UnitDescription(name = "Spartaner", icon = 139),
+        commander = UnitDescription(
+            name = "Leonidas",
+            icon = 133,
+            power = 3,
+            health = 3
+        ),
+    ).apply {
+        plus("Jede Runde erhält eine Einheit +1 Angriff")
+        plus("In Unterzahl +1 Zahl")
+        contra("Auf Schnee und Seen -1 Zahl")
+        contra("Besiegte Monster geben nur noch die Hälfte der Sterne (abgerundet)")
     }
 
     override fun prepareTurn() {
@@ -64,20 +63,4 @@ class SpartanFraction : Fraction(FractionType.SPARTANS) {
         return power
     }
 
-    override fun createSoldier(): Soldier {
-        val soldier = Soldier(owner, fraction = this)
-        soldier.setStats(1, 1)
-        soldier.name = "Spartaner"
-        soldier.icon = 139
-        return soldier
-    }
-
-    override fun createCommander(): Soldier {
-        val commander = Soldier(owner, fraction = this)
-        commander.commander = true
-        commander.setStats(3, 3)
-        commander.name = "Leonidas"
-        commander.icon = 133
-        return commander
-    }
 }

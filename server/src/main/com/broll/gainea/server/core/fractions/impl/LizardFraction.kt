@@ -12,8 +12,9 @@ import com.broll.gainea.server.core.utils.isAreaType
 
 class LizardFraction : Fraction(FractionType.LIZARDS) {
     private var turns = 0
-    override fun description(): FractionDescription {
-        val desc = FractionDescription(
+
+    override val description: FractionDescription =
+        FractionDescription(
             "",
             soldier = UnitDescription(name = "Echsenkrieger", icon = 122, power = 2, health = 2),
             commander = UnitDescription(
@@ -22,12 +23,12 @@ class LizardFraction : Fraction(FractionType.LIZARDS) {
                 power = 3,
                 health = 5
             ),
-        )
-        desc.plus("Einheiten können Laufen und Angreifen im gleichen Zug")
-        desc.contra("Erhält nur jeden zweiten Zug einen Soldat")
-        desc.contra("Im Schnee -1 Zahl")
-        return desc
-    }
+        ).apply {
+            plus("Einheiten können Laufen und Angreifen im gleichen Zug")
+            contra("Erhält nur jeden zweiten Zug einen Soldat")
+            contra("Im Schnee -1 Zahl")
+        }
+
 
     override fun prepareTurn() {
         turns++
@@ -45,23 +46,12 @@ class LizardFraction : Fraction(FractionType.LIZARDS) {
         }
     }
 
-    override fun createSoldier(): Soldier {
-        val soldier = Soldier(owner, fraction = this)
-        soldier.setStats(2, 2)
-        soldier.name = "Echsenkrieger"
-        soldier.icon = 122
-        soldier.isMoveOrAttackRestriction = false
-        return soldier
+    override fun createCommander(): Soldier = super.createCommander().apply {
+        isMoveOrAttackRestriction = false
     }
 
-    override fun createCommander(): Soldier {
-        val commander = Soldier(owner, fraction = this)
-        commander.commander = true
-        commander.setStats(3, 5)
-        commander.name = "Grash der Vernichter"
-        commander.icon = 123
-        commander.isMoveOrAttackRestriction = false
-        return commander
+    override fun createSoldier(): Soldier = super.createSoldier().apply {
+        isMoveOrAttackRestriction = false
     }
 
     companion object {

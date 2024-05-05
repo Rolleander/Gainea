@@ -14,18 +14,18 @@ import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.core.utils.isAreaType
 
 class VikingFraction : Fraction(FractionType.VIKINGS) {
-    override fun description(): FractionDescription {
-        val desc = FractionDescription(
-            "",
-            soldier = UnitDescription(name = "Wikinger", icon = 106),
-            commander = UnitDescription(name = "Jarl Olaf", icon = 104, power = 3, health = 3),
-        )
-        desc.plus("Können Schiffe in jede Richtung gehen")
-        desc.plus("Auf Schiffen Zahl +1")
-        desc.plus("Auf Eis Zahl +1")
-        desc.contra("Auf Wüste Zahl -2")
-        return desc
+
+    override val description: FractionDescription = FractionDescription(
+        "",
+        soldier = UnitDescription(name = "Wikinger", icon = 106),
+        commander = UnitDescription(name = "Jarl Olaf", icon = 104, power = 3, health = 3),
+    ).apply {
+        plus("Können Schiffe in jede Richtung gehen")
+        plus("Auf Schiffen Zahl +1")
+        plus("Auf Eis Zahl +1")
+        contra("Auf Wüste Zahl -2")
     }
+
 
     override fun calcFightingPower(soldier: Soldier, context: BattleContext): FightingPower {
         val power = super.calcFightingPower(soldier, context)
@@ -39,21 +39,17 @@ class VikingFraction : Fraction(FractionType.VIKINGS) {
         return power
     }
 
-    override fun createSoldier(): Soldier {
-        val soldier: Soldier = VikingSoldier(owner)
-        soldier.setStats(SOLDIER_POWER, SOLDIER_HEALTH)
-        soldier.name = "Wikinger"
-        soldier.icon = 106
-        return soldier
+    override fun createCommander(): Soldier {
+        val commander = VikingSoldier(owner)
+        commander.commander = true
+        commander.initFrom(description.commander)
+        return commander
     }
 
-    override fun createCommander(): Soldier {
-        val commander: Soldier = VikingSoldier(owner)
-        commander.commander = true
-        commander.setStats(COMMANDER_POWER, COMMANDER_HEALTH)
-        commander.name = "Jarl Olaf"
-        commander.icon = 104
-        return commander
+    override fun createSoldier(): Soldier {
+        val soldier = VikingSoldier(owner)
+        soldier.initFrom(description.soldier)
+        return soldier
     }
 
     private inner class VikingSoldier(owner: Player) :

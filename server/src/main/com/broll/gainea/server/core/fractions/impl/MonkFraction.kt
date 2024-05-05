@@ -17,21 +17,20 @@ import org.apache.commons.lang3.mutable.MutableBoolean
 
 class MonkFraction : Fraction(FractionType.MONKS) {
     private var killedMonsters = 0
-    override fun description(): FractionDescription {
-        val desc = FractionDescription(
-            "",
-            soldier = UnitDescription(name = "Mönch", icon = 108),
-            commander = UnitDescription(
-                name = "Großmeister Eron",
-                icon = 107,
-                power = 3,
-                health = 3
-            ),
-        )
-        desc.plus("Jede Runde erhält eine Einheit +1 Leben")
-        desc.plus("Werden nicht von Monstern angegriffen")
-        desc.contra("Jedes dritte besiegte Monster gibt keine Belohnung")
-        return desc
+
+    override val description: FractionDescription = FractionDescription(
+        "",
+        soldier = UnitDescription(name = "Mönch", icon = 108),
+        commander = UnitDescription(
+            name = "Großmeister Eron",
+            icon = 107,
+            power = 3,
+            health = 3
+        ),
+    ).apply {
+        plus("Jede Runde erhält eine Einheit +1 Leben")
+        plus("Werden nicht von Monstern angegriffen")
+        contra("Jedes dritte besiegte Monster gibt keine Belohnung")
     }
 
     override fun battleIntention(context: BattleContext, cancelFight: MutableBoolean) {
@@ -64,21 +63,17 @@ class MonkFraction : Fraction(FractionType.MONKS) {
         }
     }
 
-    override fun createSoldier(): Soldier {
-        val soldier: Soldier = MonkSoldier(owner)
-        soldier.setStats(SOLDIER_POWER, SOLDIER_HEALTH)
-        soldier.name = "Mönch"
-        soldier.icon = 108
-        return soldier
+    override fun createCommander(): Soldier {
+        val commander = MonkSoldier(owner)
+        commander.commander = true
+        commander.initFrom(description.commander)
+        return commander
     }
 
-    override fun createCommander(): Soldier {
-        val commander: Soldier = MonkSoldier(owner)
-        commander.commander = true
-        commander.setStats(COMMANDER_POWER, COMMANDER_HEALTH)
-        commander.name = "Großmeister Eron"
-        commander.icon = 107
-        return commander
+    override fun createSoldier(): Soldier {
+        val soldier = MonkSoldier(owner)
+        soldier.initFrom(description.soldier)
+        return soldier
     }
 
     private inner class MonkSoldier(owner: Player) : Soldier(owner, fraction = this@MonkFraction)

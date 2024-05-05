@@ -15,16 +15,15 @@ import com.broll.gainea.server.core.utils.UnitControl.isNeutralMonster
 import com.broll.gainea.server.core.utils.UnitControl.recruit
 
 class PoacherFraction : Fraction(FractionType.POACHER) {
-    override fun description(): FractionDescription {
-        val desc = FractionDescription(
-            "",
-            soldier = UnitDescription(name = "Wilderer", icon = 42),
-            commander = UnitDescription(name = "Monsterzähmer", icon = 44, power = 1, health = 5),
-        )
-        desc.plus("Besiegte Monster werden rekrutiert, wenn nach dem Kampf ein Soldat überlebt")
-        desc.contra("Gegen menschliche Truppen -1 Zahl für eigene Soldaten")
-        desc.contra("Erhalten keine Sterne für besiegte Monster, die rekrutiert werden")
-        return desc
+
+    override val description: FractionDescription = FractionDescription(
+        "",
+        soldier = UnitDescription(name = "Wilderer", icon = 42),
+        commander = UnitDescription(name = "Monsterzähmer", icon = 44, power = 1, health = 5),
+    ).apply {
+        plus("Besiegte Monster werden rekrutiert, wenn nach dem Kampf ein Soldat überlebt")
+        contra("Gegen menschliche Truppen -1 Zahl für eigene Soldaten")
+        contra("Erhalten keine Sterne für besiegte Monster, die rekrutiert werden")
     }
 
     override fun calcFightingPower(soldier: Soldier, context: BattleContext): FightingPower {
@@ -58,20 +57,4 @@ class PoacherFraction : Fraction(FractionType.POACHER) {
         }
     }
 
-    override fun createSoldier(): Soldier {
-        val soldier = Soldier(owner, fraction = this)
-        soldier.setStats(SOLDIER_POWER, SOLDIER_HEALTH)
-        soldier.name = "Wilderer"
-        soldier.icon = 42
-        return soldier
-    }
-
-    override fun createCommander(): Soldier {
-        val commander = Soldier(owner, fraction = this)
-        commander.commander = true
-        commander.name = "Monsterzähmer"
-        commander.icon = 44
-        commander.setStats(1, 5)
-        return commander
-    }
 }

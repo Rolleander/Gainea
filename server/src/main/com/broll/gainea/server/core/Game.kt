@@ -63,7 +63,6 @@ class Game(val lobby: ServerLobby<LobbyData, PlayerData>) {
         private set
 
     init {
-        lobby.data.game = this
         updateReceiver = GameUpdateReceiverProxy()
         updateReceiver.register(TurnEvents(this))
         map = MapContainer(lobby.data.expansionSetting)

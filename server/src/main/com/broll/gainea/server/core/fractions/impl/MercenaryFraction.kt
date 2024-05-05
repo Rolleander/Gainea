@@ -7,27 +7,24 @@ import com.broll.gainea.server.core.fractions.Fraction
 import com.broll.gainea.server.core.fractions.FractionDescription
 import com.broll.gainea.server.core.fractions.FractionType
 import com.broll.gainea.server.core.fractions.UnitDescription
-import com.broll.gainea.server.core.map.AreaType
 import com.broll.gainea.server.core.objects.Soldier
-import com.broll.gainea.server.core.utils.isAreaType
 
 class MercenaryFraction : Fraction(FractionType.MERCENARY) {
     private var turns = 0
-    override fun description(): FractionDescription {
-        val desc = FractionDescription(
-            "",
-            soldier = UnitDescription(name = "Söldner", icon = 2),
-            commander = UnitDescription(
-                name = "Söldnerkommandant",
-                icon = 5,
-                power = 3,
-                health = 3
-            ),
-        )
-        desc.plus("Jeden zweiten Zug erhaltet Ihr einen weiteren Soldat")
-        desc.contra("In Unterzahl höchste Würfelzahl 5")
-        return desc
+    override val description: FractionDescription = FractionDescription(
+        "",
+        soldier = UnitDescription(name = "Söldner", icon = 2),
+        commander = UnitDescription(
+            name = "Söldnerkommandant",
+            icon = 5,
+            power = 3,
+            health = 3
+        ),
+    ).apply {
+        plus("Jeden zweiten Zug erhaltet Ihr einen weiteren Soldat")
+        contra("In Unterzahl höchste Würfelzahl 5")
     }
+
 
     override fun calcFightingPower(soldier: Soldier, context: BattleContext): FightingPower {
         val power = super.calcFightingPower(soldier, context)
@@ -50,21 +47,8 @@ class MercenaryFraction : Fraction(FractionType.MERCENARY) {
         super.prepareTurn()
     }
 
-    override fun createSoldier(): Soldier {
-        val soldier = Soldier(owner, fraction = this)
-        soldier.setStats(SOLDIER_POWER, SOLDIER_HEALTH)
-        soldier.name = "Söldner"
-        soldier.icon = ICONS[RandomUtils.random(ICONS.size - 1)]
-        return soldier
-    }
-
-    override fun createCommander(): Soldier {
-        val commander = Soldier(owner, fraction = this)
-        commander.commander = true
-        commander.setStats(COMMANDER_POWER, COMMANDER_HEALTH)
-        commander.name = "Söldnerkommandant"
-        commander.icon = 5
-        return commander
+    override fun createSoldier(): Soldier = super.createSoldier().apply {
+        icon = ICONS[RandomUtils.random(ICONS.size - 1)]
     }
 
     companion object {

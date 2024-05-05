@@ -57,6 +57,6 @@ class GoalStorage(
 
     companion object {
         private val Log = LoggerFactory.getLogger(GoalStorage::class.java)
-        private const val PACKAGE_PATH = "com.broll.gainea.server.core.goals.impl"
+        const val PACKAGE_PATH = "com.broll.gainea.server.core.goals.impl"
     }
 }

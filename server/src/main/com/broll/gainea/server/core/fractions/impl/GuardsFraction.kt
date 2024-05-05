@@ -1,5 +1,6 @@
 package com.broll.gainea.server.core.fractions.impl
 
+import com.broll.gainea.net.NT_Unit
 import com.broll.gainea.server.core.battle.BattleContext
 import com.broll.gainea.server.core.battle.FightingPower
 import com.broll.gainea.server.core.fractions.Fraction
@@ -13,17 +14,18 @@ import com.broll.gainea.server.core.objects.buffs.IntBuff
 import com.broll.gainea.server.core.player.Player
 
 class GuardsFraction : Fraction(FractionType.GUARDS) {
-    override fun description(): FractionDescription {
-        val desc = FractionDescription(
+
+    override val description: FractionDescription =
+        FractionDescription(
             "",
             soldier = UnitDescription(name = "Gardistenwache", icon = 19),
             commander = UnitDescription(name = "Elitegardist", icon = 15, power = 3, health = 3),
-        )
-        desc.plus("Als Verteidiger ist die niedrigste Würfelzahl 3")
-        desc.plus("Zahl +1 für Verteidiger, die ihr Feld mindestens eine Runde nicht verlassen haben")
-        desc.contra("Als Angreifer Zahl -1")
-        return desc
-    }
+        ).apply {
+            plus("Als Verteidiger ist die niedrigste Würfelzahl 3")
+            plus("Zahl +1 für Verteidiger, die ihr Feld mindestens eine Runde nicht verlassen haben")
+            contra("Als Angreifer Zahl -1")
+        }
+
 
     override fun calcFightingPower(soldier: Soldier, context: BattleContext): FightingPower {
         val power = super.calcFightingPower(soldier, context)
@@ -35,21 +37,18 @@ class GuardsFraction : Fraction(FractionType.GUARDS) {
         return power
     }
 
-    override fun createSoldier(): Soldier {
-        val soldier: Soldier = GuardSoldier(owner)
-        soldier.setStats(SOLDIER_POWER, SOLDIER_HEALTH)
-        soldier.name = "Gardistenwache"
-        soldier.icon = 19
-        return soldier
+    override fun createCommander(): Soldier {
+        val commander = GuardSoldier(owner)
+        commander.commander = true
+        commander.initFrom(description.commander)
+        return commander
     }
 
-    override fun createCommander(): Soldier {
-        val commander: Soldier = GuardSoldier(owner)
-        commander.commander = true
-        commander.setStats(COMMANDER_POWER, COMMANDER_HEALTH)
-        commander.name = "Elitegardist"
-        commander.icon = 15
-        return commander
+    override fun createSoldier(): Soldier {
+        val soldier = GuardSoldier(owner)
+        soldier.initFrom(description.soldier)
+        soldier.setType(NT_Unit.TYPE_FEMALE.toInt())
+        return soldier
     }
 
     private inner class GuardSoldier(owner: Player) :

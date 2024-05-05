@@ -11,17 +11,17 @@ import com.broll.gainea.server.core.objects.Soldier
 import com.broll.gainea.server.core.utils.isAreaType
 
 class SamuraiFraction : Fraction(FractionType.SAMURAI) {
-    override fun description(): FractionDescription {
-        val desc = FractionDescription(
-            "",
-            soldier = UnitDescription(name = "Samurai", icon = 111),
-            commander = UnitDescription(name = "Ronin", icon = 113, power = 3, health = 3),
-        )
-        desc.plus("Als Angreifer +1 Zahl")
-        desc.plus("Auf Bergen +1 Zahl")
-        desc.contra("Als Verteidiger höchste Würfelzahl 5")
-        return desc
+
+    override val description: FractionDescription = FractionDescription(
+        "",
+        soldier = UnitDescription(name = "Samurai", icon = 111),
+        commander = UnitDescription(name = "Ronin", icon = 113, power = 3, health = 3),
+    ).apply {
+        plus("Als Angreifer +1 Zahl")
+        plus("Auf Bergen +1 Zahl")
+        contra("Als Verteidiger höchste Würfelzahl 5")
     }
+
 
     override fun calcFightingPower(soldier: Soldier, context: BattleContext): FightingPower {
         val power = super.calcFightingPower(soldier, context)
@@ -36,20 +36,4 @@ class SamuraiFraction : Fraction(FractionType.SAMURAI) {
         return power
     }
 
-    override fun createSoldier(): Soldier {
-        val soldier = Soldier(owner, fraction = this)
-        soldier.setStats(SOLDIER_POWER, SOLDIER_HEALTH)
-        soldier.name = "Samurai"
-        soldier.icon = 111
-        return soldier
-    }
-
-    override fun createCommander(): Soldier {
-        val commander = Soldier(owner, fraction = this)
-        commander.commander = true
-        commander.setStats(COMMANDER_POWER, COMMANDER_HEALTH)
-        commander.name = "Ronin"
-        commander.icon = 113
-        return commander
-    }
 }

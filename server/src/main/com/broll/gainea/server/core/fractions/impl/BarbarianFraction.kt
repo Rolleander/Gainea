@@ -17,8 +17,8 @@ import com.broll.gainea.server.core.utils.isCommander
 class BarbarianFraction : Fraction(FractionType.BARBARIANS) {
     private var turns = 0
     private var brother: BarbarianBrother? = null
-    override fun description(): FractionDescription {
-        val desc = FractionDescription(
+    override val description: FractionDescription =
+        FractionDescription(
             "",
             soldier = UnitDescription(name = "Barbarenrkieger", icon = 103),
             commander = UnitDescription(
@@ -27,12 +27,11 @@ class BarbarianFraction : Fraction(FractionType.BARBARIANS) {
                 power = 3,
                 health = 3
             ),
-        )
-        desc.plus("Nach " + SUMMON_TURN + " Runden ruft der Kommandant seine zweite Hand (2/3) herbei")
-        desc.plus("+1 Zahl, wenn Kommandant und zweite Hand zusammen kämpfen")
-        desc.contra("-1 Zahl, wenn keine Barbarenrkieger im Kampf beteiligt sind")
-        return desc
-    }
+        ).apply {
+            plus("Nach " + SUMMON_TURN + " Runden ruft der Kommandant seine zweite Hand (2/3) herbei")
+            plus("+1 Zahl, wenn Kommandant und zweite Hand zusammen kämpfen")
+            contra("-1 Zahl, wenn keine Barbarenrkieger im Kampf beteiligt sind")
+        }
 
     override fun calcFightingPower(soldier: Soldier, context: BattleContext): FightingPower {
         val power = super.calcFightingPower(soldier, context)
@@ -54,9 +53,10 @@ class BarbarianFraction : Fraction(FractionType.BARBARIANS) {
 
     override fun createSoldier(): Soldier {
         val soldier = Soldier(owner, fraction = this)
-        soldier.setStats(SOLDIER_POWER, SOLDIER_HEALTH)
-        soldier.name = "Barbarenrkieger"
-        soldier.icon = 103
+        soldier.setStats(description.soldier.power, description.soldier.health)
+        soldier.name = description.soldier.name
+        soldier.icon = description.soldier.icon
+        soldier.description = description.soldier.description
         return soldier
     }
 

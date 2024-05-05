@@ -14,44 +14,26 @@ import com.broll.gainea.server.core.objects.Soldier
 import com.broll.gainea.server.core.utils.UnitControl.spawn
 
 class ShadowFraction : Fraction(FractionType.SHADOW) {
-    override fun description(): FractionDescription {
-        val desc = FractionDescription(
-            "",
-            soldier = UnitDescription(name = "Schatten", icon = 12),
-            commander = UnitDescription(
-                name = "Erznekromant Bal",
-                icon = 21,
-                power = 3,
-                health = 3
-            ),
-        )
-        desc.plus("Bei Kämpfen werden gefallene feindliche Soldaten als Skelette (1/1) beschworen")
-        desc.plus("Soldaten haben +1 Zahl in Sümpfen")
-        desc.contra("Skelette haben -1 Zahl")
-        return desc
+
+    override val description: FractionDescription = FractionDescription(
+        "",
+        soldier = UnitDescription(name = "Schatten", icon = 12),
+        commander = UnitDescription(
+            name = "Erznekromant Bal",
+            icon = 21,
+            power = 3,
+            health = 3
+        ),
+    ).apply {
+        plus("Bei Kämpfen werden gefallene feindliche Soldaten als Skelette (1/1) beschworen")
+        plus("Soldaten haben +1 Zahl in Sümpfen")
+        contra("Skelette haben -1 Zahl")
     }
 
     override fun powerMutatorArea(power: FightingPower, area: Area) {
         if (area.type == BOG) {
             power.changeNumberPlus(1)
         }
-    }
-
-    override fun createSoldier(): Soldier {
-        val soldier = Soldier(owner, fraction = this)
-        soldier.setStats(SOLDIER_POWER, SOLDIER_HEALTH)
-        soldier.name = "Schatten"
-        soldier.icon = 12
-        return soldier
-    }
-
-    override fun createCommander(): Soldier {
-        val commander = Soldier(owner, fraction = this)
-        commander.commander = true
-        commander.setStats(COMMANDER_POWER, COMMANDER_HEALTH)
-        commander.name = "Erznekromant Bal"
-        commander.icon = 21
-        return commander
     }
 
     private fun summonSkeletons(killedEnemies: List<UnitSnapshot>, location: Location) {

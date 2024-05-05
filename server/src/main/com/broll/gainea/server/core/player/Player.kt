@@ -25,7 +25,6 @@ open class Player(game: Game, val fraction: Fraction, val serverPlayer: LobbyPla
         goalHandler = GoalHandler(game, this)
         cardHandler = CardHandler(game, this)
         shop = Shop(game, this)
-        serverPlayer.data.joinedGame(this)
     }
 
     val active: Boolean
