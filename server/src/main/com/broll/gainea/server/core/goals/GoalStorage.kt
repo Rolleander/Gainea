@@ -11,6 +11,7 @@ class GoalStorage(
     private val goalTypes: GoalTypes
 ) {
     private val loader: PackageLoader<Goal> = PackageLoader(Goal::class.java, PACKAGE_PATH)
+    val allGoals: List<Goal> = loader.instantiateAll()
 
     fun assignNewRandomGoal(player: Player) {
         assignNewGoal(player) { true }

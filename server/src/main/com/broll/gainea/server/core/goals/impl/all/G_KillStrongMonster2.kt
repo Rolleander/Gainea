@@ -7,7 +7,10 @@ import com.broll.gainea.server.core.goals.GoalDifficulty
 import com.broll.gainea.server.core.objects.MapObject
 import com.broll.gainea.server.core.objects.monster.Monster
 
-class G_KillStrongMonster2 : Goal(GoalDifficulty.EASY, "Besiege ein Monster mit " + KILLS + " oder mehr Kills.") {
+class G_KillStrongMonster2 : Goal(
+    GoalDifficulty.EASY,
+    "Besiege ein Monster mit $KILLS oder mehr Kills."
+) {
     override fun battleResult(result: BattleResult) {
         if (result.getOpposingUnits(player).any { isTarget(it.source) && it.dead }) {
             success()

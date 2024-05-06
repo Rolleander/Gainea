@@ -11,7 +11,15 @@ import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.core.utils.getUnits
 import com.broll.gainea.server.core.utils.getWalkingDistance
 
-open class G_MoveUnit(difficulty: GoalDifficulty = GoalDifficulty.EASY, private val distance: Int = 6) : CustomOccupyGoal(difficulty, "") {
+open class G_MoveUnit(
+    difficulty: GoalDifficulty = GoalDifficulty.EASY,
+    private val distance: Int = 6
+) : CustomOccupyGoal(difficulty, "") {
+
+    init {
+        libraryText = text("X", "Y") + " ($distance Felder Abstand)"
+    }
+
     private lateinit var from: Area
     private lateinit var to: Area
     private val walkingUnits = mutableListOf<Unit>()
@@ -51,10 +59,13 @@ open class G_MoveUnit(difficulty: GoalDifficulty = GoalDifficulty.EASY, private 
         to = target
         locations.add(from)
         locations.add(to)
-        text = "Bewege eine Einheit von " + from.name + " nach " + to.name
+        text = text(from.name, to.name)
         progressionGoal = distance
         return super.init(game, player)
     }
+
+    private fun text(from: String, to: String) =
+        "Bewege eine Einheit von $from nach $to"
 
     override fun check() {
         walkingUnits.removeIf { it.dead }
@@ -78,6 +89,9 @@ open class G_MoveUnit(difficulty: GoalDifficulty = GoalDifficulty.EASY, private 
         strategy.setRequiredUnits(1)
         strategy.isSpreadUnits = false
         strategy.updateTargets(setOf(from))
-        strategy.setPrepareStrategy { strategy.units.filter { walkingUnits.contains(it) }.forEach { strategy.botStrategy.moveTargets[it] = to } }
+        strategy.setPrepareStrategy {
+            strategy.units.filter { walkingUnits.contains(it) }
+                .forEach { strategy.botStrategy.moveTargets[it] = to }
+        }
     }
 }

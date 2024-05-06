@@ -7,7 +7,7 @@ import com.broll.gainea.server.core.goals.RoundGoal
 import com.broll.gainea.server.core.objects.Unit
 
 class G_Survive :
-    RoundGoal(GoalDifficulty.EASY, "Verliere für " + TARGET + " Runden keine Einheit", TARGET) {
+    RoundGoal(GoalDifficulty.EASY, "Verliere für $TARGET Runden keine Einheit", TARGET) {
     override fun unitKilled(unit: Unit, throughBattle: BattleResult?) {
         if (unit.owner === player) {
             resetRounds()

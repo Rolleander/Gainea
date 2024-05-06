@@ -12,7 +12,12 @@ import com.broll.gainea.server.core.processing.GameUpdateReceiverAdapter
 import com.broll.gainea.server.core.utils.ProcessingUtils
 import com.broll.gainea.server.core.utils.sendUpdate
 
-abstract class Goal(var difficulty: GoalDifficulty, var text: String) :
+abstract class Goal(
+    var difficulty: GoalDifficulty,
+    var text: String,
+    var libraryText: String = "",
+    var libraryDifficulty: String = ""
+) :
     GameUpdateReceiverAdapter() {
     protected val locations = mutableListOf<Location>()
     var restrictionInfo: String? = null
@@ -25,10 +30,17 @@ abstract class Goal(var difficulty: GoalDifficulty, var text: String) :
     protected lateinit var game: Game
     protected lateinit var player: Player
     private var finished = false
+
     open fun init(game: Game, player: Player): Boolean {
         this.game = game
         this.player = player
         id = game.newObjectId()
+        if (libraryText.isBlank()) {
+            libraryText = text
+        }
+        if (libraryDifficulty.isBlank()) {
+            libraryDifficulty = difficulty.points.toString()
+        }
         return validForGame()
     }
 

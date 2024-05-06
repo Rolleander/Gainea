@@ -5,6 +5,12 @@ import com.broll.gainea.server.core.goals.MissingExpansionException
 import com.broll.gainea.server.core.goals.OccupyGoal
 
 class G_Spread2 : OccupyGoal(GoalDifficulty.HARD, "") {
+
+    init {
+        libraryText = "Erobere $LOCATIONS zufällig bestimmte Felder"
+    }
+
+
     override fun initOccupations() {
         val continents = game.map.allContinents.shuffled()
         val locations = continents.take(LOCATIONS).map { it.areas.random() }

@@ -1,8 +1,10 @@
 package com.broll.gainea.client.network.sites;
 
 import com.broll.gainea.client.ui.screens.GameScreen;
+import com.broll.gainea.client.ui.screens.LobbyScreen;
 import com.broll.gainea.net.NT_GameOver;
 import com.broll.gainea.net.NT_GameStatistic;
+import com.broll.gainea.net.NT_Lib;
 import com.broll.gainea.net.NT_LoadedGame;
 import com.broll.gainea.net.NT_ReconnectGame;
 import com.broll.gainea.net.NT_StartGame;
@@ -17,6 +19,17 @@ import java.util.Arrays;
 public class GameStateSite extends AbstractGameSite {
 
     private final static Logger Log = LoggerFactory.getLogger(GameStateSite.class);
+
+    @PackageReceiver
+    public void received(NT_Lib lib) {
+        game.state.library = lib;
+        if (game.ui.inGameUI != null) {
+            game.ui.inGameUI.updateWindows();
+        }
+        if (game.ui.getCurrentScreen() instanceof LobbyScreen) {
+            ((LobbyScreen) game.ui.getCurrentScreen()).updateLobby();
+        }
+    }
 
     @PackageReceiver
     public void received(NT_StartGame start) {

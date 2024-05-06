@@ -20,12 +20,12 @@ import com.broll.gainea.client.ui.ingame.windows.FractionWindow;
 import com.broll.gainea.client.ui.utils.TableUtils;
 import com.broll.gainea.client.ui.utils.TextureUtils;
 import com.broll.gainea.net.NT_AddBot;
+import com.broll.gainea.net.NT_Lib_Fraction;
 import com.broll.gainea.net.NT_LobbySettings;
 import com.broll.gainea.net.NT_PlayerChangeFraction;
 import com.broll.gainea.net.NT_PlayerReady;
 import com.broll.gainea.net.NT_PlayerSettings;
 import com.broll.gainea.net.NT_UpdateLobbySettings;
-import com.broll.gainea.server.core.fractions.Fraction;
 import com.broll.gainea.server.core.fractions.FractionType;
 import com.broll.gainea.server.init.ExpansionSetting;
 import com.broll.gainea.server.init.GoalTypes;
@@ -42,12 +42,11 @@ import java.util.function.IntFunction;
 
 public class LobbyScreen extends Screen {
     private final static Logger Log = LoggerFactory.getLogger(LobbyScreen.class);
-
+    private int playerFraction;
     private GameLobby lobby;
     private Table lobbyTable;
     private CheckBox ready;
     private SelectBox fratcionBox, expansions, goals, points, rounds, startGoals, startLocations, monsters;
-    private Fraction playerFraction;
     private boolean updatesRunning = false;
     private int[] roundOptions = new int[]{0, 15, 20, 25, 30, 35, 40, 50, 60};
 
@@ -67,6 +66,9 @@ public class LobbyScreen extends Screen {
     }
 
     public void updateLobby() {
+        if (game.state.library == null) {
+            return;
+        }
         updatesRunning = true;
         NT_LobbySettings lobbySettings = (NT_LobbySettings) lobby.getSettings();
         updateSelection(expansions, lobbySettings.expansionSetting);
@@ -79,16 +81,17 @@ public class LobbyScreen extends Screen {
         lobbyTable.clear();
         lobby.getPlayers().forEach(player -> {
             NT_PlayerSettings settings = (NT_PlayerSettings) player.getSettings();
-            Fraction fraction = FractionType.values()[settings.fraction].create();
+            NT_Lib_Fraction fraction = game.state.library.fractions[settings.fraction];
             if (player == lobby.getOwner()) {
                 lobbyTable.add(new IconLabel(game, 6, ""));
             } else {
                 lobbyTable.add(info(" "));
             }
             lobbyTable.add(label(player.getName()));
-            lobbyTable.add(new Image(TextureUtils.unitIcon(game, fraction.getDescription().getCommander().getIcon()))).size(41).spaceRight(10);
+            int icon = fraction.commander.icon;
+            lobbyTable.add(new Image(TextureUtils.unitIcon(game, icon))).size(41).spaceRight(10);
             if (player == lobby.getMyPlayer()) {
-                this.playerFraction = fraction;
+                this.playerFraction = fraction.index;
                 if (fratcionBox.getSelectedIndex() != settings.fraction) {
                     fratcionBox.setSelectedIndex(settings.fraction);
                 }
@@ -101,7 +104,7 @@ public class LobbyScreen extends Screen {
                 CheckBox playerReady = new CheckBox("Bereit", skin);
                 playerReady.setChecked(settings.ready);
                 playerReady.setDisabled(true);
-                lobbyTable.add(info(fraction.getType().getDisplayName()));
+                lobbyTable.add(info(fraction.name));
                 lobbyTable.add(playerReady).right().expandX();
                 if (lobby.getOwner() == lobby.getMyPlayer()) {
                     ImageButton button = new ImageButton(new TextureRegionDrawable(TextureUtils.icon(game, 3)));
@@ -153,7 +156,7 @@ public class LobbyScreen extends Screen {
                 AudioPlayer.playSound("button.ogg");
                 if (ArrayUtils.contains(takenFractions, selectBox.getSelectedIndex())) {
                     //fraction taken, reset selection
-                    selectBox.setSelectedIndex(playerFraction.getType().ordinal());
+                    selectBox.setSelectedIndex(playerFraction);
                 } else {
                     NT_PlayerChangeFraction changeFraction = new NT_PlayerChangeFraction();
                     changeFraction.fraction = selectBox.getSelectedIndex();
@@ -166,7 +169,7 @@ public class LobbyScreen extends Screen {
 
     private SelectBox lobbySettingsBox(int setting, IntFunction<Integer> mapping, String[] values) {
         SelectBox selectBox = new SelectBox(skin);
-        selectBox.setItems((Object[]) values);
+        selectBox.setItems(values);
         if (lobby.getOwner() == lobby.getMyPlayer()) {
             selectBox.addListener(new ChangeListener() {
                 @Override
@@ -281,5 +284,6 @@ public class LobbyScreen extends Screen {
         vg.add(window).expand().fill();
         return vg;
     }
+
 
 }

@@ -13,6 +13,12 @@ import com.broll.gainea.server.core.player.isNeutral
 import com.broll.gainea.server.core.utils.getMonsters
 
 class G_KillAllMonsters : Goal(GoalDifficulty.MEDIUM, "") {
+
+    init {
+        libraryText = text("X")
+        libraryDifficulty = "1-2"
+    }
+
     private lateinit var continent: Continent
     override fun init(game: Game, player: Player): Boolean {
         for (continent in game.map.allContinents.shuffled()) {
@@ -21,13 +27,15 @@ class G_KillAllMonsters : Goal(GoalDifficulty.MEDIUM, "") {
             if (monsterCount >= 2) {
                 difficulty = if (monsterCount >= 5) GoalDifficulty.MEDIUM else GoalDifficulty.EASY
                 setExpansionRestriction(continent.expansion.type)
-                text =
-                    "Auf dem Kontinent " + continent.name + " darf es keine wilden Monster mehr geben"
+                text = text(continent.name)
                 return super.init(game, player)
             }
         }
         return false
     }
+
+    private fun text(continent: String) =
+        "Auf dem Kontinet $continent darf es keine wilden Monster mehr geben"
 
     private val monsterCount: Int
         get() = continent.areas.flatMap { it.getMonsters() }

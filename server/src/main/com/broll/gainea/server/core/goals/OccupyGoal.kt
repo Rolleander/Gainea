@@ -13,7 +13,8 @@ import com.broll.gainea.server.core.objects.MapObject
 import com.broll.gainea.server.core.objects.Unit
 import org.slf4j.LoggerFactory
 
-abstract class OccupyGoal(difficulty: GoalDifficulty, text: String) : Goal(difficulty, text) {
+abstract class OccupyGoal(difficulty: GoalDifficulty, text: String) :
+    Goal(difficulty, text) {
     private val conditions = HashMap<Location, (Location) -> Boolean>()
     protected lateinit var map: MapContainer
     protected var autoCheckProgressions = true

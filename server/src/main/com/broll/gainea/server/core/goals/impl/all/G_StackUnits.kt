@@ -12,12 +12,15 @@ class G_StackUnits : OccupyGoal(GoalDifficulty.EASY, "") {
     init {
         autoCheckProgressions = false
         progressionGoal = COUNT
+        libraryText = text("X")
     }
+
+    private fun text(area: String) =
+        "Besetze $area mit mindestens $COUNT Einheiten"
 
     override fun initOccupations() {
         area = game.map.allAreas.random()
-        text = "Besetze " + area.name + " mit mindestens " + COUNT + " Einheiten"
-
+        text = text(area.name)
         condition(occupy(area), {
             it.inhabitants.count { it.owner == player && it is Unit } >= COUNT
         })

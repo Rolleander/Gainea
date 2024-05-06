@@ -13,13 +13,17 @@ import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.core.player.isNeutral
 
 class G_OccupyRounds : RoundGoal(GoalDifficulty.MEDIUM, "", ROUND_TARGET) {
+    init {
+        libraryText = text("X")
+        libraryDifficulty = "1-2"
+    }
+
     private lateinit var container: AreaCollection
 
     override fun init(game: Game, player: Player): Boolean {
         container = game.map.allContainers.random()
         locations += container.areas
-        text =
-            "Sei für " + ROUND_TARGET + " Runden der einzige Spieler mit Einheiten auf " + container.name
+        text = text(container.name)
         val containerSize = container.areas.size
         difficulty = if (containerSize <= 5) {
             GoalDifficulty.EASY
@@ -28,6 +32,9 @@ class G_OccupyRounds : RoundGoal(GoalDifficulty.MEDIUM, "", ROUND_TARGET) {
         }
         return super.init(game, player)
     }
+
+    private fun text(container: String) =
+        "Sei für $ROUND_TARGET Runden der einzige Spieler mit Einheiten auf $container"
 
     override fun unitsMoved(units: List<MapObject>, location: Location) {
         if (location.container === container && location !is Ship &&

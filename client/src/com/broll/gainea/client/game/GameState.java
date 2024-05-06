@@ -8,6 +8,7 @@ import com.broll.gainea.net.NT_BoardUpdate;
 import com.broll.gainea.net.NT_Card;
 import com.broll.gainea.net.NT_GameStatistic;
 import com.broll.gainea.net.NT_Goal;
+import com.broll.gainea.net.NT_Lib;
 import com.broll.gainea.net.NT_Player;
 import com.broll.gainea.net.NT_Shop;
 import com.broll.gainea.net.NT_Unit;
@@ -24,6 +25,8 @@ import java.util.stream.Collectors;
 public class GameState {
 
     public NT_Shop shop;
+    public NT_Lib library;
+
     private Gainea game;
     //game data:
     private int round;

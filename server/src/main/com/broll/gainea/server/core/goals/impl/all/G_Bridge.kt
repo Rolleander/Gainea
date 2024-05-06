@@ -10,6 +10,10 @@ import com.broll.gainea.server.core.utils.getDistance
 
 class G_Bridge : OccupyGoal(difficulty = MEDIUM, text = "") {
 
+    init {
+        libraryText = "Erobere den markierten Pfad von X nach Y ($LENGTH Felder Abstand)"
+    }
+
     override fun initOccupations() {
         val start = game.map.allAreas.random()
         var current: Location = start
