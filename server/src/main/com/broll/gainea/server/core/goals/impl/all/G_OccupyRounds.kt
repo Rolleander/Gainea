@@ -3,7 +3,8 @@ package com.broll.gainea.server.core.goals.impl.all
 import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.bot.BotUtils
 import com.broll.gainea.server.core.bot.strategy.GoalStrategy
-import com.broll.gainea.server.core.goals.GoalDifficulty
+import com.broll.gainea.server.core.goals.GoalDifficulty.EASY
+import com.broll.gainea.server.core.goals.GoalDifficulty.MEDIUM
 import com.broll.gainea.server.core.goals.RoundGoal
 import com.broll.gainea.server.core.map.AreaCollection
 import com.broll.gainea.server.core.map.Location
@@ -12,10 +13,11 @@ import com.broll.gainea.server.core.objects.MapObject
 import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.core.player.isNeutral
 
-class G_OccupyRounds : RoundGoal(GoalDifficulty.MEDIUM, "", ROUND_TARGET) {
+class G_OccupyRounds : RoundGoal(MEDIUM, "", ROUND_TARGET) {
     init {
         libraryText = text("X")
-        libraryDifficulty = "1-2"
+        libraryDifficulties += EASY
+        libraryDifficulties += MEDIUM
     }
 
     private lateinit var container: AreaCollection
@@ -26,9 +28,9 @@ class G_OccupyRounds : RoundGoal(GoalDifficulty.MEDIUM, "", ROUND_TARGET) {
         text = text(container.name)
         val containerSize = container.areas.size
         difficulty = if (containerSize <= 5) {
-            GoalDifficulty.EASY
+            EASY
         } else {
-            GoalDifficulty.MEDIUM
+            MEDIUM
         }
         return super.init(game, player)
     }

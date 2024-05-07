@@ -118,7 +118,7 @@ public class MapObjectSelection extends Table {
         Table content = new Table(getSkin());
         content.pad(8);
         content.setBackground("background");
-        MenuUnit unit = new MenuUnit(game, getSkin(), object);
+        MenuUnit unit = new MenuUnit(game, object);
         unit.pad(8);
         if (objects.size() > 1) {
             Table table = new Table(getSkin());

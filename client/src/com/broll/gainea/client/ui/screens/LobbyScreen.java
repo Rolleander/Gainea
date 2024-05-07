@@ -3,7 +3,6 @@ package com.broll.gainea.client.ui.screens;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
@@ -16,7 +15,7 @@ import com.broll.gainea.client.AudioPlayer;
 import com.broll.gainea.client.ui.Screen;
 import com.broll.gainea.client.ui.components.GameChat;
 import com.broll.gainea.client.ui.components.IconLabel;
-import com.broll.gainea.client.ui.ingame.windows.FractionWindow;
+import com.broll.gainea.client.ui.ingame.windows.lib.LibraryWindow;
 import com.broll.gainea.client.ui.utils.TableUtils;
 import com.broll.gainea.client.ui.utils.TextureUtils;
 import com.broll.gainea.net.NT_AddBot;
@@ -50,6 +49,8 @@ public class LobbyScreen extends Screen {
     private boolean updatesRunning = false;
     private int[] roundOptions = new int[]{0, 15, 20, 25, 30, 35, 40, 50, 60};
 
+    private LibraryWindow libraryWindow;
+
     public LobbyScreen(GameLobby lobby) {
         this.lobby = lobby;
     }
@@ -68,6 +69,9 @@ public class LobbyScreen extends Screen {
     public void updateLobby() {
         if (game.state.library == null) {
             return;
+        }
+        if (libraryWindow == null) {
+            initLibraryWindow();
         }
         updatesRunning = true;
         NT_LobbySettings lobbySettings = (NT_LobbySettings) lobby.getSettings();
@@ -123,6 +127,7 @@ public class LobbyScreen extends Screen {
         lobbyTable.pack();
         updatesRunning = false;
     }
+
 
     private void kickPlayer(LobbyPlayer player) {
         NT_LobbyKick nt = new NT_LobbyKick();
@@ -188,18 +193,13 @@ public class LobbyScreen extends Screen {
         return selectBox;
     }
 
-    private Button addFractionWindowButton() {
-        FractionWindow fractionWindow = new FractionWindow(game);
-        Button showFractions = TableUtils.textButton(skin, "Fraktionen", () -> {
-            fractionWindow.toFront();
-            fractionWindow.setVisible(!fractionWindow.isVisible());
-        });
+    private void initLibraryWindow() {
+        libraryWindow = new LibraryWindow(game);
         Table pop = new Table();
         pop.setFillParent(true);
-        pop.add(fractionWindow).expand().fill().center();
-        fractionWindow.setVisible(false);
-        game.uiStage.addActor(fractionWindow);
-        return showFractions;
+        pop.add(libraryWindow).expand().fill().center();
+        libraryWindow.setVisible(false);
+        game.uiStage.addActor(libraryWindow);
     }
 
     private String[] numbers(int to) {
@@ -245,7 +245,12 @@ public class LobbyScreen extends Screen {
         title.add(title(lobby.getServerIp() + ": " + lobby.getName()));
         title.add(TableUtils.textButton(skin, "Verlassen", this::leaveLobby)).padLeft(30);
         window.add(title).left();
-        window.add(addFractionWindowButton()).right().row();
+        window.add(TableUtils.textButton(skin, "Info", () -> {
+            if (libraryWindow != null) {
+                libraryWindow.toFront();
+                libraryWindow.setVisible(!libraryWindow.isVisible());
+            }
+        })).right().row();
         Table settings = new Table(skin);
         settings.defaults().padRight(20).left();
         settings.add(info("Karten:"));

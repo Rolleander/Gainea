@@ -3,7 +3,6 @@ package com.broll.gainea.client.ui.ingame.unit;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.broll.gainea.Gainea;
 import com.broll.gainea.client.ui.components.IconLabel;
@@ -22,13 +21,13 @@ public class MenuUnit extends Table {
 
     private NT_BoardObject object;
 
-    public MenuUnit(Gainea game, Skin skin, NT_BoardObject object) {
-        this(game, skin, object, false);
+    public MenuUnit(Gainea game, NT_BoardObject object) {
+        this(game, object, false);
     }
 
-    public MenuUnit(Gainea game, Skin skin, NT_BoardObject object, boolean hideKills) {
+    public MenuUnit(Gainea game, NT_BoardObject object, boolean hideKills) {
         this.object = object;
-        setSkin(skin);
+        setSkin(game.ui.skin);
         MapObjectRender render = MapObjectRender.createRender(game, game.ui.skin, object);
         render.showDescription = false;
         if (render instanceof UnitRender) {
@@ -39,7 +38,7 @@ public class MenuUnit extends Table {
         left();
         Table table = new Table();
         table.left();
-        table.add(LabelUtils.info(skin, this.object.name)).left().spaceBottom(5).row();
+        table.add(LabelUtils.info(getSkin(), this.object.name)).left().spaceBottom(5).row();
         if (this.object instanceof NT_Monster) {
             NT_Monster m = (NT_Monster) this.object;
             Table stars = new Table();
@@ -48,14 +47,14 @@ public class MenuUnit extends Table {
             }
             if (m.actionTimer != -1) {
                 String behavior = MonsterBehavior.values()[((NT_Monster) this.object).behavior].getLabel();
-                stars.add(LabelUtils.markup(skin, behavior)).spaceLeft(10);
+                stars.add(LabelUtils.markup(getSkin(), behavior)).spaceLeft(10);
             }
             table.add(stars).left().spaceBottom(5).row();
         }
 
         if (this.object instanceof NT_Unit) {
             NT_Unit unit = (NT_Unit) object;
-            Table row = new Table(skin);
+            Table row = new Table(getSkin());
             row.defaults().spaceLeft(20).left();
             row.add(IconLabel.attack(game, unit.power));
             row.add(IconLabel.health(game, unit.health, unit.maxHealth));
@@ -66,7 +65,7 @@ public class MenuUnit extends Table {
         }
 
         if (StringUtils.isNotEmpty(this.object.description)) {
-            Label info = LabelUtils.markup(skin, "[DARK_GRAY]" + this.object.description);
+            Label info = LabelUtils.markup(getSkin(), "[DARK_GRAY]" + this.object.description);
             table.add(LabelUtils.autoWrap(info, 240)).left().expandX().fillX().row();
         }
         add(table).fillX().expandX().minWidth(240).spaceLeft(10);

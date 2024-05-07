@@ -16,7 +16,7 @@ abstract class Goal(
     var difficulty: GoalDifficulty,
     var text: String,
     var libraryText: String = "",
-    var libraryDifficulty: String = ""
+    val libraryDifficulties: MutableSet<GoalDifficulty> = mutableSetOf()
 ) :
     GameUpdateReceiverAdapter() {
     protected val locations = mutableListOf<Location>()
@@ -38,8 +38,8 @@ abstract class Goal(
         if (libraryText.isBlank()) {
             libraryText = text
         }
-        if (libraryDifficulty.isBlank()) {
-            libraryDifficulty = difficulty.points.toString()
+        if (libraryDifficulties.isEmpty()) {
+            libraryDifficulties += difficulty
         }
         return validForGame()
     }

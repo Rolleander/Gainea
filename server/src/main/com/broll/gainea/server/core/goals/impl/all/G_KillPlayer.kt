@@ -5,14 +5,16 @@ import com.broll.gainea.server.core.battle.BattleResult
 import com.broll.gainea.server.core.bot.BotUtils
 import com.broll.gainea.server.core.bot.strategy.GoalStrategy
 import com.broll.gainea.server.core.goals.Goal
-import com.broll.gainea.server.core.goals.GoalDifficulty
+import com.broll.gainea.server.core.goals.GoalDifficulty.HARD
+import com.broll.gainea.server.core.goals.GoalDifficulty.MEDIUM
 import com.broll.gainea.server.core.objects.Unit
 import com.broll.gainea.server.core.player.Player
 
-class G_KillPlayer : Goal(GoalDifficulty.MEDIUM, "") {
+class G_KillPlayer : Goal(MEDIUM, "") {
     init {
         libraryText = text("Spieler X")
-        libraryDifficulty = "2-3"
+        libraryDifficulties += HARD
+        libraryDifficulties += MEDIUM
     }
 
     private lateinit var target: Player
@@ -20,7 +22,7 @@ class G_KillPlayer : Goal(GoalDifficulty.MEDIUM, "") {
         target = game.activePlayers.filter { it !== player && it.units.isNotEmpty() }.randomOrNull()
             ?: return false
         text = text(target.serverPlayer.name)
-        difficulty = if (target.units.size >= 8) GoalDifficulty.HARD else GoalDifficulty.MEDIUM
+        difficulty = if (target.units.size >= 8) HARD else MEDIUM
         return super.init(game, player)
     }
 

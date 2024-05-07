@@ -12,6 +12,7 @@ import com.broll.gainea.server.core.cards.DirectlyPlayedCard
 import com.broll.gainea.server.core.fractions.Fraction
 import com.broll.gainea.server.core.fractions.FractionType
 import com.broll.gainea.server.core.goals.Goal
+import com.broll.gainea.server.core.goals.GoalDifficulty
 import com.broll.gainea.server.core.goals.GoalStorage
 import com.broll.gainea.server.core.objects.monster.GodDragon
 import com.broll.gainea.server.core.objects.monster.Monster
@@ -30,7 +31,7 @@ object ContentLibrary {
     private val fractions = FractionType.entries.map { it.create().library() }
     private val cards = CardStorage(game).allCards.sortedBy { it.title }.map { it.library() }
     private val goals =
-        GoalStorage(game, ALL).allGoals.sortedBy { it.libraryText }.map { it.library() }
+        GoalStorage(game, ALL).allGoals.sortedBy { it.libraryText }.flatMap { it.library() }
     private val monsters =
         listOf(
             listOf(
@@ -51,6 +52,7 @@ object ContentLibrary {
         it.commander = description.commander.nt()
         it.soldier = description.soldier.nt()
         it.name = type.displayName
+        it.desc = description.general
         it.descNegative = description.getContra().toTypedArray()
         it.descPositive = description.getPlus().toTypedArray()
     }
@@ -64,10 +66,16 @@ object ContentLibrary {
         it.type = effectType.ordinal.toShort()
     }
 
-    private fun Goal.library() = NT_Lib_Goal().also {
+    private fun Goal.library(): List<NT_Lib_Goal> {
         init(game, neutralPlayer)
+        return libraryDifficulties.map {
+            library(it)
+        }
+    }
+
+    private fun Goal.library(difficulty: GoalDifficulty) = NT_Lib_Goal().also {
         it.description = libraryText
-        it.points = libraryDifficulty
+        it.points = difficulty.points.toByte()
         it.restriction = restrictionInfo
     }
 

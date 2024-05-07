@@ -4,7 +4,8 @@ import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.battle.BattleResult
 import com.broll.gainea.server.core.bot.strategy.GoalStrategy
 import com.broll.gainea.server.core.goals.Goal
-import com.broll.gainea.server.core.goals.GoalDifficulty
+import com.broll.gainea.server.core.goals.GoalDifficulty.EASY
+import com.broll.gainea.server.core.goals.GoalDifficulty.MEDIUM
 import com.broll.gainea.server.core.map.Continent
 import com.broll.gainea.server.core.objects.Unit
 import com.broll.gainea.server.core.objects.monster.Monster
@@ -12,11 +13,12 @@ import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.core.player.isNeutral
 import com.broll.gainea.server.core.utils.getMonsters
 
-class G_KillAllMonsters : Goal(GoalDifficulty.MEDIUM, "") {
+class G_KillAllMonsters : Goal(MEDIUM, "") {
 
     init {
         libraryText = text("X")
-        libraryDifficulty = "1-2"
+        libraryDifficulties += EASY
+        libraryDifficulties += MEDIUM
     }
 
     private lateinit var continent: Continent
@@ -25,7 +27,7 @@ class G_KillAllMonsters : Goal(GoalDifficulty.MEDIUM, "") {
             this.continent = continent
             val monsterCount = monsterCount
             if (monsterCount >= 2) {
-                difficulty = if (monsterCount >= 5) GoalDifficulty.MEDIUM else GoalDifficulty.EASY
+                difficulty = if (monsterCount >= 5) MEDIUM else EASY
                 setExpansionRestriction(continent.expansion.type)
                 text = text(continent.name)
                 return super.init(game, player)

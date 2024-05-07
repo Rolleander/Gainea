@@ -7,11 +7,11 @@ import com.broll.gainea.Gainea;
 import com.broll.gainea.client.game.PlayerPerformOptionalAction;
 import com.broll.gainea.client.ui.ingame.windows.CardWindow;
 import com.broll.gainea.client.ui.ingame.windows.ChatWindow;
-import com.broll.gainea.client.ui.ingame.windows.FractionWindow;
 import com.broll.gainea.client.ui.ingame.windows.LogWindow;
 import com.broll.gainea.client.ui.ingame.windows.MenuWindow;
 import com.broll.gainea.client.ui.ingame.windows.SettingsWindow;
 import com.broll.gainea.client.ui.ingame.windows.ShopWindow;
+import com.broll.gainea.client.ui.ingame.windows.lib.LibraryWindow;
 import com.broll.gainea.net.NT_Action;
 import com.broll.gainea.net.NT_Action_Card;
 import com.broll.gainea.net.NT_Action_Shop;
@@ -31,7 +31,7 @@ public class MenuActions extends Table {
 
     private ShopWindow shopWindow;
 
-    private FractionWindow fractionWindow;
+    private LibraryWindow libraryWindow;
 
     private LogWindow logWindow;
 
@@ -48,7 +48,7 @@ public class MenuActions extends Table {
         this.chatWindow = new ChatWindow(game, this::newChatMessages);
         this.cardWindow = new CardWindow(game);
         this.shopWindow = new ShopWindow(game);
-        this.fractionWindow = new FractionWindow(game);
+        this.libraryWindow = new LibraryWindow(game);
         this.logWindow = new LogWindow(game);
         this.settingsWindow = new SettingsWindow(game);
         this.roundInformation = new RoundInformation(game);
@@ -62,7 +62,7 @@ public class MenuActions extends Table {
         content.add(endTurnButton).spaceBottom(30).row();
         content.add(cardButton).row();
         content.add(windowButton(5, shopWindow)).row();
-        content.add(windowButton(4, fractionWindow)).row();
+        content.add(windowButton(4, libraryWindow)).row();
         content.add(windowButton(3, logWindow)).row();
         content.add(chatButton).row();
         content.add(windowButton(0, settingsWindow)).row();
@@ -75,7 +75,7 @@ public class MenuActions extends Table {
         game.uiStage.addActor(this);
         game.uiStage.addActor(chatWindow);
         game.uiStage.addActor(cardWindow);
-        game.uiStage.addActor(fractionWindow);
+        game.uiStage.addActor(libraryWindow);
         game.uiStage.addActor(settingsWindow);
         game.uiStage.addActor(logWindow);
         game.uiStage.addActor(shopWindow);
@@ -101,7 +101,7 @@ public class MenuActions extends Table {
     public void update() {
         shopWindow.update();
         roundInformation.update();
-        fractionWindow.update();
+        libraryWindow.update();
         cardWindow.update();
         chatWindow.update();
         int cards = game.state.getCards().size();
@@ -131,7 +131,7 @@ public class MenuActions extends Table {
 
     public void hideWindows() {
         cardWindow.setVisible(false);
-        fractionWindow.setVisible(false);
+        libraryWindow.setVisible(false);
         logWindow.setVisible(false);
         shopWindow.setVisible(false);
     }

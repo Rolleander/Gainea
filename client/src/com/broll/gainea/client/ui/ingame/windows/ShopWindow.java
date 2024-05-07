@@ -92,7 +92,7 @@ public class ShopWindow extends MenuWindow {
         ShopEntry(NT_Unit unit, short price) {
             super(skin);
             pad(5);
-            MenuUnit entry = new MenuUnit(game, skin, unit, true);
+            MenuUnit entry = new MenuUnit(game, unit, true);
             button = new Button(skin);
             button.add(LabelUtils.label(skin, "" + price));
             button.add(new Image(TextureUtils.icon(game, 2))).spaceLeft(5);
