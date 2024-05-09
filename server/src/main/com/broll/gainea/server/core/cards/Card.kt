@@ -51,6 +51,7 @@ abstract class Card(
         card.text = text
         card.picture = picture.toShort()
         card.title = title
+        card.event = this is DirectlyPlayedCard
         return card
     }
 

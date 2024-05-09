@@ -58,6 +58,7 @@ public class LibraryWindow extends MenuWindow {
                 ntC.title = it.title;
                 ntC.text = it.text;
                 ntC.playable = false;
+                ntC.event = it.directlyPlayed;
                 return ntC;
             }).forEach(card -> cards.add(CardWindow.renderCard(game, card)).row());
             return Pair.of(type.getDisplayName() + " (" + cardData.size() + ")", (Actor) new VerticalScrollPane(cards, skin));

@@ -135,10 +135,17 @@ public class CardWindow extends MenuWindow {
             super(game.ui.skin);
             defaults().space(15);
             left();
-            setBackground("card-bg");
+            if (card.event) {
+                setBackground("event-card-bg");
+            } else {
+                setBackground("card-bg");
+            }
             Table box = new Table(game.ui.skin);
-            box.top();
-            box.add(LabelUtils.label(game.ui.skin, card.title)).left();
+            box.top().left();
+            if (card.event) {
+                box.add(new Image(TextureUtils.icon(game, 7))).width(20).height(20).padRight(10);
+            }
+            box.add(LabelUtils.label(game.ui.skin, card.title)).left().growX();
             if (playListener != null) {
                 Button activate = TableUtils.textButton(game.ui.skin, "Aktivieren!", playListener);
                 box.add(activate).right().pad(3);

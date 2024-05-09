@@ -9,6 +9,7 @@ public class NT_Card {
     public String title, text;
 
     public boolean playable = true;
+    public boolean event = false;
 
     @Override
     public boolean equals(Object o) {
