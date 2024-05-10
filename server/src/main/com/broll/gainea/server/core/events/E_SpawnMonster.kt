@@ -7,7 +7,7 @@ class E_SpawnMonster : EventCard(60, "Rückkehr der Natur", "Neue Monster tauche
     override fun play() {
         val playerCount = game.activePlayers.size
         val min = Math.max(1.0, playerCount * 0.5).toInt()
-        val max = playerCount * 2
+        val max = (playerCount * 1.5).toInt()
         game.spawnMonsters(RandomUtils.random(min, max))
     }
 }
