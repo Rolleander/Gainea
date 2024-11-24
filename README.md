@@ -5,6 +5,13 @@
 * Multiplayer strategy game based on the popular boardgame Risk
 * World layout comes from an actual boardgame I made as a kid
 
+## Play Online
+
+Download latest game builds at
+https://gainea.de
+
+If the game-server status is online you can connect your game clients with gainea.de and open or join a lobby
+
 ## Installation
 
 1. Checkout project
