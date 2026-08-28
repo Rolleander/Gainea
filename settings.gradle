@@ -1,1 +1,9 @@
+pluginManagement {
+    repositories {
+        mavenLocal()
+        gradlePluginPortal()
+    }
+}
+
 include 'desktop', 'android', 'shared', 'server', 'client'
+

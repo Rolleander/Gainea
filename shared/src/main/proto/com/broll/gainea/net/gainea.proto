@@ -1,0 +1,555 @@
+syntax = "proto2";
+
+package gainea.net;
+
+option java_multiple_files = true;
+option java_package = "com.broll.gainea.net.proto";
+option java_outer_classname = "GaineaProtocol";
+
+// Polymorphic replacement for Object[] in NT_Action_SelectChoice.
+message NT_Choice {
+  oneof value {
+    int32 integer_value = 1;
+    NT_Goal goal = 2;
+    NT_Card card = 3;
+    NT_Unit unit = 4;
+  }
+}
+
+// Action family. Concrete messages flatten NT_Action.actionId so their generated
+// getters stay close to the legacy subclasses. NT_Action wraps polymorphic uses.
+message NT_Action {
+  oneof value {
+    NT_Action_Attack attack = 1;
+    NT_Action_Card card = 2;
+    NT_Action_Move move = 3;
+    NT_Action_PlaceUnit place_unit = 4;
+    NT_Action_SelectChoice select_choice = 5;
+    NT_Action_Shop shop = 6;
+  }
+}
+
+message NT_Action_Attack {
+  optional int32 action_id = 1;
+  repeated NT_Unit units = 2;
+  optional int32 location = 3;
+}
+
+message NT_Action_Card {
+  optional int32 action_id = 1;
+  optional int32 card_id = 2;
+}
+
+message NT_Action_Move {
+  optional int32 action_id = 1;
+  repeated NT_Unit units = 2;
+  optional int32 location = 3;
+}
+
+message NT_Action_PlaceUnit {
+  optional int32 action_id = 1;
+  optional NT_Unit unit_to_place = 2;
+  repeated int32 possible_locations = 3;
+}
+
+message NT_Action_SelectChoice {
+  optional int32 action_id = 1;
+  repeated string choices = 2;
+  repeated NT_Choice object_choices = 3;
+}
+
+message NT_Action_Shop {
+  optional int32 action_id = 1;
+  optional int32 index = 2;
+}
+
+message NT_AddBot {}
+
+message NT_Battle_Damage {
+  optional int32 source = 1;
+  optional int32 target = 2;
+  optional bool lethal = 3;
+}
+
+message NT_Battle_Intention {
+  optional int32 from_location = 1;
+  optional int32 to_location = 2;
+}
+
+message NT_Battle_Reaction {
+  optional bool keep_attacking = 1;
+}
+
+message NT_Battle_Roll {
+  optional int32 source_unit = 1 [default = -1];
+  optional int32 number = 2;
+  optional int32 plus = 3;
+  optional int32 min = 4 [default = 1];
+  optional int32 max = 5 [default = 6];
+}
+
+message NT_Battle_Start {
+  repeated NT_Unit attackers = 1;
+  repeated NT_Unit defenders = 2;
+  optional bool allow_retreat = 3;
+  optional int32 attacker = 4 [default = -1];
+  optional int32 location = 5;
+}
+
+message NT_Battle_Update {
+  // Legacy state constants: fighting=0, attacker won=1, defender won=2, draw=3.
+  repeated NT_Battle_Roll attacker_rolls = 1;
+  repeated NT_Battle_Roll defender_rolls = 2;
+  repeated NT_Battle_Damage damage = 3;
+  optional int32 state = 4;
+}
+
+message NT_BoardEffect {
+  // Legacy effect constants: fire=0, portal=1.
+  optional int32 effect = 1;
+  optional int32 id = 2;
+  optional string info = 3;
+  optional float x = 4;
+  optional float y = 5;
+}
+
+// A board object can still represent a generic object. The oneof retains the
+// runtime subtype when a legacy NT_BoardObject field contains a unit/monster.
+message NT_BoardObject {
+  optional int32 owner = 1 [default = -1];
+  optional bool building = 2;
+  optional string name = 3;
+  optional float scale = 4 [default = 1];
+  optional int32 icon = 5;
+  optional int32 id = 6;
+  optional string description = 7;
+  optional int32 location = 8 [default = -1];
+
+  oneof subtype {
+    NT_Unit unit = 20;
+    NT_Monster monster = 21;
+  }
+}
+
+message NT_BoardUpdate {
+  optional int32 round = 1;
+  optional int32 turn = 2;
+  repeated NT_Player players = 3;
+  repeated NT_BoardObject objects = 4;
+  repeated NT_BoardEffect effects = 5;
+}
+
+message NT_Card {
+  optional int32 id = 1;
+  optional int32 picture = 2;
+  optional string title = 3;
+  optional string text = 4;
+  optional bool playable = 5 [default = true];
+  optional bool event = 6;
+}
+
+message NT_EndTurn {}
+
+// Event subclasses flatten these three fields. The base remains available for
+// code that previously registered or referenced NT_Event directly.
+message NT_Event {
+  // Screen effects: heal=1, damage=2, buff=3, debuff=4, spawned=5, moved=6.
+  optional int32 screen_effect = 1;
+  optional int32 player = 2;
+  optional string sound = 3;
+}
+
+message NT_Event_BoardEffect {
+  optional int32 screen_effect = 1;
+  optional int32 player = 2;
+  optional string sound = 3;
+  repeated NT_BoardEffect effects = 4;
+}
+
+message NT_Event_BoughtMerc {
+  optional int32 screen_effect = 1;
+  optional int32 player = 2;
+  optional string sound = 3;
+  optional NT_Unit unit = 4;
+}
+
+message NT_Event_FinishedGoal {
+  optional int32 screen_effect = 1;
+  optional int32 player = 2;
+  optional string sound = 3;
+  optional NT_Goal goal = 4;
+}
+
+message NT_Event_FocusLocation {
+  optional int32 screen_effect = 1;
+  optional int32 player = 2;
+  optional string sound = 3;
+  optional int32 location = 4;
+}
+
+message NT_Event_FocusObject {
+  optional int32 screen_effect = 1;
+  optional int32 player = 2;
+  optional string sound = 3;
+  optional NT_BoardObject object = 4;
+}
+
+message NT_Event_FocusObjects {
+  optional int32 screen_effect = 1;
+  optional int32 player = 2;
+  optional string sound = 3;
+  repeated NT_BoardObject objects = 4;
+}
+
+message NT_Event_MovedObject {
+  optional int32 screen_effect = 1;
+  optional int32 player = 2;
+  optional string sound = 3;
+  repeated NT_BoardObject objects = 4;
+}
+
+message NT_Event_OtherPlayerReceivedCard {
+  optional int32 screen_effect = 1;
+  optional int32 player = 2;
+  optional string sound = 3;
+}
+
+message NT_Event_OtherPlayerReceivedGoal {
+  optional int32 screen_effect = 1;
+  optional int32 player = 2;
+  optional string sound = 3;
+}
+
+message NT_Event_PlacedObject {
+  optional int32 screen_effect = 1;
+  optional int32 player = 2;
+  optional string sound = 3;
+  optional NT_BoardObject object = 4;
+}
+
+message NT_Event_PlayedCard {
+  optional int32 screen_effect = 1;
+  optional int32 player = 2;
+  optional string sound = 3;
+  optional NT_Card card = 4;
+}
+
+message NT_Event_ReceivedCard {
+  optional int32 screen_effect = 1;
+  optional int32 player = 2;
+  optional string sound = 3;
+  optional NT_Card card = 4;
+}
+
+message NT_Event_ReceivedGoal {
+  optional int32 screen_effect = 1;
+  optional int32 player = 2;
+  optional string sound = 3;
+  optional NT_Goal goal = 4;
+}
+
+message NT_Event_ReceivedPoints {
+  optional int32 screen_effect = 1;
+  optional int32 player = 2;
+  optional string sound = 3;
+  optional int32 points = 4;
+}
+
+message NT_Event_ReceivedStars {
+  optional int32 screen_effect = 1;
+  optional int32 player = 2;
+  optional string sound = 3;
+  optional int32 stars = 4;
+}
+
+message NT_Event_RemoveCard {
+  optional int32 screen_effect = 1;
+  optional int32 player = 2;
+  optional string sound = 3;
+  optional NT_Card card = 4;
+}
+
+message NT_Event_RemoveGoal {
+  optional int32 screen_effect = 1;
+  optional int32 player = 2;
+  optional string sound = 3;
+  optional NT_Goal goal = 4;
+}
+
+message NT_Event_RemoveObjects {
+  optional int32 screen_effect = 1;
+  optional int32 player = 2;
+  optional string sound = 3;
+  repeated NT_BoardObject objects = 4;
+}
+
+message NT_Event_TextInfo {
+  // Legacy type constants: log=0, display=1, confirm=2.
+  optional int32 screen_effect = 1;
+  optional int32 player = 2;
+  optional string sound = 3;
+  optional string text = 4;
+  optional int32 type = 5;
+}
+
+message NT_Event_UpdateObjects {
+  optional int32 screen_effect = 1;
+  optional int32 player = 2;
+  optional string sound = 3;
+  repeated NT_BoardObject objects = 4;
+}
+
+// NT_GameOver flattens NT_BoardUpdate.
+message NT_GameOver {
+  optional int32 round = 1;
+  optional int32 turn = 2;
+  repeated NT_Player players = 3;
+  repeated NT_BoardObject objects = 4;
+  repeated NT_BoardEffect effects = 5;
+}
+
+message NT_GameStatistic {
+  repeated NT_RoundStatistic rounds = 1;
+}
+
+message NT_Goal {
+  optional string description = 1;
+  optional string restriction = 2;
+  optional int32 points = 3;
+  optional int32 progression = 4;
+  optional int32 progression_goal = 5 [default = -1];
+  repeated int32 locations = 6;
+  optional int32 id = 7;
+}
+
+message NT_GoalProgression {
+  optional int32 index = 1;
+  optional int32 progression = 2;
+}
+
+message NT_Lib {
+  repeated NT_Lib_Card cards = 1;
+  repeated NT_Lib_Fraction fractions = 2;
+  repeated NT_Lib_Monster monsters = 3;
+  repeated NT_Lib_Goal goals = 4;
+}
+
+message NT_Lib_Card {
+  optional string title = 1;
+  optional string text = 2;
+  optional int32 picture = 3;
+  optional int32 type = 4;
+  optional float draw_chance = 5;
+  optional bool directly_played = 6;
+}
+
+message NT_Lib_Fraction {
+  optional int32 index = 1;
+  optional string name = 2;
+  optional string desc = 3;
+  optional NT_Unit commander = 4;
+  optional NT_Unit soldier = 5;
+  repeated string desc_positive = 6;
+  repeated string desc_negative = 7;
+}
+
+message NT_Lib_Goal {
+  optional string description = 1;
+  optional string restriction = 2;
+  optional int32 points = 3;
+}
+
+message NT_Lib_Monster {
+  optional int32 stars = 1;
+  optional int32 behavior = 2;
+  optional int32 health = 3;
+  optional int32 power = 4;
+  optional string name = 5;
+  optional int32 icon = 6;
+  optional string description = 7;
+}
+
+message NT_LoadedGame {}
+
+message NT_LobbySettings {
+  optional int32 expansion_setting = 1;
+  optional int32 start_locations = 2;
+  optional int32 start_goals = 3;
+  optional int32 point_limit = 4;
+  optional int32 goal_types = 5;
+  optional int32 monsters = 6;
+  optional int32 round_limit = 7;
+}
+
+// NT_Monster flattens NT_Unit and NT_BoardObject.
+message NT_Monster {
+  optional int32 owner = 1 [default = -1];
+  optional bool building = 2;
+  optional string name = 3;
+  optional float scale = 4 [default = 1];
+  optional int32 icon = 5;
+  optional int32 id = 6;
+  optional string description = 7;
+  optional int32 location = 8 [default = -1];
+  optional int32 health = 9;
+  optional int32 max_health = 10;
+  optional int32 power = 11;
+  optional int32 kills = 12;
+  optional int32 type = 13;
+  optional int32 stars = 14;
+  optional int32 action_timer = 15 [default = -1];
+  optional int32 behavior = 16;
+}
+
+message NT_Player {
+  optional int32 fraction = 1;
+  optional int32 points = 2;
+  optional int32 cards = 3;
+  optional int32 id = 4;
+  optional int32 color = 5;
+  optional int32 stars = 6;
+  optional string name = 7;
+  repeated NT_Unit units = 8;
+}
+
+message NT_PlayerAction {
+  optional string text = 1;
+  optional NT_Action action = 2;
+}
+
+message NT_PlayerChangeFraction {
+  optional int32 fraction = 1;
+}
+
+message NT_PlayerReady {
+  optional bool ready = 1;
+}
+
+message NT_PlayerSettings {
+  optional int32 fraction = 1;
+  optional bool ready = 2;
+}
+
+message NT_PlayerTurnActions {
+  repeated NT_Action actions = 1;
+}
+
+message NT_PlayerTurnStart {}
+
+message NT_PlayerWait {
+  optional int32 players_turn = 1;
+}
+
+message NT_Reaction {
+  optional int32 action_id = 1;
+  optional int32 option = 2;
+  repeated int32 options = 3;
+}
+
+// NT_ReconnectGame flattens NT_StartGame and NT_BoardUpdate.
+message NT_ReconnectGame {
+  optional int32 round = 1;
+  optional int32 turn = 2;
+  repeated NT_Player players = 3;
+  repeated NT_BoardObject objects = 4;
+  repeated NT_BoardEffect effects = 5;
+  optional int32 expansions_setting = 6;
+  optional int32 point_limit = 7;
+  optional int32 round_limit = 8;
+  repeated NT_Card cards = 9;
+  optional NT_Shop shop = 10;
+  repeated NT_Goal goals = 11;
+}
+
+message NT_RoundStatistic {
+  repeated int32 total = 1;
+  repeated int32 locations = 2;
+  repeated int32 fighting_power = 3;
+  repeated int32 units = 4;
+}
+
+message NT_Shop {
+  repeated NT_ShopItem items = 1;
+}
+
+message NT_ShopItem {
+  optional int32 price = 1;
+  oneof subtype {
+    NT_ShopOther other = 20;
+    NT_ShopUnit unit = 21;
+  }
+}
+
+message NT_ShopOther {
+  optional int32 price = 1;
+  optional string description = 2;
+}
+
+message NT_ShopUnit {
+  optional int32 price = 1;
+  optional NT_Unit unit = 2;
+}
+
+// NT_StartGame flattens NT_BoardUpdate.
+message NT_StartGame {
+  optional int32 round = 1;
+  optional int32 turn = 2;
+  repeated NT_Player players = 3;
+  repeated NT_BoardObject objects = 4;
+  repeated NT_BoardEffect effects = 5;
+  optional int32 expansions_setting = 6;
+  optional int32 point_limit = 7;
+  optional int32 round_limit = 8;
+  repeated NT_Card cards = 9;
+  optional NT_Shop shop = 10;
+}
+
+message NT_Surrender {}
+
+// NT_Unit flattens NT_BoardObject. The optional monster subtype preserves a
+// legacy NT_Unit reference that actually contains an NT_Monster instance.
+message NT_Unit {
+  optional int32 owner = 1 [default = -1];
+  optional bool building = 2;
+  optional string name = 3;
+  optional float scale = 4 [default = 1];
+  optional int32 icon = 5;
+  optional int32 id = 6;
+  optional string description = 7;
+  optional int32 location = 8 [default = -1];
+  optional int32 health = 9;
+  optional int32 max_health = 10;
+  optional int32 power = 11;
+  optional int32 kills = 12;
+  optional int32 type = 13;
+  optional NT_Monster monster = 20;
+}
+
+message NT_UpdateLobbySettings {
+  // Setting constants: expansions=0, start locations=1, start goals=2,
+  // point limit=3, goal types=4, monsters=5, round limit=6.
+  optional int32 setting = 1;
+  optional int32 value = 2;
+}
+
+message NT_Vote {
+  optional bool yes = 1;
+}
+
+message NT_VotePending {
+  optional NT_Vote_Base vote = 1;
+  optional int32 from_player_id = 2;
+}
+
+message NT_Vote_Base {
+  oneof value {
+    NT_Vote_KickPlayer kick_player = 1;
+    NT_Vote_SkipTurn skip_turn = 2;
+  }
+}
+
+message NT_Vote_KickPlayer {
+  optional int32 player_id = 1;
+}
+
+message NT_Vote_SkipTurn {}

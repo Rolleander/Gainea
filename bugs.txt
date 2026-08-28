@@ -4,3 +4,19 @@ fraktionsauswahl hängt?
 bot hat wilderer armee angegriffen ohne das monster davon...??  -> 2 mal passiert
 
 monster kann nicht von schiff runter dass es in falsche richtung hoch ist
+
+
+schildkröte auf schiff wurde nicht angegriffen, sondern nur move
+
+herdentrieb ist nix passiert nach auswahl vom kriegsoger auf einem schiff
+
+planwechsel sollte nur auf der gleichen karte funktionieren
+
+
+köderstein macht kriegsoger nicht sesshaft
+
+eispalast viel zu stark
+
+auf schiffen wird man nicht mehr angegriffen (nur move)
+
+drachenfeuer sollte nur 3 runden

@@ -16,6 +16,9 @@ task runDesktop(dependsOn: classes, type: JavaExec) {
     standardInput = System.in
     workingDir = project.assetsDir
     ignoreExitValue = true
+    if (org.gradle.internal.os.OperatingSystem.current().isMacOsX()) {
+        jvmArgs = ['-XstartOnFirstThread']
+    }
 }
 
 task testDesktop(dependsOn: classes, type: JavaExec) {
@@ -25,6 +28,9 @@ task testDesktop(dependsOn: classes, type: JavaExec) {
     ignoreExitValue = true
     main = project.mainClassName
     args = ['test']
+    if (org.gradle.internal.os.OperatingSystem.current().isMacOsX()) {
+        jvmArgs = ['-XstartOnFirstThread']
+    }
 }
 
 task debug(dependsOn: classes, type: JavaExec) {
@@ -34,6 +40,9 @@ task debug(dependsOn: classes, type: JavaExec) {
     workingDir = project.assetsDir
     ignoreExitValue = true
     debug = true
+    if (org.gradle.internal.os.OperatingSystem.current().isMacOsX()) {
+        jvmArgs = ['-XstartOnFirstThread']
+    }
 }
 
 task dist(type: Jar) {
