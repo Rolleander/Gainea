@@ -1,4 +1,4 @@
-package com.broll.gainea.client.network;
+package com.broll.gainea.network;
 
 import com.broll.gainea.net.*;
 

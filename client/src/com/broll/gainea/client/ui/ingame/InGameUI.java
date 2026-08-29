@@ -11,6 +11,7 @@ import com.broll.gainea.Gainea;
 import com.broll.gainea.client.AudioPlayer;
 import com.broll.gainea.client.game.PlayerPerformAction;
 import com.broll.gainea.client.game.PlayerPerformOptionalAction;
+import com.broll.gainea.client.game.BoardObjectState;
 import com.broll.gainea.client.ui.components.Popup;
 import com.broll.gainea.client.ui.ingame.actions.AttackAndMoveActionHandler;
 import com.broll.gainea.client.ui.ingame.actions.RequiredActionHandler;
@@ -25,13 +26,7 @@ import com.broll.gainea.client.ui.ingame.windows.MapObjectSelection;
 import com.broll.gainea.client.ui.screens.ScoreScreen;
 import com.broll.gainea.client.ui.utils.LabelUtils;
 import com.broll.gainea.client.ui.utils.TableUtils;
-import com.broll.gainea.net.NT_Action;
-import com.broll.gainea.net.NT_Action_Attack;
-import com.broll.gainea.net.NT_Action_Move;
-import com.broll.gainea.net.NT_Battle_Damage;
-import com.broll.gainea.net.NT_Battle_Roll;
-import com.broll.gainea.net.NT_GameOver;
-import com.broll.gainea.net.NT_Unit;
+import com.broll.gainea.net.proto.*;
 import com.broll.gainea.client.game.map.Location;
 
 import java.util.ArrayList;
@@ -127,7 +122,7 @@ public class InGameUI {
         selectionOpen = true;
     }
 
-    public void selectedUnits(List<NT_Unit> units) {
+    public void selectedUnits(List<BoardObjectState> units) {
         if (game.state.areActionsAllowed()) {
             attackAndMoveHandler.showFor(units);
         }
@@ -140,8 +135,8 @@ public class InGameUI {
     }
 
     public void optionalActions(List<NT_Action> actions, PlayerPerformOptionalAction playerPerformAction) {
-        List<NT_Action_Move> moves = actions.stream().filter(it -> it instanceof NT_Action_Move).map(it -> (NT_Action_Move) it).collect(Collectors.toList());
-        List<NT_Action_Attack> attacks = actions.stream().filter(it -> it instanceof NT_Action_Attack).map(it -> (NT_Action_Attack) it).collect(Collectors.toList());
+        List<NT_Action_Move> moves = actions.stream().filter(NT_Action::hasMove).map(NT_Action::getMove).collect(Collectors.toList());
+        List<NT_Action_Attack> attacks = actions.stream().filter(NT_Action::hasAttack).map(NT_Action::getAttack).collect(Collectors.toList());
         attackAndMoveHandler.update(moves, attacks, playerPerformAction);
         requiredActionHandler.toFront();
         menuActions.updateOptionalActions(actions, playerPerformAction);
@@ -160,7 +155,7 @@ public class InGameUI {
         showCenter(battleHandler.startBattle(attackers, defenders, location, allowRetreat));
     }
 
-    public void updateBattle(NT_Battle_Roll[] attackRolls, NT_Battle_Roll[] defenderRolls, Stack<NT_Battle_Damage> damage, int state) {
+    public void updateBattle(List<NT_Battle_Roll> attackRolls, List<NT_Battle_Roll> defenderRolls, Stack<NT_Battle_Damage> damage, int state) {
         battleHandler.updateBattle(attackRolls, defenderRolls, damage, state);
     }
 

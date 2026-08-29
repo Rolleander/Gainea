@@ -1,31 +1,33 @@
 package com.broll.gainea.server.sites
 
-import com.broll.gainea.net.NT_Vote
-import com.broll.gainea.net.NT_VotePending
-import com.broll.gainea.net.NT_Vote_Base
-import com.broll.gainea.net.NT_Vote_KickPlayer
-import com.broll.gainea.net.NT_Vote_SkipTurn
+import com.broll.gainea.net.proto.NT_Vote
+import com.broll.gainea.net.proto.NT_VotePending
+import com.broll.gainea.net.proto.NT_Vote_Base
+import com.broll.gainea.net.proto.NT_Vote_KickPlayer
+import com.broll.gainea.net.proto.NT_Vote_SkipTurn
 import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.core.utils.displayMessage
 import com.broll.gainea.server.core.utils.skipTurn
 import com.broll.gainea.server.init.LobbyData
 import com.broll.gainea.server.init.PlayerData
-import com.broll.networklib.PackageReceiver
-import com.broll.networklib.server.Autoshared
-import com.broll.networklib.server.ConnectionRestriction
-import com.broll.networklib.server.RestrictionType
-import com.broll.networklib.server.ShareLevel
-import com.broll.networklib.server.impl.ServerLobby
+import com.broll.gainea.server.network.playerData
+import com.broll.mpnll.server.lobby.Lobby
+import com.broll.mpnll.server.site.PackageReceiver
+import com.broll.mpnll.server.utils.Autoshared
+import com.broll.mpnll.server.utils.ConnectionRestriction
+import com.broll.mpnll.server.utils.RestrictionType
+import com.broll.mpnll.server.utils.ShareLevel
+import com.google.protobuf.Message
 import kotlin.reflect.KClass
 
 class GameVoteSite : GameSite() {
 
     private val voteActions = mapOf(
         action(NT_Vote_KickPlayer::class) {
-            val player = lobby.getPlayer(vote.playerId)
-            player.data.gamePlayer.surrender()
-            lobby.kickPlayer(player)
+            val player = lobby.findMember(vote.playerId)!!
+            player.playerData.gamePlayer.surrender()
+            lobby.removeUser(player, true)
             game.displayMessage(player.name + " musste aufgeben!", sound = "smash.ogg")
         },
         action(NT_Vote_SkipTurn::class) {
@@ -33,12 +35,12 @@ class GameVoteSite : GameSite() {
         }
     )
 
-    private fun <T : NT_Vote_Base> action(type: KClass<T>, action: (ApplyVote<T>).() -> Unit) =
+    private fun <T : Message> action(type: KClass<T>, action: (ApplyVote<T>).() -> Unit) =
         (type to action) as Pair<KClass<*>, (ApplyVote<*>) -> Unit>
 
-    private data class ApplyVote<T : NT_Vote_Base>(
+    private data class ApplyVote<T : Message>(
         val vote: T,
-        val lobby: ServerLobby<LobbyData, PlayerData>,
+        val lobby: Lobby,
         val game: Game,
     )
 
@@ -58,10 +60,11 @@ class GameVoteSite : GameSite() {
             initialPossibleVotes = calcPossibleVotes()
             vote = voteNt
             votes.clear()
-            val nt = NT_VotePending()
-            nt.fromPlayerId = player.id
-            nt.vote = voteNt
-            lobby.sendToAllTCP(nt)
+            val nt = NT_VotePending.newBuilder()
+                .setFromPlayerId(user.id)
+                .setVote(voteNt)
+                .build()
+            lobby.sendToAll(nt)
             vote(true)
         }
 
@@ -77,18 +80,23 @@ class GameVoteSite : GameSite() {
             if (votes.size >= possibleVotes) {
                 val yesVotes =
                     votes.filter { it.value && it.key.active && !it.key.serverPlayer.isBot }
-                val nt = NT_Vote()
-                nt.yes = yesVotes.size >= possibleVotes
-                lobby.sendToAllTCP(nt)
+                val nt = NT_Vote.newBuilder().setYes(yesVotes.size >= possibleVotes).build()
+                lobby.sendToAll(nt)
                 if (nt.yes) {
-                    voteActions[vote!!::class]?.invoke(
-                        ApplyVote(
-                            vote!!, lobby, game
-                        )
-                    )
+                    when (vote!!.valueCase) {
+                        NT_Vote_Base.ValueCase.KICK_PLAYER -> applyVote(vote!!.kickPlayer)
+                        NT_Vote_Base.ValueCase.SKIP_TURN -> applyVote(vote!!.skipTurn)
+                        else -> Unit
+                    }
                 }
                 reset()
             }
+        }
+
+        private fun <T : Message> applyVote(value: T) {
+            @Suppress("UNCHECKED_CAST")
+            (voteActions[value::class] as? ((ApplyVote<T>) -> Unit))
+                ?.invoke(ApplyVote(value, lobby, game))
         }
     }
 
@@ -99,7 +107,7 @@ class GameVoteSite : GameSite() {
     @ConnectionRestriction(RestrictionType.LOBBY_LOCKED)
     fun kickPlayer(nt: NT_Vote_KickPlayer) {
         if (!voting.pending) {
-            voting.create(nt)
+            voting.create(NT_Vote_Base.newBuilder().setKickPlayer(nt).build())
         }
     }
 
@@ -107,7 +115,7 @@ class GameVoteSite : GameSite() {
     @ConnectionRestriction(RestrictionType.LOBBY_LOCKED)
     fun skipTurn(nt: NT_Vote_SkipTurn) {
         if (!voting.pending) {
-            voting.create(nt)
+            voting.create(NT_Vote_Base.newBuilder().setSkipTurn(nt).build())
         }
     }
 

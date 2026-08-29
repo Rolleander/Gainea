@@ -1,10 +1,10 @@
 package com.broll.gainea.client.network.sites;
 
-import com.broll.gainea.client.network.ProtoMapper;
 import com.broll.gainea.client.ui.screens.GameScreen;
 import com.broll.gainea.client.ui.screens.LobbyScreen;
-import com.broll.gainea.net.NT_ReconnectGame;
-import com.broll.gainea.net.NT_StartGame;
+import com.broll.gainea.net.proto.NT_ReconnectGame;
+import com.broll.gainea.net.proto.NT_StartGame;
+import com.broll.gainea.client.game.GoalState;
 import com.broll.gainea.net.proto.NT_LoadedGame;
 import com.broll.mpnll.client.site.MessageReceiverRegistry;
 
@@ -26,41 +26,47 @@ public class GameStateSite extends AbstractGameSite {
     }
 
     private void received(com.broll.gainea.net.proto.NT_Lib lib) {
-        game.state.library = ProtoMapper.library(lib);
+        game.state.library = lib;
         if (game.ui.inGameUI != null) game.ui.inGameUI.updateWindows();
         if (game.ui.getCurrentScreen() instanceof LobbyScreen)
             ((LobbyScreen) game.ui.getCurrentScreen()).updateLobby();
     }
 
     private void received(com.broll.gainea.net.proto.NT_StartGame message) {
-        start(ProtoMapper.start(message), message.getExpansionsList());
+        start(message);
     }
 
     private void received(com.broll.gainea.net.proto.NT_ReconnectGame message) {
         Log.info("player reconnected!");
-        NT_ReconnectGame reconnect = ProtoMapper.reconnect(message);
-        start(reconnect, message.getExpansionsList());
-        game.state.getGoals().addAll(Arrays.asList(reconnect.goals));
+        game.state.init(message.getExpansionsList(), message.getPointLimit(), message.getRoundLimit(), getPlayer());
+        game.state.getCards().addAll(message.getCardsList());
+        game.state.shop = message.getShop();
+        game.state.update(message);
+        showGame();
+        message.getGoalsList().forEach(goal -> game.state.getGoals().add(new GoalState(goal)));
         game.ui.inGameUI.updateWindows();
     }
 
     private void received(com.broll.gainea.net.proto.NT_GameOver message) {
-        com.broll.gainea.net.NT_GameOver end = ProtoMapper.gameOver(message);
         game.ui.inGameUI.hideWindows();
-        game.state.update(end);
+        game.state.update(message);
         game.state.playerTurnEnded();
-        game.ui.inGameUI.gameOver(end);
+        game.ui.inGameUI.gameOver(message);
     }
 
     private void received(com.broll.gainea.net.proto.NT_GameStatistic message) {
-        game.state.setStatistic(ProtoMapper.statistic(message));
+        game.state.setStatistic(message);
     }
 
-    private void start(NT_StartGame start, java.util.List<com.broll.gainea.net.proto.NT_Expansion> expansions) {
-        game.state.init(expansions, start.pointLimit, start.roundLimit, getPlayer());
-        game.state.getCards().addAll(Arrays.asList(start.cards));
-        game.state.shop = start.shop;
+    private void start(NT_StartGame start) {
+        game.state.init(start.getExpansionsList(), start.getPointLimit(), start.getRoundLimit(), getPlayer());
+        game.state.getCards().addAll(start.getCardsList());
+        game.state.shop = start.getShop();
         game.state.update(start);
+        showGame();
+    }
+
+    private void showGame() {
         game.ui.showScreen(new GameScreen());
         game.ui.inGameUI.updateWindows();
         send(NT_LoadedGame.newBuilder().build());

@@ -2,16 +2,17 @@ package com.broll.gainea.server.core.player
 
 import com.broll.gainea.server.core.map.*
 
-import com.broll.gainea.net.NT_Player
+import com.broll.gainea.net.proto.NT_Player
 import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.fractions.Fraction
 import com.broll.gainea.server.core.map.Location
 import com.broll.gainea.server.core.objects.Unit
 import com.broll.gainea.server.core.shop.Shop
 import com.broll.gainea.server.init.PlayerData
-import com.broll.networklib.server.impl.LobbyPlayer
+import com.broll.gainea.server.network.playerData
+import com.broll.mpnll.server.user.User
 
-open class Player(game: Game, val fraction: Fraction, val serverPlayer: LobbyPlayer<PlayerData>) {
+open class Player(game: Game, val fraction: Fraction, val serverPlayer: User) {
     val units = mutableListOf<Unit>()
     val goalHandler: GoalHandler
     val cardHandler: CardHandler
@@ -30,7 +31,7 @@ open class Player(game: Game, val fraction: Fraction, val serverPlayer: LobbyPla
     }
 
     val active: Boolean
-        get() = !surrendered && !serverPlayer.hasLeftLobby()
+        get() = !surrendered && serverPlayer.lobby?.isActiveMember(serverPlayer) == true
 
     fun surrender() {
         surrendered = true
@@ -59,16 +60,10 @@ open class Player(game: Game, val fraction: Fraction, val serverPlayer: LobbyPla
         get() = units.mapNotNull { it.location }.toSet()
 
     fun nt(): NT_Player {
-        val player = NT_Player()
-        player.cards = cardHandler.cardCount.toByte()
-        player.fraction = fraction.type.ordinal.toByte()
-        player.id = serverPlayer.id.toShort()
-        player.color = color.toByte()
-        player.stars = goalHandler.stars.toShort()
-        player.name = serverPlayer.name
-        player.points = goalHandler.score.toByte()
-        player.units = units.map { it.nt() }.toTypedArray()
-        return player
+        return NT_Player.newBuilder().setCards(cardHandler.cardCount)
+            .setFraction(fraction.type.ordinal).setId(serverPlayer.id).setColor(color)
+            .setStars(goalHandler.stars).setName(serverPlayer.name).setPoints(goalHandler.score)
+            .addAllUnits(units.map { it.nt() }).build()
     }
 
     override fun toString(): String {

@@ -1,83 +1,53 @@
 package com.broll.gainea.client.game;
 
 import com.broll.gainea.Gainea;
-import com.broll.gainea.net.NT_BoardEffect;
-import com.broll.gainea.net.NT_BoardObject;
-import com.broll.gainea.net.NT_Player;
-import com.broll.gainea.net.NT_Unit;
+import com.broll.gainea.net.proto.NT_BoardEffect;
+import com.broll.gainea.net.proto.NT_BoardObject;
+import java.util.Collection;
 
-import java.util.Arrays;
-import java.util.Optional;
+public final class GameUtils {
+    private GameUtils() {}
 
-public class GameUtils {
-
-    public static void updateMapObjects(Gainea game, NT_BoardObject... objects) {
-        for (NT_BoardObject object : objects) {
-            game.state.getObjects().remove(object);
-            game.state.getPlayers().forEach(player -> {
-                if (Arrays.asList(player.units).contains(object)) {
-                    player.units = remove(player.units, object);
-                }
-            });
-            addMapObject(game, object);
-        }
+    public static void updateMapObjects(Gainea game, Collection<NT_BoardObject> messages) {
+        messages.forEach(message -> { removeObject(game, idOf(message)); addMapObject(game, message); });
     }
 
-    public static void removeObjects(Gainea game, NT_BoardObject[] objects) {
-        for (NT_BoardObject object : objects) {
-            game.state.getObjects().remove(object);
-            game.state.getPlayers().forEach(player -> {
-                if (Arrays.asList(player.units).contains(object)) {
-                    player.units = remove(player.units, object);
-                }
-            });
-        }
+    public static void removeObjects(Gainea game, Collection<NT_BoardObject> messages) {
+        messages.forEach(message -> removeObject(game, idOf(message)));
     }
 
-    public static void updateMapEffects(GameState state, NT_BoardEffect[] effects) {
-        for (NT_BoardEffect effect : effects) {
-            state.getEffects().remove(effect);
+    private static void removeObject(Gainea game, int id) {
+        game.state.getObjects().removeIf(value -> value.id() == id);
+        game.state.getPlayers().forEach(player -> player.units().removeIf(value -> value.id() == id));
+    }
+
+    public static void updateMapEffects(GameState state, Collection<NT_BoardEffect> effects) {
+        effects.forEach(effect -> {
+            state.getEffects().removeIf(current -> current.getId() == effect.getId());
             state.getEffects().add(effect);
-        }
+        });
     }
 
-    public static void addMapObject(Gainea game, NT_BoardObject object) {
-        if (object instanceof NT_Unit) {
-            NT_Unit unit = (NT_Unit) object;
-            if (unit.health <= 0) {
-                return;
-            }
-            if (unit.owner == NT_BoardObject.NO_OWNER) {
-                game.state.getObjects().add(object);
-            } else {
-                NT_Player owner = game.state.getPlayer(unit.owner);
-                NT_Unit[] units = Arrays.copyOf(owner.units, owner.units.length + 1);
-                units[units.length - 1] = unit;
-                owner.units = units;
-            }
-        } else {
-            game.state.getObjects().add(object);
-        }
+    public static BoardObjectState addMapObject(Gainea game, NT_BoardObject message) {
+        BoardObjectState object = new BoardObjectState(message);
+        if (object.isUnit() && object.health() <= 0) return object;
+        if (object.isUnit() && object.owner() != -1) {
+            PlayerState owner = game.state.getPlayer(object.owner());
+            if (owner != null) owner.units().add(object);
+        } else game.state.getObjects().add(object);
+        return object;
     }
 
-    private static NT_Unit[] remove(NT_Unit[] units, Object value) {
-        return Arrays.stream(units).filter(unit -> unit != value).toArray(NT_Unit[]::new);
-    }
-
-    public static NT_BoardObject findObject(Gainea game, int id) {
-        Optional<NT_BoardObject> optionalObject = game.state.getObjects().stream().filter(it -> it.id == id).findFirst();
-        if (optionalObject.isPresent()) {
-            return optionalObject.get();
-        }
-        for (NT_Player player : game.state.getPlayers()) {
-            for (NT_Unit unit : player.units) {
-                if (unit.id == id) {
-                    return unit;
-                }
-            }
-        }
+    public static BoardObjectState findObject(Gainea game, int id) {
+        for (BoardObjectState object : game.state.getObjects()) if (object.id() == id) return object;
+        for (PlayerState player : game.state.getPlayers())
+            for (BoardObjectState unit : player.units()) if (unit.id() == id) return unit;
         return null;
     }
 
-
+    private static int idOf(NT_BoardObject value) {
+        if (value.hasMonster()) return value.getMonster().getId();
+        if (value.hasUnit()) return value.getUnit().getId();
+        return value.getId();
+    }
 }

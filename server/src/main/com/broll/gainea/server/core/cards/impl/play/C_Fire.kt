@@ -1,7 +1,9 @@
 package com.broll.gainea.server.core.cards.impl.play
 
+import com.broll.gainea.core.protocol.BoardEffectType
+
 import com.broll.gainea.core.cards.EffectType.DISRUPTION
-import com.broll.gainea.net.NT_BoardEffect
+import com.broll.gainea.net.proto.NT_BoardEffect
 import com.broll.gainea.server.core.cards.Card
 import com.broll.gainea.server.core.map.AreaType
 import com.broll.gainea.server.core.map.Location
@@ -22,7 +24,7 @@ class C_Fire : Card(
 
     override fun play() {
         val target = selectHandler.selectLocation(owner, "Welches Gebiet blockieren?", targets)
-        val effect = MapEffect(NT_BoardEffect.EFFECT_FIRE, "", target)
+        val effect = MapEffect(BoardEffectType.FIRE, "", target)
         MapEffect.spawn(game, effect)
         target.traversable = false
         TimedEffect.forPlayerRounds(game, owner, ROUNDS, object : TimedEffect() {

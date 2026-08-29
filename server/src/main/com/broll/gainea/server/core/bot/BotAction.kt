@@ -1,13 +1,14 @@
 package com.broll.gainea.server.core.bot
 
-import com.broll.gainea.net.NT_Action
-import com.broll.gainea.net.NT_Reaction
+import com.broll.gainea.net.proto.NT_Reaction
 import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.bot.strategy.BotStrategy
 import com.broll.gainea.server.core.player.Player
+import com.broll.gainea.server.core.actions.actionId
+import com.google.protobuf.Message
 
 
-abstract class BotAction<A : NT_Action> {
+abstract class BotAction<A : Message> {
     protected lateinit var game: Game
     protected lateinit var bot: Player
     protected lateinit var strategy: BotStrategy
@@ -20,13 +21,12 @@ abstract class BotAction<A : NT_Action> {
         this.handler = handler
     }
 
-    protected abstract fun react(action: A, reaction: NT_Reaction)
+    protected abstract fun react(action: A, reaction: NT_Reaction.Builder)
     fun perform(action: A): NT_Reaction {
-        val reaction = NT_Reaction()
-        reaction.actionId = action.actionId
+        val reaction = NT_Reaction.newBuilder().setActionId(action.actionId())
         react(action, reaction)
-        return reaction
+        return reaction.build()
     }
 
-    abstract val actionClass: Class<out NT_Action>
+    abstract val actionClass: Class<out Message>
 }

@@ -1,12 +1,12 @@
 package com.broll.gainea.server.core.actions
 
-import com.broll.gainea.net.NT_Action
-import com.broll.gainea.net.NT_Reaction
+import com.google.protobuf.Message
+import com.broll.gainea.net.proto.NT_Reaction
 import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.core.processing.ProcessingBlock
 
-abstract class AbstractActionHandler<T : NT_Action, C : ActionContext<out T>> {
+abstract class AbstractActionHandler<T : Message, C : ActionContext<out T>> {
     protected lateinit var game: Game
     protected lateinit var player: Player
     protected lateinit var reactionResult: ReactionActions
@@ -29,4 +29,3 @@ abstract class AbstractActionHandler<T : NT_Action, C : ActionContext<out T>> {
 
     abstract fun handleReaction(context: C, action: T, reaction: NT_Reaction)
 }
-

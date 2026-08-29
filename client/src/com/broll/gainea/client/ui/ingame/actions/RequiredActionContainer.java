@@ -3,7 +3,7 @@ package com.broll.gainea.client.ui.ingame.actions;
 import com.broll.gainea.client.game.PlayerPerformAction;
 import com.broll.gainea.client.ui.utils.ActionListener;
 import com.broll.gainea.client.ui.ingame.map.MapAction;
-import com.broll.gainea.net.NT_Action;
+import com.broll.gainea.net.proto.NT_Action;
 
 import java.util.List;
 

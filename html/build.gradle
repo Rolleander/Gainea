@@ -60,7 +60,7 @@ tasks.register('serve', Exec) {
     description = 'Builds and serves the GWT distribution over HTTP.'
     dependsOn dist
 
-    def httpPort = providers.gradleProperty('httpPort').orElse('8080')
+    def httpPort = providers.gradleProperty('httpPort').orElse('8088')
     workingDir layout.buildDirectory.dir('dist')
     commandLine 'python3', '-m', 'http.server', httpPort.get(), '--bind', '127.0.0.1'
 

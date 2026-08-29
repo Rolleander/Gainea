@@ -3,10 +3,12 @@ package com.broll.gainea.server
 import com.broll.gainea.server.init.IGameStartListener
 import com.broll.gainea.server.init.LobbyData
 import com.broll.gainea.server.init.PlayerData
-import com.broll.networklib.server.ILobbyServerListener
-import com.broll.networklib.server.LobbyGameServer
-import com.broll.networklib.server.impl.Player
-import com.broll.networklib.server.impl.ServerLobby
+import com.broll.gainea.server.network.gameData
+import com.broll.mpnll.server.MpnllServer
+import com.broll.mpnll.server.lobby.Lobby
+import com.broll.mpnll.server.lobby.LobbyStateListener
+import com.broll.mpnll.server.lobby.LobbyUsersListener
+import com.broll.mpnll.server.user.User
 import org.apache.commons.io.FileUtils
 import org.json.JSONObject
 import org.slf4j.LoggerFactory
@@ -15,24 +17,25 @@ import java.io.IOException
 import java.nio.charset.StandardCharsets
 import java.util.concurrent.CompletableFuture
 
-class ServerStatistic(private val server: LobbyGameServer<LobbyData, PlayerData>) :
-        ILobbyServerListener<LobbyData, PlayerData> {
+class ServerStatistic(private val server: MpnllServer) : LobbyStateListener, LobbyUsersListener {
     private val file = File(STATISTIC_FILE)
 
     init {
+        server.lobbyHandler.addStateListener(this)
+        server.lobbyHandler.addUsersListener(this)
         writeStatistic()
     }
 
     private fun writeStatistic() {
         CompletableFuture.runAsync {
             val json = JSONObject()
-            val iterator: Iterator<ServerLobby<LobbyData, PlayerData>> = server.lobbyHandler.lobbies.iterator()
+            val iterator: Iterator<Lobby> = server.lobbyHandler.listAll().iterator()
             var players = 0
             var games = 0
             while (iterator.hasNext()) {
                 val lobby = iterator.next()
-                players += lobby.realPlayers.size
-                if (lobby.data.game != null) {
+                players += lobby.activeUsers.count { !it.isBot }
+                if (lobby.gameData.game != null) {
                     games++
                 }
             }
@@ -46,33 +49,36 @@ class ServerStatistic(private val server: LobbyGameServer<LobbyData, PlayerData>
         }
     }
 
-    override fun lobbyOpened(lobby: ServerLobby<LobbyData, PlayerData>) {
-        lobby.data.gameStartListener =  object : IGameStartListener {
+    override fun lobbyOpened(lobby: Lobby) {
+        lobby.gameData.gameStartListener =  object : IGameStartListener {
             override fun gameStarted() {
                 writeStatistic()
             }
         }
     }
 
-    override fun playerJoined(lobby: ServerLobby<LobbyData, PlayerData>, player: Player<PlayerData>) {
+    override fun userJoined(lobby: Lobby, player: User) {
         writeStatistic()
     }
 
-    override fun playerLeft(lobby: ServerLobby<LobbyData, PlayerData>, player: Player<PlayerData>) {
+    override fun userLeft(lobby: Lobby, player: User) {
         writeStatistic()
     }
 
-    override fun playerDisconnected(lobby: ServerLobby<LobbyData, PlayerData>, player: Player<PlayerData>) {
+    override fun userDisconnected(lobby: Lobby, player: User) {
         writeStatistic()
     }
 
-    override fun playerReconnected(lobby: ServerLobby<LobbyData, PlayerData>, player: Player<PlayerData>) {
+    override fun userReconnected(lobby: Lobby, player: User) {
         writeStatistic()
     }
 
-    override fun lobbyClosed(lobby: ServerLobby<LobbyData, PlayerData>) {
+    override fun lobbyClosed(lobby: Lobby) {
         writeStatistic()
     }
+
+    override fun lobbyLocked(lobby: Lobby) = Unit
+    override fun lobbyUnlocked(lobby: Lobby) = Unit
 
     companion object {
         private val Log = LoggerFactory.getLogger(ServerStatistic::class.java)

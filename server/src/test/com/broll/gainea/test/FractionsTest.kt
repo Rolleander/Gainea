@@ -5,14 +5,14 @@ import com.broll.gainea.server.core.fractions.impl.GuardsFraction
 import com.broll.gainea.server.core.map.impl.GaineaMap.Areas.XOMDELTA
 import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.init.PlayerData
-import com.broll.networklib.server.impl.DummyLobbyPlayer
+import com.broll.mpnll.server.user.BotUser
 import org.amshove.kluent.`should be equal to`
 import org.junit.jupiter.api.Test
 
 class FractionsTest {
     val game = testGame()
     private fun initFraction(f: Fraction): Fraction {
-        val lp = DummyLobbyPlayer<PlayerData>(0)
+        val lp = BotUser(-1, "test")
         lp.data = PlayerData(f.type)
         Player(game, f, lp)
         return f

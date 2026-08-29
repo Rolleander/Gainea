@@ -1,6 +1,6 @@
 package com.broll.gainea.server.core.cards.impl.play
 
-import com.broll.gainea.net.NT_Event
+import com.broll.gainea.net.proto.NT_Event
 import com.broll.gainea.server.core.cards.Card
 import com.broll.gainea.core.cards.EffectType
 import com.broll.gainea.server.core.objects.buffs.BuffType
@@ -29,14 +29,14 @@ class C_Barriere : Card(
             owner,
             healthBuff,
             { it.addHealthBuff(healthBuff) },
-            NT_Event.EFFECT_BUFF
+            3
         )
         GlobalBuff.createForPlayer(
             game,
             owner,
             noAttackBuff,
             { it.attacksPerTurn.addBuff(noAttackBuff) },
-            NT_Event.EFFECT_DEBUFF
+            4
         )
         game.buffProcessor.timeoutBuff(healthBuff, rounds(DURATION))
         game.buffProcessor.timeoutBuff(noAttackBuff, rounds(DURATION))

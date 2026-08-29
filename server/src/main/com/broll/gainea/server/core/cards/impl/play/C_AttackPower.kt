@@ -1,6 +1,8 @@
 package com.broll.gainea.server.core.cards.impl.play
 
-import com.broll.gainea.net.NT_Event
+import com.broll.gainea.core.protocol.ScreenEffect
+
+import com.broll.gainea.net.proto.NT_Event
 import com.broll.gainea.server.core.cards.Card
 import com.broll.gainea.core.cards.EffectType.BUFF
 import com.broll.gainea.server.core.objects.buffs.BuffType
@@ -28,7 +30,7 @@ class C_AttackPower : Card(
         val buff = IntBuff(BuffType.ADD, 1)
         val units = owner.getUnits(location)
         units.forEach { it.power.addBuff(buff) }
-        game.focus(units, NT_Event.EFFECT_BUFF)
+        game.focus(units, ScreenEffect.BUFF)
         game.buffProcessor.timeoutBuff(buff, thisRound())
     }
 }

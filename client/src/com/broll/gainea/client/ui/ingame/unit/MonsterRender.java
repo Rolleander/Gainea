@@ -7,8 +7,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.broll.gainea.Gainea;
-import com.broll.gainea.net.NT_BoardObject;
-import com.broll.gainea.net.NT_Monster;
+import com.broll.gainea.client.game.BoardObjectState;
 import com.broll.gainea.core.objects.monster.MonsterBehavior;
 
 public class MonsterRender extends UnitRender {
@@ -19,7 +18,7 @@ public class MonsterRender extends UnitRender {
     private Label.LabelStyle timerStyle;
 
 
-    public MonsterRender(Gainea game, Skin skin, NT_Monster unit) {
+    public MonsterRender(Gainea game, Skin skin, BoardObjectState unit) {
         super(game, skin, unit);
         this.labelDisplacement = 25;
         this.timerStyle = new Label.LabelStyle(blackStyle.font, Color.LIGHT_GRAY);
@@ -29,10 +28,10 @@ public class MonsterRender extends UnitRender {
 
 
     @Override
-    public void init(NT_BoardObject object) {
+    public void init(BoardObjectState object) {
         super.init(object);
-        NT_Monster monster = (NT_Monster) getUnit();
-        int stars = monster.stars;
+        BoardObjectState monster = getUnit();
+        int stars = monster.stars();
         starPlate = new TextureRegion(game.assets.get("textures/star_plates.png", Texture.class), stars * W, 0, W, H);
     }
 
@@ -46,11 +45,11 @@ public class MonsterRender extends UnitRender {
         resetRenderColor(batch);
         super.draw(batch, parentAlpha);
         setRenderColor(batch, parentAlpha);
-        NT_Monster monster = (NT_Monster) getUnit();
-        MonsterBehavior behavior = MonsterBehavior.values()[monster.behavior];
-        if (shouldDrawPlate() && behavior != MonsterBehavior.RESIDENT && monster.actionTimer > NT_Monster.NO_ACTION_TIMER) {
+        BoardObjectState monster = getUnit();
+        MonsterBehavior behavior = MonsterBehavior.values()[monster.behavior()];
+        if (shouldDrawPlate() && behavior != MonsterBehavior.RESIDENT && monster.actionTimer() > -1) {
             batch.draw(bubble, getX() - 18, getY() - radius - 16);
-            int timer = monster.actionTimer;
+            int timer = monster.actionTimer();
             if (timer <= 1) {
                 numberLabel.setStyle(redStyle);
             } else {

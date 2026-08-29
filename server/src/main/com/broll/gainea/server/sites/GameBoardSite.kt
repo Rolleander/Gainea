@@ -1,15 +1,16 @@
 package com.broll.gainea.server.sites
 
-import com.broll.gainea.net.NT_Battle_Reaction
-import com.broll.gainea.net.NT_EndTurn
-import com.broll.gainea.net.NT_Reaction
-import com.broll.gainea.net.NT_Surrender
+import com.broll.gainea.net.proto.NT_Battle_Reaction
+import com.broll.gainea.net.proto.NT_EndTurn
+import com.broll.gainea.net.proto.NT_Reaction
+import com.broll.gainea.net.proto.NT_Surrender
+import com.broll.gainea.server.network.gameData
 import com.broll.gainea.server.core.utils.displayMessage
 import com.broll.gainea.server.core.utils.endPlayersTurn
 import com.broll.gainea.server.core.utils.noActivePlayersRemaining
-import com.broll.networklib.PackageReceiver
-import com.broll.networklib.server.ConnectionRestriction
-import com.broll.networklib.server.RestrictionType
+import com.broll.mpnll.server.site.PackageReceiver
+import com.broll.mpnll.server.utils.ConnectionRestriction
+import com.broll.mpnll.server.utils.RestrictionType
 import org.slf4j.LoggerFactory
 
 class GameBoardSite : GameSite() {
@@ -26,11 +27,11 @@ class GameBoardSite : GameSite() {
             val handler = game.reactionHandler
             val player = gamePlayer
             if (handler.hasRequiredActionFor(player)) {
-                handler.handle(player, action, reaction)
+                handler.handle(gamePlayer, action, reaction)
             } else {
                 //only handle optional actions when its the players turn
                 if (playersTurn()) {
-                    handler.handle(player, action, reaction)
+                    handler.handle(gamePlayer, action, reaction)
                 } else {
                     Log.warn("Ignore optional action because its not players turn")
                 }
@@ -53,7 +54,7 @@ class GameBoardSite : GameSite() {
     @ConnectionRestriction(RestrictionType.LOBBY_LOCKED)
     fun endTurn(nt: NT_EndTurn) {
         //only react to if its players turn and no action is running right now
-        if (lobby.data.gameRoundsStarted &&
+        if (lobby.gameData.gameRoundsStarted &&
             !game.isGameOver && playersTurn() &&
             !game.processingCore.isBusy
         ) {
@@ -74,14 +75,14 @@ class GameBoardSite : GameSite() {
         if (gamePlayer.hasSurrendered()) {
             return
         }
-        Log.info(player.name + " surrendered!")
+        Log.info(user.name + " surrendered!")
         gamePlayer.surrender()
         if (game.noActivePlayersRemaining()) {
             game.end()
             game.processingCore.shutdown()
             game.reactionHandler.finishedProcessing()
         } else {
-            game.displayMessage(player.name + " hat aufgegeben!", sound = "smash.ogg")
+            game.displayMessage(user.name + " hat aufgegeben!", sound = "smash.ogg")
             game.endPlayersTurn(gamePlayer)
         }
     }
@@ -90,5 +91,3 @@ class GameBoardSite : GameSite() {
         private val Log = LoggerFactory.getLogger(GameBoardSite::class.java)
     }
 }
-
-

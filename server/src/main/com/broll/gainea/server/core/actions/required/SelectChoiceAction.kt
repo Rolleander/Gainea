@@ -1,8 +1,8 @@
 package com.broll.gainea.server.core.actions.required
 
 import com.broll.gainea.misc.RandomUtils
-import com.broll.gainea.net.NT_Action_SelectChoice
-import com.broll.gainea.net.NT_Reaction
+import com.broll.gainea.net.proto.NT_Action_SelectChoice
+import com.broll.gainea.net.proto.NT_Reaction
 import com.broll.gainea.server.core.actions.AbstractActionHandler
 import com.broll.gainea.server.core.actions.ActionContext
 import com.broll.gainea.server.core.actions.RequiredActionContext
@@ -10,6 +10,11 @@ import com.broll.gainea.server.core.actions.required.SelectChoiceAction.Context
 import com.broll.gainea.server.core.map.Location
 import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.core.utils.getOtherPlayers
+import com.broll.gainea.net.proto.NT_Choice
+import com.broll.gainea.net.proto.NT_Card
+import com.broll.gainea.net.proto.NT_Goal
+import com.broll.gainea.net.proto.NT_Unit
+import com.broll.gainea.net.proto.NT_BoardObject
 import org.slf4j.LoggerFactory
 
 class SelectChoiceAction :
@@ -45,8 +50,8 @@ class SelectChoiceAction :
     fun selectObject(player: Player, message: String, choices: List<Any>): Int {
         assureNotEmpty(choices)
         Log.debug("Select object action")
-        val action = NT_Action_SelectChoice()
-        action.objectChoices = choices.toTypedArray<Any>()
+        val action = NT_Action_SelectChoice.newBuilder()
+            .addAllObjectChoices(choices.map { choice(it) }).build()
         val context = Context(action)
         actionHandlers.reactionActions.requireAction(
             player,
@@ -67,9 +72,10 @@ class SelectChoiceAction :
     fun selectLocation(player: Player, message: String, choices: List<Location>): Location {
         assureNotEmpty(choices)
         Log.debug("Select location action")
-        val action = NT_Action_SelectChoice()
         val distinctLocations = choices.distinct()
-        action.objectChoices = distinctLocations.map { it.number }.toTypedArray()
+        val action = NT_Action_SelectChoice.newBuilder().addAllObjectChoices(
+            distinctLocations.map { NT_Choice.newBuilder().setIntegerValue(it.number).build() }
+        ).build()
         val context = Context(action)
         actionHandlers.reactionActions.requireAction(
             player,
@@ -110,9 +116,17 @@ class SelectChoiceAction :
 
     private fun build(choices: List<String>): Context {
         assureNotEmpty(choices)
-        val action = NT_Action_SelectChoice()
-        action.choices = choices.toTypedArray<String>()
+        val action = NT_Action_SelectChoice.newBuilder().addAllChoices(choices).build()
         return Context(action)
+    }
+
+    private fun choice(value: Any): NT_Choice = when (value) {
+        is Int -> NT_Choice.newBuilder().setIntegerValue(value).build()
+        is NT_Goal -> NT_Choice.newBuilder().setGoal(value).build()
+        is NT_Card -> NT_Choice.newBuilder().setCard(value).build()
+        is NT_Unit -> NT_Choice.newBuilder().setUnit(value).build()
+        is NT_BoardObject -> NT_Choice.newBuilder().setBoardObject(value).build()
+        else -> error("Unsupported choice ${value.javaClass.name}")
     }
 
     override fun handleReaction(

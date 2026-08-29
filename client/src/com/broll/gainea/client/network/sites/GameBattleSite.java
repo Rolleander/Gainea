@@ -3,7 +3,7 @@ package com.broll.gainea.client.network.sites;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.broll.gainea.client.AudioPlayer;
-import com.broll.gainea.client.network.ProtoMapper;
+import com.broll.gainea.network.ProtoMapper;
 import com.broll.gainea.client.game.map.Coordinates;
 import com.broll.gainea.client.ui.ingame.map.ActionTrail;
 import com.broll.gainea.client.ui.ingame.map.MapAction;

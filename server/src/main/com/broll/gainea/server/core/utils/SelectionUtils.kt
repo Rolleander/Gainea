@@ -136,6 +136,5 @@ fun Game.selectFromLocation(
         return selection[0]
     }
     val handler = reactionHandler.actionHandlers.getHandler(SelectChoiceAction::class.java)
-    return selection[handler.selectObject(selectingPlayer, text, selection.map { it.nt() })]
+    return selection[handler.selectObject(selectingPlayer, text, selection.map { it.boardNt() })]
 }
-

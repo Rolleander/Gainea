@@ -1,7 +1,7 @@
 package com.broll.gainea.server.core.objects.monster
 
 import com.broll.gainea.core.objects.monster.MonsterBehavior
-import com.broll.gainea.net.NT_Monster
+import com.broll.gainea.net.proto.NT_Monster
 import com.broll.gainea.server.core.map.Location
 import com.broll.gainea.server.core.objects.Unit
 import com.broll.gainea.server.core.objects.monster.MonsterActivity.SOMETIMES
@@ -15,7 +15,7 @@ open class Monster(owner: Player) : Unit(owner) {
             field = value
             if (value == RESIDENT) {
                 removeActionTimer()
-            } else if (actionTimer == NT_Monster.NO_ACTION_TIMER.toInt()) {
+            } else if (actionTimer == NO_ACTION_TIMER) {
                 actionTimer = activity.turnTimer
             }
         }
@@ -25,9 +25,9 @@ open class Monster(owner: Player) : Unit(owner) {
             resetActionTimer()
         }
     var motion = MonsterMotion.TERRESTRIAL
-    private var actionTimer = NT_Monster.NO_ACTION_TIMER.toInt()
+    private var actionTimer = NO_ACTION_TIMER
     fun removeActionTimer() {
-        actionTimer = NT_Monster.NO_ACTION_TIMER.toInt()
+        actionTimer = NO_ACTION_TIMER
     }
 
     val stars: Int
@@ -39,17 +39,22 @@ open class Monster(owner: Player) : Unit(owner) {
         }
     }
 
-    override fun nt(): NT_Monster {
-        val monster = NT_Monster()
-        monster.stars = stars.toByte()
-        monster.actionTimer = actionTimer.toByte()
-        monster.behavior = behavior.ordinal.toByte()
-        fillBattleObject(monster)
-        return monster
+    fun monsterNt(): NT_Monster {
+        return fillBattleObject(NT_Monster.newBuilder())
+            .setStars(stars)
+            .setActionTimer(actionTimer)
+            .setBehavior(behavior.ordinal)
+            .build()
     }
 
+    override fun nt() = com.broll.gainea.net.proto.NT_Unit.newBuilder()
+        .setMonster(monsterNt()).build()
+
+    override fun boardNt() = com.broll.gainea.net.proto.NT_BoardObject.newBuilder()
+        .setMonster(monsterNt()).build()
+
     override fun roundStarted() {
-        if (actionTimer != NT_Monster.NO_ACTION_TIMER.toInt() && alive && isBehaviorActive && game.rounds > 1) {
+        if (actionTimer != NO_ACTION_TIMER && alive && isBehaviorActive && game.rounds > 1) {
             progressBehavior()
         }
     }
@@ -82,6 +87,7 @@ open class Monster(owner: Player) : Unit(owner) {
 
     companion object {
         private const val MAX_STARS = 8
+        private const val NO_ACTION_TIMER = -1
         fun getStars(monster: Monster): Int {
             return stars(monster.power.rootValue, monster.maxHealth.rootValue)
         }

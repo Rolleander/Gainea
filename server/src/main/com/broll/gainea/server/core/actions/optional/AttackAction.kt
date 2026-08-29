@@ -2,8 +2,8 @@ package com.broll.gainea.server.core.actions.optional
 
 import com.broll.gainea.server.core.map.*
 
-import com.broll.gainea.net.NT_Action_Attack
-import com.broll.gainea.net.NT_Reaction
+import com.broll.gainea.net.proto.NT_Action_Attack
+import com.broll.gainea.net.proto.NT_Reaction
 import com.broll.gainea.server.core.actions.AbstractActionHandler
 import com.broll.gainea.server.core.actions.ActionContext
 import com.broll.gainea.server.core.map.Location
@@ -16,9 +16,8 @@ class AttackAction : AbstractActionHandler<NT_Action_Attack, AttackAction.Contex
         : ActionContext<NT_Action_Attack>(action)
 
     fun attack(attackers: List<Unit>, attackLocation: Location): Context {
-        val action = NT_Action_Attack()
-        action.units = attackers.map { it.nt() }.toTypedArray()
-        action.location = attackLocation.number.toShort()
+        val action = NT_Action_Attack.newBuilder().addAllUnits(attackers.map { it.nt() })
+            .setLocation(attackLocation.number).build()
         return Context(action, attackers.toMutableList(), attackLocation)
     }
 
@@ -27,7 +26,7 @@ class AttackAction : AbstractActionHandler<NT_Action_Attack, AttackAction.Contex
             Log.trace("Handle attack reaction")
             val selectedAttackers = mutableListOf<Unit>()
             var from: Location? = null
-            reaction.options.map { selection -> context.attackers.find { it.id == selection } }.filterNotNull().forEach { unit ->
+            reaction.optionsList.map { selection -> context.attackers.find { it.id == selection } }.filterNotNull().forEach { unit ->
                 if (from == null) {
                     from = unit.location
                 }

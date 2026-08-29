@@ -2,31 +2,34 @@ package com.broll.gainea.server.core.stats
 
 import com.broll.gainea.server.core.map.*
 
-import com.broll.gainea.net.NT_RoundStatistic
+import com.broll.gainea.net.proto.NT_RoundStatistic
 
 class TurnStatistic(val players: List<PlayerStatistic>) {
 
     fun nt(): NT_RoundStatistic {
-        val nt = NT_RoundStatistic()
-        nt.fightingPower = ShortArray(players.size)
-        nt.locations = ByteArray(players.size)
-        nt.total = ShortArray(players.size)
-        nt.units = ByteArray(players.size)
-        for (i in players.indices) {
-            val fightingPower = players[i].totalPower + players[i].totalHealth
-            val units = players[i].units
-            val location = players[i].controlledLocations
-            nt.fightingPower[i] = fightingPower.toShort()
-            nt.units[i] = units.toByte()
-            nt.locations[i] = location.toByte()
-            var total = fightingPower * POINTS_POWER
-            total += players[i].cards * POINTS_CARD
-            total += players[i].stars * POINTS_STAR
-            total += players[i].points * POINTS_SCORE
+        val fightingPower = mutableListOf<Int>()
+        val locations = mutableListOf<Int>()
+        val totals = mutableListOf<Int>()
+        val units = mutableListOf<Int>()
+        players.forEach { player ->
+            val power = player.totalPower + player.totalHealth
+            val location = player.controlledLocations
+            fightingPower += power
+            units += player.units.toInt()
+            locations += location.toInt()
+            var total = power * POINTS_POWER
+            total += player.cards * POINTS_CARD
+            total += player.stars * POINTS_STAR
+            total += player.points * POINTS_SCORE
             total += location * POINTS_LOCATION
-            nt.total[i] = total.toShort()
+            totals += total
         }
-        return nt
+        return NT_RoundStatistic.newBuilder()
+            .addAllFightingPower(fightingPower)
+            .addAllLocations(locations)
+            .addAllTotal(totals)
+            .addAllUnits(units)
+            .build()
     }
 
     companion object {

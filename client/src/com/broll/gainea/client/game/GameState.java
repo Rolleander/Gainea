@@ -1,21 +1,10 @@
 package com.broll.gainea.client.game;
 
 import com.broll.gainea.Gainea;
-import com.broll.gainea.net.NT_Action;
-import com.broll.gainea.net.NT_BoardEffect;
-import com.broll.gainea.net.NT_BoardObject;
-import com.broll.gainea.net.NT_BoardUpdate;
-import com.broll.gainea.net.NT_Card;
-import com.broll.gainea.net.NT_GameStatistic;
-import com.broll.gainea.net.NT_Goal;
-import com.broll.gainea.net.NT_Lib;
-import com.broll.gainea.net.NT_Player;
-import com.broll.gainea.net.NT_Shop;
-import com.broll.gainea.net.NT_Unit;
+import com.broll.gainea.net.proto.*;
 import com.broll.mpnll.client.lobby.User;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class GameState {
@@ -29,14 +18,14 @@ public class GameState {
     private int turn;
     private int pointLimit;
     private int roundLimit;
-    private List<NT_BoardObject> objects;
+    private List<BoardObjectState> objects;
     private List<NT_BoardEffect> effects;
-    private List<NT_Player> players;
+    private List<PlayerState> players;
     private ClientMapContainer mapContainer;
     private MapObjectContainer mapObjectsContainer;
     private MapEffectContainer mapEffectContainer;
     //my player specific data:
-    private List<NT_Goal> goals;
+    private List<GoalState> goals;
     private List<NT_Card> cards;
     private GamePlayer player;
     private List<GameStateListener> stateListeners = new ArrayList<>();
@@ -109,18 +98,25 @@ public class GameState {
         return actionsAllowed;
     }
 
-    public void update(NT_BoardUpdate update) {
-        this.round = update.round;
-        this.turn = update.turn;
-        this.objects = new ArrayList<>(Arrays.asList(update.objects));
-        this.players = Arrays.asList(update.players);
-        this.effects = new ArrayList<>(Arrays.asList(update.effects));
+    public void update(NT_BoardUpdate update) { update(update.getRound(), update.getTurn(), update.getObjectsList(), update.getPlayersList(), update.getEffectsList()); }
+    public void update(NT_StartGame update) { update(update.getRound(), update.getTurn(), update.getObjectsList(), update.getPlayersList(), update.getEffectsList()); }
+    public void update(NT_ReconnectGame update) { update(update.getRound(), update.getTurn(), update.getObjectsList(), update.getPlayersList(), update.getEffectsList()); }
+    public void update(NT_GameOver update) { update(update.getRound(), update.getTurn(), update.getObjectsList(), update.getPlayersList(), update.getEffectsList()); }
+
+    private void update(int round, int turn, List<NT_BoardObject> objects, List<NT_Player> players, List<NT_BoardEffect> effects) {
+        this.round = round;
+        this.turn = turn;
+        this.objects = new ArrayList<>();
+        objects.forEach(value -> this.objects.add(new BoardObjectState(value)));
+        this.players = new ArrayList<>();
+        players.forEach(value -> this.players.add(new PlayerState(value)));
+        this.effects = new ArrayList<>(effects);
         updateMapObjects(0);
     }
 
     public void updateMapObjects(int effect) {
-        List<NT_BoardObject> allObjects = new ArrayList<>(objects);
-        players.forEach(player -> allObjects.addAll(Arrays.asList(player.units)));
+        List<BoardObjectState> allObjects = new ArrayList<>(objects);
+        players.forEach(player -> allObjects.addAll(player.units()));
         mapObjectsContainer.update(effect, allObjects);
         mapEffectContainer.update(this.effects);
         if (game.ui.inGameUI != null) {
@@ -138,15 +134,15 @@ public class GameState {
         updateIdleState(true);
     }
 
-    public List<NT_Unit> getUnits(int playerId) {
-        return Arrays.asList(getPlayer(playerId).units);
+    public List<BoardObjectState> getUnits(int playerId) {
+        return getPlayer(playerId).units();
     }
 
-    public NT_Player getPlayer(int id) {
-        return players.stream().filter(it -> it.id == id).findFirst().orElse(null);
+    public PlayerState getPlayer(int id) {
+        return players.stream().filter(it -> it.id() == id).findFirst().orElse(null);
     }
 
-    public List<NT_BoardObject> getObjects() {
+    public List<BoardObjectState> getObjects() {
         return objects;
     }
 
@@ -154,7 +150,7 @@ public class GameState {
         return effects;
     }
 
-    public List<NT_Player> getPlayers() {
+    public List<PlayerState> getPlayers() {
         return players;
     }
 
@@ -170,7 +166,7 @@ public class GameState {
         return cards;
     }
 
-    public List<NT_Goal> getGoals() {
+    public List<GoalState> getGoals() {
         return goals;
     }
 

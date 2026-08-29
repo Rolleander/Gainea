@@ -1,7 +1,9 @@
 package com.broll.gainea.server.core.fractions.impl
 
+import com.broll.gainea.core.protocol.UnitType
+
 import com.broll.gainea.misc.RandomUtils
-import com.broll.gainea.net.NT_Unit
+import com.broll.gainea.net.proto.NT_Unit
 import com.broll.gainea.server.core.battle.BattleContext
 import com.broll.gainea.server.core.battle.BattleResult
 import com.broll.gainea.server.core.battle.FightingPower
@@ -49,7 +51,7 @@ class DruidsFraction : Fraction(FractionType.DRUIDS) {
     override fun createSoldier(): Soldier {
         val soldier = DruidSoldier(owner)
         soldier.initFrom(description.soldier)
-        soldier.setType(NT_Unit.TYPE_FEMALE.toInt())
+        soldier.setType(UnitType.FEMALE)
         return soldier
     }
 

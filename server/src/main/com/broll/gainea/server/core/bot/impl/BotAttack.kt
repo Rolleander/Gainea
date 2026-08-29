@@ -2,21 +2,21 @@ package com.broll.gainea.server.core.bot.impl
 
 import com.broll.gainea.server.core.map.*
 
-import com.broll.gainea.net.NT_Action
-import com.broll.gainea.net.NT_Action_Attack
-import com.broll.gainea.net.NT_Reaction
-import com.broll.gainea.net.NT_Unit
+import com.broll.gainea.net.proto.NT_Action_Attack
+import com.broll.gainea.net.proto.NT_Reaction
+import com.broll.gainea.net.proto.NT_Unit
 import com.broll.gainea.server.core.bot.BotOptionalAction
 import com.broll.gainea.server.core.bot.BotUtils
 import com.broll.gainea.server.core.bot.strategy.BattleSimulation
 import com.broll.gainea.server.core.map.Location
 import com.broll.gainea.server.core.objects.Unit
 import com.broll.gainea.server.core.utils.getMonsters
+import com.google.protobuf.Message
 
 class BotAttack : BotOptionalAction<NT_Action_Attack, BotAttack.AttackOption>() {
     override fun score(action: NT_Action_Attack): AttackOption? {
         val location = BotUtils.getLocation(game, action.location.toInt())
-        val usableUnits = usableUnits(action.units)
+        val usableUnits = usableUnits(action.unitsList)
         val fightType = getFighType(location)
         val winChance = getRequiredWinChance(fightType)
         val attackFromOptions = usableUnits.map { it.location }.toTypedArray()
@@ -37,11 +37,11 @@ class BotAttack : BotOptionalAction<NT_Action_Attack, BotAttack.AttackOption>() 
         return null
     }
 
-    override fun react(action: NT_Action_Attack, reaction: NT_Reaction) {
-        reaction.options = selectedOption!!.attackUnits
+    override fun react(action: NT_Action_Attack, reaction: NT_Reaction.Builder) {
+        reaction.addAllOptions(selectedOption!!.attackUnits.asIterable())
     }
 
-    override val actionClass: Class<out NT_Action>
+    override val actionClass: Class<out Message>
         get() = NT_Action_Attack::class.java
 
     fun keepAttacking(
@@ -55,7 +55,7 @@ class BotAttack : BotOptionalAction<NT_Action_Attack, BotAttack.AttackOption>() 
         return BattleSimulation.calculateCurrentWinChance(attackers, defenders) >= winChance
     }
 
-    private fun usableUnits(ntUnits: Array<NT_Unit>): List<Unit> {
+    private fun usableUnits(ntUnits: List<NT_Unit>): List<Unit> {
         val units = BotUtils.getObjects(game, ntUnits)
         return units.filter {
             if (strategy.moveTargets[it] === it.location) {

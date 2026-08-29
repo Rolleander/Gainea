@@ -13,6 +13,7 @@ message NT_Choice {
         NT_Goal goal = 2;
         NT_Card card = 3;
         NT_Unit unit = 4;
+        NT_BoardObject board_object = 5;
     }
 }
 

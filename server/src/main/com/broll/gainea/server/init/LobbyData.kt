@@ -2,11 +2,11 @@ package com.broll.gainea.server.init
 
 import com.broll.gainea.core.map.ExpansionSetting
 import com.broll.gainea.core.goals.GoalTypes
-import com.broll.gainea.net.NT_LobbySettings
+import com.broll.gainea.net.proto.NT_LobbySettings
 import com.broll.gainea.server.core.Game
-import com.broll.networklib.server.impl.ILobbyData
+import com.broll.mpnll.server.user.User
 
-class LobbyData : ILobbyData {
+class LobbyData {
     var expansionSetting = ExpansionSetting.BASIC_GAME
     var goalTypes = GoalTypes.ALL
     var startLocations = START_LOCATIONS_DEFAULT
@@ -17,17 +17,16 @@ class LobbyData : ILobbyData {
     var game: Game? = null
     var gameStartListener: IGameStartListener? = null
     var gameRoundsStarted = false
-    override fun nt(): NT_LobbySettings {
-        val settings = NT_LobbySettings()
-        settings.expansionSetting = expansionSetting.ordinal
-        settings.startGoals = startGoals
-        settings.startLocations = startLocations
-        settings.pointLimit = pointLimit
-        settings.goalTypes = goalTypes.ordinal
-        settings.monsters = monsterCount
-        settings.roundLimit = roundLimit
-        return settings
-    }
+    var playerLoaded: ((User) -> Unit)? = null
+    fun nt(): NT_LobbySettings = NT_LobbySettings.newBuilder()
+        .setExpansionSetting(expansionSetting.ordinal)
+        .setStartGoals(startGoals)
+        .setStartLocations(startLocations)
+        .setPointLimit(pointLimit)
+        .setGoalTypes(goalTypes.ordinal)
+        .setMonsters(monsterCount)
+        .setRoundLimit(roundLimit)
+        .build()
 
     companion object {
         private const val START_LOCATIONS_DEFAULT = 3

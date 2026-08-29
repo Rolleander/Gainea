@@ -25,7 +25,8 @@ public class StartScreen extends Screen {
     public static String PLAYER_NAME =
             "";
     public static String SERVER =
-            "gainea.de";
+            "localhost";
+    //"gainea.de";
     private TextField serverIp;
     private TextField name;
     private Table lobbies;
@@ -91,7 +92,6 @@ public class StartScreen extends Screen {
         loadingInfo = info("");
         loadingInfo.setAlignment(Align.center);
         loadingInfo.setVisible(false);
-        //"192.168.0.137"
         serverIp = new TextField(SERVER, skin);
         name = new TextField(PLAYER_NAME, skin);
         Table vg = new Table();

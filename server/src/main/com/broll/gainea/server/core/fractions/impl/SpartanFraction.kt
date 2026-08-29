@@ -1,6 +1,8 @@
 package com.broll.gainea.server.core.fractions.impl
 
-import com.broll.gainea.net.NT_Event
+import com.broll.gainea.core.protocol.ScreenEffect
+
+import com.broll.gainea.net.proto.NT_Event
 import com.broll.gainea.server.core.battle.BattleContext
 import com.broll.gainea.server.core.battle.BattleResult
 import com.broll.gainea.server.core.battle.FightingPower
@@ -36,7 +38,7 @@ class SpartanFraction : Fraction(FractionType.SPARTANS) {
     override fun prepareTurn() {
         owner.units.randomOrNull()?.let {
             it.power.value += 1
-            game.focus(it, NT_Event.EFFECT_BUFF)
+            game.focus(it, ScreenEffect.BUFF)
         }
         super.prepareTurn()
     }

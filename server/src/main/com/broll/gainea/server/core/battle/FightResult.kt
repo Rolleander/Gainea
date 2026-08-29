@@ -1,6 +1,6 @@
 package com.broll.gainea.server.core.battle
 
-import com.broll.gainea.net.NT_Battle_Damage
+import com.broll.gainea.net.proto.NT_Battle_Damage
 import com.broll.gainea.server.core.battle.RollResult.Roll
 import com.broll.gainea.server.core.objects.Unit
 
@@ -28,11 +28,8 @@ class FightResult(val attackRolls: List<Roll>, val defenderRolls: List<Roll>) {
             val lethalHit: Boolean
     ) {
         fun nt(): NT_Battle_Damage {
-            val nt = NT_Battle_Damage()
-            nt.source = source.id
-            nt.target = target.id
-            nt.lethal = lethalHit
-            return nt
+            return NT_Battle_Damage.newBuilder().setSource(source.id).setTarget(target.id)
+                .setLethal(lethalHit).build()
         }
     }
 }

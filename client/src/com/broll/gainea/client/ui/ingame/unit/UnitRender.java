@@ -13,12 +13,12 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.broll.gainea.Gainea;
+import com.broll.gainea.client.game.BoardObjectState;
+import com.broll.gainea.core.protocol.UnitType;
 import com.broll.gainea.client.AudioPlayer;
 import com.broll.gainea.client.ui.ingame.map.MapObjectRender;
 import com.broll.gainea.client.ui.utils.LabelUtils;
 import com.broll.gainea.client.ui.utils.TextureUtils;
-import com.broll.gainea.net.NT_Monster;
-import com.broll.gainea.net.NT_Unit;
 
 public class UnitRender extends MapObjectRender {
 
@@ -35,8 +35,9 @@ public class UnitRender extends MapObjectRender {
     private Animation<TextureRegion> blood;
     private float bloodAnimation;
     private boolean showBlood = false;
+    private int displayedHealth;
 
-    public UnitRender(Gainea game, Skin skin, NT_Unit unit) {
+    public UnitRender(Gainea game, Skin skin, BoardObjectState unit) {
         super(game, skin, unit);
         this.plate = game.assets.get("textures/unit_plate.png", Texture.class);
         this.activeRing = game.assets.get("textures/active_ring.png", Texture.class);
@@ -64,17 +65,17 @@ public class UnitRender extends MapObjectRender {
         this.alwaysDrawPlate = alwaysDrawPlate;
     }
 
-    public NT_Unit getUnit() {
-        return (NT_Unit) getObject();
+    public BoardObjectState getUnit() {
+        return getObject();
     }
 
     public void takeDamage(int amount) {
-        NT_Unit unit = getUnit();
-        boolean wasAlive = unit.health > 0;
-        unit.health -= amount;
+        BoardObjectState unit = getUnit();
+        boolean wasAlive = displayedHealth > 0;
+        displayedHealth -= amount;
         if (wasAlive) {
             AudioPlayer.playSound("damage.ogg");
-            if (unit.health <= 0) {
+            if (displayedHealth <= 0) {
                 kill(false);
             }
         }
@@ -83,9 +84,9 @@ public class UnitRender extends MapObjectRender {
     }
 
     public void kill(boolean removeActor) {
-        NT_Unit unit = getUnit();
+        BoardObjectState unit = getUnit();
         deathSound(unit);
-        unit.health = 0;
+        displayedHealth = 0;
         if (removeActor) {
             addAction(Actions.sequence(Actions.fadeOut(0.5f), Actions.removeActor()));
         }
@@ -100,15 +101,15 @@ public class UnitRender extends MapObjectRender {
                 Actions.moveBy(-x, -y, 0.2f, Interpolation.sineIn)));
     }
 
-    private void deathSound(NT_Unit unit) {
+    private void deathSound(BoardObjectState unit) {
         AudioPlayer.playSound("kill.ogg");
-        if (unit instanceof NT_Monster) {
+        if (unit.isMonster()) {
             AudioPlayer.playSound("monster_death.ogg");
         } else {
-            int type = unit.type;
-            if (type == NT_Unit.TYPE_MALE) {
+            int type = unit.type();
+            if (type == UnitType.MALE.value) {
                 AudioPlayer.playSound("death_male.ogg");
-            } else if (type == NT_Unit.TYPE_FEMALE) {
+            } else if (type == UnitType.FEMALE.value) {
                 AudioPlayer.playSound("death_female.ogg");
             }
         }
@@ -128,16 +129,16 @@ public class UnitRender extends MapObjectRender {
     public void draw(Batch batch, float parentAlpha) {
         setRenderColor(batch, parentAlpha);
         if (shouldDrawPlate()) {
-            NT_Unit unit = (NT_Unit) getObject();
+            BoardObjectState unit = getObject();
             batch.draw(plate, getX() - 37 - radius, getY() + 20 - radius);
             numberLabel.setColor(batch.getColor());
             numberLabel.setStyle(blackStyle);
             numberLabel.setPosition(getX() - 74, getY() - 16);
-            numberLabel.setText("" + unit.power);
+            numberLabel.setText("" + unit.power());
             numberLabel.draw(batch, parentAlpha);
             numberLabel.setPosition(getX() + 58, getY() - 16);
-            numberLabel.setText("" + unit.health);
-            if (unit.health < unit.maxHealth) {
+            numberLabel.setText("" + displayedHealth);
+            if (displayedHealth < unit.maxHealth()) {
                 numberLabel.setStyle(redStyle);
             }
             numberLabel.draw(batch, parentAlpha);
@@ -161,11 +162,17 @@ public class UnitRender extends MapObjectRender {
     }
 
     public boolean removeIfDead() {
-        boolean dead = getUnit().health <= 0;
+        boolean dead = displayedHealth <= 0;
         if (dead) {
             addAction(Actions.sequence(Actions.fadeOut(0.2f), Actions.visible(false)));
         }
         return dead;
+    }
+
+    @Override
+    public void init(BoardObjectState object) {
+        super.init(object);
+        displayedHealth = object.health();
     }
 
 }

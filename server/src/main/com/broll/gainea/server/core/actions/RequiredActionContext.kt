@@ -1,16 +1,14 @@
 package com.broll.gainea.server.core.actions
 
-import com.broll.gainea.net.NT_Action
-import com.broll.gainea.net.NT_PlayerAction
+import com.broll.gainea.net.proto.NT_PlayerAction
+import com.google.protobuf.Message
 
-class RequiredActionContext<T : NT_Action>
-(val actionContext: ActionContext<T>, val text: String, val messageForOtherPlayer: Any? = null)
+class RequiredActionContext<T : Message>
+(val actionContext: ActionContext<T>, val text: String, val messageForOtherPlayer: Message? = null)
     : ActionContext<T>(actionContext.action) {
 
     fun nt(): NT_PlayerAction {
-        val action = NT_PlayerAction()
-        action.action = actionContext.action
-        action.text = text
-        return action
+        return NT_PlayerAction.newBuilder().setAction(actionContext.action.asAction())
+            .setText(text).build()
     }
 }

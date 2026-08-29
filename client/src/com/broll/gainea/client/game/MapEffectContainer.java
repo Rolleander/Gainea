@@ -2,7 +2,7 @@ package com.broll.gainea.client.game;
 
 import com.broll.gainea.Gainea;
 import com.broll.gainea.client.ui.ingame.map.MapEffectRender;
-import com.broll.gainea.net.NT_BoardEffect;
+import com.broll.gainea.net.proto.NT_BoardEffect;
 
 import java.util.HashMap;
 import java.util.List;
@@ -26,7 +26,7 @@ public class MapEffectContainer {
                 game.gameStage.addActor(render);
                 renders.put(effect.id, render);
             } else {
-                render.setPosition(effect.x, effect.y);
+                render.setPosition(effect.getX(), effect.getY());
             }
         }
         if (renders.size() > effects.size()) {

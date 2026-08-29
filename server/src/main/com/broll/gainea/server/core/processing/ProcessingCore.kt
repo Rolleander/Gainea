@@ -4,7 +4,7 @@ import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.utils.ProcessingUtils
 import com.broll.gainea.server.init.LobbyData
 import com.broll.gainea.server.init.PlayerData
-import com.broll.networklib.server.impl.ServerLobby
+import com.broll.mpnll.server.lobby.Lobby
 import com.google.common.util.concurrent.ThreadFactoryBuilder
 import org.slf4j.LoggerFactory
 import java.util.Queue
@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit
 
 class ProcessingCore(private val game: Game,
                      private val finishedProcessingListener: Runnable,
-                     lobby: ServerLobby<LobbyData, PlayerData>) {
+                     lobby: Lobby) {
     private val executor: ScheduledExecutorService
     private val parallelExecutor: ScheduledExecutorService
     private var lastFuture: ScheduledFuture<*>? = null

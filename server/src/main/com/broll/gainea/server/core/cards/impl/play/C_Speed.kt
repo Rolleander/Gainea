@@ -1,6 +1,6 @@
 package com.broll.gainea.server.core.cards.impl.play
 
-import com.broll.gainea.net.NT_Event
+import com.broll.gainea.net.proto.NT_Event
 import com.broll.gainea.server.core.cards.Card
 import com.broll.gainea.core.cards.EffectType.MOVEMENT
 import com.broll.gainea.server.core.objects.buffs.BuffType
@@ -25,14 +25,14 @@ class C_Speed : Card(
             owner,
             buffSpeed,
             { it.movesPerTurn.addBuff(buffSpeed) },
-            NT_Event.EFFECT_BUFF
+            3
         )
         GlobalBuff.createForPlayer(
             game,
             owner,
             buffNoAttaks,
             { it.attacksPerTurn.addBuff(buffNoAttaks) },
-            NT_Event.EFFECT_DEBUFF
+            4
         )
         game.buffProcessor.timeoutBuff(buffSpeed, thisTurn())
         game.buffProcessor.timeoutBuff(buffNoAttaks, thisTurn())

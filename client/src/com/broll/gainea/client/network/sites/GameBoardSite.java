@@ -1,6 +1,5 @@
 package com.broll.gainea.client.network.sites;
 
-import com.broll.gainea.client.network.ProtoMapper;
 import com.broll.mpnll.client.site.MessageReceiverRegistry;
 
 public class GameBoardSite extends AbstractGameSite {
@@ -12,12 +11,12 @@ public class GameBoardSite extends AbstractGameSite {
 
     private void received(com.broll.gainea.net.proto.NT_BoardUpdate update) {
         game.ui.inGameUI.getBattleHandler().clearBattleScreen();
-        game.state.update(ProtoMapper.boardUpdate(update));
+        game.state.update(update);
         game.ui.inGameUI.updateWindows();
     }
 
     private void received(com.broll.gainea.net.proto.NT_GoalProgression progression) {
-        game.state.getGoals().get(progression.getIndex()).progression = progression.getProgression();
+        game.state.getGoals().get(progression.getIndex()).setProgression(progression.getProgression());
         game.ui.inGameUI.updateWindows();
     }
 }

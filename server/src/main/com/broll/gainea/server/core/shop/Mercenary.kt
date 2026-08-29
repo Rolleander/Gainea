@@ -1,6 +1,8 @@
 package com.broll.gainea.server.core.shop
 
-import com.broll.gainea.net.NT_Event
+import com.broll.gainea.core.protocol.ScreenEffect
+
+import com.broll.gainea.net.proto.NT_Event
 import com.broll.gainea.server.core.battle.BattleResult
 import com.broll.gainea.server.core.objects.Soldier
 import com.broll.gainea.server.core.player.Player
@@ -34,7 +36,7 @@ class SoulStealer(owner: Player) : Mercenary(owner, 4 to 3, 18, "Seelensammler")
         }
         if (addHealth > 0) {
             this.addHealth(addHealth)
-            game.focus(this, NT_Event.EFFECT_BUFF)
+            game.focus(this, ScreenEffect.BUFF)
         }
     }
 

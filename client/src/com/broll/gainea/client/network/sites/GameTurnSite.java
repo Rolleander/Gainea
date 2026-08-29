@@ -2,8 +2,7 @@ package com.broll.gainea.client.network.sites;
 
 import com.broll.gainea.client.AudioPlayer;
 import com.broll.gainea.client.game.PlayerPerformOptionalAction;
-import com.broll.gainea.client.network.ProtoMapper;
-import com.broll.gainea.net.NT_Action;
+import com.broll.gainea.net.proto.NT_Action;
 import com.broll.gainea.net.proto.NT_EndTurn;
 import com.broll.mpnll.client.lobby.User;
 import com.broll.mpnll.client.site.MessageReceiverRegistry;
@@ -46,7 +45,7 @@ public class GameTurnSite extends AbstractGameSite {
     private void received(com.broll.gainea.net.proto.NT_PlayerTurnActions value) {
         actions.clear();
         game.state.turnIdle();
-        actions.addAll(Arrays.asList(ProtoMapper.actions(value.getActionsList())));
+        actions.addAll(value.getActionsList());
         playerPickAction();
         game.ui.inGameUI.updateWindows();
         game.ui.inGameUI.getBattleHandler().clearBattleScreen();
