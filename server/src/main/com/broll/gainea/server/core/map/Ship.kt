@@ -1,6 +1,9 @@
 package com.broll.gainea.server.core.map
 
 class Ship(coordinates: Coordinates) : Location(coordinates) {
+    
+    override val name: String
+        get() = "Ship"
 
     var from: Location = SpawnLocation
         set(value) {
@@ -18,7 +21,7 @@ class Ship(coordinates: Coordinates) : Location(coordinates) {
     fun goesFrom(from: Location) = this.from == from
 
     fun goesTo(to: Location) = this.to == to
-    
+
     override fun toString(): String {
         return "Schiff"
     }

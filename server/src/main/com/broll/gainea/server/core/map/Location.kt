@@ -9,6 +9,7 @@ import com.broll.gainea.server.core.utils.getUnits
 abstract class Location(val coordinates: Coordinates) {
 
     var number = 0
+    abstract val name: String
 
     lateinit var container: AreaCollection
     var traversable = true
