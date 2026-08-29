@@ -9,7 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.broll.gainea.Gainea;
 import com.broll.gainea.net.NT_BoardObject;
 import com.broll.gainea.net.NT_Monster;
-import com.broll.gainea.server.core.objects.monster.MonsterBehavior;
+import com.broll.gainea.core.objects.monster.MonsterBehavior;
 
 public class MonsterRender extends UnitRender {
     private final static int W = 154;

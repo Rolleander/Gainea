@@ -1,6 +1,5 @@
 package com.broll.gainea.server.core.objects.monster
 
-import com.broll.gainea.server.core.map.AreaType
 import com.broll.gainea.server.core.map.Location
 import com.broll.gainea.server.core.map.Ship
 import com.broll.gainea.server.core.utils.isAreaType

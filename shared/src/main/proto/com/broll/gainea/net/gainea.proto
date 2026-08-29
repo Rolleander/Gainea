@@ -459,6 +459,7 @@ message NT_ReconnectGame {
   repeated NT_Card cards = 9;
   optional NT_Shop shop = 10;
   repeated NT_Goal goals = 11;
+  repeated NT_Expansion expansions = 12;
 }
 
 message NT_RoundStatistic {
@@ -502,6 +503,7 @@ message NT_StartGame {
   optional int32 round_limit = 8;
   repeated NT_Card cards = 9;
   optional NT_Shop shop = 10;
+  repeated NT_Expansion expansions = 11;
 }
 
 message NT_Surrender {}
@@ -553,3 +555,21 @@ message NT_Vote_KickPlayer {
 }
 
 message NT_Vote_SkipTurn {}
+
+message NT_Expansion {
+  optional string texture = 1;
+  repeated NT_Location locations = 2;
+  repeated NT_Ship ships = 3;
+}
+
+message NT_Location {
+  required int32 number = 1;
+  required float x = 2;
+  required float y = 3;
+}
+
+message NT_Ship {
+  required NT_Location location = 1;
+  required int32 from = 2;
+  required int32 to = 3;
+}

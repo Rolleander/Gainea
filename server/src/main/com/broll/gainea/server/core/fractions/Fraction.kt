@@ -1,6 +1,6 @@
 package com.broll.gainea.server.core.fractions
 
-import com.broll.gainea.server.core.map.*
+import com.broll.gainea.core.fractions.FractionType
 
 import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.actions.required.PlaceUnitAction

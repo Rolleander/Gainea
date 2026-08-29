@@ -1,12 +1,10 @@
 package com.broll.gainea.server.core.goals.impl.all
 
-import com.broll.gainea.server.core.map.*
-
 import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.bot.BotUtils
 import com.broll.gainea.server.core.bot.strategy.GoalStrategy
-import com.broll.gainea.server.core.goals.GoalDifficulty.EASY
-import com.broll.gainea.server.core.goals.GoalDifficulty.MEDIUM
+import com.broll.gainea.core.goals.GoalDifficulty.EASY
+import com.broll.gainea.core.goals.GoalDifficulty.MEDIUM
 import com.broll.gainea.server.core.goals.RoundGoal
 import com.broll.gainea.server.core.map.AreaCollection
 import com.broll.gainea.server.core.map.Location

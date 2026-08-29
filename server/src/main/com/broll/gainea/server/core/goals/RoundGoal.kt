@@ -1,5 +1,6 @@
 package com.broll.gainea.server.core.goals
 
+import com.broll.gainea.core.goals.GoalDifficulty
 import com.broll.gainea.server.core.player.Player
 
 abstract class RoundGoal(difficulty: GoalDifficulty, text: String, private val roundTarget: Int) : Goal(difficulty, text) {

@@ -1,17 +1,14 @@
 package com.broll.gainea.server.core.events.random
 
-import com.broll.gainea.server.core.map.*
-
 import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.battle.BattleContext
 import com.broll.gainea.server.core.events.RandomEvent
-import com.broll.gainea.server.core.map.AreaType.SNOW
 import com.broll.gainea.server.core.objects.Conquerable
 import com.broll.gainea.server.core.objects.buffs.BuffType.ADD
 import com.broll.gainea.server.core.objects.buffs.IntBuff
 import com.broll.gainea.server.core.objects.monster.Monster
 import com.broll.gainea.server.core.objects.monster.MonsterActivity.OFTEN
-import com.broll.gainea.server.core.objects.monster.MonsterBehavior.RANDOM
+import com.broll.gainea.core.objects.monster.MonsterBehavior.RANDOM
 import com.broll.gainea.server.core.player.isNeutral
 import com.broll.gainea.server.core.processing.thisTurn
 import com.broll.gainea.server.core.utils.UnitControl.spawn

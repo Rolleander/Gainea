@@ -1,9 +1,7 @@
 package com.broll.gainea.server.core.cards.impl.direct
 
-import com.broll.gainea.server.core.map.*
-
 import com.broll.gainea.server.core.cards.DirectlyPlayedCard
-import com.broll.gainea.server.core.cards.EffectType.OTHER
+import com.broll.gainea.core.cards.EffectType.OTHER
 import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.core.utils.UnitControl.spawn
 import com.broll.gainea.server.core.utils.getRandomFree

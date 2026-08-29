@@ -1,0 +1,21 @@
+package com.broll.gainea.core.goals;
+
+public enum GoalDifficulty {
+    EASY(1, "Einfach"), MEDIUM(2, "Mittel"), HARD(3, "Schwer");
+
+    private final int points;
+    private final String label;
+
+    GoalDifficulty(int points, String label) {
+        this.points = points;
+        this.label = label;
+    }
+
+    public int getPoints() {
+        return points;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+}

@@ -1,7 +1,6 @@
 package com.broll.gainea.test
 
 import com.broll.gainea.server.core.map.Area
-import com.broll.gainea.server.core.map.AreaID
 import com.broll.gainea.server.core.map.impl.GaineaMap.Areas.DUNKLESMEER
 import com.broll.gainea.server.core.map.impl.GaineaMap.Areas.FELSWALD
 import com.broll.gainea.server.core.map.impl.GaineaMap.Areas.GROSSEWUESTE

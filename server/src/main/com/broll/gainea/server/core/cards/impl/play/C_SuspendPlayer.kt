@@ -1,7 +1,7 @@
 package com.broll.gainea.server.core.cards.impl.play
 
 import com.broll.gainea.server.core.cards.Card
-import com.broll.gainea.server.core.cards.EffectType.OTHER
+import com.broll.gainea.core.cards.EffectType.OTHER
 
 class C_SuspendPlayer :
     Card(12, OTHER, "In den Kerker", "Ein Spieler deiner Wahl muss eine Runde aussetzen") {

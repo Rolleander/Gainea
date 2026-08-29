@@ -6,9 +6,9 @@ import com.broll.gainea.net.NT_PlayerChangeFraction
 import com.broll.gainea.net.NT_PlayerReady
 import com.broll.gainea.net.NT_UpdateLobbySettings
 import com.broll.gainea.server.core.bot.BotPlayerSite
-import com.broll.gainea.server.core.fractions.FractionType
-import com.broll.gainea.server.init.ExpansionSetting
-import com.broll.gainea.server.init.GoalTypes
+import com.broll.gainea.core.fractions.FractionType
+import com.broll.gainea.core.map.ExpansionSetting
+import com.broll.gainea.core.goals.GoalTypes
 import com.broll.gainea.server.init.LobbyData
 import com.broll.gainea.server.init.PlayerData
 import com.broll.networklib.PackageReceiver

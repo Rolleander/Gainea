@@ -2,7 +2,7 @@ package com.broll.gainea.server.core.events
 
 import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.cards.DirectlyPlayedCard
-import com.broll.gainea.server.core.cards.EffectType.OTHER
+import com.broll.gainea.core.cards.EffectType.OTHER
 import com.broll.gainea.server.core.cards.playCard
 
 abstract class EventCard(picture: Int, title: String, text: String) :

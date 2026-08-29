@@ -1,7 +1,7 @@
 package com.broll.gainea.server.init
 
 import com.broll.gainea.net.NT_PlayerSettings
-import com.broll.gainea.server.core.fractions.FractionType
+import com.broll.gainea.core.fractions.FractionType
 import com.broll.gainea.server.core.player.Player
 import com.broll.networklib.server.impl.ILobbyData
 

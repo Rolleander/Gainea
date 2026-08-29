@@ -6,6 +6,7 @@ import com.broll.gainea.net.NT_Action;
 import com.broll.gainea.net.NT_PlayerAction;
 import com.broll.gainea.net.proto.NT_Reaction;
 import com.broll.mpnll.client.site.MessageReceiverRegistry;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,13 +15,15 @@ public class GameActionSite extends AbstractGameSite {
     public static NT_PlayerAction CURRENT_PLAYER_ACTION;
     private final PlayerPerformAction playerPerformAction = this::performAction;
 
-    @Override protected void registerReceivers(MessageReceiverRegistry registry) {
+    @Override
+    protected void registerReceivers(MessageReceiverRegistry registry) {
         on(registry, com.broll.gainea.net.proto.NT_PlayerAction.class, this::received);
     }
 
     private void received(com.broll.gainea.net.proto.NT_PlayerAction message) {
         NT_PlayerAction action = new NT_PlayerAction();
-        action.text = message.getText(); action.action = ProtoMapper.action(message.getAction());
+        action.text = message.getText();
+        action.action = ProtoMapper.action(message.getAction());
         Log.info("received action " + action);
         CURRENT_PLAYER_ACTION = action;
         game.state.performAction(action.action, playerPerformAction);

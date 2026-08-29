@@ -18,7 +18,7 @@ import com.broll.gainea.net.NT_GameOver;
 import com.broll.gainea.net.NT_GameStatistic;
 import com.broll.gainea.net.NT_Player;
 import com.broll.gainea.net.NT_Unit;
-import com.broll.gainea.server.core.fractions.FractionType;
+import com.broll.gainea.core.fractions.FractionType;
 import com.broll.gainea.client.util.Pair;
 
 import java.util.List;

@@ -1,6 +1,7 @@
 package com.broll.gainea.server.core.map
 
-import com.broll.gainea.server.init.ExpansionSetting
+import com.broll.gainea.core.map.ExpansionType
+import com.broll.gainea.core.map.ExpansionSetting
 
 open class MapContainer(val expansionSetting: ExpansionSetting) {
     val expansions = mutableListOf<Expansion>()
@@ -43,4 +44,5 @@ open class MapContainer(val expansionSetting: ExpansionSetting) {
     fun getIsland(id: IslandID) = allIslands.find { it.id == id }
 
     fun getContinent(id: ContinentID) = allContinents.find { it.id == id }
+
 }

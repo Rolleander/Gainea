@@ -17,8 +17,8 @@ import com.broll.gainea.net.NT_Lib_Card;
 import com.broll.gainea.net.NT_Lib_Goal;
 import com.broll.gainea.net.NT_Lib_Monster;
 import com.broll.gainea.net.NT_Monster;
-import com.broll.gainea.server.core.cards.EffectType;
-import com.broll.gainea.server.core.goals.GoalDifficulty;
+import com.broll.gainea.core.cards.EffectType;
+import com.broll.gainea.core.goals.GoalDifficulty;
 import com.broll.gainea.client.util.Pair;
 
 import java.util.Arrays;

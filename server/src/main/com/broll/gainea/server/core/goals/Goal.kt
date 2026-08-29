@@ -1,11 +1,12 @@
 package com.broll.gainea.server.core.goals
 
+import com.broll.gainea.core.goals.GoalDifficulty
 import com.broll.gainea.net.NT_Event_FinishedGoal
 import com.broll.gainea.net.NT_Goal
 import com.broll.gainea.net.NT_GoalProgression
 import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.bot.strategy.GoalStrategy
-import com.broll.gainea.server.core.map.ExpansionType
+import com.broll.gainea.core.map.ExpansionType
 import com.broll.gainea.server.core.map.Location
 import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.core.processing.GameUpdateReceiverAdapter

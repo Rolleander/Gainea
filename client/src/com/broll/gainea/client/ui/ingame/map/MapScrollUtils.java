@@ -2,7 +2,6 @@ package com.broll.gainea.client.ui.ingame.map;
 
 import com.broll.gainea.Gainea;
 import com.broll.gainea.net.NT_BoardObject;
-import com.broll.gainea.server.core.map.Coordinates;
 
 public class MapScrollUtils {
 

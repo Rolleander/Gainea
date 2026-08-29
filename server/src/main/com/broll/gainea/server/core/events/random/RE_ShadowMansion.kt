@@ -5,7 +5,7 @@ import com.broll.gainea.server.core.events.freeBuildingSpot
 import com.broll.gainea.server.core.objects.Conquerable
 import com.broll.gainea.server.core.objects.monster.Monster
 import com.broll.gainea.server.core.objects.monster.MonsterActivity.ALWAYS
-import com.broll.gainea.server.core.objects.monster.MonsterBehavior.RANDOM
+import com.broll.gainea.core.objects.monster.MonsterBehavior.RANDOM
 import com.broll.gainea.server.core.utils.UnitControl.spawn
 
 class RE_ShadowMansion : RandomEvent() {

@@ -1,5 +1,6 @@
 package com.broll.gainea.server.core.goals
 
+import com.broll.gainea.core.goals.GoalDifficulty
 import com.broll.gainea.server.core.battle.BattleResult
 import com.broll.gainea.server.core.map.Location
 import com.broll.gainea.server.core.objects.MapObject

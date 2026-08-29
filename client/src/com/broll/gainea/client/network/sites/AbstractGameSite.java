@@ -11,9 +11,16 @@ import java.util.function.Consumer;
 
 public abstract class AbstractGameSite extends ClientSite {
     protected Gainea game;
-    public void init(Gainea game) { this.game = game; }
+
+    public void init(Gainea game) {
+        this.game = game;
+    }
+
     protected <T extends Message> void on(MessageReceiverRegistry registry, Class<T> type, Consumer<T> receiver) {
         registry.<T>connect(type, message -> Gdx.app.postRunnable(() -> receiver.accept(message)));
     }
-    protected User getPlayer() { return getLobby().getMyUser(); }
+
+    protected User getPlayer() {
+        return getLobby().getMyUser();
+    }
 }

@@ -1,6 +1,6 @@
 package com.broll.gainea.server.core.objects.monster
 
-import com.broll.gainea.server.core.map.*
+import com.broll.gainea.core.objects.monster.MonsterBehavior
 
 import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.utils.UnitControl.conquer

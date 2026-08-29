@@ -15,7 +15,7 @@ import com.broll.gainea.net.NT_Player;
 import com.broll.gainea.net.NT_Shop;
 import com.broll.gainea.net.NT_ShopItem;
 import com.broll.gainea.net.NT_Unit;
-import com.broll.gainea.server.init.ExpansionSetting;
+import com.broll.gainea.core.map.ExpansionSetting;
 
 import java.util.ArrayList;
 import java.util.Arrays;

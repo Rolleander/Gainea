@@ -1,7 +1,7 @@
 package com.broll.gainea.server.sites
 
 import com.broll.gainea.net.NT_Battle_Reaction
-import com.broll.gainea.server.core.fractions.FractionType
+import com.broll.gainea.core.fractions.FractionType
 import com.broll.gainea.server.core.utils.ProcessingUtils
 import com.broll.gainea.server.core.utils.endPlayersTurn
 import com.broll.gainea.server.core.utils.gameLog

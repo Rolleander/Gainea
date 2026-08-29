@@ -1,7 +1,7 @@
 package com.broll.gainea.server.core.cards.impl.direct
 
 import com.broll.gainea.server.core.cards.DirectlyPlayedCard
-import com.broll.gainea.server.core.cards.EffectType.SUMMON
+import com.broll.gainea.core.cards.EffectType.SUMMON
 import com.broll.gainea.server.core.objects.impl.Challenger
 import com.broll.gainea.server.core.utils.UnitControl.spawn
 import com.broll.gainea.server.core.utils.getRandomFree

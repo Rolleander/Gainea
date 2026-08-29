@@ -1,7 +1,7 @@
 package com.broll.gainea.server.core.cards.impl.play
 
 import com.broll.gainea.server.core.cards.Card
-import com.broll.gainea.server.core.cards.EffectType.MOVEMENT
+import com.broll.gainea.core.cards.EffectType.MOVEMENT
 import com.broll.gainea.server.core.utils.getMonsters
 import com.broll.gainea.server.core.utils.getUnits
 import com.broll.gainea.server.core.utils.getWildMonsterLocations

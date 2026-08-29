@@ -1,9 +1,9 @@
 package com.broll.gainea.test
 
 import com.broll.gainea.server.core.Game
-import com.broll.gainea.server.core.fractions.FractionType
-import com.broll.gainea.server.init.ExpansionSetting
-import com.broll.gainea.server.init.ExpansionSetting.FULL
+import com.broll.gainea.core.fractions.FractionType
+import com.broll.gainea.core.map.ExpansionSetting
+import com.broll.gainea.core.map.ExpansionSetting.FULL
 import com.broll.gainea.server.init.LobbyData
 import com.broll.gainea.server.init.PlayerData
 import com.broll.networklib.server.impl.DummyPlayer

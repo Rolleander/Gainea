@@ -1,10 +1,8 @@
 package com.broll.gainea.server.core.cards.impl.direct
 
-import com.broll.gainea.server.core.map.*
-
 import com.broll.gainea.misc.RandomUtils
 import com.broll.gainea.server.core.cards.DirectlyPlayedCard
-import com.broll.gainea.server.core.cards.EffectType.CHAOS
+import com.broll.gainea.core.cards.EffectType.CHAOS
 import com.broll.gainea.server.core.map.Location
 import com.broll.gainea.server.core.utils.UnitControl.move
 

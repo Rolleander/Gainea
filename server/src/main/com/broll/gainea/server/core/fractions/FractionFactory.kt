@@ -1,5 +1,6 @@
 package com.broll.gainea.server.core.fractions
 
+import com.broll.gainea.core.fractions.FractionType
 import com.broll.gainea.server.core.fractions.impl.*
 
 fun FractionType.create(): Fraction = when (this) {

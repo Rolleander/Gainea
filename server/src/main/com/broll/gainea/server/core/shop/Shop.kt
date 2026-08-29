@@ -2,7 +2,7 @@ package com.broll.gainea.server.core.shop
 
 import com.broll.gainea.net.NT_Shop
 import com.broll.gainea.server.core.Game
-import com.broll.gainea.server.core.cards.EffectType.MOVEMENT
+import com.broll.gainea.core.cards.EffectType.MOVEMENT
 import com.broll.gainea.server.core.cards.impl.play.C_PickCard
 import com.broll.gainea.server.core.objects.impl.Challenger
 import com.broll.gainea.server.core.objects.impl.DemonKnight

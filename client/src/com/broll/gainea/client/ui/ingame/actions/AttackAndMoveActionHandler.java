@@ -12,7 +12,6 @@ import com.broll.gainea.net.NT_Action;
 import com.broll.gainea.net.NT_Action_Attack;
 import com.broll.gainea.net.NT_Action_Move;
 import com.broll.gainea.net.NT_Unit;
-import com.broll.gainea.server.core.map.Coordinates;
 import com.broll.gainea.server.core.map.Location;
 
 import java.util.ArrayList;

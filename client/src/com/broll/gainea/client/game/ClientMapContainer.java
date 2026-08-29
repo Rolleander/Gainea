@@ -5,23 +5,19 @@ import com.broll.gainea.client.ui.ingame.map.ExpansionDebugRender;
 import com.broll.gainea.client.ui.ingame.map.ExpansionRender;
 import com.broll.gainea.client.ui.ingame.map.MapLabel;
 import com.broll.gainea.client.ui.ingame.map.WaterRender;
-import com.broll.gainea.server.core.map.Coordinates;
-import com.broll.gainea.server.core.map.Expansion;
-import com.broll.gainea.server.core.map.MapContainer;
-import com.broll.gainea.server.core.map.MapFactory;
-import com.broll.gainea.server.init.ExpansionSetting;
+import com.broll.gainea.core.map.ExpansionSetting;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ClientMapContainer extends MapContainer {
+public class ClientMapContainer {
     public static boolean RENDER_DEBUG = false;
     private List<ExpansionRender> renders;
     private Gainea game;
     private List<MapFactory.ExpansionData> initSet;
+    private List<Expansion>
 
     public ClientMapContainer(Gainea game, ExpansionSetting setting) {
-        super(setting);
         this.game = game;
         initRenders(game, setting);
     }
@@ -38,7 +34,6 @@ public class ClientMapContainer extends MapContainer {
         return renders;
     }
 
-    @Override
     protected void init(ExpansionSetting setting) {
         this.initSet = MapFactory.create(setting);
         this.getExpansions().addAll(initSet.stream().map(MapFactory.ExpansionData::getExpansion).collect(Collectors.toList()));

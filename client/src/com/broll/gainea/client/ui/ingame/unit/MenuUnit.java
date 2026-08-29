@@ -13,7 +13,7 @@ import com.broll.gainea.client.ui.utils.TextureUtils;
 import com.broll.gainea.net.NT_BoardObject;
 import com.broll.gainea.net.NT_Monster;
 import com.broll.gainea.net.NT_Unit;
-import com.broll.gainea.server.core.objects.monster.MonsterBehavior;
+import com.broll.gainea.core.objects.monster.MonsterBehavior;
 
 public class MenuUnit extends Table {
 

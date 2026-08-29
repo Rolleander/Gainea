@@ -8,6 +8,7 @@ import com.broll.mpnll.client.MpnllClient;
 import com.broll.mpnll.client.async.ClientFuture;
 import com.broll.mpnll.client.lobby.Lobby;
 import com.broll.mpnll.client.lobby.LobbyInfo;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,7 +39,9 @@ public class ClientHandler {
         });
     }
 
-    public void setClientListener(IClientListener clientListener) { this.clientListener = clientListener; }
+    public void setClientListener(IClientListener clientListener) {
+        this.clientListener = clientListener;
+    }
 
     public void listLobbies(String ip) {
         clientExecute(() -> client.listLobbies(ip), result -> {
@@ -62,14 +65,24 @@ public class ClientHandler {
     }
 
     public void reconnectCheck() {
-        clientExecute(client::reconnectCheck, lobby -> { if (lobby != null) listenLobbyUpdates(lobby); }, "Unable to reconnect to lobby");
+        clientExecute(client::reconnectCheck, lobby -> {
+            if (lobby != null) listenLobbyUpdates(lobby);
+        }, "Unable to reconnect to lobby");
     }
 
-    private void listenLobbyUpdates(Lobby lobby) { lobby.addLobbyListener(new ClientLobbyListener(game)); }
-    private void runOnGdx(Runnable runnable) { Gdx.app.postRunnable(runnable); }
+    private void listenLobbyUpdates(Lobby lobby) {
+        lobby.addLobbyListener(new ClientLobbyListener(game));
+    }
+
+    private void runOnGdx(Runnable runnable) {
+        Gdx.app.postRunnable(runnable);
+    }
 
     private synchronized <T> void clientExecute(Supplier<ClientFuture<T>> operation, Consumer<T> resultHandler, String errorMessage) {
-        if (clientBusy) { Log.info("client busy"); return; }
+        if (clientBusy) {
+            Log.info("client busy");
+            return;
+        }
         clientBusy = true;
         runOnGdx(() -> clientListener.loadingStateUpdate(true));
         try {
@@ -94,6 +107,11 @@ public class ClientHandler {
         clientListener.loadingStateUpdate(false);
     }
 
-    public void shutdown() { client.shutdown(); }
-    public MpnllClient getClient() { return client; }
+    public void shutdown() {
+        client.shutdown();
+    }
+
+    public MpnllClient getClient() {
+        return client;
+    }
 }

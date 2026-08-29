@@ -1,7 +1,7 @@
 package com.broll.gainea.server.core.cards.impl.play
 
 import com.broll.gainea.server.core.cards.Card
-import com.broll.gainea.server.core.cards.EffectType.SUMMON
+import com.broll.gainea.core.cards.EffectType.SUMMON
 import com.broll.gainea.server.core.utils.getSpawnLocations
 import com.broll.gainea.server.core.utils.isCommanderAlive
 

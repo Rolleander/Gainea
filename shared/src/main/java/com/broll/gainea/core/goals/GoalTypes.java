@@ -1,6 +1,5 @@
-package com.broll.gainea.server.init;
+package com.broll.gainea.core.goals;
 
-import com.broll.gainea.server.core.goals.GoalDifficulty;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -13,7 +12,17 @@ public enum GoalTypes {
 
     private final String goalName;
     private final List<GoalDifficulty> difficulties;
-    GoalTypes(String goalName, List<GoalDifficulty> difficulties) { this.goalName = goalName; this.difficulties = difficulties; }
-    public String getGoalName() { return goalName; }
-    public boolean contains(GoalDifficulty difficulty) { return difficulties.contains(difficulty); }
+
+    GoalTypes(String goalName, List<GoalDifficulty> difficulties) {
+        this.goalName = goalName;
+        this.difficulties = difficulties;
+    }
+
+    public String getGoalName() {
+        return goalName;
+    }
+
+    public boolean contains(GoalDifficulty difficulty) {
+        return difficulties.contains(difficulty);
+    }
 }

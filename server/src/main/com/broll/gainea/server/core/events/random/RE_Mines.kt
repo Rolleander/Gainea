@@ -1,12 +1,9 @@
 package com.broll.gainea.server.core.events.random
 
-import com.broll.gainea.server.core.map.*
-
 import com.broll.gainea.server.core.cards.impl.play.C_Buff
 import com.broll.gainea.server.core.cards.impl.play.C_BuffAttack
 import com.broll.gainea.server.core.cards.impl.play.C_BuffDefence
 import com.broll.gainea.server.core.events.RandomEvent
-import com.broll.gainea.server.core.map.AreaType.MOUNTAIN
 import com.broll.gainea.server.core.objects.Conquerable
 import com.broll.gainea.server.core.objects.monster.Monster
 import com.broll.gainea.server.core.utils.UnitControl.spawn

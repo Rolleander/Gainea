@@ -1,6 +1,4 @@
-package com.broll.gainea.server.init;
-
-import com.broll.gainea.server.core.map.ExpansionType;
+package com.broll.gainea.core.map;
 
 public enum ExpansionSetting {
     BASIC_GAME("Gainea", ExpansionType.GAINEA),
@@ -16,7 +14,17 @@ public enum ExpansionSetting {
 
     private final String expansionName;
     private final ExpansionType[] maps;
-    ExpansionSetting(String expansionName, ExpansionType... maps) { this.expansionName = expansionName; this.maps = maps; }
-    public ExpansionType[] getMaps() { return maps; }
-    public String getName() { return expansionName + " (" + maps.length + " - " + (maps.length * 2 + 1) + " Spieler)"; }
+
+    ExpansionSetting(String expansionName, ExpansionType... maps) {
+        this.expansionName = expansionName;
+        this.maps = maps;
+    }
+
+    public ExpansionType[] getMaps() {
+        return maps;
+    }
+
+    public String getName() {
+        return expansionName + " (" + maps.length + " - " + (maps.length * 2 + 1) + " Spieler)";
+    }
 }

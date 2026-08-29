@@ -1,5 +1,6 @@
 package com.broll.gainea.server.core.cards
 
+import com.broll.gainea.core.cards.EffectType
 import com.broll.gainea.net.NT_Card
 import com.broll.gainea.net.NT_Event_PlayedCard
 import com.broll.gainea.server.core.Game

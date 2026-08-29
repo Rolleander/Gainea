@@ -1,9 +1,6 @@
 package com.broll.gainea.server.core.events
 
-import com.broll.gainea.server.core.map.*
-
 import com.broll.gainea.server.core.Game
-import com.broll.gainea.server.core.map.AreaType.LAKE
 import com.broll.gainea.server.core.map.Continent
 import com.broll.gainea.server.core.map.Location
 import com.broll.gainea.server.core.utils.getRandomFree

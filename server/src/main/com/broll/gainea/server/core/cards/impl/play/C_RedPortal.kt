@@ -1,10 +1,8 @@
 package com.broll.gainea.server.core.cards.impl.play
 
-import com.broll.gainea.server.core.map.*
-
 import com.broll.gainea.net.NT_BoardEffect
 import com.broll.gainea.server.core.cards.Card
-import com.broll.gainea.server.core.cards.EffectType.MOVEMENT
+import com.broll.gainea.core.cards.EffectType.MOVEMENT
 import com.broll.gainea.server.core.objects.MapEffect
 import com.broll.gainea.server.core.objects.buffs.TimedEffect
 

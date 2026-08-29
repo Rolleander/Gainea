@@ -1,5 +1,7 @@
 package com.broll.gainea.server.init
 
+import com.broll.gainea.core.map.ExpansionSetting
+import com.broll.gainea.core.goals.GoalTypes
 import com.broll.gainea.net.NT_LobbySettings
 import com.broll.gainea.server.core.Game
 import com.broll.networklib.server.impl.ILobbyData

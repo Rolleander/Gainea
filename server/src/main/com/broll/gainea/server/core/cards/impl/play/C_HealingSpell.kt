@@ -1,9 +1,7 @@
 package com.broll.gainea.server.core.cards.impl.play
 
-import com.broll.gainea.server.core.map.*
-
 import com.broll.gainea.server.core.cards.Card
-import com.broll.gainea.server.core.cards.EffectType.OTHER
+import com.broll.gainea.core.cards.EffectType.OTHER
 import com.broll.gainea.server.core.utils.UnitControl.heal
 
 class C_HealingSpell : Card(62, OTHER, "Lichtbeschwörung", "Heilt alle eure Einheiten") {

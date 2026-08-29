@@ -1,5 +1,10 @@
 package com.broll.gainea.server.core.map
 
+import com.broll.gainea.core.map.ExpansionType
+import com.broll.gainea.net.proto.NT_Expansion
+import com.broll.gainea.net.proto.NT_Location
+import com.broll.gainea.net.proto.NT_Ship
+
 class Expansion(val type: ExpansionType,
                 val coordinates: Coordinates
 ) {
@@ -20,4 +25,11 @@ class Expansion(val type: ExpansionType,
 
     fun getContinent(id: ContinentID) = continents.find { it.id == id }
 
+    fun nt(): NT_Expansion = NT_Expansion.newBuilder().setTexture(type.textureName).addAllLocations(
+        allLocations.filter { it !is Ship }.map {it.nt()}
+    ).addAllShips(
+        allShips.map { NT_Ship.newBuilder().setLocation(it.nt()).setFrom(it.from.number).setTo(it.to.number).build() }
+    )  .build()
+
+    private fun Location.nt() =  NT_Location.newBuilder().setNumber(number).setX(coordinates.displayX).setY(coordinates.displayY).build()
 }

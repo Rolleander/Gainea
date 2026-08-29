@@ -10,17 +10,17 @@ import com.broll.gainea.server.core.cards.Card
 import com.broll.gainea.server.core.cards.CardStorage
 import com.broll.gainea.server.core.cards.DirectlyPlayedCard
 import com.broll.gainea.server.core.fractions.Fraction
-import com.broll.gainea.server.core.fractions.FractionType
+import com.broll.gainea.core.fractions.FractionType
 import com.broll.gainea.server.core.fractions.create
 import com.broll.gainea.server.core.goals.Goal
-import com.broll.gainea.server.core.goals.GoalDifficulty
+import com.broll.gainea.core.goals.GoalDifficulty
 import com.broll.gainea.server.core.goals.GoalStorage
 import com.broll.gainea.server.core.objects.monster.GodDragon
 import com.broll.gainea.server.core.objects.monster.Monster
 import com.broll.gainea.server.core.objects.monster.MonsterFactory
 import com.broll.gainea.server.core.player.NeutralPlayer
-import com.broll.gainea.server.init.ExpansionSetting.FULL
-import com.broll.gainea.server.init.GoalTypes.ALL
+import com.broll.gainea.core.map.ExpansionSetting.FULL
+import com.broll.gainea.core.goals.GoalTypes.ALL
 import com.broll.networklib.server.impl.DummyServerLobby
 
 object ContentLibrary {
