@@ -1,5 +1,7 @@
 package com.broll.gainea.server.core.actions
 
+import com.broll.gainea.server.core.map.*
+
 import com.broll.gainea.net.NT_Action
 import com.broll.gainea.net.NT_PlayerTurnActions
 import com.broll.gainea.server.core.Game

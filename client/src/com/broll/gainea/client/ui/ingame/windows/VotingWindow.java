@@ -6,7 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.broll.gainea.Gainea;
 import com.broll.gainea.client.ui.utils.LabelUtils;
 import com.broll.gainea.client.ui.utils.TableUtils;
-import com.broll.gainea.net.NT_Vote;
+import com.broll.gainea.net.proto.NT_Vote;
 
 public class VotingWindow extends Window {
 
@@ -46,9 +46,7 @@ public class VotingWindow extends Window {
 
     private void answer(boolean yes) {
         waitForOthers();
-        NT_Vote nt = new NT_Vote();
-        nt.yes = yes;
-        game.client.getClient().sendTCP(nt);
+        game.client.getClient().send(NT_Vote.newBuilder().setYes(yes).build());
     }
 
     private void waitForOthers() {

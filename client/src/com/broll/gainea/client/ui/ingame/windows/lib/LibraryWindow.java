@@ -19,9 +19,7 @@ import com.broll.gainea.net.NT_Lib_Monster;
 import com.broll.gainea.net.NT_Monster;
 import com.broll.gainea.server.core.cards.EffectType;
 import com.broll.gainea.server.core.goals.GoalDifficulty;
-import com.google.common.collect.Lists;
-
-import org.apache.commons.lang3.tuple.Pair;
+import com.broll.gainea.client.util.Pair;
 
 import java.util.Arrays;
 import java.util.List;
@@ -32,7 +30,7 @@ public class LibraryWindow extends MenuWindow {
     public LibraryWindow(Gainea game) {
         super(game, "Info", game.ui.skin);
         TableUtils.consumeClicks(this);
-        List<Pair<String, Actor>> tabs = Lists.newArrayList(
+        List<Pair<String, Actor>> tabs = Arrays.asList(
                 Pair.of("Fraktionen", fractions()),
                 Pair.of("Karten", cards()),
                 Pair.of("Ziele", goals()),

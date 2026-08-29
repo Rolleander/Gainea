@@ -1,5 +1,7 @@
 package com.broll.gainea.server.core.events.random
 
+import com.broll.gainea.server.core.map.*
+
 import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.battle.BattleContext
 import com.broll.gainea.server.core.events.RandomEvent

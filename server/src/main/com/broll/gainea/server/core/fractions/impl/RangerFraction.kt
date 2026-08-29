@@ -1,5 +1,7 @@
 package com.broll.gainea.server.core.fractions.impl
 
+import com.broll.gainea.server.core.map.*
+
 import com.broll.gainea.net.NT_Unit
 import com.broll.gainea.server.core.battle.BattleContext
 import com.broll.gainea.server.core.battle.BattleResult

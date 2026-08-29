@@ -1,5 +1,7 @@
 package com.broll.gainea.server.core.goals.impl.all
 
+import com.broll.gainea.server.core.map.*
+
 import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.bot.BotUtils
 import com.broll.gainea.server.core.bot.strategy.GoalStrategy

@@ -52,7 +52,7 @@ public class MapObjectSelection extends Table {
         title.setBackground("background");
         title.add(LabelUtils.label(game.ui.skin, location.toString()));
         if (location instanceof Area) {
-            AreaCollection container = location.container;
+            AreaCollection container = location.getContainer();
             String name = container.getName();
             if (container instanceof Island) {
                 name = "Insel: " + name;

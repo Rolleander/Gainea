@@ -6,8 +6,7 @@ import com.broll.gainea.net.NT_BoardObject;
 import com.broll.gainea.net.NT_Player;
 import com.broll.gainea.net.NT_Unit;
 
-import org.apache.commons.lang3.ArrayUtils;
-
+import java.util.Arrays;
 import java.util.Optional;
 
 public class GameUtils {
@@ -16,8 +15,8 @@ public class GameUtils {
         for (NT_BoardObject object : objects) {
             game.state.getObjects().remove(object);
             game.state.getPlayers().forEach(player -> {
-                if (ArrayUtils.contains(player.units, object)) {
-                    player.units = ArrayUtils.removeElement(player.units, object);
+                if (Arrays.asList(player.units).contains(object)) {
+                    player.units = remove(player.units, object);
                 }
             });
             addMapObject(game, object);
@@ -28,8 +27,8 @@ public class GameUtils {
         for (NT_BoardObject object : objects) {
             game.state.getObjects().remove(object);
             game.state.getPlayers().forEach(player -> {
-                if (ArrayUtils.contains(player.units, object)) {
-                    player.units = ArrayUtils.removeElement(player.units, object);
+                if (Arrays.asList(player.units).contains(object)) {
+                    player.units = remove(player.units, object);
                 }
             });
         }
@@ -52,11 +51,17 @@ public class GameUtils {
                 game.state.getObjects().add(object);
             } else {
                 NT_Player owner = game.state.getPlayer(unit.owner);
-                owner.units = ArrayUtils.add(owner.units, unit);
+                NT_Unit[] units = Arrays.copyOf(owner.units, owner.units.length + 1);
+                units[units.length - 1] = unit;
+                owner.units = units;
             }
         } else {
             game.state.getObjects().add(object);
         }
+    }
+
+    private static NT_Unit[] remove(NT_Unit[] units, Object value) {
+        return Arrays.stream(units).filter(unit -> unit != value).toArray(NT_Unit[]::new);
     }
 
     public static NT_BoardObject findObject(Gainea game, int id) {

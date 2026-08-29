@@ -13,9 +13,7 @@ import com.broll.gainea.net.NT_Player;
 import com.broll.gainea.net.NT_Shop;
 import com.broll.gainea.net.NT_Unit;
 import com.broll.gainea.server.init.ExpansionSetting;
-import com.broll.networklib.client.impl.LobbyPlayer;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Streams;
+import com.broll.mpnll.client.lobby.User;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,7 +40,7 @@ public class GameState {
     //my player specific data:
     private List<NT_Goal> goals;
     private List<NT_Card> cards;
-    private LobbyPlayer player;
+    private GamePlayer player;
     private List<GameStateListener> stateListeners = new ArrayList<>();
     private boolean playersTurn;
     private boolean actionsAllowed;
@@ -52,8 +50,17 @@ public class GameState {
         this.game = game;
     }
 
-    public void init(ExpansionSetting setting, int pointLimit, int roundLimit, LobbyPlayer player) {
-        this.player = player;
+    public void init(ExpansionSetting setting, int pointLimit, int roundLimit, User player) {
+        this.player = GamePlayer.connected(player);
+        initState(setting, pointLimit, roundLimit);
+    }
+
+    public void initOffline(ExpansionSetting setting, int pointLimit, int roundLimit, int playerId) {
+        this.player = GamePlayer.offline(playerId);
+        initState(setting, pointLimit, roundLimit);
+    }
+
+    private void initState(ExpansionSetting setting, int pointLimit, int roundLimit) {
         this.pointLimit = pointLimit;
         this.roundLimit = roundLimit;
         mapContainer = new ClientMapContainer(game, setting);
@@ -107,14 +114,16 @@ public class GameState {
     public void update(NT_BoardUpdate update) {
         this.round = update.round;
         this.turn = update.turn;
-        this.objects = Lists.newArrayList(update.objects);
+        this.objects = new ArrayList<>(Arrays.asList(update.objects));
         this.players = Arrays.asList(update.players);
-        this.effects = Lists.newArrayList(update.effects);
+        this.effects = new ArrayList<>(Arrays.asList(update.effects));
         updateMapObjects(0);
     }
 
     public void updateMapObjects(int effect) {
-        mapObjectsContainer.update(effect, Streams.concat(objects.stream(), players.stream().flatMap(p -> Arrays.stream(p.units))).collect(Collectors.toList()));
+        List<NT_BoardObject> allObjects = new ArrayList<>(objects);
+        players.forEach(player -> allObjects.addAll(Arrays.asList(player.units)));
+        mapObjectsContainer.update(effect, allObjects);
         mapEffectContainer.update(this.effects);
         if (game.ui.inGameUI != null) {
             game.ui.inGameUI.getRequiredActionHandler().toFront();
@@ -171,7 +180,7 @@ public class GameState {
         return mapObjectsContainer;
     }
 
-    public LobbyPlayer getPlayer() {
+    public GamePlayer getPlayer() {
         return player;
     }
 

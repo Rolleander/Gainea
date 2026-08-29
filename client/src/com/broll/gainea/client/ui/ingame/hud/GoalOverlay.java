@@ -18,8 +18,6 @@ import com.broll.gainea.client.ui.utils.TextureUtils;
 import com.broll.gainea.net.NT_Goal;
 import com.broll.gainea.server.core.map.Location;
 
-import org.apache.commons.lang3.StringUtils;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -54,7 +52,7 @@ public class GoalOverlay extends Table {
         if (goal.progressionGoal != NT_Goal.NO_PROGRESSION_GOAL) {
             info = "   [BLUE](" + goal.progression + "/" + goal.progressionGoal + ")[]";
         }
-        if (StringUtils.isNotEmpty(goal.restriction)) {
+        if (goal.restriction != null && !goal.restriction.isEmpty()) {
             info += "   [BROWN]" + goal.restriction + "[]";
         }
         table.add(LabelUtils.autoWrap(LabelUtils.markup(skin, goal.description + info), w)).width(w);

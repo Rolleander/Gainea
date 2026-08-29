@@ -5,5 +5,4 @@ pluginManagement {
     }
 }
 
-include 'desktop', 'android', 'shared', 'server', 'client'
-
+include 'desktop', 'android', 'html', 'shared', 'server', 'client'

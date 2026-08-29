@@ -11,11 +11,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.broll.gainea.client.ui.utils.LabelUtils;
 import com.broll.gainea.client.ui.utils.TableUtils;
-import com.broll.networklib.client.impl.GameLobby;
-import com.broll.networklib.client.impl.IChatMessageListener;
-import com.broll.networklib.client.impl.LobbyPlayer;
-
-import org.apache.commons.lang3.StringUtils;
+import com.broll.mpnll.client.lobby.ChatListener;
+import com.broll.mpnll.client.lobby.Lobby;
+import com.broll.mpnll.client.lobby.User;
 
 import java.util.function.IntConsumer;
 
@@ -24,25 +22,25 @@ public class GameChat extends Table {
     private Skin skin;
     private Table chatTable;
     private ScrollPane chatScrollPane;
-    private GameLobby lobby;
+    private Lobby lobby;
     private int newMessages;
 
     private IntConsumer newMessageListener;
 
-    public GameChat(Skin skin, GameLobby lobby) {
+    public GameChat(Skin skin, Lobby lobby) {
         this.skin = skin;
         this.lobby = lobby;
         this.setSkin(skin);
         if (lobby != null) {
-            lobby.setChatMessageListener(new IChatMessageListener() {
+            lobby.addChatListener(new ChatListener() {
                 @Override
-                public void fromPlayer(String msg, LobbyPlayer from) {
+                public void fromUser(String msg, User from) {
                     receivedNewMessage();
                     addChatMessage(from, msg);
                 }
 
                 @Override
-                public void fromGame(String msg) {
+                public void fromSystem(String msg) {
                     receivedNewMessage();
                     addChatMessage(null, msg);
                 }
@@ -72,7 +70,7 @@ public class GameChat extends Table {
 
             @Override
             public boolean keyUp(InputEvent event, int keycode) {
-                if (keycode == Input.Keys.ENTER && !StringUtils.isEmpty(chatText.getText())) {
+                if (keycode == Input.Keys.ENTER && !chatText.getText().isEmpty()) {
                     sendChatMessage(chatText.getText());
                     chatText.setText("");
                     return true;
@@ -82,7 +80,7 @@ public class GameChat extends Table {
 
         });
         Button sendChat = TableUtils.textButton(skin, "Send", () -> {
-            if (!StringUtils.isEmpty(chatText.getText())) {
+            if (!chatText.getText().isEmpty()) {
                 sendChatMessage(chatText.getText());
                 chatText.setText("");
             }
@@ -102,7 +100,7 @@ public class GameChat extends Table {
         newMessages = 0;
     }
 
-    private void addChatMessage(LobbyPlayer from, String message) {
+    private void addChatMessage(User from, String message) {
         Table chat = new Table(skin);
         chat.left();
         chat.top();
@@ -118,7 +116,7 @@ public class GameChat extends Table {
 
     private void sendChatMessage(String text) {
         lobby.sendChat(text);
-        addChatMessage(lobby.getMyPlayer(), text);
+        addChatMessage(lobby.getMyUser(), text);
     }
 
 

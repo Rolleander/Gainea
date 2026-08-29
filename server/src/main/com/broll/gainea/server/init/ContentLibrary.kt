@@ -11,6 +11,7 @@ import com.broll.gainea.server.core.cards.CardStorage
 import com.broll.gainea.server.core.cards.DirectlyPlayedCard
 import com.broll.gainea.server.core.fractions.Fraction
 import com.broll.gainea.server.core.fractions.FractionType
+import com.broll.gainea.server.core.fractions.create
 import com.broll.gainea.server.core.goals.Goal
 import com.broll.gainea.server.core.goals.GoalDifficulty
 import com.broll.gainea.server.core.goals.GoalStorage
@@ -89,4 +90,3 @@ object ContentLibrary {
         it.description = description
     }
 }
-

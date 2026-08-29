@@ -1,5 +1,7 @@
 package com.broll.gainea.server.core.events
 
+import com.broll.gainea.server.core.map.*
+
 import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.map.AreaType.LAKE
 import com.broll.gainea.server.core.map.Continent

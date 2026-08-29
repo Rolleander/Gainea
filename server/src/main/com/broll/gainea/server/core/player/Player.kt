@@ -1,5 +1,7 @@
 package com.broll.gainea.server.core.player
 
+import com.broll.gainea.server.core.map.*
+
 import com.broll.gainea.net.NT_Player
 import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.fractions.Fraction

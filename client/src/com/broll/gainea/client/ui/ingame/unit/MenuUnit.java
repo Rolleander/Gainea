@@ -15,8 +15,6 @@ import com.broll.gainea.net.NT_Monster;
 import com.broll.gainea.net.NT_Unit;
 import com.broll.gainea.server.core.objects.monster.MonsterBehavior;
 
-import org.apache.commons.lang3.StringUtils;
-
 public class MenuUnit extends Table {
 
     private NT_BoardObject object;
@@ -64,7 +62,7 @@ public class MenuUnit extends Table {
             table.add(row).left().row();
         }
 
-        if (StringUtils.isNotEmpty(this.object.description)) {
+        if (this.object.description != null && !this.object.description.isEmpty()) {
             Label info = LabelUtils.markup(getSkin(), "[DARK_GRAY]" + this.object.description);
             table.add(LabelUtils.autoWrap(info, 240)).left().expandX().fillX().row();
         }

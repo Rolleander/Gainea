@@ -19,9 +19,7 @@ import com.broll.gainea.net.NT_GameStatistic;
 import com.broll.gainea.net.NT_Player;
 import com.broll.gainea.net.NT_Unit;
 import com.broll.gainea.server.core.fractions.FractionType;
-import com.google.common.collect.Lists;
-
-import org.apache.commons.lang3.tuple.Pair;
+import com.broll.gainea.client.util.Pair;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -145,7 +143,7 @@ public class ScoreScreen extends Screen {
         window.top();
         window.add(title("Results")).left();
         window.row();
-        List<Pair<String, Actor>> tabs = Lists.newArrayList(Pair.of("Lobby", lobbyTable()), Pair.of("Statistik", statisticTable()));
+        List<Pair<String, Actor>> tabs = java.util.Arrays.asList(Pair.of("Lobby", lobbyTable()), Pair.of("Statistik", statisticTable()));
         window.add(new TabbedPane(skin, tabs)).fill().expand().colspan(2).row();
         window.add(TableUtils.textButton(skin, "Verlassen",
                 () -> game.ui.showScreen(new LobbyScreen(game.state.getPlayer().getLobby()))));

@@ -24,8 +24,6 @@ import com.broll.gainea.net.NT_Monster;
 import com.broll.gainea.net.NT_Unit;
 import com.broll.gainea.server.core.map.Location;
 
-import org.apache.commons.lang3.StringUtils;
-
 import java.util.Collection;
 
 public class MapObjectRender extends DepthActor {
@@ -65,7 +63,7 @@ public class MapObjectRender extends DepthActor {
             this.labelDisplacement += 5;
         }
         setSize(radius * 2, radius * 2);
-        if (StringUtils.isNotEmpty(object.description)) {
+        if (object.description != null && !object.description.isEmpty()) {
             infoLabel = LabelUtils.markup(skin, "[DARK_GRAY]" + object.description);
             infoLabel.setWidth(DESCRIPTION_WIDTH);
             infoLabel.setAlignment(Align.center);
@@ -99,7 +97,7 @@ public class MapObjectRender extends DepthActor {
         } else {
             icon = TextureUtils.unitIcon(game, object.icon);
         }
-        if (StringUtils.isNotEmpty(object.description)) {
+        if (object.description != null && !object.description.isEmpty()) {
             infoLabel.setText("[DARK_GRAY]" + object.description);
         }
         int color = 0;

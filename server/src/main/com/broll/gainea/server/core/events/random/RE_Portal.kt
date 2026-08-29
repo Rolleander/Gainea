@@ -1,5 +1,7 @@
 package com.broll.gainea.server.core.events.random
 
+import com.broll.gainea.server.core.map.*
+
 import com.broll.gainea.server.core.events.RandomEvent
 import com.broll.gainea.server.core.events.freeBuildingSpot
 import com.broll.gainea.server.core.objects.Building

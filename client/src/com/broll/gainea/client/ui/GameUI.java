@@ -16,8 +16,8 @@ import com.broll.gainea.client.ui.ingame.map.MapScrollGestureHandler;
 import com.broll.gainea.client.ui.ingame.map.MapScrollHandler;
 import com.broll.gainea.client.ui.screens.LobbyScreen;
 import com.broll.gainea.client.ui.screens.StartScreen;
-import com.broll.networklib.client.impl.GameLobby;
-import com.broll.networklib.client.tasks.ServerInformation;
+import com.broll.mpnll.client.impl.LobbyLookup;
+import com.broll.mpnll.client.lobby.Lobby;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -86,14 +86,14 @@ public class GameUI implements IClientListener {
     }
 
     @Override
-    public void discoveredLobbies(ServerInformation info) {
+    public void discoveredLobbies(LobbyLookup info) {
         if (currentScreen instanceof StartScreen) {
             ((StartScreen) currentScreen).showLobbies(info);
         }
     }
 
     @Override
-    public void connectedLobby(GameLobby lobby) {
+    public void connectedLobby(Lobby lobby) {
         Log.info("join lobby " + lobby.getName());
         showScreen(new LobbyScreen(lobby));
     }

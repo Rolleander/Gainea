@@ -15,9 +15,6 @@ import com.broll.gainea.net.NT_Unit;
 import com.broll.gainea.server.core.map.Coordinates;
 import com.broll.gainea.server.core.map.Location;
 
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.map.MultiValueMap;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
@@ -46,12 +43,12 @@ public class AttackAndMoveActionHandler {
     }
 
     private <A extends NT_Action> void createDistinctMapActions(Location to, A action, Function<A, NT_Unit[]> getUnits, int type, PlayerPerformOptionalAction playerPerformAction) {
-        MultiValueMap<Location, NT_Unit> paths = new MultiValueMap<>();
+        java.util.Map<Location, List<NT_Unit>> paths = new java.util.HashMap<>();
         for (NT_Unit unit : getUnits.apply(action)) {
-            paths.put(game.state.getMap().getLocation(unit.location), unit);
+            paths.computeIfAbsent(game.state.getMap().getLocation(unit.location), ignored -> new ArrayList<>()).add(unit);
         }
         paths.keySet().forEach(from -> {
-            List<NT_Unit> pathUnits = (List<NT_Unit>) paths.getCollection(from);
+            List<NT_Unit> pathUnits = paths.get(from);
             createMapAction(from, to, action, pathUnits, type, () -> {
                 int[] ids = getSelectedUnitIds(selectedUnits);
                 selectedUnits.forEach(it ->
@@ -90,7 +87,7 @@ public class AttackAndMoveActionHandler {
             it.setVisible(false);
             it.toFront();
         });
-        mapActions.stream().filter(it -> CollectionUtils.containsAny(it.getUnits(), units)).forEach(it -> it.setVisible(true));
+        mapActions.stream().filter(it -> it.getUnits().stream().anyMatch(units::contains)).forEach(it -> it.setVisible(true));
     }
 
     private int[] getSelectedUnitIds(List<NT_Unit> selectedUnits) {

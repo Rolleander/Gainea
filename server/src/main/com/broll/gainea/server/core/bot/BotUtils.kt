@@ -1,5 +1,7 @@
 package com.broll.gainea.server.core.bot
 
+import com.broll.gainea.server.core.map.*
+
 import com.broll.gainea.net.NT_BoardObject
 import com.broll.gainea.net.NT_Goal
 import com.broll.gainea.net.NT_Unit

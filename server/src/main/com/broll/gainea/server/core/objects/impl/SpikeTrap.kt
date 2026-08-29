@@ -1,5 +1,7 @@
 package com.broll.gainea.server.core.objects.impl
 
+import com.broll.gainea.server.core.map.*
+
 import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.objects.Collectible
 import com.broll.gainea.server.core.utils.UnitControl.damage

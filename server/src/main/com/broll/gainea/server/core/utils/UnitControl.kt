@@ -1,5 +1,7 @@
 package com.broll.gainea.server.core.utils
 
+import com.broll.gainea.server.core.map.*
+
 import com.broll.gainea.net.NT_Event
 import com.broll.gainea.net.NT_Event_FocusObject
 import com.broll.gainea.net.NT_Event_FocusObjects

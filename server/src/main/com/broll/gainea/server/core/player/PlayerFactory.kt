@@ -1,6 +1,7 @@
 package com.broll.gainea.server.core.player
 
 import com.broll.gainea.server.core.Game
+import com.broll.gainea.server.core.fractions.create
 import com.broll.gainea.server.init.PlayerData
 import com.broll.networklib.server.impl.LobbyPlayer
 

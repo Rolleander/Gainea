@@ -10,9 +10,7 @@ import com.broll.gainea.client.ui.components.StatisticGraph;
 import com.broll.gainea.client.ui.components.TabbedPane;
 import com.broll.gainea.net.NT_Player;
 import com.broll.gainea.net.NT_Unit;
-import com.google.common.collect.Lists;
-
-import org.apache.commons.lang3.tuple.Pair;
+import com.broll.gainea.client.util.Pair;
 
 import java.util.List;
 
@@ -59,7 +57,7 @@ public class TestScoreScreen extends Screen {
         statistics.add(graph()).expand().fill().row();
         statistics.add(new StatisticGraph.PlayerLegend(game, new String[]{"Hnas", "Peter", "Bouncer", "Slicer", "w", "fd", "gfd", "hg", "df"})).colspan(2).expandX().fillX().height(25);
 
-        List<Pair<String, Actor>> tabs = Lists.newArrayList(Pair.of("Lobby", lobbyTable), Pair.of("Statistik", statistics));
+        List<Pair<String, Actor>> tabs = java.util.Arrays.asList(Pair.of("Lobby", lobbyTable), Pair.of("Statistik", statistics));
         window.add(new TabbedPane(skin, tabs)).fill().expand().colspan(2).row();
         vg.add(window).expand().fill();
         return vg;

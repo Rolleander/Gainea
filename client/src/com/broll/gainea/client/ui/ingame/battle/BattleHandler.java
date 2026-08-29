@@ -15,7 +15,7 @@ import com.broll.gainea.client.ui.utils.LabelUtils;
 import com.broll.gainea.client.ui.utils.TableUtils;
 import com.broll.gainea.client.ui.utils.TextureUtils;
 import com.broll.gainea.net.NT_Battle_Damage;
-import com.broll.gainea.net.NT_Battle_Reaction;
+import com.broll.gainea.net.proto.NT_Battle_Reaction;
 import com.broll.gainea.net.NT_Battle_Roll;
 import com.broll.gainea.net.NT_Battle_Update;
 import com.broll.gainea.net.NT_Unit;
@@ -169,9 +169,7 @@ public class BattleHandler {
 
     private void sendBattleResponse(Table dialog, boolean continueFight) {
         dialog.remove();
-        NT_Battle_Reaction reaction = new NT_Battle_Reaction();
-        reaction.keepAttacking = continueFight;
-        game.client.getClient().sendTCP(reaction);
+        game.client.getClient().send(NT_Battle_Reaction.newBuilder().setKeepAttacking(continueFight).build());
     }
 
     private class BattleBoard extends Table {

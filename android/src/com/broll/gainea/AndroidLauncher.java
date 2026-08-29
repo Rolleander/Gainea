@@ -5,12 +5,15 @@ import android.view.WindowManager;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
+import com.broll.mpnll.client.MpnllTcpClient;
+import com.broll.mpnll.client.NativeClientRegistry;
 
 public class AndroidLauncher extends AndroidApplication {
 
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		NativeClientRegistry.NATIVE_CLIENT_FACTORY = MpnllTcpClient::new;
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 		config.useAccelerometer=false;
 		config.useCompass=false;

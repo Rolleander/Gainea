@@ -1,5 +1,7 @@
 package com.broll.gainea.server
 
+import com.broll.gainea.server.core.map.*
+
 import com.broll.gainea.NetworkSetup
 import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.events.RandomEventContainer

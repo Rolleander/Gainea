@@ -12,9 +12,6 @@ import com.broll.gainea.net.NT_BoardObject;
 import com.broll.gainea.net.NT_Event;
 import com.broll.gainea.server.core.map.Location;
 
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.map.MultiValueMap;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -125,7 +122,9 @@ public class MapObjectContainer {
                 newRenders.add(createRender(nt));
             }
         });
-        for (MapObjectRender existingRender : CollectionUtils.subtract(objectRenders.values(), newRenders)) {
+        List<MapObjectRender> existingRenders = new ArrayList<>(objectRenders.values());
+        existingRenders.removeAll(newRenders);
+        for (MapObjectRender existingRender : existingRenders) {
             NT_BoardObject nt = findObject(update, existingRender.getObject().id);
             if (nt != null) {
                 updateRender(existingRender, nt, effect);
@@ -160,15 +159,15 @@ public class MapObjectContainer {
 
     private void arrange(Location location) {
         Collection<MapObjectRender> objects = objectRenders.values().stream().filter(it -> it.getLocation() == location).collect(Collectors.toList());
-        MultiValueMap<Integer, MapObjectRender> stacks = new MultiValueMap<>();
+        java.util.Map<Integer, List<MapObjectRender>> stacks = new java.util.HashMap<>();
         objects.forEach(render -> {
             NT_BoardObject object = render.getObject();
-            stacks.put((int) object.owner, render);
+            stacks.computeIfAbsent((int) object.owner, ignored -> new ArrayList<>()).add(render);
         });
         arrange(location, objects, stacks);
     }
 
-    private void arrange(Location location, Collection<MapObjectRender> objects, MultiValueMap<Integer, MapObjectRender> stacks) {
+    private void arrange(Location location, Collection<MapObjectRender> objects, java.util.Map<Integer, List<MapObjectRender>> stacks) {
         int stackCount = stacks.keySet().size();
         float x = location.getCoordinates().getDisplayX();
         float y = location.getCoordinates().getDisplayY();
@@ -180,7 +179,7 @@ public class MapObjectContainer {
             Iterator<Integer> keys = stacks.keySet().iterator();
             int index = 0;
             while (keys.hasNext()) {
-                Collection<MapObjectRender> renders = stacks.getCollection(keys.next());
+                Collection<MapObjectRender> renders = stacks.get(keys.next());
                 float r = (float) (Math.PI * 2) * ((float) index / (float) (stackCount));
                 float cx = (float) Math.cos(r) * CIRCLE_R;
                 float cy = (float) Math.sin(r) * CIRCLE_R;

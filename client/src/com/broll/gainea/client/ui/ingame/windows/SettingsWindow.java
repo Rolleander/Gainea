@@ -10,10 +10,10 @@ import com.broll.gainea.client.AudioPlayer;
 import com.broll.gainea.client.ui.utils.LabelUtils;
 import com.broll.gainea.client.ui.utils.TableUtils;
 import com.broll.gainea.net.NT_Player;
-import com.broll.gainea.net.NT_Surrender;
-import com.broll.gainea.net.NT_Vote_Base;
-import com.broll.gainea.net.NT_Vote_KickPlayer;
-import com.broll.gainea.net.NT_Vote_SkipTurn;
+import com.broll.gainea.net.proto.NT_Surrender;
+import com.broll.gainea.net.proto.NT_Vote_Base;
+import com.broll.gainea.net.proto.NT_Vote_KickPlayer;
+import com.broll.gainea.net.proto.NT_Vote_SkipTurn;
 
 import java.util.function.DoubleConsumer;
 
@@ -34,8 +34,7 @@ public class SettingsWindow extends MenuWindow {
         table.add(LabelUtils.info(skin, "Effektlautstärke")).padRight(15);
         table.add(volumeSlider(AudioPlayer.getSoundVolume(), AudioPlayer::changeSoundVolume)).row();
         table.add(TableUtils.textButton(skin, "Aufgeben", () -> {
-            NT_Surrender nt = new NT_Surrender();
-            game.client.getClient().sendTCP(nt);
+            game.client.getClient().send(NT_Surrender.newBuilder().build());
         }));
         return table;
     }
@@ -43,12 +42,11 @@ public class SettingsWindow extends MenuWindow {
     private Table votingsPanel() {
         Table table = new Table();
         table.defaults().left().spaceBottom(5);
-        table.add(voteButton("Aktuellen Zug überspringen", new NT_Vote_SkipTurn())).row();
+        table.add(voteButton("Aktuellen Zug überspringen", NT_Vote_Base.newBuilder().setSkipTurn(NT_Vote_SkipTurn.newBuilder()).build())).row();
         for (NT_Player player : game.state.getPlayers()) {
             if (player.id != game.state.getPlayer().getId()) {
-                NT_Vote_KickPlayer nt = new NT_Vote_KickPlayer();
-                nt.playerId = player.id;
-                table.add(voteButton(player.name + " entfernen", nt)).row();
+                NT_Vote_Base vote = NT_Vote_Base.newBuilder().setKickPlayer(NT_Vote_KickPlayer.newBuilder().setPlayerId(player.id)).build();
+                table.add(voteButton(player.name + " entfernen", vote)).row();
             }
         }
         return table;
@@ -57,7 +55,7 @@ public class SettingsWindow extends MenuWindow {
 
     private Button voteButton(String text, NT_Vote_Base vote) {
         return TableUtils.textButton(skin, text, () -> {
-            game.client.getClient().sendTCP(vote);
+            game.client.getClient().send(vote);
         });
     }
     

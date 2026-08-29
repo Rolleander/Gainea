@@ -1,5 +1,7 @@
 package com.broll.gainea.server.core.stats
 
+import com.broll.gainea.server.core.map.*
+
 import com.broll.gainea.net.NT_GameStatistic
 import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.player.Player

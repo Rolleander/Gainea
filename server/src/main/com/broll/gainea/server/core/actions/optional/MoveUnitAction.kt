@@ -1,5 +1,7 @@
 package com.broll.gainea.server.core.actions.optional
 
+import com.broll.gainea.server.core.map.*
+
 import com.broll.gainea.net.NT_Action_Move
 import com.broll.gainea.net.NT_Reaction
 import com.broll.gainea.server.core.actions.AbstractActionHandler

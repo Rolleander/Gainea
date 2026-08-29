@@ -1,5 +1,7 @@
 package com.broll.gainea.server.core.bot.strategy
 
+import com.broll.gainea.server.core.map.*
+
 import com.broll.gainea.server.core.bot.impl.BotMove
 import com.broll.gainea.server.core.map.Location
 import com.broll.gainea.server.core.objects.Unit

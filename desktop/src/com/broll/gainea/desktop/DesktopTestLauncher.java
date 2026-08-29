@@ -3,12 +3,15 @@ package com.broll.gainea.desktop;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.broll.gainea.Gainea;
+import com.broll.mpnll.client.MpnllTcpClient;
+import com.broll.mpnll.client.NativeClientRegistry;
 import com.broll.gainea.client.AudioPlayer;
 import com.broll.gainea.client.ui.screens.StartScreen;
 import com.broll.gainea.client.ui.screens.TestMapScreen;
 
 public class DesktopTestLauncher {
     public static void main(String[] arg) {
+        NativeClientRegistry.NATIVE_CLIENT_FACTORY = MpnllTcpClient::new;
         AudioPlayer.changeMusicVolume(0);
         AudioPlayer.changeSoundVolume(0.3);
         System.setProperty("log4j.configuration", "log4j_client.properties");

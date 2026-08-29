@@ -45,7 +45,7 @@ project(":shared") {
     dependencies {
         implementation("com.google.guava:guava:28.2-jre")
         implementation group: 'com.broll', name: 'networklib', version: '1.0'
-        implementation group: 'com.broll', name: 'networklib', version: '1.0'
+        implementation group: 'com.broll.mpnll', name: 'shared', version: '0.1.0'
         implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.3.2'
         implementation group: 'org.apache.commons', name: 'commons-collections4', version: '4.0'
         implementation group: 'org.slf4j', name: 'slf4j-api', version: '2.0.6'
@@ -82,16 +82,11 @@ project(":client") {
 
     dependencies {
         implementation project(":shared")
-        implementation project(":server")
         api "com.badlogicgames.gdx:gdx:$gdxVersion"
         api "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
-        implementation("com.google.guava:guava:28.2-jre")
         implementation group: 'com.broll', name: 'networklib', version: '1.0'
-        implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.3.2'
-        implementation group: 'org.apache.commons', name: 'commons-collections4', version: '4.0'
+        implementation group: 'com.broll.mpnll', name: 'client', version: '0.1.0'
         implementation group: 'org.slf4j', name: 'slf4j-api', version: '2.0.6'
-        implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-
     }
 }
 
@@ -101,6 +96,7 @@ project(":desktop") {
 
     dependencies {
         implementation project(":client")
+        implementation group: 'com.broll.mpnll', name: 'client-java', version: '0.1.0'
         api "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
         api "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
         api "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
@@ -115,6 +111,7 @@ project(":android") {
     configurations { natives }
 
     dependencies {
+        implementation group: 'com.broll.mpnll', name: 'client-java', version: '0.1.0'
         implementation(project(":client")) {
             exclude(group: "org.slf4j", module: "slf4j-reload4j")
         }
@@ -127,15 +124,16 @@ project(":android") {
     }
 }
 
-/*
 project(":html") {
     apply plugin: "java-library"
-    apply plugin: "gwt"
     apply plugin: "war"
 
 
     dependencies {
-        implementation project(":core")
+        implementation project(":client")
+        implementation group: 'com.broll.mpnll', name: 'client-gwt', version: '0.1.0'
+        implementation 'org.gwtproject:gwt-user:2.13.1'
+        implementation 'org.gwtproject:gwt-dev:2.13.1'
         api "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion"
         api "com.badlogicgames.gdx:gdx:$gdxVersion:sources"
         api "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion:sources"
@@ -144,5 +142,3 @@ project(":html") {
         
     }
 }
-*/
-

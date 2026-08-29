@@ -7,7 +7,6 @@ import com.broll.gainea.client.ui.ingame.map.MapLabel;
 import com.broll.gainea.client.ui.ingame.map.WaterRender;
 import com.broll.gainea.server.core.map.Coordinates;
 import com.broll.gainea.server.core.map.Expansion;
-import com.broll.gainea.server.core.map.ExpansionFactory;
 import com.broll.gainea.server.core.map.MapContainer;
 import com.broll.gainea.server.core.map.MapFactory;
 import com.broll.gainea.server.init.ExpansionSetting;
@@ -15,13 +14,11 @@ import com.broll.gainea.server.init.ExpansionSetting;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import kotlin.Pair;
-
 public class ClientMapContainer extends MapContainer {
     public static boolean RENDER_DEBUG = false;
     private List<ExpansionRender> renders;
     private Gainea game;
-    private List<Pair<ExpansionFactory, Expansion>> initSet;
+    private List<MapFactory.ExpansionData> initSet;
 
     public ClientMapContainer(Gainea game, ExpansionSetting setting) {
         super(setting);
@@ -31,8 +28,8 @@ public class ClientMapContainer extends MapContainer {
 
     private void initRenders(Gainea game, ExpansionSetting setting) {
         this.renders = initSet.stream().map(it -> {
-            ExpansionRender render = new ExpansionRender(it.getFirst().getTexture());
-            render.init(game, it.getSecond());
+            ExpansionRender render = new ExpansionRender(it.getTexture());
+            render.init(game, it.getExpansion());
             return render;
         }).collect(Collectors.toList());
     }
@@ -44,14 +41,14 @@ public class ClientMapContainer extends MapContainer {
     @Override
     protected void init(ExpansionSetting setting) {
         this.initSet = MapFactory.create(setting);
-        this.getExpansions().addAll(initSet.stream().map(Pair::getSecond).collect(Collectors.toList()));
+        this.getExpansions().addAll(initSet.stream().map(MapFactory.ExpansionData::getExpansion).collect(Collectors.toList()));
     }
 
     public void displayRenders() {
         game.gameStage.addActor(new WaterRender(game));
         this.renders.forEach(render -> game.gameStage.addActor(render));
         this.initSet.forEach(it -> {
-            it.getSecond().getAllAreas().forEach(area -> {
+            it.getExpansion().getAllAreas().forEach(area -> {
                 MapLabel label = new MapLabel(game, area.getName());
                 Coordinates cords = area.getCoordinates();
                 label.setPosition(cords.getDisplayX(), cords.getDisplayY());

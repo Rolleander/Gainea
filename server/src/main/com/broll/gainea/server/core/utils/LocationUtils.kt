@@ -1,5 +1,7 @@
 package com.broll.gainea.server.core.utils
 
+import com.broll.gainea.server.core.map.*
+
 import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.map.Area
 import com.broll.gainea.server.core.map.AreaType

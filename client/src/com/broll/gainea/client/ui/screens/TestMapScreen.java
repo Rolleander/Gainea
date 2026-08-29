@@ -31,9 +31,6 @@ import com.broll.gainea.net.NT_Unit;
 import com.broll.gainea.server.core.map.AreaID;
 import com.broll.gainea.server.core.map.impl.GaineaMap;
 import com.broll.gainea.server.init.ExpansionSetting;
-import com.broll.networklib.client.impl.DummyLobbyPlayer;
-
-import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +50,7 @@ public class TestMapScreen extends Screen {
     public Actor build() {
         AudioPlayer.playSong("celtic.mp3");
         ClientMapContainer.RENDER_DEBUG = true;
-        game.state.init(ExpansionSetting.FULL, 0, 30, new DummyLobbyPlayer(0, null));
+        game.state.initOffline(ExpansionSetting.FULL, 0, 30, 0);
 
         NT_Shop shop = new NT_Shop();
         shop.items = new NT_ShopItem[8];
@@ -154,7 +151,7 @@ public class TestMapScreen extends Screen {
         actions.add(ac);
 
         NT_Unit[] units = game.state.getPlayer(0).units.clone();
-        units = ArrayUtils.remove(units, 0);
+        units = java.util.Arrays.copyOfRange(units, 1, units.length);
         NT_Action_Move move = new NT_Action_Move();
         move.units = units;
         move.location = getAreaNum(GaineaMap.Areas.XOMDELTA);
