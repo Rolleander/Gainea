@@ -1,6 +1,7 @@
 package com.broll.gainea.server.core.events
 
 import com.broll.gainea.server.core.Game
+import com.broll.gainea.server.core.map.AreaType
 import com.broll.gainea.server.core.map.Continent
 import com.broll.gainea.server.core.map.Location
 import com.broll.gainea.server.core.utils.getRandomFree
@@ -31,5 +32,5 @@ fun Game.freeContinentArea() =
     map.allContinents.flatMap { it.areas }.filter { it.free }.randomOrNull()
 
 fun Game.freeBuildingSpot(onlyContinents: Boolean = false) =
-    map.allAreas.filter { it.free && it.type != LAKE && (it.container is Continent || !onlyContinents) }
+    map.allAreas.filter { it.free && it.type != AreaType.LAKE && (it.container is Continent || !onlyContinents) }
         .randomOrNull()

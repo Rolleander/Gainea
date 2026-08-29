@@ -10,6 +10,13 @@ import com.broll.gainea.core.objects.monster.MonsterBehavior.FLEEING
 import com.broll.gainea.core.objects.monster.MonsterBehavior.FRIENDLY
 import com.broll.gainea.core.objects.monster.MonsterBehavior.RANDOM
 import com.broll.gainea.core.objects.monster.MonsterBehavior.RESIDENT
+import com.broll.gainea.server.core.map.AreaType
+import com.broll.gainea.server.core.map.AreaType.DESERT
+import com.broll.gainea.server.core.map.AreaType.BOG
+import com.broll.gainea.server.core.map.AreaType.SNOW
+import com.broll.gainea.server.core.map.AreaType.LAKE
+import com.broll.gainea.server.core.map.AreaType.MOUNTAIN
+import com.broll.gainea.server.core.map.AreaType.PLAINS
 import com.broll.gainea.server.core.objects.monster.MonsterMotion.AIRBORNE
 import com.broll.gainea.server.core.objects.monster.MonsterMotion.AMPHIBIAN
 import com.broll.gainea.server.core.objects.monster.MonsterMotion.AQUARIAN

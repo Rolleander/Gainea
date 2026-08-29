@@ -2,20 +2,24 @@ package com.broll.gainea.server.core.map.impl
 
 import com.broll.gainea.server.core.map.ExpansionFactory
 import com.broll.gainea.core.map.ExpansionType
+import com.broll.gainea.server.core.map.AreaID
+import com.broll.gainea.server.core.map.AreaType
+import com.broll.gainea.server.core.map.ContinentID
+import com.broll.gainea.server.core.map.IslandID
 
 class BoglandMap : ExpansionFactory(ExpansionType.BOGLANDS) {
-    enum class Continents {
+    enum class Continents : ContinentID{
         GOMIX,
         TOD
     }
 
-    enum class Islands {
+    enum class Islands : IslandID {
         TODESINSEL,
         KLEINSPALT,
         STACHELINSEL
     }
 
-    enum class Areas {
+    enum class Areas : AreaID {
         TODESINSEL,
         SUED_OST_PLATTE,
         SUED_WEST_PLATTE,

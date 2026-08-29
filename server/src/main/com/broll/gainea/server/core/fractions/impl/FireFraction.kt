@@ -9,6 +9,7 @@ import com.broll.gainea.server.core.fractions.FractionDescription
 import com.broll.gainea.core.fractions.FractionType
 import com.broll.gainea.server.core.fractions.UnitDescription
 import com.broll.gainea.server.core.map.Area
+import com.broll.gainea.server.core.map.AreaType
 import com.broll.gainea.server.core.objects.monster.Monster
 import com.broll.gainea.server.core.utils.UnitControl.damage
 import com.broll.gainea.server.core.utils.isAreaType

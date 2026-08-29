@@ -3,6 +3,7 @@ package com.broll.gainea.server.core.goals.impl.e1
 import com.broll.gainea.core.goals.GoalDifficulty
 import com.broll.gainea.server.core.goals.OccupyGoal
 import com.broll.gainea.server.core.map.impl.GaineaMap
+import com.broll.gainea.server.core.map.AreaType
 
 class G_GaineaAllPlains : OccupyGoal(GoalDifficulty.EASY, "Erobere alle Steppen auf Gainea") {
     override fun initOccupations() {

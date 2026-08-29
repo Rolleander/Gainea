@@ -4,6 +4,7 @@ import com.broll.gainea.server.core.cards.impl.play.C_Buff
 import com.broll.gainea.server.core.cards.impl.play.C_BuffAttack
 import com.broll.gainea.server.core.cards.impl.play.C_BuffDefence
 import com.broll.gainea.server.core.events.RandomEvent
+import com.broll.gainea.server.core.map.AreaType
 import com.broll.gainea.server.core.objects.Conquerable
 import com.broll.gainea.server.core.objects.monster.Monster
 import com.broll.gainea.server.core.utils.UnitControl.spawn
@@ -12,7 +13,7 @@ class RE_Mines : RandomEvent() {
 
 
     override fun pickSpot() =
-        game.map.allAreas.filter { it.free && it.type == MOUNTAIN }.randomOrNull()
+        game.map.allAreas.filter { it.free && it.type == AreaType.MOUNTAIN }.randomOrNull()
 
     override fun run() {
         val obj = Conquerable(game)

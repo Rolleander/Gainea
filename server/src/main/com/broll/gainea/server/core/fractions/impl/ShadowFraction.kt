@@ -8,6 +8,7 @@ import com.broll.gainea.server.core.fractions.FractionDescription
 import com.broll.gainea.core.fractions.FractionType
 import com.broll.gainea.server.core.fractions.UnitDescription
 import com.broll.gainea.server.core.map.Area
+import com.broll.gainea.server.core.map.AreaType
 import com.broll.gainea.server.core.map.Location
 import com.broll.gainea.server.core.objects.Soldier
 import com.broll.gainea.server.core.utils.UnitControl.spawn
@@ -30,7 +31,7 @@ class ShadowFraction : Fraction(FractionType.SHADOW) {
     }
 
     override fun powerMutatorArea(power: FightingPower, area: Area) {
-        if (area.type == BOG) {
+        if (area.type == AreaType.BOG) {
             power.changeNumberPlus(1)
         }
     }

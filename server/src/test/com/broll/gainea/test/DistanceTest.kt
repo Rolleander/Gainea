@@ -1,6 +1,7 @@
 package com.broll.gainea.test
 
 import com.broll.gainea.server.core.map.Area
+import com.broll.gainea.server.core.map.AreaID
 import com.broll.gainea.server.core.map.impl.GaineaMap.Areas.DUNKLESMEER
 import com.broll.gainea.server.core.map.impl.GaineaMap.Areas.FELSWALD
 import com.broll.gainea.server.core.map.impl.GaineaMap.Areas.GROSSEWUESTE
@@ -41,7 +42,7 @@ class DistanceTest {
         area(HIENGLAND).getWalkingDistance(area(FELSWALD), unit) `should be equal to` 3
         area(KORBERG).getWalkingDistance(area(MISTRAWUESTE), unit) `should be equal to` 6
     }
-    
+
     @Test
     fun `connected distances are correct`() {
         area(KORBERG).getConnectedLocations(1)
