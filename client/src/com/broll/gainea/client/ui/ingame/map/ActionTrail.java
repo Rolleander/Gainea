@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.broll.gainea.Gainea;
 import com.broll.gainea.client.ui.ingame.DepthActor;
+import com.broll.gainea.client.game.map.Coordinates;
 
 public class ActionTrail extends DepthActor {
 

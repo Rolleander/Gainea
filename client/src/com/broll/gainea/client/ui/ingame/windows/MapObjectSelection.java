@@ -21,11 +21,9 @@ import com.broll.gainea.client.ui.utils.TableUtils;
 import com.broll.gainea.client.ui.utils.TextureUtils;
 import com.broll.gainea.net.NT_BoardObject;
 import com.broll.gainea.net.NT_Unit;
-import com.broll.gainea.server.core.map.Area;
-import com.broll.gainea.server.core.map.AreaCollection;
-import com.broll.gainea.server.core.map.Continent;
-import com.broll.gainea.server.core.map.Island;
-import com.broll.gainea.server.core.map.Location;
+import com.broll.gainea.client.game.map.Area;
+import com.broll.gainea.client.game.map.AreaCollection;
+import com.broll.gainea.client.game.map.Location;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -53,13 +51,7 @@ public class MapObjectSelection extends Table {
         title.add(LabelUtils.label(game.ui.skin, location.toString()));
         if (location instanceof Area) {
             AreaCollection container = location.getContainer();
-            String name = container.getName();
-            if (container instanceof Island) {
-                name = "Insel: " + name;
-            } else if (container instanceof Continent) {
-                name = "Kontinent: " + name;
-            }
-            title.add(LabelUtils.info(game.ui.skin, name)).spaceLeft(20);
+            title.add(LabelUtils.info(game.ui.skin, container.getName())).spaceLeft(20);
         }
         add(title).expandX().fillX().row();
 

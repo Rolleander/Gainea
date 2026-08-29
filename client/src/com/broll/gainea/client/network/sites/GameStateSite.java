@@ -6,7 +6,6 @@ import com.broll.gainea.client.ui.screens.LobbyScreen;
 import com.broll.gainea.net.NT_ReconnectGame;
 import com.broll.gainea.net.NT_StartGame;
 import com.broll.gainea.net.proto.NT_LoadedGame;
-import com.broll.gainea.core.map.ExpansionSetting;
 import com.broll.mpnll.client.site.MessageReceiverRegistry;
 
 import org.slf4j.Logger;
@@ -34,13 +33,13 @@ public class GameStateSite extends AbstractGameSite {
     }
 
     private void received(com.broll.gainea.net.proto.NT_StartGame message) {
-        start(ProtoMapper.start(message));
+        start(ProtoMapper.start(message), message.getExpansionsList());
     }
 
     private void received(com.broll.gainea.net.proto.NT_ReconnectGame message) {
         Log.info("player reconnected!");
         NT_ReconnectGame reconnect = ProtoMapper.reconnect(message);
-        start(reconnect);
+        start(reconnect, message.getExpansionsList());
         game.state.getGoals().addAll(Arrays.asList(reconnect.goals));
         game.ui.inGameUI.updateWindows();
     }
@@ -57,9 +56,8 @@ public class GameStateSite extends AbstractGameSite {
         game.state.setStatistic(ProtoMapper.statistic(message));
     }
 
-    private void start(NT_StartGame start) {
-        ExpansionSetting setting = ExpansionSetting.values()[start.expansionsSetting];
-        game.state.init(setting, start.pointLimit, start.roundLimit, getPlayer());
+    private void start(NT_StartGame start, java.util.List<com.broll.gainea.net.proto.NT_Expansion> expansions) {
+        game.state.init(expansions, start.pointLimit, start.roundLimit, getPlayer());
         game.state.getCards().addAll(Arrays.asList(start.cards));
         game.state.shop = start.shop;
         game.state.update(start);

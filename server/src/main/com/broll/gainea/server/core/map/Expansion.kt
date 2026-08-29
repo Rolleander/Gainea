@@ -31,21 +31,29 @@ class Expansion(
         NT_Expansion.newBuilder()
             .setName(type.expansionName)
             .setTexture(type.textureName)
+            .setX(coordinates.displayX)
+            .setY(coordinates.displayY)
             .addAllLocationContainers(
                 contents.map { it.nt() }
             ).addAllShips(
-                allShips.map {
-                    NT_Ship.newBuilder().setLocation(it.nt()).setFrom(it.from.number)
-                        .setTo(it.to.number)
-                        .build()
-                }
+                allShips.map { it.nt() }
             ).build()
+
+    private fun Ship.nt() =
+        NT_Ship.newBuilder().setLocation((this as Location).nt()).setFrom(from.number)
+            .setTo(to.number)
+            .build()
 
     private fun AreaCollection.nt() =
         NT_LocationContainer.newBuilder().setName(name).addAllLocations(areas.map { it.nt() })
             .build()
 
-    private fun Location.nt() =
-        NT_Location.newBuilder().setNumber(number).setX(coordinates.displayX)
-            .setY(coordinates.displayY).setName(name).build()
+    private fun Location.nt(): NT_Location {
+        val builder = NT_Location.newBuilder().setNumber(number).setX(coordinates.displayX)
+            .setY(coordinates.displayY).setName(name)
+        if (this is Area) {
+            builder.areaType = type.ordinal
+        }
+        return builder.build()
+    }
 }

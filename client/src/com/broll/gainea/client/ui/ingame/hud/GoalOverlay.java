@@ -16,7 +16,7 @@ import com.broll.gainea.client.ui.ingame.DepthActor;
 import com.broll.gainea.client.ui.utils.LabelUtils;
 import com.broll.gainea.client.ui.utils.TextureUtils;
 import com.broll.gainea.net.NT_Goal;
-import com.broll.gainea.server.core.map.Location;
+import com.broll.gainea.client.game.map.Location;
 
 import java.util.Arrays;
 import java.util.List;

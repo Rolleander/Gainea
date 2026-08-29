@@ -8,4 +8,5 @@ public class NT_StartGame extends NT_BoardUpdate {
     public int roundLimit;
     public NT_Card[] cards;
     public NT_Shop shop;
+    public com.broll.gainea.net.proto.NT_Expansion[] expansions;
 }

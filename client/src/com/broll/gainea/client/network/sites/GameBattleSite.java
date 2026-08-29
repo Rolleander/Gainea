@@ -4,11 +4,12 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.broll.gainea.client.AudioPlayer;
 import com.broll.gainea.client.network.ProtoMapper;
+import com.broll.gainea.client.game.map.Coordinates;
 import com.broll.gainea.client.ui.ingame.map.ActionTrail;
 import com.broll.gainea.client.ui.ingame.map.MapAction;
 import com.broll.gainea.client.ui.ingame.map.MapScrollUtils;
 import com.broll.gainea.net.*;
-import com.broll.gainea.server.core.map.Location;
+import com.broll.gainea.client.game.map.Location;
 import com.broll.mpnll.client.site.MessageReceiverRegistry;
 
 import org.slf4j.Logger;

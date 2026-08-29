@@ -12,7 +12,6 @@ import com.broll.gainea.net.NT_Lib;
 import com.broll.gainea.net.NT_Player;
 import com.broll.gainea.net.NT_Shop;
 import com.broll.gainea.net.NT_Unit;
-import com.broll.gainea.core.map.ExpansionSetting;
 import com.broll.mpnll.client.lobby.User;
 
 import java.util.ArrayList;
@@ -49,20 +48,20 @@ public class GameState {
         this.game = game;
     }
 
-    public void init(ExpansionSetting setting, int pointLimit, int roundLimit, User player) {
+    public void init(List<com.broll.gainea.net.proto.NT_Expansion> expansions, int pointLimit, int roundLimit, User player) {
         this.player = GamePlayer.connected(player);
-        initState(setting, pointLimit, roundLimit);
+        initState(expansions, pointLimit, roundLimit);
     }
 
-    public void initOffline(ExpansionSetting setting, int pointLimit, int roundLimit, int playerId) {
+    public void initOffline(List<com.broll.gainea.net.proto.NT_Expansion> expansions, int pointLimit, int roundLimit, int playerId) {
         this.player = GamePlayer.offline(playerId);
-        initState(setting, pointLimit, roundLimit);
+        initState(expansions, pointLimit, roundLimit);
     }
 
-    private void initState(ExpansionSetting setting, int pointLimit, int roundLimit) {
+    private void initState(List<com.broll.gainea.net.proto.NT_Expansion> expansions, int pointLimit, int roundLimit) {
         this.pointLimit = pointLimit;
         this.roundLimit = roundLimit;
-        mapContainer = new ClientMapContainer(game, setting);
+        mapContainer = new ClientMapContainer(game, expansions);
         mapObjectsContainer = new MapObjectContainer(this);
         mapEffectContainer = new MapEffectContainer(game);
         goals = new ArrayList<>();

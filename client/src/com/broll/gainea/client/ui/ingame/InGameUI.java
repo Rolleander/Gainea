@@ -32,7 +32,7 @@ import com.broll.gainea.net.NT_Battle_Damage;
 import com.broll.gainea.net.NT_Battle_Roll;
 import com.broll.gainea.net.NT_GameOver;
 import com.broll.gainea.net.NT_Unit;
-import com.broll.gainea.server.core.map.Location;
+import com.broll.gainea.client.game.map.Location;
 
 import java.util.ArrayList;
 import java.util.Collection;

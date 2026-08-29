@@ -15,7 +15,6 @@ import com.broll.gainea.net.NT_Player;
 import com.broll.gainea.net.NT_Shop;
 import com.broll.gainea.net.NT_ShopItem;
 import com.broll.gainea.net.NT_Unit;
-import com.broll.gainea.core.map.ExpansionSetting;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,7 +35,7 @@ public class TestBattleScreen extends Screen {
     @Override
     public Actor build() {
         ClientMapContainer.RENDER_DEBUG = true;
-        game.state.init(ExpansionSetting.PLUS_ICELANDS, 0, 30, null);
+        game.state.init(TestMapTopology.create(), 0, 30, null);
         NT_BoardUpdate nt = new NT_BoardUpdate();
         nt.players = new NT_Player[2];
         for (int i = 0; i < 2; i++) {

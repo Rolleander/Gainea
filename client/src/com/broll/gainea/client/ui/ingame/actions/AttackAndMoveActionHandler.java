@@ -1,5 +1,7 @@
 package com.broll.gainea.client.ui.ingame.actions;
 
+import com.broll.gainea.client.game.map.Coordinates;
+
 import com.badlogic.gdx.math.MathUtils;
 import com.broll.gainea.Gainea;
 import com.broll.gainea.client.game.ClientMapContainer;
@@ -12,7 +14,7 @@ import com.broll.gainea.net.NT_Action;
 import com.broll.gainea.net.NT_Action_Attack;
 import com.broll.gainea.net.NT_Action_Move;
 import com.broll.gainea.net.NT_Unit;
-import com.broll.gainea.server.core.map.Location;
+import com.broll.gainea.client.game.map.Location;
 
 import java.util.ArrayList;
 import java.util.List;

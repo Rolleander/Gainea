@@ -561,6 +561,8 @@ message NT_Expansion {
     required string texture = 2;
     repeated NT_LocationContainer location_containers = 3;
     repeated NT_Ship ships = 4;
+    required float x = 5;
+    required float y = 6;
 }
 
 message NT_LocationContainer {
@@ -573,6 +575,7 @@ message NT_Location {
     required float x = 2;
     required float y = 3;
     required string name = 4;
+    optional int32 area_type = 5 [default = -1];
 }
 
 message NT_Ship {

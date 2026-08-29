@@ -15,7 +15,7 @@ import com.broll.gainea.client.ui.ingame.windows.LogWindow;
 import com.broll.gainea.client.ui.utils.LabelUtils;
 import com.broll.gainea.client.ui.utils.MessageUtils;
 import com.broll.gainea.net.*;
-import com.broll.gainea.server.core.map.Location;
+import com.broll.gainea.client.game.map.Location;
 import com.broll.mpnll.client.site.MessageReceiverRegistry;
 import com.google.protobuf.Message;
 

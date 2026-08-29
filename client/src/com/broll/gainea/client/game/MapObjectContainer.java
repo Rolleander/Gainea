@@ -10,7 +10,7 @@ import com.broll.gainea.net.NT_Action_Attack;
 import com.broll.gainea.net.NT_Action_Move;
 import com.broll.gainea.net.NT_BoardObject;
 import com.broll.gainea.net.NT_Event;
-import com.broll.gainea.server.core.map.Location;
+import com.broll.gainea.client.game.map.Location;
 
 import java.util.ArrayList;
 import java.util.Arrays;

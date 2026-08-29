@@ -28,8 +28,6 @@ import com.broll.gainea.net.NT_ShopItem;
 import com.broll.gainea.net.NT_ShopOther;
 import com.broll.gainea.net.NT_ShopUnit;
 import com.broll.gainea.net.NT_Unit;
-import com.broll.gainea.server.core.map.impl.GaineaMap;
-import com.broll.gainea.core.map.ExpansionSetting;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +47,7 @@ public class TestMapScreen extends Screen {
     public Actor build() {
         AudioPlayer.playSong("celtic.mp3");
         ClientMapContainer.RENDER_DEBUG = true;
-        game.state.initOffline(ExpansionSetting.FULL, 0, 30, 0);
+        game.state.initOffline(TestMapTopology.create(), 0, 30, 0);
 
         NT_Shop shop = new NT_Shop();
         shop.items = new NT_ShopItem[8];
@@ -100,16 +98,16 @@ public class TestMapScreen extends Screen {
                 for (int j = 0; j < 10; j++) {
                     p.units[j] = unit();
                     p.units[j].owner = 0;
-                    p.units[j].location = getAreaNum(GaineaMap.Areas.GRUENLAND);
+                    p.units[j].location = getAreaNum("Grünland");
                 }
-                p.units[9].location = getAreaNum(GaineaMap.Areas.FELSWALD);
+                p.units[9].location = getAreaNum("Felswald");
             }
             if (i == 1) {
                 p.units = new NT_Unit[3];
                 for (int j = 0; j < 3; j++) {
                     p.units[j] = unit();
                     p.units[j].owner = 1;
-                    p.units[j].location = getAreaNum(GaineaMap.Areas.GROSSEWUESTE);
+                    p.units[j].location = getAreaNum("Große Wüste");
                 }
             }
             nt.players[i] = p;
@@ -153,19 +151,19 @@ public class TestMapScreen extends Screen {
         units = java.util.Arrays.copyOfRange(units, 1, units.length);
         NT_Action_Move move = new NT_Action_Move();
         move.units = units;
-        move.location = getAreaNum(GaineaMap.Areas.XOMDELTA);
+        move.location = getAreaNum("Xom-Delta");
         actions.add(move);
         move = new NT_Action_Move();
         move.units = units;
-        move.location = getAreaNum(GaineaMap.Areas.KUESTENGEBIET);
+        move.location = getAreaNum("Küstengebiet");
         actions.add(move);
         move = new NT_Action_Move();
         move.units = units;
-        move.location = getAreaNum(GaineaMap.Areas.FELSWALD);
+        move.location = getAreaNum("Felswald");
         actions.add(move);
         NT_Action_Attack atk = new NT_Action_Attack();
         atk.units = units;
-        atk.location = getAreaNum(GaineaMap.Areas.WEIDESTEPPE);
+        atk.location = getAreaNum("Weidesteppe");
         actions.add(atk);
 
         NT_Action_Shop buy = new NT_Action_Shop();
@@ -202,7 +200,7 @@ public class TestMapScreen extends Screen {
         }
     }
 
-    private short getAreaNum(AreaID area) {
+    private short getAreaNum(String area) {
         return (short) game.state.getMap().getArea(area).getNumber();
     }
 
@@ -215,7 +213,7 @@ public class TestMapScreen extends Screen {
         u.power = (short) MathUtils.random(1, 3);
         u.health = (short) MathUtils.random(1, 5);
         u.maxHealth = u.health;
-        u.location = getAreaNum(GaineaMap.Areas.WEIDESTEPPE);
+        u.location = getAreaNum("Weidesteppe");
         return u;
     }
 

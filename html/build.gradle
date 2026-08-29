@@ -3,6 +3,8 @@ apply plugin: "war"
 
 sourceCompatibility = 1.8
 sourceSets.main.java.srcDirs = ["src/"]
+// java.* super-source is consumed by GWT, but javac must not compile it as part of java.base.
+sourceSets.main.java.exclude "com/broll/gainea/super/java/**"
 
 configurations.configureEach {
     exclude group: 'com.google.gwt', module: 'gwt-user'
@@ -15,8 +17,7 @@ def gaineaSourceDirs = files(
         file('src'),
         project(':client').file('src'),
         project(':shared').file('src/main/java'),
-        project(':shared').layout.buildDirectory.dir('generated/source/proto/main/java'),
-        project(':server').file('src/main'))
+        project(':shared').layout.buildDirectory.dir('generated/source/proto/main/java'))
 
 tasks.register('compileGwt', JavaExec) {
     group = 'build'
@@ -49,5 +50,22 @@ tasks.register('dist', Sync) {
     dependsOn compileGwt
     into layout.buildDirectory.dir('dist')
     from gwtOutput
+    // The libGDX preloader generator writes its hashed assets and manifest here.
+    from 'war'
     from 'webapp'
+}
+
+tasks.register('serve', Exec) {
+    group = 'application'
+    description = 'Builds and serves the GWT distribution over HTTP.'
+    dependsOn dist
+
+    def httpPort = providers.gradleProperty('httpPort').orElse('8080')
+    workingDir layout.buildDirectory.dir('dist')
+    commandLine 'python3', '-m', 'http.server', httpPort.get(), '--bind', '127.0.0.1'
+
+    doFirst {
+        logger.lifecycle("Serving Gainea at http://localhost:${httpPort.get()}")
+        logger.lifecycle('Press Ctrl+C to stop the server.')
+    }
 }

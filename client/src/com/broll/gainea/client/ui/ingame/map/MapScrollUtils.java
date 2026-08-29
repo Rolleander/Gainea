@@ -1,5 +1,7 @@
 package com.broll.gainea.client.ui.ingame.map;
 
+import com.broll.gainea.client.game.map.Coordinates;
+
 import com.broll.gainea.Gainea;
 import com.broll.gainea.net.NT_BoardObject;
 

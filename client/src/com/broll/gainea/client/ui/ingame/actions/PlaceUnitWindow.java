@@ -15,7 +15,7 @@ import com.broll.gainea.client.ui.utils.LabelUtils;
 import com.broll.gainea.net.NT_Action;
 import com.broll.gainea.net.NT_Action_PlaceUnit;
 import com.broll.gainea.net.NT_Unit;
-import com.broll.gainea.server.core.map.Location;
+import com.broll.gainea.client.game.map.Location;
 
 public class PlaceUnitWindow {
 
