@@ -36,6 +36,7 @@ jobs:
       - name: Install mpnll
         run: |
           git clone https://github.com/Rolleander/mpnll.git
+          cd mpnll
           ./gradlew publishToMavenLocal 
 
       - name: Test
