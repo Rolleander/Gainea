@@ -11,7 +11,7 @@ abstract class ActionContext<T : Message>(action: T) {
         this.action = action
     }
 
-    fun assignActionId(id: Int) {
+    open fun assignActionId(id: Int) {
         action = action.withActionId(id)
     }
 }

@@ -6,6 +6,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.broll.gainea.Gainea;
 import com.broll.gainea.client.game.BoardObjectState;
+import com.broll.gainea.net.proto.NT_Unit;
+import com.broll.gainea.net.proto.NT_Monster;
 import com.broll.gainea.client.ui.components.IconLabel;
 import com.broll.gainea.client.ui.ingame.map.MapObjectRender;
 import com.broll.gainea.client.ui.utils.LabelUtils;
@@ -20,6 +22,8 @@ public class MenuUnit extends Table {
     public MenuUnit(Gainea game, BoardObjectState object) {
         this(game, object, false);
     }
+    public MenuUnit(Gainea game, NT_Unit unit, boolean hideKills) { this(game, BoardObjectState.unit(unit), hideKills); }
+    public MenuUnit(Gainea game, NT_Monster monster, boolean hideKills) { this(game, BoardObjectState.monster(monster), hideKills); }
 
     public MenuUnit(Gainea game, BoardObjectState object, boolean hideKills) {
         this.object = object;

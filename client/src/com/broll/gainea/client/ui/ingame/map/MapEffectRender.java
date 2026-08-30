@@ -11,7 +11,8 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.broll.gainea.Gainea;
 import com.broll.gainea.client.ui.ingame.DepthActor;
 import com.broll.gainea.client.ui.utils.TextureUtils;
-import com.broll.gainea.net.NT_BoardEffect;
+import com.broll.gainea.net.proto.NT_BoardEffect;
+import com.broll.gainea.core.protocol.BoardEffectType;
 
 public class MapEffectRender extends DepthActor {
 
@@ -24,13 +25,13 @@ public class MapEffectRender extends DepthActor {
     private float animationTime;
 
     public MapEffectRender(Gainea game, NT_BoardEffect effect) {
-        setPosition(effect.x, effect.y);
-        this.effect = effect.effect;
-        if (this.effect == NT_BoardEffect.EFFECT_FIRE) {
+        setPosition(effect.getX(), effect.getY());
+        this.effect = effect.getEffect();
+        if (this.effect == BoardEffectType.FIRE.value) {
             animation = new Animation<>(0.07f, TextureUtils.split(game.assets.get("textures/fire.png", Texture.class), FIRE_WIDTH, FIRE_HEIGHT));
             animation.setPlayMode(Animation.PlayMode.LOOP);
             depth = 100;
-        } else if (this.effect == NT_BoardEffect.EFFECT_PORTAL) {
+        } else if (this.effect == BoardEffectType.PORTAL.value) {
             depth = 0;
             texture = new TextureRegion(game.assets.get("textures/gate.png", Texture.class));
             addAction(Actions.alpha(0.8f));
@@ -41,7 +42,7 @@ public class MapEffectRender extends DepthActor {
     @Override
     public void draw(Batch batch, float parentAlpha) {
         animationTime += Gdx.graphics.getDeltaTime();
-        if (effect == NT_BoardEffect.EFFECT_FIRE) {
+        if (effect == BoardEffectType.FIRE.value) {
             int srcFunc = batch.getBlendSrcFunc();
             int dstFunc = batch.getBlendDstFunc();
             batch.enableBlending();
@@ -49,7 +50,7 @@ public class MapEffectRender extends DepthActor {
             batch.setBlendFunction(GL30.GL_ONE, GL30.GL_ONE_MINUS_SRC_COLOR);
             batch.draw(frame, getX() - frame.getRegionWidth() / 2, getY() - frame.getRegionHeight() / 2);
             batch.setBlendFunction(srcFunc, dstFunc);
-        } else if (effect == NT_BoardEffect.EFFECT_PORTAL) {
+        } else if (effect == BoardEffectType.PORTAL.value) {
             Color color = getColor();
             batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
             float xc = texture.getRegionWidth() / 2;

@@ -29,7 +29,7 @@ public class GameVoteSite extends AbstractGameSite {
             case SKIP_TURN:
                 return "Aktuellen Zug überspringen?";
             case KICK_PLAYER:
-                return game.state.getPlayer(nt.getKickPlayer().getPlayerId()).name + " aus dem Spiel entfernen?";
+                return game.state.getPlayer(nt.getKickPlayer().getPlayerId()).name() + " aus dem Spiel entfernen?";
             default:
                 return "";
         }

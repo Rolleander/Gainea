@@ -138,7 +138,7 @@ public final class MessageRegistry {
         setup.register(NT_Lib_Goal.newBuilder());
         setup.register(NT_Lib_Monster.newBuilder());
         setup.register(NT_LoadedGame.newBuilder());
-        setup.register(NT_LobbySettings.newBuilder());
+        setup.register(NT_LobbySettings.newBuilder(), "gainea.net.NT_LobbySettings");
         setup.register(NT_Location.newBuilder());
         setup.register(NT_LocationContainer.newBuilder());
         setup.register(NT_Monster.newBuilder());
@@ -146,7 +146,7 @@ public final class MessageRegistry {
         setup.register(NT_PlayerAction.newBuilder());
         setup.register(NT_PlayerChangeFraction.newBuilder());
         setup.register(NT_PlayerReady.newBuilder());
-        setup.register(NT_PlayerSettings.newBuilder());
+        setup.register(NT_PlayerSettings.newBuilder(), "gainea.net.NT_PlayerSettings");
         setup.register(NT_PlayerTurnActions.newBuilder());
         setup.register(NT_PlayerTurnStart.newBuilder());
         setup.register(NT_PlayerWait.newBuilder());

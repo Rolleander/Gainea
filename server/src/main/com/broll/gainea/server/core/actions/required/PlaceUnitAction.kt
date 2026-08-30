@@ -39,6 +39,7 @@ class PlaceUnitAction : AbstractActionHandler<NT_Action_PlaceUnit, Context>() {
             .addAllPossibleLocations(locations.map { it.number }).build()
         val context = Context(placeUnit, unit, locations, locations[0])
         unitToPlace = context.unitToPlace
+        processingBlock.prepare()
         actionHandlers.reactionActions.requireAction(
             player,
             RequiredActionContext(context, "Platziere ${unit.name}")

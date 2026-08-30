@@ -11,7 +11,7 @@ import com.broll.gainea.Gainea;
 import com.broll.gainea.client.AudioPlayer;
 import com.broll.gainea.client.ui.ingame.DepthActor;
 import com.broll.gainea.client.ui.utils.ActionListener;
-import com.broll.gainea.net.NT_Unit;
+import com.broll.gainea.client.game.BoardObjectState;
 
 import java.util.List;
 import java.util.Objects;
@@ -29,7 +29,7 @@ public class MapAction extends DepthActor {
     private int from, to;
     private int type;
     private Object action;
-    private List<NT_Unit> units;
+    private List<BoardObjectState> units;
 
     private boolean hover = true;
 
@@ -89,11 +89,11 @@ public class MapAction extends DepthActor {
         resetAlphaColor(batch);
     }
 
-    public List<NT_Unit> getUnits() {
+    public List<BoardObjectState> getUnits() {
         return units;
     }
 
-    public void setUnits(List<NT_Unit> units) {
+    public void setUnits(List<BoardObjectState> units) {
         this.units = units;
     }
 

@@ -8,7 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.broll.gainea.Gainea;
 import com.broll.gainea.client.AudioPlayer;
 import com.broll.gainea.client.ui.ingame.windows.CardWindow;
-import com.broll.gainea.net.NT_Card;
+import com.broll.gainea.net.proto.NT_Card;
 
 public class InfoMessageContainer extends WidgetGroup {
 
@@ -34,7 +34,7 @@ public class InfoMessageContainer extends WidgetGroup {
     }
 
     public void showCardReceived(NT_Card card) {
-        InfoMessage msg = new InfoMessage(game, "'" + card.title + "' erhalten",
+        InfoMessage msg = new InfoMessage(game, "'" + card.getTitle() + "' erhalten",
                 CardWindow.previewCard(game, card), Color.CYAN.cpy().mul(0.4f, 0.4f, 0.4f, 1));
         spawnMessage(msg);
     }

@@ -6,6 +6,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.broll.gainea.Gainea;
+import com.broll.gainea.client.game.PlayerState;
+import com.broll.gainea.client.game.BoardObjectState;
 import com.broll.gainea.client.ui.Screen;
 import com.broll.gainea.client.ui.components.ColorCircle;
 import com.broll.gainea.client.ui.components.GameChat;
@@ -14,10 +16,8 @@ import com.broll.gainea.client.ui.components.StatisticGraph;
 import com.broll.gainea.client.ui.components.TabbedPane;
 import com.broll.gainea.client.ui.utils.LabelUtils;
 import com.broll.gainea.client.ui.utils.TableUtils;
-import com.broll.gainea.net.NT_GameOver;
-import com.broll.gainea.net.NT_GameStatistic;
-import com.broll.gainea.net.NT_Player;
-import com.broll.gainea.net.NT_Unit;
+import com.broll.gainea.net.proto.NT_GameOver;
+import com.broll.gainea.net.proto.NT_GameStatistic;
 import com.broll.gainea.core.fractions.FractionType;
 import com.broll.gainea.client.util.Pair;
 
@@ -48,33 +48,31 @@ public class ScoreScreen extends Screen {
         content.add(new IconLabel(game, 1, "")).left();
     }
 
-    public static void row(Gainea game, Table content, NT_Player player) {
+    public static void row(Gainea game, Table content, PlayerState player) {
         Skin skin = game.ui.skin;
-        content.add(new ColorCircle(game, player.color)).padLeft(10);
-        content.add(LabelUtils.info(skin, player.name)).fillX().expandX();
-        content.add(LabelUtils.info(skin, FractionType.values()[player.fraction].getDisplayName()));
-        content.add(LabelUtils.info(skin, "" + player.points));
-        content.add(LabelUtils.info(skin, "" + player.stars));
-        content.add(LabelUtils.info(skin, "" + player.cards));
-        content.add(LabelUtils.info(skin, "" + player.units.length)).padTop(15);
+        content.add(new ColorCircle(game, player.color())).padLeft(10);
+        content.add(LabelUtils.info(skin, player.name())).fillX().expandX();
+        content.add(LabelUtils.info(skin, FractionType.values()[player.fraction()].getDisplayName()));
+        content.add(LabelUtils.info(skin, "" + player.points()));
+        content.add(LabelUtils.info(skin, "" + player.stars()));
+        content.add(LabelUtils.info(skin, "" + player.cards()));
+        content.add(LabelUtils.info(skin, "" + player.units().size())).padTop(15);
         int power = 0;
         int health = 0;
         int maxHealth = 0;
-        for (NT_Unit unit : player.units) {
-            power += unit.power;
-            health += unit.health;
-            maxHealth += unit.maxHealth;
+        for (BoardObjectState unit : player.units()) {
+            power += unit.power(); health += unit.health(); maxHealth += unit.maxHealth();
         }
         content.add(LabelUtils.info(skin, "" + power));
         content.add(LabelUtils.info(skin, health + "/" + maxHealth)).row();
     }
 
-    private int sortPlayers(NT_Player p2, NT_Player p1) {
-        int c = Integer.compare(p1.points, p2.points);
+    private int sortPlayers(PlayerState p2, PlayerState p1) {
+        int c = Integer.compare(p1.points(), p2.points());
         if (c == 0) {
-            c = Integer.compare(p1.stars, p2.stars);
+            c = Integer.compare(p1.stars(), p2.stars());
             if (c == 0) {
-                c = Integer.compare(p1.units.length, p2.units.length);
+                c = Integer.compare(p1.units().size(), p2.units().size());
             }
         }
         return c;
@@ -88,7 +86,7 @@ public class ScoreScreen extends Screen {
         lobbyTable.add(info("")).padRight(100);
         header(game, lobbyTable);
         lobbyTable.row();
-        List<NT_Player> players = game.state.getPlayers().stream().sorted(this::sortPlayers).collect(Collectors.toList());
+        List<PlayerState> players = game.state.getPlayers().stream().sorted(this::sortPlayers).collect(Collectors.toList());
         for (int i = 0; i < players.size(); i++) {
             lobbyTable.add(info((i + 1) + "."));
             row(game, lobbyTable, players.get(i));
@@ -100,7 +98,7 @@ public class ScoreScreen extends Screen {
 
     private Table statisticTable() {
         NT_GameStatistic statistic = game.state.getStatistic();
-        int rounds = statistic.rounds.length;
+        int rounds = statistic.getRoundsCount();
         int players = game.state.getPlayers().size();
         int[][] total = new int[players][rounds];
         int[][] power = new int[players][rounds];
@@ -108,10 +106,10 @@ public class ScoreScreen extends Screen {
         int[][] units = new int[players][rounds];
         for (int r = 0; r < rounds; r++) {
             for (int p = 0; p < players; p++) {
-                total[p][r] = statistic.rounds[r].total[p];
-                power[p][r] = statistic.rounds[r].fightingPower[p];
-                locations[p][r] = statistic.rounds[r].locations[p];
-                units[p][r] = statistic.rounds[r].units[p];
+                total[p][r] = statistic.getRounds(r).getTotal(p);
+                power[p][r] = statistic.getRounds(r).getFightingPower(p);
+                locations[p][r] = statistic.getRounds(r).getLocations(p);
+                units[p][r] = statistic.getRounds(r).getUnits(p);
             }
         }
         Table statistics = new Table();
@@ -124,7 +122,7 @@ public class ScoreScreen extends Screen {
         statistics.add(label("Gebiete")).row();
         statistics.add(new StatisticGraph(game, units)).expand().fill();
         statistics.add(new StatisticGraph(game, locations)).expand().fill().row();
-        statistics.add(new StatisticGraph.PlayerLegend(game, game.state.getPlayers().stream().map(it -> it.name).toArray(String[]::new))).colspan(2).expandX().fillX().height(25);
+        statistics.add(new StatisticGraph.PlayerLegend(game, game.state.getPlayers().stream().map(PlayerState::name).toArray(String[]::new))).colspan(2).expandX().fillX().height(25);
         return statistics;
     }
 

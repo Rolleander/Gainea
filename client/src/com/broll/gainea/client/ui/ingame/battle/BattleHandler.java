@@ -14,11 +14,11 @@ import com.broll.gainea.client.ui.ingame.unit.UnitRender;
 import com.broll.gainea.client.ui.utils.LabelUtils;
 import com.broll.gainea.client.ui.utils.TableUtils;
 import com.broll.gainea.client.ui.utils.TextureUtils;
-import com.broll.gainea.net.NT_Battle_Damage;
+import com.broll.gainea.net.proto.NT_Battle_Damage;
 import com.broll.gainea.net.proto.NT_Battle_Reaction;
-import com.broll.gainea.net.NT_Battle_Roll;
-import com.broll.gainea.net.NT_Battle_Update;
-import com.broll.gainea.net.NT_Unit;
+import com.broll.gainea.net.proto.NT_Battle_Roll;
+import com.broll.gainea.net.proto.NT_Unit;
+import com.broll.gainea.core.protocol.BattleState;
 import com.broll.gainea.client.game.map.Area;
 import com.broll.gainea.client.game.map.Location;
 
@@ -60,7 +60,7 @@ public class BattleHandler {
         return battleBoard;
     }
 
-    public void updateBattle(NT_Battle_Roll[] attackRolls, NT_Battle_Roll[] defenderRolls, Stack<NT_Battle_Damage> damage, int state) {
+    public void updateBattle(List<NT_Battle_Roll> attackRolls, List<NT_Battle_Roll> defenderRolls, Stack<NT_Battle_Damage> damage, int state) {
         rollSound = AudioPlayer.loopSound("roll.ogg");
         battleBoard.attackRolls(attackRolls, defenderRolls, new IRollAnimationListener() {
             @Override
@@ -89,12 +89,12 @@ public class BattleHandler {
 
             private UnitRender getUnit(int id) {
                 return Stream.concat(battleBoard.attackerRenders.stream(), battleBoard.defenderRenders.stream())
-                        .filter(it -> it.getObject().id == id).findFirst().orElse(null);
+                        .filter(it -> it.getObject().id() == id).findFirst().orElse(null);
             }
 
             private void damage(NT_Battle_Damage damage) {
-                UnitRender source = getUnit(damage.source);
-                UnitRender target = getUnit(damage.target);
+                UnitRender source = getUnit(damage.getSource());
+                UnitRender target = getUnit(damage.getTarget());
                 if (source instanceof MonsterRender) {
                     AudioPlayer.playSound("hit_monster.ogg");
                 } else {
@@ -112,7 +112,7 @@ public class BattleHandler {
 
     private void checkBattleState(int state) {
         battleBoard.addAction(Actions.delay(0.3f, Actions.run(() -> {
-            if (state == NT_Battle_Update.STATE_FIGHTING) {
+            if (state == BattleState.FIGHTING.value) {
                 if (allowRetreat) {
                     Table table = new Table(skin);
                     MapAction action = new MapAction(game, 0, 0, () -> sendBattleResponse(table, false));
@@ -130,10 +130,10 @@ public class BattleHandler {
             } else {
                 //battle done
                 String text = "Keine Überlebenden!";
-                if (state == NT_Battle_Update.STATE_ATTACKER_WON) {
+                if (state == BattleState.ATTACKER_WON.value) {
                     text = "Sieg der Angreifer!";
                 }
-                if (state == NT_Battle_Update.STATE_DEFENDER_WON) {
+                if (state == BattleState.DEFENDER_WON.value) {
                     text = "Sieg der Verteidiger!";
                 }
                 battleEnd(text);
@@ -205,7 +205,7 @@ public class BattleHandler {
             placeUnits();
         }
 
-        public void attackRolls(NT_Battle_Roll[] attackRolls, NT_Battle_Roll[] defenderRolls, IRollAnimationListener listener) {
+        public void attackRolls(List<NT_Battle_Roll> attackRolls, List<NT_Battle_Roll> defenderRolls, IRollAnimationListener listener) {
             placeUnits();
             rollRender.start(attackRolls, defenderRolls, listener);
         }

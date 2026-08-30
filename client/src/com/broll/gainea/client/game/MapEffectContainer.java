@@ -20,18 +20,18 @@ public class MapEffectContainer {
 
     public void update(List<NT_BoardEffect> effects) {
         for (NT_BoardEffect effect : effects) {
-            MapEffectRender render = renders.get(effect.id);
+            MapEffectRender render = renders.get(effect.getId());
             if (render == null) {
                 render = new MapEffectRender(game, effect);
                 game.gameStage.addActor(render);
-                renders.put(effect.id, render);
+                renders.put(effect.getId(), render);
             } else {
                 render.setPosition(effect.getX(), effect.getY());
             }
         }
         if (renders.size() > effects.size()) {
             List<Integer> oldKeys = renders.keySet().stream().filter(key -> effects.stream()
-                    .map(effect -> effect.id).noneMatch(id -> id.equals(key))).collect(Collectors.toList());
+                    .map(NT_BoardEffect::getId).noneMatch(id -> id.equals(key))).collect(Collectors.toList());
             oldKeys.forEach(oldKey -> {
                 MapEffectRender oldValue = renders.remove(oldKey);
                 oldValue.remove();

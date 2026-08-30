@@ -11,15 +11,12 @@ import com.broll.gainea.Gainea;
 import com.broll.gainea.client.AudioPlayer;
 import com.broll.gainea.client.game.GameStateListener;
 import com.broll.gainea.client.game.PlayerPerformOptionalAction;
+import com.broll.gainea.client.game.ClientActions;
 import com.broll.gainea.client.ui.ingame.unit.MenuUnit;
 import com.broll.gainea.client.ui.utils.ActionListener;
 import com.broll.gainea.client.ui.utils.LabelUtils;
 import com.broll.gainea.client.ui.utils.TextureUtils;
-import com.broll.gainea.net.NT_Action_Shop;
-import com.broll.gainea.net.NT_ShopItem;
-import com.broll.gainea.net.NT_ShopOther;
-import com.broll.gainea.net.NT_ShopUnit;
-import com.broll.gainea.net.NT_Unit;
+import com.broll.gainea.net.proto.*;
 
 import java.util.List;
 
@@ -54,13 +51,13 @@ public class ShopWindow extends MenuWindow {
     @Override
     public void update() {
         content.clear();
-        for (int i = 0; i < game.state.shop.items.length; i++) {
-            NT_ShopItem item = game.state.shop.items[i];
+        for (int i = 0; i < game.state.shop.getItemsCount(); i++) {
+            NT_ShopItem item = game.state.shop.getItems(i);
             ShopEntry entry;
-            if (item instanceof NT_ShopUnit) {
-                entry = new ShopEntry(((NT_ShopUnit) item).unit, item.price);
+            if (item.hasUnit()) {
+                entry = new ShopEntry(item.getUnit().getUnit(), item.getPrice());
             } else {
-                entry = new ShopEntry(((NT_ShopOther) item).description, item.price);
+                entry = new ShopEntry(item.getOther().getDescription(), item.getPrice());
             }
             content.add(entry).left();
             if (i % 2 == 1) {
@@ -79,9 +76,9 @@ public class ShopWindow extends MenuWindow {
     private void updateActive() {
         if (content.getChildren().isEmpty() || options == null || !active) return;
         for (NT_Action_Shop action : options) {
-            ShopEntry entry = (ShopEntry) content.getChildren().get(action.index);
+            ShopEntry entry = (ShopEntry) content.getChildren().get(action.getIndex());
             entry.activate(
-                    () -> playerPerformAction.perform(action, 0, null)
+                    () -> playerPerformAction.perform(ClientActions.wrap(action), 0, null)
             );
         }
     }
@@ -89,7 +86,7 @@ public class ShopWindow extends MenuWindow {
     private class ShopEntry extends Table {
         private Button button;
 
-        ShopEntry(NT_Unit unit, short price) {
+        ShopEntry(NT_Unit unit, int price) {
             super(skin);
             pad(5);
             MenuUnit entry = new MenuUnit(game, unit, true);
@@ -102,7 +99,7 @@ public class ShopWindow extends MenuWindow {
             addAction(Actions.alpha(0.6f));
         }
 
-        ShopEntry(String description, short price) {
+        ShopEntry(String description, int price) {
             super(skin);
             pad(5);
             button = new Button(skin);

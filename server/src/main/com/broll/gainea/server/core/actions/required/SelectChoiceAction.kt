@@ -31,6 +31,7 @@ class SelectChoiceAction :
     fun selection(player: Player, message: String, choices: List<String>): Int {
         Log.debug("Select choice action")
         val context = build(choices)
+        processingBlock.prepare()
         actionHandlers.reactionActions.requireAction(
             player,
             RequiredActionContext(context, message)
@@ -53,6 +54,7 @@ class SelectChoiceAction :
         val action = NT_Action_SelectChoice.newBuilder()
             .addAllObjectChoices(choices.map { choice(it) }).build()
         val context = Context(action)
+        processingBlock.prepare()
         actionHandlers.reactionActions.requireAction(
             player,
             RequiredActionContext(context, message)
@@ -77,6 +79,7 @@ class SelectChoiceAction :
             distinctLocations.map { NT_Choice.newBuilder().setIntegerValue(it.number).build() }
         ).build()
         val context = Context(action)
+        processingBlock.prepare()
         actionHandlers.reactionActions.requireAction(
             player,
             RequiredActionContext(context, message)
@@ -96,6 +99,7 @@ class SelectChoiceAction :
     fun selectPlayer(player: Player, options: List<Player>, message: String): Player {
         Log.debug("Select player action")
         val context = build(options.map { it.serverPlayer.name })
+        processingBlock.prepare()
         actionHandlers.reactionActions.requireAction(
             player,
             RequiredActionContext(context, message)

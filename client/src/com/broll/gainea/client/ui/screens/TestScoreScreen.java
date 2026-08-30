@@ -6,10 +6,10 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.broll.gainea.client.ui.Screen;
+import com.broll.gainea.client.game.PlayerState;
 import com.broll.gainea.client.ui.components.StatisticGraph;
 import com.broll.gainea.client.ui.components.TabbedPane;
-import com.broll.gainea.net.NT_Player;
-import com.broll.gainea.net.NT_Unit;
+import com.broll.gainea.net.proto.NT_Player;
 import com.broll.gainea.client.util.Pair;
 
 import java.util.List;
@@ -39,9 +39,7 @@ public class TestScoreScreen extends Screen {
         ScoreScreen.header(game, lobbyTable);
 
         lobbyTable.row();
-        NT_Player player = new NT_Player();
-        player.name = "Franz";
-        player.units = new NT_Unit[0];
+        PlayerState player = new PlayerState(NT_Player.newBuilder().setName("Franz").build());
         lobbyTable.add(info("1."));
         ScoreScreen.row(game, lobbyTable, player);
 

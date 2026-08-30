@@ -6,10 +6,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.broll.gainea.Gainea;
+import com.broll.gainea.client.game.PlayerState;
 import com.broll.gainea.client.AudioPlayer;
 import com.broll.gainea.client.ui.utils.LabelUtils;
 import com.broll.gainea.client.ui.utils.TableUtils;
-import com.broll.gainea.net.NT_Player;
 import com.broll.gainea.net.proto.NT_Surrender;
 import com.broll.gainea.net.proto.NT_Vote_Base;
 import com.broll.gainea.net.proto.NT_Vote_KickPlayer;
@@ -43,10 +43,10 @@ public class SettingsWindow extends MenuWindow {
         Table table = new Table();
         table.defaults().left().spaceBottom(5);
         table.add(voteButton("Aktuellen Zug überspringen", NT_Vote_Base.newBuilder().setSkipTurn(NT_Vote_SkipTurn.newBuilder()).build())).row();
-        for (NT_Player player : game.state.getPlayers()) {
-            if (player.id != game.state.getPlayer().getId()) {
-                NT_Vote_Base vote = NT_Vote_Base.newBuilder().setKickPlayer(NT_Vote_KickPlayer.newBuilder().setPlayerId(player.id)).build();
-                table.add(voteButton(player.name + " entfernen", vote)).row();
+        for (PlayerState player : game.state.getPlayers()) {
+            if (player.id() != game.state.getPlayer().getId()) {
+                NT_Vote_Base vote = NT_Vote_Base.newBuilder().setKickPlayer(NT_Vote_KickPlayer.newBuilder().setPlayerId(player.id())).build();
+                table.add(voteButton(player.name() + " entfernen", vote)).row();
             }
         }
         return table;

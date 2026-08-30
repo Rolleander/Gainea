@@ -39,7 +39,7 @@ public class RoundInformation extends Table {
         }
         roundLabel.setText("[BLACK]Runde:[] [BLUE]" + round + roundEnd + "[]");
         if (turn > -1 && game.state.getPlayers() != null) {
-            String name = game.state.getPlayers().get(turn).name;
+            String name = game.state.getPlayers().get(turn).name();
             currentPlayerLabel.setText("[BLACK]Am Zug:[] [BLUE]" + name + "[]");
         }
     }
