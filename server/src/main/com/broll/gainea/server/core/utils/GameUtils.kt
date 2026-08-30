@@ -1,5 +1,7 @@
 package com.broll.gainea.server.core.utils
 
+import com.broll.gainea.server.core.map.*
+
 import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.actions.AbstractActionHandler
 import com.broll.gainea.server.core.map.Location
@@ -7,12 +9,14 @@ import com.broll.gainea.server.core.objects.MapObject
 import com.broll.gainea.server.core.objects.Unit
 import com.broll.gainea.server.core.objects.monster.Monster
 import com.broll.gainea.server.core.player.Player
+import com.broll.gainea.server.network.gameData
+import com.google.protobuf.Message
 
 fun <T : AbstractActionHandler<*, *>> Game.getActionHandler(handlerClass: Class<T>) =
     reactionHandler.actionHandlers.getHandler(handlerClass)
 
 fun Game.endPlayersTurn(player: Player) {
-    if (currentPlayer == player && lobby.data.gameRoundsStarted) {
+    if (currentPlayer == player && lobby.gameData.gameRoundsStarted) {
         endTurn()
     }
 }
@@ -45,16 +49,16 @@ fun Game.isGameEnd(): Boolean {
     }
 }
 
-fun Game.sendUpdate(player: Player, update: Any, updateForOtherPlayers: Any) {
-    player.serverPlayer.sendTCP(update)
+fun Game.sendUpdate(player: Player, update: Message, updateForOtherPlayers: Message) {
+    player.serverPlayer.send(update)
     sendUpdateExceptFor(updateForOtherPlayers, player)
 }
 
-fun Game.sendUpdateExceptFor(update: Any, exceptPlayer: Player) {
-    activePlayers.filter { it !== exceptPlayer }.forEach { it.serverPlayer.sendTCP(update) }
+fun Game.sendUpdateExceptFor(update: Message, exceptPlayer: Player) {
+    activePlayers.filter { it !== exceptPlayer }.forEach { it.serverPlayer.send(update) }
 }
 
-fun Game.sendUpdate(update: Any) {
+fun Game.sendUpdate(update: Message) {
     reactionHandler.actionHandlers.reactionActions.sendGameUpdate(update)
 }
 

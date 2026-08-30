@@ -7,9 +7,9 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.broll.gainea.Gainea;
 import com.broll.gainea.client.ui.ingame.DepthActor;
-import com.broll.gainea.server.core.map.Coordinates;
-import com.broll.gainea.server.core.map.Expansion;
-import com.broll.gainea.server.core.map.Ship;
+import com.broll.gainea.client.game.map.Coordinates;
+import com.broll.gainea.client.game.map.Expansion;
+import com.broll.gainea.client.game.map.Ship;
 
 public class ExpansionRender extends DepthActor {
 

@@ -2,33 +2,25 @@ package com.broll.gainea.client.network.sites;
 
 import com.broll.gainea.client.AudioPlayer;
 import com.broll.gainea.client.game.PlayerPerformOptionalAction;
-import com.broll.gainea.net.NT_Action;
-import com.broll.gainea.net.NT_EndTurn;
-import com.broll.gainea.net.NT_PlayerTurnActions;
-import com.broll.gainea.net.NT_PlayerTurnStart;
-import com.broll.gainea.net.NT_PlayerWait;
-import com.broll.networklib.PackageReceiver;
-import com.broll.networklib.client.impl.LobbyPlayer;
+import com.broll.gainea.net.proto.NT_Action;
+import com.broll.gainea.net.proto.NT_EndTurn;
+import com.broll.mpnll.client.lobby.User;
+import com.broll.mpnll.client.site.MessageReceiverRegistry;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class GameTurnSite extends AbstractGameSite {
-
-    private GameActionSite gameActionSite;
-    private List<NT_Action> actions = new ArrayList<>();
-    private PlayerPerformOptionalAction performedAction = new PlayerPerformOptionalAction() {
+    private final GameActionSite gameActionSite;
+    private final List<NT_Action> actions = new ArrayList<>();
+    private final PlayerPerformOptionalAction performedAction = new PlayerPerformOptionalAction() {
         @Override
         public void none() {
-            //player wants to end turn
             game.state.getMapObjectsContainer().removeActions();
-            client.sendTCP(new NT_EndTurn());
+            send(NT_EndTurn.newBuilder().build());
         }
 
         @Override
         public void perform(NT_Action action, int option, int[] options) {
-            //player selected action, send reaction
             gameActionSite.performAction(action, option, options);
         }
     };
@@ -37,52 +29,50 @@ public class GameTurnSite extends AbstractGameSite {
         this.gameActionSite = gameActionSite;
     }
 
-    @PackageReceiver
-    public void received(NT_PlayerTurnStart turnStart) {
+    @Override
+    protected void registerReceivers(MessageReceiverRegistry registry) {
+        on(registry, com.broll.gainea.net.proto.NT_PlayerTurnStart.class, this::received);
+        on(registry, com.broll.gainea.net.proto.NT_PlayerTurnActions.class, this::received);
+        on(registry, com.broll.gainea.net.proto.NT_EndTurn.class, this::received);
+        on(registry, com.broll.gainea.net.proto.NT_PlayerWait.class, this::received);
+    }
+
+    private void received(com.broll.gainea.net.proto.NT_PlayerTurnStart ignored) {
         game.state.playerTurnStart();
         turnStartMessage(getPlayer());
     }
 
-    @PackageReceiver
-    public void received(NT_PlayerTurnActions turnContinue) {
+    private void received(com.broll.gainea.net.proto.NT_PlayerTurnActions value) {
         actions.clear();
         game.state.turnIdle();
-        actions.addAll(Arrays.asList(turnContinue.actions));
+        actions.addAll(value.getActionsList());
         playerPickAction();
         game.ui.inGameUI.updateWindows();
         game.ui.inGameUI.getBattleHandler().clearBattleScreen();
     }
 
-    @PackageReceiver
-    public void received(NT_EndTurn endTurn) {
-        //no more actions, player can only end turn now
+    private void received(com.broll.gainea.net.proto.NT_EndTurn ignored) {
         actions.clear();
         game.state.turnIdle();
         playerPickAction();
     }
 
-    @PackageReceiver
-    public void received(NT_PlayerWait wait) {
-        //other players turn or event
+    private void received(com.broll.gainea.net.proto.NT_PlayerWait wait) {
         game.state.updateIdleState(false);
-        LobbyPlayer otherPlayer = getLobby().getPlayer(wait.playersTurn);
-        if (otherPlayer != null) {
+        User other = getLobby().getUser(wait.getPlayersTurn());
+        if (other != null) {
             game.state.playerTurnEnded();
-            turnStartMessage(otherPlayer);
+            turnStartMessage(other);
         }
         actions.clear();
     }
 
-    private void turnStartMessage(LobbyPlayer turnPlayer) {
-        String message = "";
-        if (turnPlayer == getPlayer()) {
-            //your turn
+    private void turnStartMessage(User player) {
+        String message;
+        if (player.isMe()) {
             message = "Du bist dran!";
             AudioPlayer.playSound("domm.ogg");
-        } else {
-            //other players turn
-            message = turnPlayer.getName() + "'s Zug!";
-        }
+        } else message = player.getName() + "'s Zug!";
         game.ui.inGameUI.hideWindows();
         game.ui.inGameUI.infoMessages.show(message);
     }
@@ -90,5 +80,4 @@ public class GameTurnSite extends AbstractGameSite {
     private void playerPickAction() {
         game.state.performOptionalAction(actions, performedAction);
     }
-
 }

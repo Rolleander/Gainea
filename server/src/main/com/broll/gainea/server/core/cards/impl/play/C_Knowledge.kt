@@ -1,7 +1,7 @@
 package com.broll.gainea.server.core.cards.impl.play
 
 import com.broll.gainea.server.core.cards.Card
-import com.broll.gainea.server.core.cards.EffectType.OTHER
+import com.broll.gainea.core.cards.EffectType.OTHER
 import com.google.common.collect.Lists
 
 class C_Knowledge : Card(

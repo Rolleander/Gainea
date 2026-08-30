@@ -1,8 +1,8 @@
 package com.broll.gainea.server.core.cards.impl.play
 
-import com.broll.gainea.net.NT_Event
+import com.broll.gainea.net.proto.NT_Event
 import com.broll.gainea.server.core.cards.Card
-import com.broll.gainea.server.core.cards.EffectType.DISRUPTION
+import com.broll.gainea.core.cards.EffectType.DISRUPTION
 import com.broll.gainea.server.core.objects.buffs.BuffType
 import com.broll.gainea.server.core.objects.buffs.GlobalBuff
 import com.broll.gainea.server.core.objects.buffs.IntBuff
@@ -25,7 +25,7 @@ class C_PlayerNoAttacks : Card(
             player,
             buff,
             { it.attacksPerTurn.addBuff(buff) },
-            NT_Event.EFFECT_DEBUFF
+            4
         )
         game.buffProcessor.timeoutBuff(buff, rounds(DURATION))
     }

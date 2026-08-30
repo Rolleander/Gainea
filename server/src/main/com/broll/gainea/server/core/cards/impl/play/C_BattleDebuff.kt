@@ -3,7 +3,7 @@ package com.broll.gainea.server.core.cards.impl.play
 import com.broll.gainea.server.core.battle.BattleContext
 import com.broll.gainea.server.core.battle.RollManipulator
 import com.broll.gainea.server.core.cards.Card
-import com.broll.gainea.server.core.cards.EffectType.DEBUFF
+import com.broll.gainea.core.cards.EffectType.DEBUFF
 import com.broll.gainea.server.core.objects.buffs.TimedEffect
 
 class C_BattleDebuff : Card(

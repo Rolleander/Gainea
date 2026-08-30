@@ -1,6 +1,6 @@
 package com.broll.gainea.server.core.cards
 
-import com.broll.gainea.server.core.cards.EffectType.MOVEMENT
+import com.broll.gainea.core.cards.EffectType.MOVEMENT
 import com.broll.gainea.server.core.map.Location
 import com.broll.gainea.server.core.utils.UnitControl.move
 import com.broll.gainea.server.core.utils.emptyOrControlledBy

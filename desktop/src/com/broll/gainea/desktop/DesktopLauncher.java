@@ -5,10 +5,13 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.broll.gainea.Gainea;
 import com.broll.gainea.client.AudioPlayer;
 import com.broll.gainea.client.ui.screens.StartScreen;
+import com.broll.mpnll.client.MpnllTcpClient;
+import com.broll.mpnll.client.NativeClientRegistry;
 
 public class DesktopLauncher {
 
     public static void main(String[] arg) {
+        NativeClientRegistry.NATIVE_CLIENT_FACTORY = MpnllTcpClient::new;
         System.setProperty("log4j.configuration", "log4j_client.properties");
         Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
         if (arg.length > 0 && "test".equals(arg[0])) {

@@ -5,27 +5,27 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.broll.gainea.Gainea;
+import com.broll.gainea.client.game.BoardObjectState;
+import com.broll.gainea.net.proto.NT_Unit;
+import com.broll.gainea.net.proto.NT_Monster;
 import com.broll.gainea.client.ui.components.IconLabel;
 import com.broll.gainea.client.ui.ingame.map.MapObjectRender;
 import com.broll.gainea.client.ui.utils.LabelUtils;
 import com.broll.gainea.client.ui.utils.TableUtils;
 import com.broll.gainea.client.ui.utils.TextureUtils;
-import com.broll.gainea.net.NT_BoardObject;
-import com.broll.gainea.net.NT_Monster;
-import com.broll.gainea.net.NT_Unit;
-import com.broll.gainea.server.core.objects.monster.MonsterBehavior;
-
-import org.apache.commons.lang3.StringUtils;
+import com.broll.gainea.core.objects.monster.MonsterBehavior;
 
 public class MenuUnit extends Table {
 
-    private NT_BoardObject object;
+    private BoardObjectState object;
 
-    public MenuUnit(Gainea game, NT_BoardObject object) {
+    public MenuUnit(Gainea game, BoardObjectState object) {
         this(game, object, false);
     }
+    public MenuUnit(Gainea game, NT_Unit unit, boolean hideKills) { this(game, BoardObjectState.unit(unit), hideKills); }
+    public MenuUnit(Gainea game, NT_Monster monster, boolean hideKills) { this(game, BoardObjectState.monster(monster), hideKills); }
 
-    public MenuUnit(Gainea game, NT_BoardObject object, boolean hideKills) {
+    public MenuUnit(Gainea game, BoardObjectState object, boolean hideKills) {
         this.object = object;
         setSkin(game.ui.skin);
         MapObjectRender render = MapObjectRender.createRender(game, game.ui.skin, object);
@@ -38,34 +38,32 @@ public class MenuUnit extends Table {
         left();
         Table table = new Table();
         table.left();
-        table.add(LabelUtils.info(getSkin(), this.object.name)).left().spaceBottom(5).row();
-        if (this.object instanceof NT_Monster) {
-            NT_Monster m = (NT_Monster) this.object;
+        table.add(LabelUtils.info(getSkin(), this.object.name())).left().spaceBottom(5).row();
+        if (this.object.isMonster()) {
             Table stars = new Table();
-            for (int i = 0; i < m.stars; i++) {
+            for (int i = 0; i < object.stars(); i++) {
                 stars.add(new Image(TextureUtils.icon(game, 2))).left();
             }
-            if (m.actionTimer != -1) {
-                String behavior = MonsterBehavior.values()[((NT_Monster) this.object).behavior].getLabel();
+            if (object.actionTimer() != -1) {
+                String behavior = MonsterBehavior.values()[object.behavior()].getLabel();
                 stars.add(LabelUtils.markup(getSkin(), behavior)).spaceLeft(10);
             }
             table.add(stars).left().spaceBottom(5).row();
         }
 
-        if (this.object instanceof NT_Unit) {
-            NT_Unit unit = (NT_Unit) object;
+        if (this.object.isUnit()) {
             Table row = new Table(getSkin());
             row.defaults().spaceLeft(20).left();
-            row.add(IconLabel.attack(game, unit.power));
-            row.add(IconLabel.health(game, unit.health, unit.maxHealth));
+            row.add(IconLabel.attack(game, object.power()));
+            row.add(IconLabel.health(game, object.health(), object.maxHealth()));
             if (!hideKills) {
-                row.add(new IconLabel(game, 8, String.valueOf(unit.kills)));
+                row.add(new IconLabel(game, 8, String.valueOf(object.kills())));
             }
             table.add(row).left().row();
         }
 
-        if (StringUtils.isNotEmpty(this.object.description)) {
-            Label info = LabelUtils.markup(getSkin(), "[DARK_GRAY]" + this.object.description);
+        if (!this.object.description().isEmpty()) {
+            Label info = LabelUtils.markup(getSkin(), "[DARK_GRAY]" + this.object.description());
             table.add(LabelUtils.autoWrap(info, 240)).left().expandX().fillX().row();
         }
         add(table).fillX().expandX().minWidth(240).spaceLeft(10);
@@ -74,7 +72,7 @@ public class MenuUnit extends Table {
         this.padRight(8);
     }
 
-    public NT_BoardObject getObject() {
+    public BoardObjectState getObject() {
         return object;
     }
 }

@@ -1,8 +1,9 @@
 package com.broll.gainea.client.ui.ingame.map;
 
+import com.broll.gainea.client.game.map.Coordinates;
+
 import com.broll.gainea.Gainea;
-import com.broll.gainea.net.NT_BoardObject;
-import com.broll.gainea.server.core.map.Coordinates;
+import com.broll.gainea.client.game.BoardObjectState;
 
 public class MapScrollUtils {
 
@@ -29,12 +30,12 @@ public class MapScrollUtils {
         show(game, x, y, zoom);
     }
 
-    public static void showObject(Gainea game, NT_BoardObject object) {
+    public static void showObject(Gainea game, BoardObjectState object) {
         MapObjectRender render = game.state.getMapObjectsContainer().getObjectRender(object);
         if (render != null) {
             show(game, render.getX(), render.getY());
         } else {
-            showLocations(game, object.location);
+            showLocations(game, object.location());
         }
     }
 

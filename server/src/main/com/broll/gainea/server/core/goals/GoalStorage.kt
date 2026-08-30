@@ -1,9 +1,10 @@
 package com.broll.gainea.server.core.goals
 
+import com.broll.gainea.core.goals.GoalDifficulty
 import com.broll.gainea.misc.PackageLoader
 import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.player.Player
-import com.broll.gainea.server.init.GoalTypes
+import com.broll.gainea.core.goals.GoalTypes
 import org.slf4j.LoggerFactory
 
 class GoalStorage(

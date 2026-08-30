@@ -10,18 +10,18 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.broll.gainea.Gainea;
 import com.broll.gainea.client.network.sites.GameActionSite;
 import com.broll.gainea.client.ui.utils.TableUtils;
-import com.broll.gainea.net.NT_Action_SelectChoice;
+import com.broll.gainea.net.proto.NT_Action;
 
 import java.util.List;
 
 public class SelectOptionWindow {
 
-    public static Table create(Gainea game, RequiredActionContainer container, NT_Action_SelectChoice action, List<Actor> options) {
+    public static Table create(Gainea game, RequiredActionContainer container, NT_Action action, List<Actor> options) {
         Skin skin = game.ui.skin;
         Table window = new Table(skin);
         window.pad(15, 20, 15, 20);
         window.defaults().space(15).left();
-        if (GameActionSite.CURRENT_PLAYER_ACTION.text != null) {
+        if (GameActionSite.CURRENT_PLAYER_ACTION.hasText()) {
             window.add(
                     PlaceUnitWindow.actionLabel(skin)
             ).center().spaceBottom(20).row();

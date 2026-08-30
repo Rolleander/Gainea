@@ -1,8 +1,10 @@
 package com.broll.gainea.server.core.cards.impl.play
 
-import com.broll.gainea.net.NT_Event
+import com.broll.gainea.core.protocol.ScreenEffect
+
+import com.broll.gainea.net.proto.NT_Event
 import com.broll.gainea.server.core.cards.Card
-import com.broll.gainea.server.core.cards.EffectType.DISRUPTION
+import com.broll.gainea.core.cards.EffectType.DISRUPTION
 import com.broll.gainea.server.core.objects.Unit
 import com.broll.gainea.server.core.objects.buffs.BuffType
 import com.broll.gainea.server.core.objects.buffs.IntBuff
@@ -35,7 +37,7 @@ class C_Rooting : Card(
                 it.attacksPerTurn.addBuff(rootDebuff)
             }
         }
-        game.focus(units, NT_Event.EFFECT_DEBUFF)
+        game.focus(units, ScreenEffect.DEBUFF)
         game.buffProcessor.timeoutBuff(rootDebuff, rounds(DURATION))
     }
 

@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Scaling;
 import com.broll.gainea.Gainea;
+import com.broll.gainea.client.game.BoardObjectState;
 import com.broll.gainea.client.AudioPlayer;
 import com.broll.gainea.client.ui.components.IconLabel;
 import com.broll.gainea.client.ui.ingame.map.MapObjectRender;
@@ -19,13 +20,9 @@ import com.broll.gainea.client.ui.utils.ActionListener;
 import com.broll.gainea.client.ui.utils.LabelUtils;
 import com.broll.gainea.client.ui.utils.TableUtils;
 import com.broll.gainea.client.ui.utils.TextureUtils;
-import com.broll.gainea.net.NT_BoardObject;
-import com.broll.gainea.net.NT_Unit;
-import com.broll.gainea.server.core.map.Area;
-import com.broll.gainea.server.core.map.AreaCollection;
-import com.broll.gainea.server.core.map.Continent;
-import com.broll.gainea.server.core.map.Island;
-import com.broll.gainea.server.core.map.Location;
+import com.broll.gainea.client.game.map.Area;
+import com.broll.gainea.client.game.map.AreaCollection;
+import com.broll.gainea.client.game.map.Location;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -52,19 +49,13 @@ public class MapObjectSelection extends Table {
         title.setBackground("background");
         title.add(LabelUtils.label(game.ui.skin, location.toString()));
         if (location instanceof Area) {
-            AreaCollection container = location.container;
-            String name = container.getName();
-            if (container instanceof Island) {
-                name = "Insel: " + name;
-            } else if (container instanceof Continent) {
-                name = "Kontinent: " + name;
-            }
-            title.add(LabelUtils.info(game.ui.skin, name)).spaceLeft(20);
+            AreaCollection container = location.getContainer();
+            title.add(LabelUtils.info(game.ui.skin, container.getName())).spaceLeft(20);
         }
         add(title).expandX().fillX().row();
 
         anySelectable = stack.stream().anyMatch(it -> it instanceof UnitRender && ((UnitRender) it).isActionActive());
-        boolean foreignUnits = stack.stream().anyMatch(it -> it.getObject() instanceof NT_Unit && ((NT_Unit) it.getObject()).owner != game.state.getPlayer().getId());
+        boolean foreignUnits = stack.stream().anyMatch(it -> it.getObject().isUnit() && it.getObject().owner() != game.state.getPlayer().getId());
 
         objects = stack.stream().sorted(Comparator.comparingInt(MapObjectRender::getRank)).map(obj ->
                 {
@@ -111,10 +102,10 @@ public class MapObjectSelection extends Table {
 
     private void updateSelection() {
         game.ui.inGameUI.selectedUnits(objects.stream().filter(it -> it.selectionImage.selected &&
-                it.obj instanceof NT_Unit).map(it -> (NT_Unit) it.obj).collect(Collectors.toList()));
+                it.obj.isUnit()).map(it -> it.obj).collect(Collectors.toList()));
     }
 
-    private void updateView(NT_BoardObject object) {
+    private void updateView(BoardObjectState object) {
         Table content = new Table(getSkin());
         content.pad(8);
         content.setBackground("background");
@@ -123,11 +114,11 @@ public class MapObjectSelection extends Table {
         if (objects.size() > 1) {
             Table table = new Table(getSkin());
             table.pad(8);
-            List<NT_Unit> units = objects.stream().filter(it -> it.selectionImage.selected || !anySelectable).map(it -> it.obj)
-                    .filter(it -> it instanceof NT_Unit).map(it -> (NT_Unit) it).collect(Collectors.toList());
-            int power = units.stream().map(u -> (int) u.power).reduce(0, Integer::sum);
-            int health = units.stream().map(u -> (int) u.health).reduce(0, Integer::sum);
-            int maxHealth = units.stream().map(u -> (int) u.maxHealth).reduce(0, Integer::sum);
+            List<BoardObjectState> units = objects.stream().filter(it -> it.selectionImage.selected || !anySelectable).map(it -> it.obj)
+                    .filter(BoardObjectState::isUnit).collect(Collectors.toList());
+            int power = units.stream().map(BoardObjectState::power).reduce(0, Integer::sum);
+            int health = units.stream().map(BoardObjectState::health).reduce(0, Integer::sum);
+            int maxHealth = units.stream().map(BoardObjectState::maxHealth).reduce(0, Integer::sum);
             table.defaults().left().pad(5).padLeft(10).padRight(10);
             table.add(new Label(units.size() + " Einheiten mit", getSkin()));
             table.add(IconLabel.attack(game, power));
@@ -142,26 +133,25 @@ public class MapObjectSelection extends Table {
     private static class ObjectPreview extends Table {
 
         private SelectionImage selectionImage;
-        private NT_BoardObject obj;
+        private BoardObjectState obj;
 
-        private ObjectPreview(Gainea game, NT_BoardObject obj, ActionListener onHover) {
+        private ObjectPreview(Gainea game, BoardObjectState obj, ActionListener onHover) {
             super(game.ui.skin);
             this.obj = obj;
-            TextureRegion icon = TextureUtils.unitIcon(game, obj.icon);
-            if (obj.building) {
-                icon = TextureUtils.buildingIcon(game, obj.icon);
+            TextureRegion icon = TextureUtils.unitIcon(game, obj.icon());
+            if (obj.building()) {
+                icon = TextureUtils.buildingIcon(game, obj.icon());
             }
             selectionImage = new SelectionImage(game, icon);
-            if (obj.building) {
+            if (obj.building()) {
                 selectionImage.setScale(0.847f);
             }
             add(selectionImage).spaceRight(8);
-            if (obj instanceof NT_Unit) {
-                NT_Unit unit = (NT_Unit) obj;
+            if (obj.isUnit()) {
                 Table info = new Table();
                 info.defaults().space(5).left();
-                info.add(IconLabel.attack(game, unit.power)).row();
-                info.add(IconLabel.health(game, unit.health, unit.maxHealth));
+                info.add(IconLabel.attack(game, obj.power())).row();
+                info.add(IconLabel.health(game, obj.health(), obj.maxHealth()));
                 add(info).center();
             }
             TableUtils.onHoverOrClick(this, onHover);

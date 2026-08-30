@@ -2,7 +2,7 @@ package com.broll.gainea.server.core.goals.impl.all
 
 import com.broll.gainea.server.core.bot.strategy.GoalStrategy
 import com.broll.gainea.server.core.goals.CustomOccupyGoal
-import com.broll.gainea.server.core.goals.GoalDifficulty
+import com.broll.gainea.core.goals.GoalDifficulty
 import com.broll.gainea.server.core.map.Area
 
 open class G_AnyAreas(difficulty: GoalDifficulty = GoalDifficulty.EASY, val count: Int = 7) : CustomOccupyGoal(difficulty, "Besetze $count beliebige Gebiete") {

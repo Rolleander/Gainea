@@ -4,8 +4,8 @@ import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.battle.BattleResult
 import com.broll.gainea.server.core.bot.strategy.GoalStrategy
 import com.broll.gainea.server.core.goals.Goal
-import com.broll.gainea.server.core.goals.GoalDifficulty.EASY
-import com.broll.gainea.server.core.goals.GoalDifficulty.MEDIUM
+import com.broll.gainea.core.goals.GoalDifficulty.EASY
+import com.broll.gainea.core.goals.GoalDifficulty.MEDIUM
 import com.broll.gainea.server.core.map.Continent
 import com.broll.gainea.server.core.objects.Unit
 import com.broll.gainea.server.core.objects.monster.Monster

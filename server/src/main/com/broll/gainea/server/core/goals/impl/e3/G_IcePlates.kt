@@ -3,10 +3,10 @@ package com.broll.gainea.server.core.goals.impl.e3
 import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.bot.strategy.GoalStrategy
 import com.broll.gainea.server.core.goals.CustomOccupyGoal
-import com.broll.gainea.server.core.goals.GoalDifficulty
+import com.broll.gainea.core.goals.GoalDifficulty
 import com.broll.gainea.server.core.map.Area
-import com.broll.gainea.server.core.map.AreaType.SNOW
-import com.broll.gainea.server.core.map.ExpansionType
+import com.broll.gainea.core.map.ExpansionType
+import com.broll.gainea.server.core.map.AreaType
 import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.core.utils.getUnits
 import com.broll.gainea.server.core.utils.isAreaType
@@ -28,7 +28,9 @@ class G_IcePlates : CustomOccupyGoal(
     }
 
     private val targets: List<Area>
-        get() = game.map.getExpansion(ExpansionType.BOGLANDS)!!.allAreas.filter { it.isAreaType(SNOW) }
+        get() = game.map.getExpansion(ExpansionType.BOGLANDS)!!.allAreas.filter { it.isAreaType(
+            AreaType.SNOW
+        ) }
 
     override fun check() {
         val playerUnits = targets

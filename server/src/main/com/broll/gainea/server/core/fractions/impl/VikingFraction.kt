@@ -4,7 +4,7 @@ import com.broll.gainea.server.core.battle.BattleContext
 import com.broll.gainea.server.core.battle.FightingPower
 import com.broll.gainea.server.core.fractions.Fraction
 import com.broll.gainea.server.core.fractions.FractionDescription
-import com.broll.gainea.server.core.fractions.FractionType
+import com.broll.gainea.core.fractions.FractionType
 import com.broll.gainea.server.core.fractions.UnitDescription
 import com.broll.gainea.server.core.map.AreaType
 import com.broll.gainea.server.core.map.Location

@@ -1,8 +1,8 @@
 package com.broll.gainea.server.core.bot
 
-import com.broll.gainea.net.NT_Action
+import com.google.protobuf.Message
 
-abstract class BotOptionalAction<A : NT_Action, O : BotOptionalAction.BotOption> : BotAction<A>() {
+abstract class BotOptionalAction<A : Message, O : BotOptionalAction.BotOption> : BotAction<A>() {
     var selectedOption: O? = null
         private set
 

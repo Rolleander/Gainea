@@ -1,5 +1,6 @@
 package com.broll.gainea.server.core.objects.monster
 
+import com.broll.gainea.core.objects.monster.MonsterBehavior
 import com.broll.gainea.server.core.battle.BattleResult
 import com.broll.gainea.server.core.player.Player
 

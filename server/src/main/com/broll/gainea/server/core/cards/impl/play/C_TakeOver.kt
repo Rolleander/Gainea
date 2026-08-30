@@ -1,7 +1,7 @@
 package com.broll.gainea.server.core.cards.impl.play
 
 import com.broll.gainea.server.core.cards.Card
-import com.broll.gainea.server.core.cards.EffectType.SUMMON
+import com.broll.gainea.core.cards.EffectType.SUMMON
 import com.broll.gainea.server.core.objects.Unit
 import com.broll.gainea.server.core.utils.UnitControl.recruit
 import com.broll.gainea.server.core.utils.getCommander

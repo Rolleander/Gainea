@@ -4,10 +4,13 @@ import com.broll.gainea.server.sites.GameBoardSite
 import com.broll.gainea.server.sites.GameLobbySite
 import com.broll.gainea.server.sites.GameStartSite
 import com.broll.gainea.server.sites.GameVoteSite
-import com.broll.networklib.server.LobbyGameServer
+import com.broll.mpnll.server.MpnllServer
 
 object ServerSetup {
-    fun setup(server: LobbyGameServer<LobbyData, PlayerData>) {
-        server.register(GameBoardSite(), GameStartSite(), GameLobbySite(), GameVoteSite())
+    fun setup(server: MpnllServer) {
+        server.addSite(GameBoardSite())
+        server.addSite(GameStartSite())
+        server.addSite(GameLobbySite())
+        server.addSite(GameVoteSite())
     }
 }

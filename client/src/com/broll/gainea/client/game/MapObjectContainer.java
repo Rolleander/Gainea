@@ -1,19 +1,14 @@
 package com.broll.gainea.client.game;
 
-import static com.broll.gainea.net.NT_BoardObject.NO_LOCATION;
+import com.broll.gainea.core.protocol.ScreenEffect;
 
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.broll.gainea.client.ui.ingame.InGameUI;
 import com.broll.gainea.client.ui.ingame.map.MapObjectRender;
 import com.broll.gainea.client.ui.ingame.unit.UnitRender;
-import com.broll.gainea.net.NT_Action_Attack;
-import com.broll.gainea.net.NT_Action_Move;
-import com.broll.gainea.net.NT_BoardObject;
-import com.broll.gainea.net.NT_Event;
-import com.broll.gainea.server.core.map.Location;
-
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.map.MultiValueMap;
+import com.broll.gainea.net.proto.NT_Action_Attack;
+import com.broll.gainea.net.proto.NT_Action_Move;
+import com.broll.gainea.client.game.map.Location;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,7 +27,7 @@ public class MapObjectContainer {
 
     private static float ARRANGE_TIME = 0.3f;
     private GameState game;
-    private Map<Short, MapObjectRender> objectRenders = new HashMap<>();
+    private Map<Integer, MapObjectRender> objectRenders = new HashMap<>();
 
     public MapObjectContainer(GameState game) {
         super();
@@ -51,44 +46,44 @@ public class MapObjectContainer {
         for (MapObjectRender value : objectRenders.values()) {
             if (value instanceof UnitRender) {
                 UnitRender render = (UnitRender) value;
-                int id = render.getObject().id;
+                int id = render.getObject().id();
                 render.setActionActive(
-                        moves.stream().anyMatch(it -> Arrays.stream(it.units).anyMatch(unit -> unit.id == id))
-                                || attacks.stream().anyMatch(it -> Arrays.stream(it.units).anyMatch(unit -> unit.id == id))
+                        moves.stream().anyMatch(it -> it.getUnitsList().stream().anyMatch(unit -> unit.getId() == id))
+                                || attacks.stream().anyMatch(it -> it.getUnitsList().stream().anyMatch(unit -> unit.getId() == id))
                 );
             }
         }
     }
 
-    public void remove(NT_BoardObject obj) {
-        MapObjectRender render = objectRenders.remove(obj.id);
+    public void remove(BoardObjectState obj) {
+        MapObjectRender render = objectRenders.remove(obj.id());
         if (render != null) {
             render.addAction(Actions.sequence(Actions.fadeOut(0.3f), Actions.removeActor()));
         }
     }
 
-    public MapObjectRender getObjectRender(NT_BoardObject object) {
-        return objectRenders.get(object.id);
+    public MapObjectRender getObjectRender(BoardObjectState object) {
+        return objectRenders.get(object.id());
     }
 
-    private NT_BoardObject findObject(List<NT_BoardObject> objects, int id) {
-        for (NT_BoardObject object : objects) {
-            if (object.id == id) {
+    private BoardObjectState findObject(List<BoardObjectState> objects, int id) {
+        for (BoardObjectState object : objects) {
+            if (object.id() == id) {
                 return object;
             }
         }
         return null;
     }
 
-    private void updateRender(MapObjectRender render, NT_BoardObject nt, int effect) {
+    private void updateRender(MapObjectRender render, BoardObjectState nt, int effect) {
         render.init(nt);
-        Location location = game.getMap().getLocation(nt.location);
+        Location location = game.getMap().getLocation(nt.location());
         render.setLocation(location);
-        boolean damage = effect == NT_Event.EFFECT_DAMAGE;
+        boolean damage = effect == ScreenEffect.DAMAGE.value;
         if (render instanceof UnitRender) {
             UnitRender unitRender = (UnitRender) render;
-            if (unitRender.getUnit().health <= 0) {
-                this.objectRenders.remove(nt.id);
+            if (unitRender.getUnit().health() <= 0) {
+                this.objectRenders.remove(nt.id());
                 if (damage) {
                     unitRender.kill(true);
                     //todo update stack after killed
@@ -98,35 +93,37 @@ public class MapObjectContainer {
             } else {
                 if (damage) {
                     unitRender.takeDamage(0);
-                } else if (effect == NT_Event.EFFECT_BUFF) {
+                } else if (effect == ScreenEffect.BUFF.value) {
                     //todo show other effect animations
                 }
             }
         }
     }
 
-    private MapObjectRender createRender(NT_BoardObject nt) {
-        Location location = game.getMap().getLocation(nt.location);
+    private MapObjectRender createRender(BoardObjectState nt) {
+        Location location = game.getMap().getLocation(nt.location());
         MapObjectRender render = MapObjectRender.createRender(game.getContainer(), game.getContainer().ui.skin, nt);
         render.selectionListener();
         render.setLocation(location);
         render.respectScale();
         render.addAction(Actions.sequence(Actions.alpha(0), Actions.fadeIn(0.25f)));
-        this.objectRenders.put(nt.id, render);
+        this.objectRenders.put(nt.id(), render);
         game.getContainer().gameStage.addActor(render);
         return render;
     }
 
-    public void update(int effect, List<NT_BoardObject> update) {
+    public void update(int effect, List<BoardObjectState> update) {
         List<MapObjectRender> newRenders = new ArrayList<>();
         update.forEach(nt -> {
             MapObjectRender render = getObjectRender(nt);
-            if (render == null && nt.location != NO_LOCATION) {
+            if (render == null && nt.location() != -1) {
                 newRenders.add(createRender(nt));
             }
         });
-        for (MapObjectRender existingRender : CollectionUtils.subtract(objectRenders.values(), newRenders)) {
-            NT_BoardObject nt = findObject(update, existingRender.getObject().id);
+        List<MapObjectRender> existingRenders = new ArrayList<>(objectRenders.values());
+        existingRenders.removeAll(newRenders);
+        for (MapObjectRender existingRender : existingRenders) {
+            BoardObjectState nt = findObject(update, existingRender.getObject().id());
             if (nt != null) {
                 updateRender(existingRender, nt, effect);
             }
@@ -160,15 +157,15 @@ public class MapObjectContainer {
 
     private void arrange(Location location) {
         Collection<MapObjectRender> objects = objectRenders.values().stream().filter(it -> it.getLocation() == location).collect(Collectors.toList());
-        MultiValueMap<Integer, MapObjectRender> stacks = new MultiValueMap<>();
+        java.util.Map<Integer, List<MapObjectRender>> stacks = new java.util.HashMap<>();
         objects.forEach(render -> {
-            NT_BoardObject object = render.getObject();
-            stacks.put((int) object.owner, render);
+            BoardObjectState object = render.getObject();
+            stacks.computeIfAbsent(object.owner(), ignored -> new ArrayList<>()).add(render);
         });
         arrange(location, objects, stacks);
     }
 
-    private void arrange(Location location, Collection<MapObjectRender> objects, MultiValueMap<Integer, MapObjectRender> stacks) {
+    private void arrange(Location location, Collection<MapObjectRender> objects, java.util.Map<Integer, List<MapObjectRender>> stacks) {
         int stackCount = stacks.keySet().size();
         float x = location.getCoordinates().getDisplayX();
         float y = location.getCoordinates().getDisplayY();
@@ -180,7 +177,7 @@ public class MapObjectContainer {
             Iterator<Integer> keys = stacks.keySet().iterator();
             int index = 0;
             while (keys.hasNext()) {
-                Collection<MapObjectRender> renders = stacks.getCollection(keys.next());
+                Collection<MapObjectRender> renders = stacks.get(keys.next());
                 float r = (float) (Math.PI * 2) * ((float) index / (float) (stackCount));
                 float cx = (float) Math.cos(r) * CIRCLE_R;
                 float cy = (float) Math.sin(r) * CIRCLE_R;

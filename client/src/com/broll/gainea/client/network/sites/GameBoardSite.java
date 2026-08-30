@@ -1,21 +1,22 @@
 package com.broll.gainea.client.network.sites;
 
-import com.broll.gainea.net.NT_BoardUpdate;
-import com.broll.gainea.net.NT_GoalProgression;
-import com.broll.networklib.PackageReceiver;
+import com.broll.mpnll.client.site.MessageReceiverRegistry;
 
 public class GameBoardSite extends AbstractGameSite {
+    @Override
+    protected void registerReceivers(MessageReceiverRegistry registry) {
+        on(registry, com.broll.gainea.net.proto.NT_BoardUpdate.class, this::received);
+        on(registry, com.broll.gainea.net.proto.NT_GoalProgression.class, this::received);
+    }
 
-    @PackageReceiver
-    public void received(NT_BoardUpdate update) {
+    private void received(com.broll.gainea.net.proto.NT_BoardUpdate update) {
         game.ui.inGameUI.getBattleHandler().clearBattleScreen();
         game.state.update(update);
         game.ui.inGameUI.updateWindows();
     }
 
-    @PackageReceiver
-    public void received(NT_GoalProgression progression) {
-        game.state.getGoals().get(progression.index).progression = progression.progression;
+    private void received(com.broll.gainea.net.proto.NT_GoalProgression progression) {
+        game.state.getGoals().get(progression.getIndex()).setProgression(progression.getProgression());
         game.ui.inGameUI.updateWindows();
     }
 }

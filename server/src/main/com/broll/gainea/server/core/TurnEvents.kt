@@ -1,7 +1,7 @@
 package com.broll.gainea.server.core
 
 import com.broll.gainea.misc.RandomUtils
-import com.broll.gainea.net.NT_PlayerWait
+import com.broll.gainea.net.proto.NT_PlayerWait
 import com.broll.gainea.server.core.events.E_GetCards
 import com.broll.gainea.server.core.events.E_SpawnGoddrake
 import com.broll.gainea.server.core.events.E_SpawnMonster
@@ -22,9 +22,7 @@ class TurnEvents(private val game: Game) : GameUpdateReceiverAdapter() {
     private var turnsWithoutEvent = 0
 
     private fun turnEvent(event: EventCard) {
-        val nt = NT_PlayerWait()
-        nt.playersTurn = -1
-        game.sendUpdate(nt)
+        game.sendUpdate(NT_PlayerWait.newBuilder().setPlayersTurn(-1).build())
         game.runEvent(event)
     }
 

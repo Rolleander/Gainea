@@ -2,10 +2,10 @@ package com.broll.gainea.server.core.utils
 
 import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.map.Area
-import com.broll.gainea.server.core.map.AreaType
 import com.broll.gainea.server.core.map.Continent
+import com.broll.gainea.core.map.ExpansionType
+import com.broll.gainea.server.core.map.AreaType
 import com.broll.gainea.server.core.map.ContinentID
-import com.broll.gainea.server.core.map.ExpansionType
 import com.broll.gainea.server.core.map.Island
 import com.broll.gainea.server.core.map.IslandID
 import com.broll.gainea.server.core.map.Location

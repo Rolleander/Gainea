@@ -1,10 +1,11 @@
 package com.broll.gainea.server.core.map
 
+import com.broll.gainea.core.map.ExpansionType
 import com.broll.gainea.server.core.map.impl.BoglandMap
 import com.broll.gainea.server.core.map.impl.GaineaMap
 import com.broll.gainea.server.core.map.impl.IcelandMap
 import com.broll.gainea.server.core.map.impl.MountainsMap
-import com.broll.gainea.server.init.ExpansionSetting
+import com.broll.gainea.core.map.ExpansionSetting
 import java.util.concurrent.atomic.AtomicInteger
 
 object MapFactory {

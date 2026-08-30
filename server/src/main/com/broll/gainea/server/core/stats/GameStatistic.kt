@@ -1,6 +1,8 @@
 package com.broll.gainea.server.core.stats
 
-import com.broll.gainea.net.NT_GameStatistic
+import com.broll.gainea.server.core.map.*
+
+import com.broll.gainea.net.proto.NT_GameStatistic
 import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.core.processing.GameUpdateReceiverAdapter
@@ -19,8 +21,7 @@ class GameStatistic(private val game: Game) : GameUpdateReceiverAdapter() {
 
     fun sendStatistic() {
         calcTurnStatistic()
-        val nt = NT_GameStatistic()
-        nt.rounds = turnStatistics.map { it.nt() }.toTypedArray()
+        val nt = NT_GameStatistic.newBuilder().addAllRounds(turnStatistics.map { it.nt() }).build()
         game.sendUpdate(nt)
     }
 

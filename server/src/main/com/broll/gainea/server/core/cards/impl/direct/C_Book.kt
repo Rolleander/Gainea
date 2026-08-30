@@ -1,7 +1,7 @@
 package com.broll.gainea.server.core.cards.impl.direct
 
 import com.broll.gainea.server.core.cards.DirectlyPlayedCard
-import com.broll.gainea.server.core.cards.EffectType.OTHER
+import com.broll.gainea.core.cards.EffectType.OTHER
 import com.broll.gainea.server.core.cards.impl.play.C_PickCard
 import com.broll.gainea.server.core.utils.iteratePlayers
 

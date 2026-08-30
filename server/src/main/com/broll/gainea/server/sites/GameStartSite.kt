@@ -1,6 +1,6 @@
 package com.broll.gainea.server.sites
 
-import com.broll.gainea.net.NT_LoadedGame
+import com.broll.gainea.net.proto.NT_LoadedGame
 import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.ReactionResultHandler
 import com.broll.gainea.server.core.actions.required.PlaceUnitAction
@@ -13,11 +13,15 @@ import com.broll.gainea.server.core.utils.ProcessingUtils
 import com.broll.gainea.server.core.utils.UnitControl.spawn
 import com.broll.gainea.server.core.utils.UnitControl.spawnMonsters
 import com.broll.gainea.server.core.utils.pickRandomEmpty
-import com.broll.networklib.PackageReceiver
-import com.broll.networklib.server.Autoshared
-import com.broll.networklib.server.ConnectionRestriction
-import com.broll.networklib.server.RestrictionType
-import com.broll.networklib.server.ShareLevel
+import com.broll.gainea.server.network.gameData
+import com.broll.gainea.server.network.playerData
+import com.broll.gainea.server.network.players
+import com.broll.gainea.server.network.systemMessage
+import com.broll.mpnll.server.site.PackageReceiver
+import com.broll.mpnll.server.utils.Autoshared
+import com.broll.mpnll.server.utils.ConnectionRestriction
+import com.broll.mpnll.server.utils.RestrictionType
+import com.broll.mpnll.server.utils.ShareLevel
 import com.google.common.collect.Lists
 import org.slf4j.LoggerFactory
 
@@ -35,20 +39,24 @@ class GameStartSite : GameSite() {
     private lateinit var gameStart: GameStartData
 
     fun startGame() {
-        lobby.chat(null, "Starte Spiel...")
+        lobby.systemMessage("Starte Spiel...")
         val game = Game(lobby)
-        lobby.data.game = game
+        lobby.gameData.game = game
         game.allPlayers.forEach {
-            it.serverPlayer.data.gamePlayer = it
+            it.serverPlayer.playerData.gamePlayer = it
         }
-        lobby.data.gameStartListener?.gameStarted()
+        lobby.gameData.gameStartListener?.gameStarted()
         game.initHandlers(ReactionResultHandler(game, lobby))
         gameStart.loading = true
+        lobby.gameData.playerLoaded = { loadedPlayer -> markPlayerLoaded(loadedPlayer.playerData.gamePlayer) }
         lobby.players.forEach { p ->
-            val player = p.data.gamePlayer
+            val player = p.playerData.gamePlayer
             gameStart.playerData[player] = PlayerStartData()
             drawStartingCards(game, player)
-            p.sendTCP(game.start(player))
+        }
+        lobby.players.forEach { p ->
+            val player = p.playerData.gamePlayer
+            p.send(game.start(player))
         }
         Log.info("Started game in lobby " + lobby.name)
     }
@@ -65,7 +73,7 @@ class GameStartSite : GameSite() {
         gameStart.loading = false
         game.processingCore.execute({
             //spawn monsters
-            val totalMonsters = lobby.data.monsterCount * game.map.activeExpansionTypes.size
+            val totalMonsters = lobby.gameData.monsterCount * game.map.activeExpansionTypes.size
             Log.info("Spawn Monsters: $totalMonsters")
             game.spawnMonsters(totalMonsters)
             ProcessingUtils.pause(DELAY)
@@ -75,7 +83,7 @@ class GameStartSite : GameSite() {
             placeUnits()
             //all start units placed, start first turn
             ProcessingUtils.MAX_PAUSE *= 3
-            lobby.data.gameRoundsStarted = true
+            lobby.gameData.gameRoundsStarted = true
             Log.info("Start first turn")
             nextTurn()
         }, DELAY)
@@ -84,7 +92,7 @@ class GameStartSite : GameSite() {
     private fun assignGoals() {
         Log.info("Assign Goals")
         val game = game
-        val startGoalsCount = lobby.data.startGoals
+        val startGoalsCount = lobby.gameData.startGoals
         for (i in 0 until startGoalsCount) {
             game.allPlayers.forEach { player ->
                 Log.debug("Add goal to $player")
@@ -97,7 +105,7 @@ class GameStartSite : GameSite() {
     private fun placeUnits() {
         Log.info("Draw start locations")
         val game = game
-        val startLocationsCount = lobby.data.startLocations
+        val startLocationsCount = lobby.gameData.startLocations
         val playerCount = game.allPlayers.size
         val startLocations =
             game.map.pickRandomEmpty(playerCount * startLocationsCount).toMutableList()
@@ -126,9 +134,13 @@ class GameStartSite : GameSite() {
 
     @PackageReceiver //   @ConnectionRestriction(RestrictionType.LOBBY_LOCKED)
     fun playerLoaded(loadedGame: NT_LoadedGame) {
-        if (gameStart.loading) {
-            Log.info("$gamePlayer loaded game!")
-            gameStart.playerData[gamePlayer]!!.loaded = true
+        markPlayerLoaded(gamePlayer)
+    }
+
+    private fun markPlayerLoaded(player: Player) {
+        if (gameStart.loading && gameStart.playerData[player]?.loaded == false) {
+            Log.info("$player loaded game!")
+            gameStart.playerData[player]!!.loaded = true
             if (allPlayersLoaded()) {
                 Log.info("All players loaded game, start with init!")
                 gameLoaded()

@@ -11,17 +11,10 @@ import com.broll.gainea.client.ui.ingame.unit.MenuUnit;
 import com.broll.gainea.client.ui.ingame.windows.CardWindow;
 import com.broll.gainea.client.ui.ingame.windows.MenuWindow;
 import com.broll.gainea.client.ui.utils.TableUtils;
-import com.broll.gainea.net.NT_Card;
-import com.broll.gainea.net.NT_Goal;
-import com.broll.gainea.net.NT_Lib_Card;
-import com.broll.gainea.net.NT_Lib_Goal;
-import com.broll.gainea.net.NT_Lib_Monster;
-import com.broll.gainea.net.NT_Monster;
-import com.broll.gainea.server.core.cards.EffectType;
-import com.broll.gainea.server.core.goals.GoalDifficulty;
-import com.google.common.collect.Lists;
-
-import org.apache.commons.lang3.tuple.Pair;
+import com.broll.gainea.net.proto.*;
+import com.broll.gainea.core.cards.EffectType;
+import com.broll.gainea.core.goals.GoalDifficulty;
+import com.broll.gainea.client.util.Pair;
 
 import java.util.Arrays;
 import java.util.List;
@@ -32,7 +25,7 @@ public class LibraryWindow extends MenuWindow {
     public LibraryWindow(Gainea game) {
         super(game, "Info", game.ui.skin);
         TableUtils.consumeClicks(this);
-        List<Pair<String, Actor>> tabs = Lists.newArrayList(
+        List<Pair<String, Actor>> tabs = Arrays.asList(
                 Pair.of("Fraktionen", fractions()),
                 Pair.of("Karten", cards()),
                 Pair.of("Ziele", goals()),
@@ -43,7 +36,7 @@ public class LibraryWindow extends MenuWindow {
 
 
     private Actor fractions() {
-        return new ListSelectionPane(getSkin(), Arrays.stream(game.state.library.fractions).map(fraction -> Pair.of(fraction.name, (Actor) new FractionTable(game, fraction))).collect(Collectors.toList()), true);
+        return new ListSelectionPane(getSkin(), game.state.library.getFractionsList().stream().map(fraction -> Pair.of(fraction.getName(), (Actor) new FractionTable(game, fraction))).collect(Collectors.toList()), true);
     }
 
     private Actor cards() {
@@ -51,15 +44,10 @@ public class LibraryWindow extends MenuWindow {
             Table cards = new Table();
             cards.top();
             cards.defaults().pad(5);
-            List<NT_Lib_Card> cardData = Arrays.stream(game.state.library.cards).filter(it -> it.type == type.ordinal()).collect(Collectors.toList());
+            List<NT_Lib_Card> cardData = game.state.library.getCardsList().stream().filter(it -> it.getType() == type.ordinal()).collect(Collectors.toList());
             cardData.stream().map(it -> {
-                NT_Card ntC = new NT_Card();
-                ntC.picture = it.picture;
-                ntC.title = it.title;
-                ntC.text = it.text;
-                ntC.playable = false;
-                ntC.event = it.directlyPlayed;
-                return ntC;
+                return NT_Card.newBuilder().setPicture(it.getPicture()).setTitle(it.getTitle())
+                    .setText(it.getText()).setPlayable(false).setEvent(it.getDirectlyPlayed()).build();
             }).forEach(card -> cards.add(CardWindow.renderCard(game, card)).row());
             return Pair.of(type.getDisplayName() + " (" + cardData.size() + ")", (Actor) new VerticalScrollPane(cards, skin));
         }).collect(Collectors.toList()), true);
@@ -69,17 +57,11 @@ public class LibraryWindow extends MenuWindow {
         Table table = new Table();
         table.defaults().pad(10);
         int cols = 2;
-        for (int i = 0; i < game.state.library.monsters.length; i++) {
-            NT_Lib_Monster monster = game.state.library.monsters[i];
-            NT_Monster nt = new NT_Monster();
-            nt.stars = monster.stars;
-            nt.behavior = monster.behavior;
-            nt.icon = monster.icon;
-            nt.description = monster.description;
-            nt.power = monster.power;
-            nt.health = monster.health;
-            nt.maxHealth = monster.health;
-            nt.name = monster.name;
+        for (int i = 0; i < game.state.library.getMonstersCount(); i++) {
+            NT_Lib_Monster monster = game.state.library.getMonsters(i);
+            NT_Monster nt = NT_Monster.newBuilder().setStars(monster.getStars()).setBehavior(monster.getBehavior())
+                .setIcon(monster.getIcon()).setDescription(monster.getDescription()).setPower(monster.getPower())
+                .setHealth(monster.getHealth()).setMaxHealth(monster.getHealth()).setName(monster.getName()).build();
             Cell<MenuUnit> cell = table.add(new MenuUnit(game, nt, true));
             if (i % cols == cols - 1) {
                 cell.row();
@@ -93,12 +75,10 @@ public class LibraryWindow extends MenuWindow {
             Table table = new Table();
             table.top();
             table.defaults().pad(5);
-            List<NT_Lib_Goal> goals = Arrays.stream(game.state.library.goals).filter(it -> it.points == difficulty.getPoints()).collect(Collectors.toList());
+            List<NT_Lib_Goal> goals = game.state.library.getGoalsList().stream().filter(it -> it.getPoints() == difficulty.getPoints()).collect(Collectors.toList());
             goals.stream().forEach(goal -> {
-                NT_Goal nt = new NT_Goal();
-                nt.description = goal.description;
-                nt.points = goal.points;
-                nt.restriction = goal.restriction;
+                NT_Goal nt = NT_Goal.newBuilder().setDescription(goal.getDescription()).setPoints(goal.getPoints())
+                    .setRestriction(goal.getRestriction()).build();
                 table.add(GoalOverlay.renderGoal(game, nt)).row();
             });
             return Pair.of(difficulty.getLabel() + " (" + goals.size() + ")", (Actor) new VerticalScrollPane(table, skin));

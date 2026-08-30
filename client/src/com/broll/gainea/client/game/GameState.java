@@ -1,26 +1,19 @@
 package com.broll.gainea.client.game;
 
 import com.broll.gainea.Gainea;
-import com.broll.gainea.net.NT_Action;
-import com.broll.gainea.net.NT_BoardEffect;
-import com.broll.gainea.net.NT_BoardObject;
-import com.broll.gainea.net.NT_BoardUpdate;
-import com.broll.gainea.net.NT_Card;
-import com.broll.gainea.net.NT_GameStatistic;
-import com.broll.gainea.net.NT_Goal;
-import com.broll.gainea.net.NT_Lib;
-import com.broll.gainea.net.NT_Player;
-import com.broll.gainea.net.NT_Shop;
-import com.broll.gainea.net.NT_Unit;
-import com.broll.gainea.server.init.ExpansionSetting;
-import com.broll.networklib.client.impl.LobbyPlayer;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Streams;
+import com.broll.gainea.net.proto.NT_Action;
+import com.broll.gainea.net.proto.NT_BoardEffect;
+import com.broll.gainea.net.proto.NT_BoardObject;
+import com.broll.gainea.net.proto.NT_BoardUpdate;
+import com.broll.gainea.net.proto.NT_Card;
+import com.broll.gainea.net.proto.NT_GameStatistic;
+import com.broll.gainea.net.proto.NT_Lib;
+import com.broll.gainea.net.proto.NT_Player;
+import com.broll.gainea.net.proto.NT_Shop;
+import com.broll.mpnll.client.lobby.User;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class GameState {
 
@@ -33,16 +26,16 @@ public class GameState {
     private int turn;
     private int pointLimit;
     private int roundLimit;
-    private List<NT_BoardObject> objects;
+    private List<BoardObjectState> objects;
     private List<NT_BoardEffect> effects;
-    private List<NT_Player> players;
+    private List<PlayerState> players;
     private ClientMapContainer mapContainer;
     private MapObjectContainer mapObjectsContainer;
     private MapEffectContainer mapEffectContainer;
     //my player specific data:
-    private List<NT_Goal> goals;
+    private List<GoalState> goals;
     private List<NT_Card> cards;
-    private LobbyPlayer player;
+    private GamePlayer player;
     private List<GameStateListener> stateListeners = new ArrayList<>();
     private boolean playersTurn;
     private boolean actionsAllowed;
@@ -52,11 +45,20 @@ public class GameState {
         this.game = game;
     }
 
-    public void init(ExpansionSetting setting, int pointLimit, int roundLimit, LobbyPlayer player) {
-        this.player = player;
+    public void init(List<com.broll.gainea.net.proto.NT_Expansion> expansions, int pointLimit, int roundLimit, User player) {
+        this.player = GamePlayer.connected(player);
+        initState(expansions, pointLimit, roundLimit);
+    }
+
+    public void initOffline(List<com.broll.gainea.net.proto.NT_Expansion> expansions, int pointLimit, int roundLimit, int playerId) {
+        this.player = GamePlayer.offline(playerId);
+        initState(expansions, pointLimit, roundLimit);
+    }
+
+    private void initState(List<com.broll.gainea.net.proto.NT_Expansion> expansions, int pointLimit, int roundLimit) {
         this.pointLimit = pointLimit;
         this.roundLimit = roundLimit;
-        mapContainer = new ClientMapContainer(game, setting);
+        mapContainer = new ClientMapContainer(game, expansions);
         mapObjectsContainer = new MapObjectContainer(this);
         mapEffectContainer = new MapEffectContainer(game);
         goals = new ArrayList<>();
@@ -105,16 +107,24 @@ public class GameState {
     }
 
     public void update(NT_BoardUpdate update) {
-        this.round = update.round;
-        this.turn = update.turn;
-        this.objects = Lists.newArrayList(update.objects);
-        this.players = Arrays.asList(update.players);
-        this.effects = Lists.newArrayList(update.effects);
+        update(update.getRound(), update.getTurn(), update.getObjectsList(), update.getPlayersList(), update.getEffectsList());
+    }
+
+    private void update(int round, int turn, List<NT_BoardObject> objects, List<NT_Player> players, List<NT_BoardEffect> effects) {
+        this.round = round;
+        this.turn = turn;
+        this.objects = new ArrayList<>();
+        objects.forEach(value -> this.objects.add(new BoardObjectState(value)));
+        this.players = new ArrayList<>();
+        players.forEach(value -> this.players.add(new PlayerState(value)));
+        this.effects = new ArrayList<>(effects);
         updateMapObjects(0);
     }
 
     public void updateMapObjects(int effect) {
-        mapObjectsContainer.update(effect, Streams.concat(objects.stream(), players.stream().flatMap(p -> Arrays.stream(p.units))).collect(Collectors.toList()));
+        List<BoardObjectState> allObjects = new ArrayList<>(objects);
+        players.forEach(player -> allObjects.addAll(player.units()));
+        mapObjectsContainer.update(effect, allObjects);
         mapEffectContainer.update(this.effects);
         if (game.ui.inGameUI != null) {
             game.ui.inGameUI.getRequiredActionHandler().toFront();
@@ -131,15 +141,15 @@ public class GameState {
         updateIdleState(true);
     }
 
-    public List<NT_Unit> getUnits(int playerId) {
-        return Arrays.asList(getPlayer(playerId).units);
+    public List<BoardObjectState> getUnits(int playerId) {
+        return getPlayer(playerId).units();
     }
 
-    public NT_Player getPlayer(int id) {
-        return players.stream().filter(it -> it.id == id).findFirst().orElse(null);
+    public PlayerState getPlayer(int id) {
+        return players.stream().filter(it -> it.id() == id).findFirst().orElse(null);
     }
 
-    public List<NT_BoardObject> getObjects() {
+    public List<BoardObjectState> getObjects() {
         return objects;
     }
 
@@ -147,7 +157,7 @@ public class GameState {
         return effects;
     }
 
-    public List<NT_Player> getPlayers() {
+    public List<PlayerState> getPlayers() {
         return players;
     }
 
@@ -163,7 +173,7 @@ public class GameState {
         return cards;
     }
 
-    public List<NT_Goal> getGoals() {
+    public List<GoalState> getGoals() {
         return goals;
     }
 
@@ -171,7 +181,7 @@ public class GameState {
         return mapObjectsContainer;
     }
 
-    public LobbyPlayer getPlayer() {
+    public GamePlayer getPlayer() {
         return player;
     }
 

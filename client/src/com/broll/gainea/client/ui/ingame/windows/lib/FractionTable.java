@@ -7,7 +7,7 @@ import com.broll.gainea.Gainea;
 import com.broll.gainea.client.ui.ingame.unit.MenuUnit;
 import com.broll.gainea.client.ui.utils.LabelUtils;
 import com.broll.gainea.client.ui.utils.TextureUtils;
-import com.broll.gainea.net.NT_Lib_Fraction;
+import com.broll.gainea.net.proto.NT_Lib_Fraction;
 
 import java.util.Arrays;
 
@@ -22,17 +22,17 @@ public class FractionTable extends Table {
         top();
         pad(5);
         padLeft(20);
-        add(LabelUtils.title(getSkin(), fraction.name)).left().row();
+        add(LabelUtils.title(getSkin(), fraction.getName())).left().row();
         Table t = new Table();
         t.add(LabelUtils.info(getSkin(), "Kommandant")).left();
-        t.add(new MenuUnit(game, fraction.commander, true)).left().spaceLeft(50).spaceBottom(10).row();
+        t.add(new MenuUnit(game, fraction.getCommander(), true)).left().spaceLeft(50).spaceBottom(10).row();
         t.add(LabelUtils.info(getSkin(), "Soldaten")).left();
-        t.add(new MenuUnit(game, fraction.soldier, true)).left().spaceLeft(50).row();
+        t.add(new MenuUnit(game, fraction.getSoldier(), true)).left().spaceLeft(50).row();
         add(t).left().row();
         int w = 450;
-        add(LabelUtils.autoWrap(LabelUtils.info(getSkin(), fraction.desc), w)).left().spaceTop(20).padBottom(20).width(w).row();
-        Arrays.stream(fraction.descPositive).forEach(text -> add(info(4, text)).left().spaceTop(10).row());
-        Arrays.stream(fraction.descNegative).forEach(text -> add(info(5, text)).left().spaceTop(10).row());
+        add(LabelUtils.autoWrap(LabelUtils.info(getSkin(), fraction.getDesc()), w)).left().spaceTop(20).padBottom(20).width(w).row();
+        fraction.getDescPositiveList().forEach(text -> add(info(4, text)).left().spaceTop(10).row());
+        fraction.getDescNegativeList().forEach(text -> add(info(5, text)).left().spaceTop(10).row());
     }
 
     private Table info(int icon, String text) {

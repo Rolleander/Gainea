@@ -13,12 +13,13 @@ import com.broll.gainea.Gainea;
 import com.broll.gainea.client.AudioPlayer;
 import com.broll.gainea.client.game.GameStateListener;
 import com.broll.gainea.client.game.PlayerPerformOptionalAction;
+import com.broll.gainea.client.game.ClientActions;
 import com.broll.gainea.client.ui.utils.ActionListener;
 import com.broll.gainea.client.ui.utils.LabelUtils;
 import com.broll.gainea.client.ui.utils.TableUtils;
 import com.broll.gainea.client.ui.utils.TextureUtils;
-import com.broll.gainea.net.NT_Action_Card;
-import com.broll.gainea.net.NT_Card;
+import com.broll.gainea.net.proto.NT_Action_Card;
+import com.broll.gainea.net.proto.NT_Card;
 
 import java.util.List;
 import java.util.Optional;
@@ -90,7 +91,7 @@ public class CardWindow extends MenuWindow {
             if (cardCount > 0) {
                 selectCard(game.state.getCards().get(0));
             }
-        } else if (game.state.getCards().stream().noneMatch(it -> it.id == selectedCard.id)) {
+        } else if (game.state.getCards().stream().noneMatch(it -> it.getId() == selectedCard.getId())) {
             if (cardCount > 0) {
                 selectCard(game.state.getCards().get(0));
             } else {
@@ -104,7 +105,7 @@ public class CardWindow extends MenuWindow {
     private void selectCard(NT_Card card) {
         this.selectedCard = card;
         this.cardList.getChildren().forEach(it -> {
-            ((PreviewCard) it).setSelected(((PreviewCard) it).card.id == selectedCard.id);
+            ((PreviewCard) it).setSelected(((PreviewCard) it).card.getId() == selectedCard.getId());
         });
         cardView.clear();
         ActionListener playListener = null;
@@ -112,7 +113,7 @@ public class CardWindow extends MenuWindow {
         if (action != null) {
             playListener = () -> {
                 CardWindow.this.setVisible(false);
-                playerPerformAction.perform(action, 0, null);
+                playerPerformAction.perform(ClientActions.wrap(action), 0, null);
             };
         }
         cardView.add(new CardView(game, selectedCard, playListener));
@@ -120,7 +121,7 @@ public class CardWindow extends MenuWindow {
 
     private NT_Action_Card getPlayAction(NT_Card card) {
         if (playableCards != null) {
-            Optional<NT_Action_Card> playableCard = playableCards.stream().filter(it -> it.cardId == card.id).findFirst();
+            Optional<NT_Action_Card> playableCard = playableCards.stream().filter(it -> it.getCardId() == card.getId()).findFirst();
             if (cardsPlayable) {
                 return playableCard.orElse(null);
             }
@@ -135,25 +136,25 @@ public class CardWindow extends MenuWindow {
             super(game.ui.skin);
             defaults().space(15);
             left();
-            if (card.event) {
+            if (card.getEvent()) {
                 setBackground("event-card-bg");
             } else {
                 setBackground("card-bg");
             }
             Table box = new Table(game.ui.skin);
             box.top().left();
-            if (card.event) {
+            if (card.getEvent()) {
                 box.add(new Image(TextureUtils.icon(game, 7))).width(20).height(20).padRight(10);
             }
-            box.add(LabelUtils.label(game.ui.skin, card.title)).left().growX();
+            box.add(LabelUtils.label(game.ui.skin, card.getTitle())).left().growX();
             if (playListener != null) {
                 Button activate = TableUtils.textButton(game.ui.skin, "Aktivieren!", playListener);
                 box.add(activate).right().pad(3);
             }
             box.row();
             int w = 540;
-            box.add(LabelUtils.autoWrap(LabelUtils.info(game.ui.skin, card.text), w)).colspan(2).width(w).left().row();
-            add(new Image(new TextureRegionDrawable(TextureUtils.cardPicture(game, card.picture)))).top();
+            box.add(LabelUtils.autoWrap(LabelUtils.info(game.ui.skin, card.getText()), w)).colspan(2).width(w).left().row();
+            add(new Image(new TextureRegionDrawable(TextureUtils.cardPicture(game, card.getPicture())))).top();
             add(box).top().row();
         }
     }
@@ -166,7 +167,7 @@ public class CardWindow extends MenuWindow {
             super(game.ui.skin);
             this.card = card;
             pad(3);
-            TextureRegion region = TextureUtils.cardPicture(game, card.picture);
+            TextureRegion region = TextureUtils.cardPicture(game, card.getPicture());
             region.setRegion((int) (region.getRegionX() + TextureUtils.CARD_HEIGHT * 0.5), region.getRegionY(), TextureUtils.CARD_HEIGHT, TextureUtils.CARD_HEIGHT);
             Image img = new Image(new TextureRegionDrawable(region));
             img.setScaling(Scaling.fit);

@@ -5,10 +5,10 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.broll.gainea.Gainea;
 import com.broll.gainea.client.ui.ingame.DepthActor;
-import com.broll.gainea.server.core.map.Area;
-import com.broll.gainea.server.core.map.Expansion;
-import com.broll.gainea.server.core.map.Location;
-import com.broll.gainea.server.core.map.Ship;
+import com.broll.gainea.client.game.map.Area;
+import com.broll.gainea.client.game.map.Expansion;
+import com.broll.gainea.client.game.map.Location;
+import com.broll.gainea.client.game.map.Ship;
 
 import java.util.Collection;
 
@@ -34,8 +34,8 @@ public class ExpansionDebugRender extends DepthActor {
     public void render(ShapeRenderer shape) {
         expansion.getContents().forEach(content -> {
             content.getAreas().forEach(area -> renderArea(area, shape));
-            content.getShips().forEach(ship -> renderShip(ship, shape));
         });
+        expansion.getAllShips().forEach(ship -> renderShip(ship, shape));
     }
 
     private void renderArea(Area location, ShapeRenderer shape) {

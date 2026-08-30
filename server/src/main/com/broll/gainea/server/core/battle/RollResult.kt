@@ -1,7 +1,7 @@
 package com.broll.gainea.server.core.battle
 
 import com.broll.gainea.misc.RandomUtils
-import com.broll.gainea.net.NT_Battle_Roll
+import com.broll.gainea.net.proto.NT_Battle_Roll
 import com.broll.gainea.server.core.objects.Unit
 
 class RollResult(context: BattleContext, units: List<Unit>) {
@@ -94,13 +94,8 @@ class RollResult(context: BattleContext, units: List<Unit>) {
         }
 
         fun nt(): NT_Battle_Roll {
-            val nt = NT_Battle_Roll()
-            nt.sourceUnit = source?.id ?: -1
-            nt.number = value
-            nt.min = min
-            nt.max = max
-            nt.plus = plus
-            return nt
+            return NT_Battle_Roll.newBuilder().setSourceUnit(source?.id ?: -1)
+                .setNumber(value).setMin(min).setMax(max).setPlus(plus).build()
         }
     }
 }

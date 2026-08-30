@@ -1,13 +1,13 @@
 package com.broll.gainea.server.core.map.impl
 
+import com.broll.gainea.server.core.map.ExpansionFactory
+import com.broll.gainea.core.map.ExpansionType
 import com.broll.gainea.server.core.map.AreaID
 import com.broll.gainea.server.core.map.AreaType
 import com.broll.gainea.server.core.map.ContinentID
-import com.broll.gainea.server.core.map.ExpansionFactory
-import com.broll.gainea.server.core.map.ExpansionType
 import com.broll.gainea.server.core.map.IslandID
 
-class IcelandMap : ExpansionFactory(ExpansionType.ICELANDS, "expansion_1.png") {
+class IcelandMap : ExpansionFactory(ExpansionType.ICELANDS) {
     enum class Continents : ContinentID {
         TERON,
         SEISM,

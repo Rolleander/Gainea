@@ -1,13 +1,17 @@
 package com.broll.gainea.server.core.actions
 
-import com.broll.gainea.net.NT_Action
+import com.google.protobuf.Message
 
-abstract class ActionContext<T : NT_Action>(action: T) {
-    val action: T
-    var customHandler: CustomReactionHandler<ActionContext<out NT_Action>>? = null
-    var completionListener: ActionCompletedListener<ActionContext<out NT_Action>>? = null
+abstract class ActionContext<T : Message>(action: T) {
+    var action: T
+    var customHandler: CustomReactionHandler<ActionContext<out Message>>? = null
+    var completionListener: ActionCompletedListener<ActionContext<out Message>>? = null
 
     init {
         this.action = action
+    }
+
+    open fun assignActionId(id: Int) {
+        action = action.withActionId(id)
     }
 }

@@ -1,8 +1,9 @@
 package com.broll.gainea.server.core.shop
 
-import com.broll.gainea.net.NT_Event_BoughtMerc
-import com.broll.gainea.net.NT_ShopItem
-import com.broll.gainea.net.NT_ShopUnit
+import com.broll.gainea.net.proto.NT_Event
+import com.broll.gainea.net.proto.NT_Event_BoughtMerc
+import com.broll.gainea.net.proto.NT_ShopItem
+import com.broll.gainea.net.proto.NT_ShopUnit
 import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.actions.required.PlaceUnitAction
 import com.broll.gainea.server.core.objects.Unit
@@ -16,18 +17,17 @@ data class ShopUnit(
     override val available: Boolean = true
 ) : ShopItem {
     override fun nt(): NT_ShopItem {
-        val item = NT_ShopUnit()
-        item.price = price.toShort()
-        item.unit = unit.nt()
-        return item;
+        val shopUnit = NT_ShopUnit.newBuilder().setUnit(unit.nt()).build()
+        return NT_ShopItem.newBuilder().setPrice(price).setUnit(shopUnit).build()
     }
 
     override fun purchased(game: Game, player: Player) {
         val handler = game.getActionHandler(PlaceUnitAction::class.java)
         handler.placeUnit(player, unit, player.controlledLocations.toList())
-        val nt = NT_Event_BoughtMerc()
-        nt.unit = unit.nt()
-        nt.player = player.serverPlayer.id
-        game.sendUpdate(nt)
+        game.sendUpdate(
+            NT_Event_BoughtMerc.newBuilder().setUnit(unit.nt())
+                .setBase(NT_Event.newBuilder().setPlayer(player.serverPlayer.id).build())
+                .build()
+        )
     }
 }

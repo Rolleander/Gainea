@@ -1,11 +1,12 @@
 package com.broll.gainea.server.core.goals
 
+import com.broll.gainea.core.goals.GoalDifficulty
 import com.broll.gainea.server.core.battle.BattleResult
 import com.broll.gainea.server.core.bot.strategy.GoalStrategy
 import com.broll.gainea.server.core.map.Area
+import com.broll.gainea.core.map.ExpansionType
 import com.broll.gainea.server.core.map.AreaID
 import com.broll.gainea.server.core.map.ContinentID
-import com.broll.gainea.server.core.map.ExpansionType
 import com.broll.gainea.server.core.map.IslandID
 import com.broll.gainea.server.core.map.Location
 import com.broll.gainea.server.core.map.MapContainer

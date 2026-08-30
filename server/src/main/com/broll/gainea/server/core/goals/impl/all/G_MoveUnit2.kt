@@ -1,5 +1,5 @@
 package com.broll.gainea.server.core.goals.impl.all
 
-import com.broll.gainea.server.core.goals.GoalDifficulty
+import com.broll.gainea.core.goals.GoalDifficulty
 
 class G_MoveUnit2 : G_MoveUnit(GoalDifficulty.MEDIUM, 10)

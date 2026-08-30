@@ -3,7 +3,7 @@ package com.broll.gainea.server.core.goals.impl.all
 import com.broll.gainea.server.core.battle.BattleResult
 import com.broll.gainea.server.core.bot.strategy.GoalStrategy
 import com.broll.gainea.server.core.goals.Goal
-import com.broll.gainea.server.core.goals.GoalDifficulty
+import com.broll.gainea.core.goals.GoalDifficulty
 
 open class G_WinBattles(difficulty: GoalDifficulty = GoalDifficulty.MEDIUM, private val winTarget: Int = 6) : Goal(difficulty, "Gewinne $winTarget Schlachten gegen andere Spieler") {
     private var wins = 0

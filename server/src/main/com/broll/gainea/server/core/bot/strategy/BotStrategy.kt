@@ -1,5 +1,7 @@
 package com.broll.gainea.server.core.bot.strategy
 
+import com.broll.gainea.server.core.map.*
+
 import com.broll.gainea.misc.RandomUtils
 import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.bot.BotUtils

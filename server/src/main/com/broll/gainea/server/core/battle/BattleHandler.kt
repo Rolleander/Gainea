@@ -1,9 +1,10 @@
 package com.broll.gainea.server.core.battle
 
-import com.broll.gainea.net.NT_Battle_Intention
-import com.broll.gainea.net.NT_Battle_Reaction
-import com.broll.gainea.net.NT_Battle_Start
-import com.broll.gainea.net.NT_Battle_Update
+import com.broll.gainea.core.protocol.BattleState
+import com.broll.gainea.net.proto.NT_Battle_Intention
+import com.broll.gainea.net.proto.NT_Battle_Reaction
+import com.broll.gainea.net.proto.NT_Battle_Start
+import com.broll.gainea.net.proto.NT_Battle_Update
 import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.actions.ReactionActions
 import com.broll.gainea.server.core.objects.IUnit
@@ -74,9 +75,8 @@ class BattleHandler(private val game: Game, private val reactionResult: Reaction
     }
 
     private fun sendFightIntention() {
-        val intention = NT_Battle_Intention()
-        intention.fromLocation = context.sourceLocation.number
-        intention.toLocation = context.location.number
+        val intention = NT_Battle_Intention.newBuilder()
+            .setFromLocation(context.sourceLocation.number).setToLocation(context.location.number).build()
         reactionResult.sendGameUpdate(intention)
         ProcessingUtils.pause(BATTLE_INTENT_DELAY)
     }
@@ -84,15 +84,14 @@ class BattleHandler(private val game: Game, private val reactionResult: Reaction
     private fun sendFightStart() {
         Log.trace("Start fight")
         game.updateReceiver.battleBegin(context, rollManipulator)
-        val start = NT_Battle_Start()
-        start.attackers = context.attackers.sortedBy { it.id }.map { it.nt() }.toTypedArray()
-        start.defenders = context.defenders.sortedBy { it.id }.map { it.nt() }.toTypedArray()
-        start.allowRetreat = allowRetreat
-        start.location = context.location.number
+        val start = NT_Battle_Start.newBuilder()
+            .addAllAttackers(context.attackers.sortedBy { it.id }.map { it.nt() })
+            .addAllDefenders(context.defenders.sortedBy { it.id }.map { it.nt() })
+            .setAllowRetreat(allowRetreat).setLocation(context.location.number)
         context.getControllingAttacker()?.let {
             start.attacker = it.serverPlayer.id
         }
-        reactionResult.sendGameUpdate(start)
+        reactionResult.sendGameUpdate(start.build())
     }
 
     fun playerReaction(player: Player, battle_reaction: NT_Battle_Reaction) {
@@ -128,28 +127,28 @@ class BattleHandler(private val game: Game, private val reactionResult: Reaction
     private fun fightRound() {
         logContext("Fight round begin:")
         val result = rollFight()
-        val update = NT_Battle_Update()
-        update.attackerRolls = result.attackRolls.map { it.nt() }.toTypedArray()
-        update.defenderRolls = result.defenderRolls.map { it.nt() }.toTypedArray()
+        val update = NT_Battle_Update.newBuilder()
+            .addAllAttackerRolls(result.attackRolls.map { it.nt() })
+            .addAllDefenderRolls(result.defenderRolls.map { it.nt() })
         logContext("Fight round result:")
-        var state = NT_Battle_Update.STATE_FIGHTING
+        var state = BattleState.FIGHTING
         val attackersDead = context.aliveAttackers.isEmpty()
         val defendersDead = context.aliveDefenders.isEmpty()
         if (attackersDead && defendersDead) {
-            state = NT_Battle_Update.STATE_DRAW
+            state = BattleState.DRAW
         } else if (attackersDead) {
-            state = NT_Battle_Update.STATE_DEFENDER_WON
+            state = BattleState.DEFENDER_WON
         } else if (defendersDead) {
-            state = NT_Battle_Update.STATE_ATTACKER_WON
+            state = BattleState.ATTACKER_WON
         }
-        update.state = state
-        update.damage = result.getDamage().map { it.nt() }.toTypedArray()
+        update.state = state.value
+        update.addAllDamage(result.getDamage().map { it.nt() })
         context.rounds += BattleRound(result.getDamage())
         //send update
-        reactionResult.sendGameUpdate(update)
+        reactionResult.sendGameUpdate(update.build())
         val delay = getAnimationDelay(result.attackRolls.size, result.defenderRolls.size)
         ProcessingUtils.pause(delay)
-        if (state == NT_Battle_Update.STATE_FIGHTING) {
+        if (state == BattleState.FIGHTING) {
             //wait for player if he wants to keep attacking
             if (allowRetreat) {
                 keepAttacking = CompletableFuture()
@@ -195,9 +194,7 @@ class BattleHandler(private val game: Game, private val reactionResult: Reaction
 
     private fun battleFinished(retreated: Boolean) {
         if (retreated) {
-            val nt = NT_Battle_Reaction()
-            nt.keepAttacking = false
-            game.sendUpdate(nt)
+            game.sendUpdate(NT_Battle_Reaction.newBuilder().setKeepAttacking(false).build())
             ProcessingUtils.pause(BATTLE_ANIMATION_DELAY)
         }
         val result = BattleResult(retreated, context)

@@ -4,48 +4,41 @@ import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.utils.skipTurn
 import com.broll.gainea.server.init.LobbyData
 import com.broll.gainea.server.init.PlayerData
-import com.broll.networklib.network.nt.NT_ChatMessage
-import com.broll.networklib.server.impl.LobbySite
-import com.broll.networklib.server.impl.Player
+import com.broll.gainea.server.network.gameData
+import com.broll.gainea.server.network.playerData
+import com.broll.gainea.server.network.systemMessage
+import com.broll.mpnll.server.lobby.Lobby
+import com.broll.mpnll.server.lobby.LobbyChatHandler
+import com.broll.mpnll.server.user.User
 
-class CustomLobbySite : LobbySite<LobbyData, PlayerData>() {
+class CustomLobbySite : LobbyChatHandler {
     val CMD_PREIFX = "/"
     val CMDS = listOf(
         "help" to this::help,
-        "nextturn" to { game: Game, player: Player<PlayerData> ->
+        "nextturn" to { game: Game, player: User ->
             game.skipTurn()
         },
-        "drawcard" to { game: Game, player: Player<PlayerData> ->
-            player.data.gamePlayer.cardHandler.drawRandomPlayableCard()
+        "drawcard" to { game: Game, player: User ->
+            player.playerData.gamePlayer.cardHandler.drawRandomPlayableCard()
         }
     )
 
-    val game: Game?
-        get() = lobby.data.game
-
-    private fun help(game: Game, player: Player<PlayerData>) {
+    private fun help(game: Game, player: User) {
         val cmds = CMDS.takeLast(CMDS.size - 1).joinToString(",") { "$CMD_PREIFX${it.first}" }
-        player.sendResponse(cmds)
+        player.lobby.systemMessage(cmds, player)
     }
 
-    override fun chat(chatMessage: NT_ChatMessage) {
-        val cmd = CMDS.find { CMD_PREIFX + it.first == chatMessage.message.trim().lowercase() }
+    override fun handle(lobby: Lobby, sender: User, message: String): Boolean {
+        val game = lobby.gameData.game
+        val cmd = CMDS.find { CMD_PREIFX + it.first == message.trim().lowercase() }
         if (game != null && cmd != null) {
-            if (lobby.owner == player) {
-                cmd.second(game!!, player)
+            if (lobby.owner == sender) {
+                cmd.second(game, sender)
             } else {
-                player.sendResponse("Only lobby owner is allowed to send commands")
+                lobby.systemMessage("Only lobby owner is allowed to send commands", sender)
             }
-            return;
+            return true
         }
-        super.chat(chatMessage)
+        return false
     }
-
-    private fun Player<PlayerData>.sendResponse(msg: String) {
-        val nt = NT_ChatMessage()
-        nt.message = msg
-        sendTCP(nt)
-    }
-
 }
-

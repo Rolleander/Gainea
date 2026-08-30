@@ -2,7 +2,7 @@ package com.broll.gainea.server.core.cards.impl.direct
 
 import com.broll.gainea.misc.RandomUtils
 import com.broll.gainea.server.core.cards.DirectlyPlayedCard
-import com.broll.gainea.server.core.cards.EffectType.CHAOS
+import com.broll.gainea.core.cards.EffectType.CHAOS
 import com.broll.gainea.server.core.objects.Soldier
 import com.broll.gainea.server.core.utils.UnitControl.spawn
 import com.broll.gainea.server.core.utils.noPlayerUnits

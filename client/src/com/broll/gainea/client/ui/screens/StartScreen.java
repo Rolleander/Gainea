@@ -17,15 +17,16 @@ import com.broll.gainea.client.AudioPlayer;
 import com.broll.gainea.client.ui.Screen;
 import com.broll.gainea.client.ui.utils.LabelUtils;
 import com.broll.gainea.client.ui.utils.TableUtils;
-import com.broll.networklib.client.impl.GameLobby;
-import com.broll.networklib.client.tasks.ServerInformation;
+import com.broll.mpnll.client.impl.LobbyLookup;
+import com.broll.mpnll.client.lobby.LobbyInfo;
 
 public class StartScreen extends Screen {
 
     public static String PLAYER_NAME =
             "";
     public static String SERVER =
-            "gainea.de";
+            "localhost";
+    //"gainea.de";
     private TextField serverIp;
     private TextField name;
     private Table lobbies;
@@ -37,7 +38,7 @@ public class StartScreen extends Screen {
 
     }
 
-    private void joinLobby(GameLobby lobby) {
+    private void joinLobby(LobbyInfo lobby) {
         String name = this.name.getText();
         if (name != null && name.trim().length() > 0) {
             PLAYER_NAME = name;
@@ -55,7 +56,7 @@ public class StartScreen extends Screen {
         }
     }
 
-    public void showLobbies(ServerInformation info) {
+    public void showLobbies(LobbyLookup info) {
         this.lobbies.clear();
         info.getLobbies().forEach(lobby -> {
             Table table = new Table(skin);
@@ -64,7 +65,7 @@ public class StartScreen extends Screen {
             table.pad(10);
             table.add(info(lobby.getName())).padRight(50);
             table.add(info(info.getServerName() + " [" + lobby.getServerIp() + "]")).padRight(50);
-            table.add(info(lobby.getPlayerCount() + " Players"));
+            table.add(info(lobby.getUserCount() + " Players"));
             table.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
@@ -91,7 +92,6 @@ public class StartScreen extends Screen {
         loadingInfo = info("");
         loadingInfo.setAlignment(Align.center);
         loadingInfo.setVisible(false);
-        //"192.168.0.137"
         serverIp = new TextField(SERVER, skin);
         name = new TextField(PLAYER_NAME, skin);
         Table vg = new Table();

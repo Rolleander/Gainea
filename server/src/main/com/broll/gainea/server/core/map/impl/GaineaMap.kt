@@ -1,26 +1,26 @@
 package com.broll.gainea.server.core.map.impl
 
+import com.broll.gainea.server.core.map.ExpansionFactory
+import com.broll.gainea.core.map.ExpansionType
 import com.broll.gainea.server.core.map.AreaID
 import com.broll.gainea.server.core.map.AreaType
 import com.broll.gainea.server.core.map.ContinentID
-import com.broll.gainea.server.core.map.ExpansionFactory
-import com.broll.gainea.server.core.map.ExpansionType
 import com.broll.gainea.server.core.map.IslandID
 
-class GaineaMap : ExpansionFactory(ExpansionType.GAINEA, "expansion_0.png") {
-    enum class Continents : ContinentID {
+class GaineaMap : ExpansionFactory(ExpansionType.GAINEA) {
+    enum class Continents : ContinentID{
         GAINEA,
         MOOR,
         ZUBA
     }
 
-    enum class Islands : IslandID {
+    enum class Islands : IslandID{
         VULKANINSEL,
         MISTRAINSEL,
         TOTEMINSEL
     }
 
-    enum class Areas : AreaID {
+    enum class Areas : AreaID{
         KUESTENGEBIET,
         FELSWALD,
         FELSENWUESTE,

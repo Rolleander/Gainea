@@ -1,8 +1,8 @@
 package com.broll.gainea.server.core.actions.required
 
 import com.broll.gainea.misc.RandomUtils
-import com.broll.gainea.net.NT_Action_PlaceUnit
-import com.broll.gainea.net.NT_Reaction
+import com.broll.gainea.net.proto.NT_Action_PlaceUnit
+import com.broll.gainea.net.proto.NT_Reaction
 import com.broll.gainea.server.core.actions.AbstractActionHandler
 import com.broll.gainea.server.core.actions.ActionContext
 import com.broll.gainea.server.core.actions.RequiredActionContext
@@ -35,11 +35,11 @@ class PlaceUnitAction : AbstractActionHandler<NT_Action_PlaceUnit, Context>() {
             throw RuntimeException("Invalid place unit context: list of locations is empty")
         }
         Log.debug("Place unit action")
-        val placeUnit = NT_Action_PlaceUnit()
-        placeUnit.unitToPlace = unit.nt()
-        placeUnit.possibleLocations = locations.getLocationNumbers()
+        val placeUnit = NT_Action_PlaceUnit.newBuilder().setUnitToPlace(unit.nt())
+            .addAllPossibleLocations(locations.map { it.number }).build()
         val context = Context(placeUnit, unit, locations, locations[0])
         unitToPlace = context.unitToPlace
+        processingBlock.prepare()
         actionHandlers.reactionActions.requireAction(
             player,
             RequiredActionContext(context, "Platziere ${unit.name}")

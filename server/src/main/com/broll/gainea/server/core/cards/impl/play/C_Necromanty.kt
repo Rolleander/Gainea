@@ -2,7 +2,7 @@ package com.broll.gainea.server.core.cards.impl.play
 
 import com.broll.gainea.server.core.battle.BattleResult
 import com.broll.gainea.server.core.cards.Card
-import com.broll.gainea.server.core.cards.EffectType.SUMMON
+import com.broll.gainea.core.cards.EffectType.SUMMON
 import com.broll.gainea.server.core.map.Location
 import com.broll.gainea.server.core.objects.Soldier
 import com.broll.gainea.server.core.objects.buffs.TimedEffect

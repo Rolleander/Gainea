@@ -1,8 +1,9 @@
 package com.broll.gainea.server.core.bot.impl
 
-import com.broll.gainea.net.NT_Action
-import com.broll.gainea.net.NT_Action_Move
-import com.broll.gainea.net.NT_Reaction
+import com.broll.gainea.server.core.map.*
+
+import com.broll.gainea.net.proto.NT_Action_Move
+import com.broll.gainea.net.proto.NT_Reaction
 import com.broll.gainea.server.core.bot.BotOptionalAction
 import com.broll.gainea.server.core.bot.BotUtils
 import com.broll.gainea.server.core.bot.strategy.GoalStrategy
@@ -12,15 +13,16 @@ import com.broll.gainea.server.core.objects.Unit
 import com.broll.gainea.server.core.utils.getWalkingDistance
 import org.slf4j.LoggerFactory
 import java.util.concurrent.atomic.AtomicInteger
+import com.google.protobuf.Message
 
 class BotMove : BotOptionalAction<NT_Action_Move, BotMove.MoveOption>() {
-    override fun react(action: NT_Action_Move, reaction: NT_Reaction) {
-        reaction.options = selectedOption!!.moveUnits
+    override fun react(action: NT_Action_Move, reaction: NT_Reaction.Builder) {
+        reaction.addAllOptions(selectedOption!!.moveUnits.asIterable())
     }
 
     override fun score(action: NT_Action_Move): MoveOption? {
         val location = BotUtils.getLocation(game, action.location.toInt())
-        val units = BotUtils.getObjects(game, action.units)
+        val units = BotUtils.getObjects(game, action.unitsList)
         val goalStrategies = units.mapNotNull { strategy.getStrategy(it) }
         for (goalStrategy in goalStrategies) {
             val goalUnits = units.filter { strategy.getStrategy(it) == goalStrategy }
@@ -33,7 +35,7 @@ class BotMove : BotOptionalAction<NT_Action_Move, BotMove.MoveOption>() {
         return null
     }
 
-    override val actionClass: Class<out NT_Action>
+    override val actionClass: Class<out Message>
         get() = NT_Action_Move::class.java
 
     private fun chooseUnits(goalStrategy: GoalStrategy, units: List<Unit>, to: Location): MoveOption? {

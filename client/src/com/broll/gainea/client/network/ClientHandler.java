@@ -2,58 +2,40 @@ package com.broll.gainea.client.network;
 
 import com.badlogic.gdx.Gdx;
 import com.broll.gainea.Gainea;
-import com.broll.gainea.NetworkSetup;
-import com.broll.gainea.client.network.sites.GameActionSite;
-import com.broll.gainea.client.network.sites.GameBattleSite;
-import com.broll.gainea.client.network.sites.GameBoardSite;
-import com.broll.gainea.client.network.sites.GameEventSite;
-import com.broll.gainea.client.network.sites.GameStateSite;
-import com.broll.gainea.client.network.sites.GameTurnSite;
-import com.broll.gainea.client.network.sites.GameVoteSite;
-import com.broll.networklib.client.ClientSite;
-import com.broll.networklib.client.LobbyGameClient;
-import com.broll.networklib.client.impl.GameLobby;
-import com.broll.networklib.site.SiteReceiver;
-import com.google.common.collect.Lists;
+import com.broll.gainea.MessageRegistry;
+import com.broll.gainea.client.network.sites.*;
+import com.broll.mpnll.client.MpnllClient;
+import com.broll.mpnll.client.async.ClientFuture;
+import com.broll.mpnll.client.lobby.Lobby;
+import com.broll.mpnll.client.lobby.LobbyInfo;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.Method;
-import java.util.concurrent.Callable;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class ClientHandler {
-
-    private final static Logger Log = LoggerFactory.getLogger(ClientHandler.class);
-    private LobbyGameClient client;
-    private ExecutorService executor = Executors.newSingleThreadExecutor();
-    private boolean clientBusy = false;
+    private static final Logger Log = LoggerFactory.getLogger(ClientHandler.class);
+    private final MpnllClient client;
+    private boolean clientBusy;
     private IClientListener clientListener;
-    private Gainea game;
+    private final Gainea game;
 
     public ClientHandler(Gainea game) {
         this.game = game;
-        client = new LobbyGameClient(NetworkSetup::registerNetwork);
-        client.setSiteReceiver(new SiteReceiver<ClientSite, com.broll.networklib.client.GameClient.ClientConnection>() {
-            @Override
-            public void receive(com.broll.networklib.client.GameClient.ClientConnection context, ClientSite site, Method receiver, Object object) {
-                //perform operations from received packages on main thread
-                runOnGdx(() -> super.receive(context, site, receiver, object));
-            }
-        });
+        client = new MpnllClient();
+        client.registerMessages(MessageRegistry::register);
         initGameSites(game);
     }
 
     private void initGameSites(Gainea game) {
         client.clearSites();
         GameActionSite actionSite = new GameActionSite();
-        Lists.newArrayList(actionSite, new GameBattleSite(), new GameBoardSite(), new GameEventSite(), new GameStateSite(), new GameTurnSite(actionSite), new GameVoteSite()).forEach(site -> {
+        java.util.Arrays.asList(actionSite, new GameBattleSite(), new GameBoardSite(), new GameEventSite(),
+                new GameStateSite(), new GameTurnSite(actionSite), new GameVoteSite()).forEach(site -> {
             site.init(game);
-            client.register(site);
+            client.addSite(site);
         });
     }
 
@@ -63,15 +45,13 @@ public class ClientHandler {
 
     public void listLobbies(String ip) {
         clientExecute(() -> client.listLobbies(ip), result -> {
-            if (result.getReconnectedLobby() != null) {
-                listenLobbyUpdates(result.getReconnectedLobby());
-            } else {
-                clientListener.discoveredLobbies(result.getServer());
-            }
+            Lobby reconnected = client.getConnectedLobby();
+            if (reconnected != null) listenLobbyUpdates(reconnected);
+            else clientListener.discoveredLobbies(result);
         }, "Failed to list lobbies");
     }
 
-    public void joinLobby(String playerName, GameLobby lobby) {
+    public void joinLobby(String playerName, LobbyInfo lobby) {
         clientExecute(() -> client.joinLobby(lobby, playerName), this::connectedLobby, "Unable to join lobby");
     }
 
@@ -79,59 +59,59 @@ public class ClientHandler {
         clientExecute(() -> client.createLobby(playerName, null), this::connectedLobby, "Unable to create lobby");
     }
 
-    private void connectedLobby(GameLobby lobby) {
+    private void connectedLobby(Lobby lobby) {
         listenLobbyUpdates(lobby);
         runOnGdx(() -> clientListener.connectedLobby(lobby));
     }
 
     public void reconnectCheck() {
-        clientExecute(() -> client.reconnectCheck(), lobby -> {
-            //actual reconnect happens in GameStateSite
-            if (lobby != null) {
-                listenLobbyUpdates(lobby);
-            }
+        clientExecute(client::reconnectCheck, lobby -> {
+            if (lobby != null) listenLobbyUpdates(lobby);
         }, "Unable to reconnect to lobby");
     }
 
-    private void listenLobbyUpdates(GameLobby lobby) {
-        lobby.setLobbyUpdateListener(new ClientLobbyListener(game));
+    private void listenLobbyUpdates(Lobby lobby) {
+        lobby.addLobbyListener(new ClientLobbyListener(game));
     }
 
     private void runOnGdx(Runnable runnable) {
         Gdx.app.postRunnable(runnable);
     }
 
-    private <T> void clientExecute(Callable<CompletableFuture<T>> runnable, Consumer<T> resultHandler, String errorMessage) {
-        clientExecute(() -> {
-            try {
-                resultHandler.accept(runnable.call().get());
-            } catch (Exception e) {
-                Log.error(errorMessage, e);
-                String[] messageParts = e.getMessage().split("Exception: ");
-                clientListener.connectionFailure(errorMessage + "\n (" + messageParts[messageParts.length - 1] + ")");
-            }
-        });
+    private synchronized <T> void clientExecute(Supplier<ClientFuture<T>> operation, Consumer<T> resultHandler, String errorMessage) {
+        if (clientBusy) {
+            Log.info("client busy");
+            return;
+        }
+        clientBusy = true;
+        runOnGdx(() -> clientListener.loadingStateUpdate(true));
+        try {
+            operation.get().onSuccess(result -> runOnGdx(() -> {
+                finishOperation();
+                resultHandler.accept(result);
+            })).onFailure(error -> runOnGdx(() -> {
+                finishOperation();
+                Log.error(errorMessage, error);
+                String detail = error.getMessage() == null ? error.getClass().getSimpleName() : error.getMessage();
+                clientListener.connectionFailure(errorMessage + "\n (" + detail + ")");
+            }));
+        } catch (Throwable error) {
+            finishOperation();
+            Log.error(errorMessage, error);
+            clientListener.connectionFailure(errorMessage + "\n (" + error.getMessage() + ")");
+        }
     }
 
-    private synchronized void clientExecute(Runnable runnable) {
-        if (!clientBusy) {
-            clientBusy = true;
-            runOnGdx(() -> clientListener.loadingStateUpdate(true));
-            executor.execute(() -> {
-                runnable.run();
-                clientBusy = false;
-                runOnGdx(() -> clientListener.loadingStateUpdate(false));
-            });
-        } else {
-            Log.info("client busy");
-        }
+    private synchronized void finishOperation() {
+        clientBusy = false;
+        clientListener.loadingStateUpdate(false);
     }
 
     public void shutdown() {
         client.shutdown();
     }
 
-    public LobbyGameClient getClient() {
+    public MpnllClient getClient() {
         return client;
     }
 }

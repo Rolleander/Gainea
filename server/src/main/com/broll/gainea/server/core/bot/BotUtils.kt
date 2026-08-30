@@ -1,8 +1,10 @@
 package com.broll.gainea.server.core.bot
 
-import com.broll.gainea.net.NT_BoardObject
-import com.broll.gainea.net.NT_Goal
-import com.broll.gainea.net.NT_Unit
+import com.broll.gainea.server.core.map.*
+
+import com.broll.gainea.net.proto.NT_BoardObject
+import com.broll.gainea.net.proto.NT_Goal
+import com.broll.gainea.net.proto.NT_Unit
 import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.map.Location
 import com.broll.gainea.server.core.objects.Unit
@@ -12,10 +14,10 @@ import com.broll.gainea.server.core.utils.getWalkingDistance
 object BotUtils {
     fun getLocation(game: Game, id: Int) = game.map.getLocation(id)
 
-    fun getObjects(game: Game, units: Array<NT_Unit>) = units.map { getObject(game, it) }
+    fun getObjects(game: Game, units: Iterable<NT_Unit>) = units.map { getObject(game, it) }
 
     fun getObject(game: Game, unit: NT_Unit): Unit {
-        if (unit.owner == NT_BoardObject.NO_OWNER.toShort()) {
+        if (unit.owner == -1) {
             for (`object` in game.objects) {
                 if (`object`.id == unit.id.toInt() && `object` is Unit) {
                     return `object`
@@ -34,14 +36,22 @@ object BotUtils {
         throw RuntimeException("unknown object")
     }
 
+    fun getObject(game: Game, obj: NT_BoardObject): Unit {
+        if (obj.owner == -1) {
+            return game.objects.filterIsInstance<Unit>().first { it.id == obj.id }
+        }
+        return game.allPlayers.first { it.serverPlayer.id == obj.owner }
+            .units.first { it.id == obj.id }
+    }
+
     fun getGoal(game: Game, nt: NT_Goal) =
         game.allPlayers.flatMap { it.goalHandler.goals }.first { it.id == nt.id }
 
 
-    fun getLocations(game: Game, options: ShortArray): List<Location> {
+    fun getLocations(game: Game, options: Iterable<Int>): List<Location> {
         val locations: MutableList<Location> = ArrayList()
         for (id in options) {
-            locations.add(getLocation(game, id.toInt()))
+            locations.add(getLocation(game, id))
         }
         return locations
     }

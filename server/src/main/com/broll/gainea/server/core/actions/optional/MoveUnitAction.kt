@@ -1,7 +1,9 @@
 package com.broll.gainea.server.core.actions.optional
 
-import com.broll.gainea.net.NT_Action_Move
-import com.broll.gainea.net.NT_Reaction
+import com.broll.gainea.server.core.map.*
+
+import com.broll.gainea.net.proto.NT_Action_Move
+import com.broll.gainea.net.proto.NT_Reaction
 import com.broll.gainea.server.core.actions.AbstractActionHandler
 import com.broll.gainea.server.core.actions.ActionContext
 import com.broll.gainea.server.core.map.Location
@@ -15,9 +17,8 @@ class MoveUnitAction : AbstractActionHandler<NT_Action_Move, MoveUnitAction.Cont
         : ActionContext<NT_Action_Move>(action)
 
     fun move(objects: List<Unit>, location: Location): Context {
-        val moveUnit = NT_Action_Move()
-        moveUnit.location = location.number.toShort()
-        moveUnit.units = objects.map { it.nt() }.toTypedArray()
+        val moveUnit = NT_Action_Move.newBuilder().setLocation(location.number)
+            .addAllUnits(objects.map { it.nt() }).build()
         return Context(moveUnit, objects.toMutableList(), location)
     }
 
@@ -26,7 +27,7 @@ class MoveUnitAction : AbstractActionHandler<NT_Action_Move, MoveUnitAction.Cont
             Log.trace("Handle move reaction")
             val selectedUnits = mutableListOf<MapObject>()
             var from: Location? = null
-            reaction.options.map { selection -> context.unitsToMove.find { it.id == selection } }.filterNotNull().forEach { unit ->
+            reaction.optionsList.map { selection -> context.unitsToMove.find { it.id == selection } }.filterNotNull().forEach { unit ->
                 if (from == null) {
                     from = unit.location
                 }

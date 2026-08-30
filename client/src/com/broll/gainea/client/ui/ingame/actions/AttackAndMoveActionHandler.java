@@ -1,22 +1,21 @@
 package com.broll.gainea.client.ui.ingame.actions;
 
+import com.broll.gainea.client.game.map.Coordinates;
+
 import com.badlogic.gdx.math.MathUtils;
 import com.broll.gainea.Gainea;
 import com.broll.gainea.client.game.ClientMapContainer;
 import com.broll.gainea.client.game.PlayerPerformOptionalAction;
+import com.broll.gainea.client.game.BoardObjectState;
+import com.broll.gainea.client.game.ClientActions;
 import com.broll.gainea.client.ui.ingame.map.ActionTrail;
 import com.broll.gainea.client.ui.ingame.map.MapAction;
 import com.broll.gainea.client.ui.ingame.unit.UnitRender;
 import com.broll.gainea.client.ui.utils.ActionListener;
-import com.broll.gainea.net.NT_Action;
-import com.broll.gainea.net.NT_Action_Attack;
-import com.broll.gainea.net.NT_Action_Move;
-import com.broll.gainea.net.NT_Unit;
-import com.broll.gainea.server.core.map.Coordinates;
-import com.broll.gainea.server.core.map.Location;
-
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.map.MultiValueMap;
+import com.broll.gainea.net.proto.NT_Action_Attack;
+import com.broll.gainea.net.proto.NT_Action_Move;
+import com.broll.gainea.net.proto.NT_Unit;
+import com.broll.gainea.client.game.map.Location;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +25,7 @@ public class AttackAndMoveActionHandler {
 
     private Gainea game;
     private List<MapAction> mapActions = new ArrayList<>();
-    private List<NT_Unit> selectedUnits;
+    private List<BoardObjectState> selectedUnits;
 
     public AttackAndMoveActionHandler(Gainea game) {
         this.game = game;
@@ -36,33 +35,34 @@ public class AttackAndMoveActionHandler {
         clear();
         ClientMapContainer map = game.state.getMap();
         moves.forEach(move -> {
-            Location to = map.getLocation(move.location);
-            createDistinctMapActions(to, move, it -> it.units, MapAction.TYPE_MOVE, playerPerformAction);
+            Location to = map.getLocation(move.getLocation());
+            createDistinctMapActions(to, move, move.getUnitsList(), MapAction.TYPE_MOVE, playerPerformAction);
         });
         attacks.forEach(attack -> {
-            Location to = map.getLocation(attack.location);
-            createDistinctMapActions(to, attack, it -> it.units, MapAction.TYPE_ATTACK, playerPerformAction);
+            Location to = map.getLocation(attack.getLocation());
+            createDistinctMapActions(to, attack, attack.getUnitsList(), MapAction.TYPE_ATTACK, playerPerformAction);
         });
     }
 
-    private <A extends NT_Action> void createDistinctMapActions(Location to, A action, Function<A, NT_Unit[]> getUnits, int type, PlayerPerformOptionalAction playerPerformAction) {
-        MultiValueMap<Location, NT_Unit> paths = new MultiValueMap<>();
-        for (NT_Unit unit : getUnits.apply(action)) {
-            paths.put(game.state.getMap().getLocation(unit.location), unit);
+    private void createDistinctMapActions(Location to, Object action, List<NT_Unit> actionUnits, int type, PlayerPerformOptionalAction playerPerformAction) {
+        java.util.Map<Location, List<BoardObjectState>> paths = new java.util.HashMap<>();
+        for (NT_Unit unit : actionUnits) {
+            BoardObjectState state = game.state.getMapObjectsContainer() == null ? null : com.broll.gainea.client.game.GameUtils.findObject(game, unit.getId());
+            paths.computeIfAbsent(game.state.getMap().getLocation(unit.getLocation()), ignored -> new ArrayList<>()).add(state);
         }
         paths.keySet().forEach(from -> {
-            List<NT_Unit> pathUnits = (List<NT_Unit>) paths.getCollection(from);
+            List<BoardObjectState> pathUnits = paths.get(from);
             createMapAction(from, to, action, pathUnits, type, () -> {
                 int[] ids = getSelectedUnitIds(selectedUnits);
                 selectedUnits.forEach(it ->
                         ((UnitRender) game.state.getMapObjectsContainer().getObjectRender(it)).setActionActive(false)
                 );
-                playerPerformAction.perform(action, 0, ids);
+                playerPerformAction.perform(action instanceof NT_Action_Move ? ClientActions.wrap((NT_Action_Move) action) : ClientActions.wrap((NT_Action_Attack) action), 0, ids);
             });
         });
     }
 
-    private void createMapAction(Location from, Location to, Object nt_action, List<NT_Unit> units, int type, ActionListener listener) {
+    private void createMapAction(Location from, Location to, Object nt_action, List<BoardObjectState> units, int type, ActionListener listener) {
         MapAction action = new MapAction(game, type, to.getNumber(), listener);
         action.setAction(nt_action);
         action.setUnits(units);
@@ -84,17 +84,17 @@ public class AttackAndMoveActionHandler {
         mapActions.clear();
     }
 
-    public void showFor(List<NT_Unit> units) {
+    public void showFor(List<BoardObjectState> units) {
         this.selectedUnits = units;
         mapActions.forEach(it -> {
             it.setVisible(false);
             it.toFront();
         });
-        mapActions.stream().filter(it -> CollectionUtils.containsAny(it.getUnits(), units)).forEach(it -> it.setVisible(true));
+        mapActions.stream().filter(it -> it.getUnits().stream().anyMatch(units::contains)).forEach(it -> it.setVisible(true));
     }
 
-    private int[] getSelectedUnitIds(List<NT_Unit> selectedUnits) {
-        return selectedUnits.stream().mapToInt(it -> it.id).toArray();
+    private int[] getSelectedUnitIds(List<BoardObjectState> selectedUnits) {
+        return selectedUnits.stream().mapToInt(BoardObjectState::id).toArray();
     }
 
 }

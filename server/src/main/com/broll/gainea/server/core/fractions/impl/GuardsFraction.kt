@@ -1,11 +1,13 @@
 package com.broll.gainea.server.core.fractions.impl
 
-import com.broll.gainea.net.NT_Unit
+import com.broll.gainea.core.protocol.UnitType
+
+import com.broll.gainea.net.proto.NT_Unit
 import com.broll.gainea.server.core.battle.BattleContext
 import com.broll.gainea.server.core.battle.FightingPower
 import com.broll.gainea.server.core.fractions.Fraction
 import com.broll.gainea.server.core.fractions.FractionDescription
-import com.broll.gainea.server.core.fractions.FractionType
+import com.broll.gainea.core.fractions.FractionType
 import com.broll.gainea.server.core.fractions.UnitDescription
 import com.broll.gainea.server.core.map.Location
 import com.broll.gainea.server.core.objects.Soldier
@@ -47,7 +49,7 @@ class GuardsFraction : Fraction(FractionType.GUARDS) {
     override fun createSoldier(): Soldier {
         val soldier = GuardSoldier(owner)
         soldier.initFrom(description.soldier)
-        soldier.setType(NT_Unit.TYPE_FEMALE.toInt())
+        soldier.setType(UnitType.FEMALE)
         return soldier
     }
 

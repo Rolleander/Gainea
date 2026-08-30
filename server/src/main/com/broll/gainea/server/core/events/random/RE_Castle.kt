@@ -1,6 +1,9 @@
 package com.broll.gainea.server.core.events.random
 
-import com.broll.gainea.net.NT_Event.EFFECT_BUFF
+import com.broll.gainea.core.protocol.ScreenEffect
+
+import com.broll.gainea.server.core.map.*
+
 import com.broll.gainea.server.core.events.RandomEvent
 import com.broll.gainea.server.core.events.freeBuildingSpot
 import com.broll.gainea.server.core.objects.Conquerable
@@ -15,7 +18,7 @@ class RE_Castle : RandomEvent() {
         obj.whenRoundsHold = { _ ->
             val unit = obj.location.units.random()
             unit.power.addValue(1)
-            game.focus(unit, EFFECT_BUFF)
+            game.focus(unit, ScreenEffect.BUFF)
         }
         obj.name = "Burg"
         obj.description =

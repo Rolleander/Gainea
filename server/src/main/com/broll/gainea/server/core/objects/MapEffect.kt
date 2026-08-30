@@ -1,12 +1,13 @@
 package com.broll.gainea.server.core.objects
 
-import com.broll.gainea.net.NT_BoardEffect
-import com.broll.gainea.net.NT_Event_BoardEffect
+import com.broll.gainea.core.protocol.BoardEffectType
+import com.broll.gainea.net.proto.NT_BoardEffect
+import com.broll.gainea.net.proto.NT_Event_BoardEffect
 import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.map.Location
 import com.broll.gainea.server.core.utils.sendUpdate
 
-class MapEffect(private val type: Int, private val info: String, location: Location) {
+class MapEffect(private val type: BoardEffectType, private val info: String, location: Location) {
     private var x = 0f
     private var y = 0f
     private var id = 0
@@ -30,13 +31,8 @@ class MapEffect(private val type: Int, private val info: String, location: Locat
     }
 
     fun nt(): NT_BoardEffect {
-        val nt = NT_BoardEffect()
-        nt.id = id
-        nt.effect = type
-        nt.info = info
-        nt.x = x
-        nt.y = y
-        return nt
+        return NT_BoardEffect.newBuilder().setId(id).setEffect(type.value).setInfo(info)
+            .setX(x).setY(y).build()
     }
 
     companion object {
@@ -44,9 +40,8 @@ class MapEffect(private val type: Int, private val info: String, location: Locat
             for (effect in effects) {
                 effect.add(game)
             }
-            val nt = NT_Event_BoardEffect()
-            nt.effects = effects.map { it.nt() }.toTypedArray()
-            game.sendUpdate(nt)
+            game.sendUpdate(NT_Event_BoardEffect.newBuilder()
+                .addAllEffects(effects.map { it.nt() }).build())
         }
 
         fun despawn(game: Game, vararg effects: MapEffect) {

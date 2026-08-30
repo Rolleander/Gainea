@@ -16,7 +16,8 @@ task runServer(type: JavaExec) {
     group = "Execution"
     standardInput = System.in
     description = "Runs the server"
-    classpath = sourceSets.main.runtimeClasspath
+    dependsOn classes, project(':shared').tasks.named('classes')
+    classpath = project(':shared').sourceSets.main.output + sourceSets.main.runtimeClasspath
     main = "com.broll.gainea.server.ServerLauncher"
 }
 
@@ -24,7 +25,8 @@ task testServer(type: JavaExec) {
     group = "Execution"
     standardInput = System.in
     description = "Runs the server"
-    classpath = sourceSets.main.runtimeClasspath
+    dependsOn classes, project(':shared').tasks.named('classes')
+    classpath = project(':shared').sourceSets.main.output + sourceSets.main.runtimeClasspath
     main = "com.broll.gainea.server.ServerLauncher"
     args 'test'
 }

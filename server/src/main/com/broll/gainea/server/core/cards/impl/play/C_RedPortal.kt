@@ -1,8 +1,10 @@
 package com.broll.gainea.server.core.cards.impl.play
 
-import com.broll.gainea.net.NT_BoardEffect
+import com.broll.gainea.core.protocol.BoardEffectType
+
+import com.broll.gainea.net.proto.NT_BoardEffect
 import com.broll.gainea.server.core.cards.Card
-import com.broll.gainea.server.core.cards.EffectType.MOVEMENT
+import com.broll.gainea.core.cards.EffectType.MOVEMENT
 import com.broll.gainea.server.core.objects.MapEffect
 import com.broll.gainea.server.core.objects.buffs.TimedEffect
 
@@ -26,10 +28,10 @@ class C_RedPortal : Card(
         if (toLocations.isEmpty()) {
             return;
         }
-        val startPortal = MapEffect(NT_BoardEffect.EFFECT_PORTAL, "", from)
+        val startPortal = MapEffect(BoardEffectType.PORTAL, "", from)
         MapEffect.spawn(game, startPortal)
         val to = selectHandler.selectLocation("Wähle den Zielort für das Portal", toLocations)
-        val endPortal = MapEffect(NT_BoardEffect.EFFECT_PORTAL, "", to)
+        val endPortal = MapEffect(BoardEffectType.PORTAL, "", to)
         MapEffect.spawn(game, endPortal)
         from.connectedLocations.add(to)
         to.connectedLocations.add(from)

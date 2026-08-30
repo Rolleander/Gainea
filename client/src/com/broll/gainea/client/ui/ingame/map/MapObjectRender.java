@@ -14,17 +14,15 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Align;
 import com.broll.gainea.Gainea;
+import com.broll.gainea.client.game.BoardObjectState;
+import com.broll.gainea.net.proto.NT_Unit;
+import com.broll.gainea.net.proto.NT_Monster;
 import com.broll.gainea.client.ui.ingame.DepthActor;
 import com.broll.gainea.client.ui.ingame.unit.MonsterRender;
 import com.broll.gainea.client.ui.ingame.unit.UnitRender;
 import com.broll.gainea.client.ui.utils.LabelUtils;
 import com.broll.gainea.client.ui.utils.TextureUtils;
-import com.broll.gainea.net.NT_BoardObject;
-import com.broll.gainea.net.NT_Monster;
-import com.broll.gainea.net.NT_Unit;
-import com.broll.gainea.server.core.map.Location;
-
-import org.apache.commons.lang3.StringUtils;
+import com.broll.gainea.client.game.map.Location;
 
 import java.util.Collection;
 
@@ -42,7 +40,7 @@ public class MapObjectRender extends DepthActor {
     private Color previousBatchColor;
 
     private Color renderColor;
-    private NT_BoardObject object;
+    private BoardObjectState object;
     private TextureRegion chip;
     private Location location;
     private TextureRegion icon;
@@ -54,19 +52,19 @@ public class MapObjectRender extends DepthActor {
     private float scale;
     private int drawCall;
 
-    public MapObjectRender(Gainea game, Skin skin, NT_BoardObject object) {
+    public MapObjectRender(Gainea game, Skin skin, BoardObjectState object) {
         depth = 50;
         this.game = game;
         this.scale = 1f;
         this.radius = R * scale;
-        if (object.building) {
+        if (object.building()) {
             this.radius += 9 * scale;
             this.borderDiff = 9;
             this.labelDisplacement += 5;
         }
         setSize(radius * 2, radius * 2);
-        if (StringUtils.isNotEmpty(object.description)) {
-            infoLabel = LabelUtils.markup(skin, "[DARK_GRAY]" + object.description);
+        if (!object.description().isEmpty()) {
+            infoLabel = LabelUtils.markup(skin, "[DARK_GRAY]" + object.description());
             infoLabel.setWidth(DESCRIPTION_WIDTH);
             infoLabel.setAlignment(Align.center);
             LabelUtils.autoWrap(infoLabel, DESCRIPTION_WIDTH);
@@ -76,44 +74,44 @@ public class MapObjectRender extends DepthActor {
         init(object);
     }
 
-    public static MapObjectRender createRender(Gainea gainea, Skin skin, NT_BoardObject object) {
-        if (object instanceof NT_Monster) {
-            return new MonsterRender(gainea, skin, (NT_Monster) object);
+    public static MapObjectRender createRender(Gainea gainea, Skin skin, BoardObjectState object) {
+        if (object.isMonster()) {
+            return new MonsterRender(gainea, skin, object);
         }
-        if (object instanceof NT_Unit) {
-            return new UnitRender(gainea, skin, (NT_Unit) object);
+        if (object.isUnit()) {
+            return new UnitRender(gainea, skin, object);
         }
         return new MapObjectRender(gainea, skin, object);
     }
 
+    public static MapObjectRender createRender(Gainea game, Skin skin, NT_Unit unit) { return createRender(game, skin, BoardObjectState.unit(unit)); }
+    public static MapObjectRender createRender(Gainea game, Skin skin, NT_Monster monster) { return createRender(game, skin, BoardObjectState.monster(monster)); }
+
     public void respectScale() {
-        this.scale = object.scale;
+        this.scale = object.scale();
         this.radius = R * scale;
         setSize(radius * 2, radius * 2);
     }
 
-    public void init(NT_BoardObject object) {
+    public void init(BoardObjectState object) {
         this.object = object;
-        if (object.building) {
-            icon = TextureUtils.buildingIcon(game, object.icon);
+        if (object.building()) {
+            icon = TextureUtils.buildingIcon(game, object.icon());
         } else {
-            icon = TextureUtils.unitIcon(game, object.icon);
+            icon = TextureUtils.unitIcon(game, object.icon());
         }
-        if (StringUtils.isNotEmpty(object.description)) {
-            infoLabel.setText("[DARK_GRAY]" + object.description);
+        if (!object.description().isEmpty() && infoLabel != null) {
+            infoLabel.setText("[DARK_GRAY]" + object.description());
         }
         int color = 0;
-        if (object.owner != NT_BoardObject.NO_OWNER) {
-            color = game.state.getPlayer(object.owner).color + 1;
+        if (object.owner() != -1) {
+            color = game.state.getPlayer(object.owner()).color() + 1;
         }
         setChipColor(color);
     }
 
     public int getRank() {
-        if (object instanceof NT_Unit) {
-            NT_Unit unit = (NT_Unit) object;
-            return unit.power + unit.maxHealth;
-        }
+        if (object.isUnit()) return object.power() + object.maxHealth();
         return 0;
     }
 
@@ -201,7 +199,7 @@ public class MapObjectRender extends DepthActor {
         return new Color(c.r, c.g, c.b, c.a * parentAlpha);
     }
 
-    public NT_BoardObject getObject() {
+    public BoardObjectState getObject() {
         return object;
     }
 

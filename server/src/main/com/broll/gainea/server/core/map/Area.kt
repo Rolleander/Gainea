@@ -1,7 +1,9 @@
 package com.broll.gainea.server.core.map
 
-class Area(val id: AreaID, val type: AreaType,
-           val name: String, coordinates: Coordinates) : Location(coordinates) {
+class Area(
+    val id: AreaID, val type: AreaType,
+    override val name: String, coordinates: Coordinates
+) : Location(coordinates) {
 
     fun addAdjacentLocation(location: Location) {
         connectedLocations.add(location)

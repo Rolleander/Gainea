@@ -14,7 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.broll.gainea.Gainea;
 import com.broll.gainea.client.ui.ingame.unit.UnitRender;
 import com.broll.gainea.client.ui.utils.LabelUtils;
-import com.broll.gainea.net.NT_Battle_Roll;
+import com.broll.gainea.net.proto.NT_Battle_Roll;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,7 +54,7 @@ public class BattleRollRender extends WidgetGroup {
         rolllose = new TextureRegion(rolls, 2 * rs, 0, rs, rs);
     }
 
-    public void start(NT_Battle_Roll[] attackRolls, NT_Battle_Roll[] defenderRolls, IRollAnimationListener listener) {
+    public void start(List<NT_Battle_Roll> attackRolls, List<NT_Battle_Roll> defenderRolls, IRollAnimationListener listener) {
         this.listener = listener;
         if (this.attackerRolls != null) {
             this.attackerRolls.forEach(BattleRoll::hide);
@@ -62,8 +62,8 @@ public class BattleRollRender extends WidgetGroup {
         if (this.defenderRolls != null) {
             this.defenderRolls.forEach(BattleRoll::hide);
         }
-        this.attackerRolls = Arrays.stream(attackRolls).map(it -> new BattleRoll(it, true)).collect(Collectors.toList());
-        this.defenderRolls = Arrays.stream(defenderRolls).map(it -> new BattleRoll(it, false)).collect(Collectors.toList());
+        this.attackerRolls = attackRolls.stream().map(it -> new BattleRoll(it, true)).collect(Collectors.toList());
+        this.defenderRolls = defenderRolls.stream().map(it -> new BattleRoll(it, false)).collect(Collectors.toList());
         this.attackerRolls.forEach(this::addActor);
         this.defenderRolls.forEach(this::addActor);
         this.rollRounds = Math.min(attackerRolls.size(), this.defenderRolls.size());
@@ -77,8 +77,8 @@ public class BattleRollRender extends WidgetGroup {
     }
 
     private void placeInCircle(List<BattleRoll> rolls) {
-        for (int sourceUnit : rolls.stream().map(it -> it.nt.sourceUnit).distinct().collect(Collectors.toList())) {
-            List<BattleRoll> unitRolls = rolls.stream().filter(it -> it.nt.sourceUnit == sourceUnit).collect(Collectors.toList());
+        for (int sourceUnit : rolls.stream().map(it -> it.nt.getSourceUnit()).distinct().collect(Collectors.toList())) {
+            List<BattleRoll> unitRolls = rolls.stream().filter(it -> it.nt.getSourceUnit() == sourceUnit).collect(Collectors.toList());
             int total = unitRolls.size();
             if (total == 1) {
                 continue;
@@ -101,8 +101,8 @@ public class BattleRollRender extends WidgetGroup {
             showRolls++;
             if (showRolls > rollRounds) {
                 showRolls = Integer.MAX_VALUE;
-                attackerRolls.forEach(it -> it.currentRoll = it.nt.number);
-                defenderRolls.forEach(it -> it.currentRoll = it.nt.number);
+                attackerRolls.forEach(it -> it.currentRoll = it.nt.getNumber());
+                defenderRolls.forEach(it -> it.currentRoll = it.nt.getNumber());
                 listener.rollingDone();
             } else if (showRolls > 1) {
                 listener.diceSet();
@@ -113,7 +113,7 @@ public class BattleRollRender extends WidgetGroup {
     private void finishRollRound(int nr) {
         BattleRoll aroll = attackerRolls.get(nr);
         BattleRoll droll = defenderRolls.get(nr);
-        boolean awon = aroll.nt.number > droll.nt.number;
+        boolean awon = aroll.nt.getNumber() > droll.nt.getNumber();
         aroll.finish(awon);
         droll.finish(!awon);
     }
@@ -162,14 +162,14 @@ public class BattleRollRender extends WidgetGroup {
         }
 
         public void showBuffs() {
-            if (nt.plus != 0) {
+            if (nt.getPlus() != 0) {
                 String t;
                 Color c;
-                if (nt.plus > 0) {
-                    t = "+" + nt.plus;
+                if (nt.getPlus() > 0) {
+                    t = "+" + nt.getPlus();
                     c = Color.GREEN;
                 } else {
-                    t = String.valueOf(nt.plus);
+                    t = String.valueOf(nt.getPlus());
                     c = Color.RED;
                 }
                 Label label = LabelUtils.color(LabelUtils.label(game.ui.skin, t), c);
@@ -187,12 +187,12 @@ public class BattleRollRender extends WidgetGroup {
 
         public void roll() {
             if (state == RollState.ROLLING) {
-                this.currentRoll = MathUtils.random(nt.min, nt.max);
+                this.currentRoll = MathUtils.random(nt.getMin(), nt.getMax());
             }
         }
 
         public void finish(boolean won) {
-            this.currentRoll = nt.number;
+            this.currentRoll = nt.getNumber();
             this.state = won ? RollState.WON : RollState.LOSS;
         }
 
@@ -215,7 +215,7 @@ public class BattleRollRender extends WidgetGroup {
             if (attacker) {
                 source = attackerRenders;
             }
-            UnitRender unit = source.stream().filter(it -> it.getUnit().id == nt.sourceUnit).findFirst().get();
+            UnitRender unit = source.stream().filter(it -> it.getUnit().id() == nt.getSourceUnit()).findFirst().get();
             setPosition(unit.getX() - 4, unit.getY());
         }
 

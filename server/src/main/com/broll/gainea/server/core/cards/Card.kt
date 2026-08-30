@@ -1,7 +1,9 @@
 package com.broll.gainea.server.core.cards
 
-import com.broll.gainea.net.NT_Card
-import com.broll.gainea.net.NT_Event_PlayedCard
+import com.broll.gainea.core.cards.EffectType
+import com.broll.gainea.net.proto.NT_Card
+import com.broll.gainea.net.proto.NT_Event
+import com.broll.gainea.net.proto.NT_Event_PlayedCard
 import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.actions.ActionHandlers
 import com.broll.gainea.server.core.actions.optional.CardAction
@@ -46,13 +48,8 @@ abstract class Card(
 
     protected abstract fun play()
     open fun nt(): NT_Card {
-        val card = NT_Card()
-        card.id = id.toShort()
-        card.text = text
-        card.picture = picture.toShort()
-        card.title = title
-        card.event = this is DirectlyPlayedCard
-        return card
+        return NT_Card.newBuilder().setId(id).setText(text).setPicture(picture)
+            .setTitle(title).setEvent(this is DirectlyPlayedCard).build()
     }
 
     override fun toString(): String {
@@ -64,19 +61,14 @@ abstract class Card(
 }
 
 fun Game.playCard(card: Card) {
-    val nt = NT_Event_PlayedCard()
-    if (card.owner.isNeutral()) {
-        nt.player = -1
-    } else {
-        nt.player = card.owner.serverPlayer.id
-    }
-    nt.card = card.nt()
-    if (card is DirectlyPlayedCard) {
-        nt.sound = "glitter.ogg"
-    } else {
-        nt.sound = "dwooom.ogg"
-    }
-    sendUpdate(nt)
+    val playerId = if (card.owner.isNeutral()) -1 else card.owner.serverPlayer.id
+    val sound = if (card is DirectlyPlayedCard) "glitter.ogg" else "dwooom.ogg"
+    sendUpdate(
+        NT_Event_PlayedCard.newBuilder()
+            .setBase(NT_Event.newBuilder().setPlayer(playerId).setSound(sound).build())
+            .setCard(card.nt())
+            .build()
+    )
     card.owner.cardHandler.cards.remove(card)
     ProcessingUtils.pause(CardAction.PLAY_CARD_DELAY)
     card.play(reactionHandler.actionHandlers)

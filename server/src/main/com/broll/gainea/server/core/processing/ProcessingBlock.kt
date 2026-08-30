@@ -11,16 +11,25 @@ class ProcessingBlock {
     var playerLeft = false
         private set
 
-    private var future: CompletableFuture<*>? = null
+    private var future: CompletableFuture<Any?>? = null
+
+    @Synchronized
+    fun prepare() {
+        future = CompletableFuture()
+    }
+
     fun waitFor(player: Player) {
         playerLeft = false
+        val waitingFuture = synchronized(this) {
+            future ?: CompletableFuture<Any?>().also { future = it }
+        }
         var recheck: Boolean
         do {
             recheck = false
             try {
-                future = CompletableFuture<Any?>()
-                future!!.get(INACTIVE_CHECK_INTERVAL.toLong(), TimeUnit.MILLISECONDS)
+                waitingFuture.get(INACTIVE_CHECK_INTERVAL.toLong(), TimeUnit.MILLISECONDS)
             } catch (e: InterruptedException) {
+                Thread.currentThread().interrupt()
                 Log.error("Failed waiting for processing block", e)
             } catch (e: ExecutionException) {
                 Log.error("Failed waiting for processing block", e)
@@ -29,8 +38,14 @@ class ProcessingBlock {
                 playerLeft = !player.active
             }
         } while (recheck)
+        synchronized(this) {
+            if (future === waitingFuture) {
+                future = null
+            }
+        }
     }
 
+    @Synchronized
     fun resume() {
         future?.complete(null)
     }

@@ -4,6 +4,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.broll.gainea.Gainea;
+import com.broll.gainea.client.game.BoardObjectState;
 import com.broll.gainea.client.AudioPlayer;
 import com.broll.gainea.client.game.PlayerPerformAction;
 import com.broll.gainea.client.ui.components.Popup;
@@ -12,12 +13,7 @@ import com.broll.gainea.client.ui.ingame.map.MapAction;
 import com.broll.gainea.client.ui.ingame.map.MapObjectRender;
 import com.broll.gainea.client.ui.ingame.windows.CardWindow;
 import com.broll.gainea.client.ui.utils.LabelUtils;
-import com.broll.gainea.net.NT_Action;
-import com.broll.gainea.net.NT_Action_PlaceUnit;
-import com.broll.gainea.net.NT_Action_SelectChoice;
-import com.broll.gainea.net.NT_Card;
-import com.broll.gainea.net.NT_Goal;
-import com.broll.gainea.net.NT_Unit;
+import com.broll.gainea.net.proto.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,11 +41,11 @@ public class RequiredActionHandler {
         boolean center = true;
         AudioPlayer.playSound("place.ogg");
         RequiredActionContainer container = new RequiredActionContainer(mapActions, playerPerformAction, this::close);
-        if (action instanceof NT_Action_PlaceUnit) {
-            window = PlaceUnitWindow.create(game, skin, container, (NT_Action_PlaceUnit) action);
+        if (action.hasPlaceUnit()) {
+            window = PlaceUnitWindow.create(game, skin, container, action);
             center = false;
-        } else if (action instanceof NT_Action_SelectChoice) {
-            handleSelectionAction((NT_Action_SelectChoice) action, container);
+        } else if (action.hasSelectChoice()) {
+            handleSelectionAction(action, container);
         }
         mapActions.forEach(it -> game.gameStage.addActor(it));
         if (window != null) {
@@ -61,27 +57,29 @@ public class RequiredActionHandler {
         }
     }
 
-    private void handleSelectionAction(NT_Action_SelectChoice action, RequiredActionContainer container) {
+    private void handleSelectionAction(NT_Action wrappedAction, RequiredActionContainer container) {
+        NT_Action_SelectChoice action = wrappedAction.getSelectChoice();
         List<Actor> options = null;
-        if (action.choices == null) {
+        if (action.getObjectChoicesCount() > 0) {
             //other selection
-            Object objectChoice = action.objectChoices[0];
-            if (objectChoice instanceof Integer) {
+            NT_Choice objectChoice = action.getObjectChoices(0);
+            if (objectChoice.hasIntegerValue()) {
                 //location
-                PlaceUnitWindow.showLocationMapActions(game, Arrays.stream(action.objectChoices).mapToInt(choice -> (Integer) choice).toArray(), action, container);
+                PlaceUnitWindow.showLocationMapActions(game, action.getObjectChoicesList().stream().mapToInt(NT_Choice::getIntegerValue).toArray(), wrappedAction, container);
                 options = new ArrayList<>();
-            } else if (objectChoice instanceof NT_Goal) {
-                options = Arrays.stream(action.objectChoices).map(choice -> GoalOverlay.renderGoal(game, (NT_Goal) choice)).collect(Collectors.toList());
-            } else if (objectChoice instanceof NT_Card) {
-                options = Arrays.stream(action.objectChoices).map(choice -> CardWindow.renderCard(game, (NT_Card) choice)).collect(Collectors.toList());
-            } else if (objectChoice instanceof NT_Unit) {
-                options = Arrays.stream(action.objectChoices).map(choice -> MapObjectRender.createRender(game, skin, (NT_Unit) choice)).collect(Collectors.toList());
+            } else if (objectChoice.hasGoal()) {
+                options = action.getObjectChoicesList().stream().map(choice -> GoalOverlay.renderGoal(game, choice.getGoal())).collect(Collectors.toList());
+            } else if (objectChoice.hasCard()) {
+                options = action.getObjectChoicesList().stream().map(choice -> CardWindow.renderCard(game, choice.getCard())).collect(Collectors.toList());
+            } else if (objectChoice.hasUnit() || objectChoice.hasBoardObject()) {
+                options = action.getObjectChoicesList().stream().map(choice -> MapObjectRender.createRender(game, skin,
+                    new BoardObjectState(choice.hasBoardObject() ? choice.getBoardObject() : NT_BoardObject.newBuilder().setUnit(choice.getUnit()).build()))).collect(Collectors.toList());
             }
         } else {
             //text selection
-            options = Arrays.stream(action.choices).map(choice -> LabelUtils.label(game.ui.skin, choice)).collect(Collectors.toList());
+            options = action.getChoicesList().stream().map(choice -> LabelUtils.label(game.ui.skin, choice)).collect(Collectors.toList());
         }
-        window = SelectOptionWindow.create(game, container, action, options);
+        window = SelectOptionWindow.create(game, container, wrappedAction, options);
     }
 
     private void close() {

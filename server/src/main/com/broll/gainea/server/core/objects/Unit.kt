@@ -1,6 +1,7 @@
 package com.broll.gainea.server.core.objects
 
-import com.broll.gainea.net.NT_Unit
+import com.broll.gainea.core.protocol.UnitType
+import com.broll.gainea.net.proto.NT_Unit
 import com.broll.gainea.server.core.battle.BattleContext
 import com.broll.gainea.server.core.battle.BattleResult
 import com.broll.gainea.server.core.battle.FightingPower
@@ -24,7 +25,7 @@ abstract class Unit(owner: Player) : MapObject(owner), IUnit {
     private var attacked = false
     private var moved = false
     var controllable = true
-    private var type = NT_Unit.TYPE_MALE.toInt()
+    private var type = UnitType.MALE
     override var kills = 0
     private var justSpawned = true
 
@@ -132,25 +133,33 @@ abstract class Unit(owner: Player) : MapObject(owner), IUnit {
     val battleStrength: Int
         get() = power.value + health.value
 
-    override fun nt(): NT_Unit {
-        val unit = NT_Unit()
-        fillBattleObject(unit)
-        return unit
+    open fun nt(): NT_Unit {
+        return fillBattleObject(NT_Unit.newBuilder()).build()
     }
 
-    protected fun fillBattleObject(unit: NT_Unit) {
-        fillObject(unit)
-        unit.health = health.value.toShort()
-        unit.maxHealth = maxHealth.value.toShort()
-        unit.power = power.value.toShort()
-        unit.type = type.toByte()
-        unit.kills = kills.toShort()
+    override fun boardNt(): com.broll.gainea.net.proto.NT_BoardObject =
+        com.broll.gainea.net.proto.NT_BoardObject.newBuilder().setUnit(nt()).build()
+
+    protected fun fillBattleObject(unit: NT_Unit.Builder) = fillObject(unit).apply {
+        health = this@Unit.health.value
+        maxHealth = this@Unit.maxHealth.value
+        power = this@Unit.power.value
+        type = this@Unit.type.value
+        kills = this@Unit.kills
+    }
+
+    protected fun fillBattleObject(unit: com.broll.gainea.net.proto.NT_Monster.Builder) = fillObject(unit).apply {
+        health = this@Unit.health.value
+        maxHealth = this@Unit.maxHealth.value
+        power = this@Unit.power.value
+        type = this@Unit.type.value
+        kills = this@Unit.kills
     }
 
     val hurt: Boolean
         get() = health.value < maxHealth.value
 
-    fun setType(type: Int) {
+    fun setType(type: UnitType) {
         this.type = type
     }
 

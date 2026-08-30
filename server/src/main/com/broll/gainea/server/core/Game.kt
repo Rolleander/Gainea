@@ -1,9 +1,9 @@
 package com.broll.gainea.server.core
 
-import com.broll.gainea.net.NT_Action
-import com.broll.gainea.net.NT_BoardUpdate
-import com.broll.gainea.net.NT_ReconnectGame
-import com.broll.gainea.net.NT_StartGame
+import com.broll.gainea.net.proto.NT_BoardUpdate
+import com.broll.gainea.net.proto.NT_GameOver
+import com.broll.gainea.net.proto.NT_ReconnectGame
+import com.broll.gainea.net.proto.NT_StartGame
 import com.broll.gainea.server.core.actions.ActionContext
 import com.broll.gainea.server.core.actions.ActionHandlers
 import com.broll.gainea.server.core.actions.ReactionActions
@@ -26,18 +26,20 @@ import com.broll.gainea.server.core.stats.GameStatistic
 import com.broll.gainea.server.core.utils.isGameEnd
 import com.broll.gainea.server.core.utils.noActivePlayersRemaining
 import com.broll.gainea.server.init.LobbyData
-import com.broll.gainea.server.init.PlayerData
-import com.broll.networklib.server.impl.ServerLobby
+import com.broll.gainea.server.network.gameData
+import com.broll.gainea.server.network.players
+import com.broll.mpnll.server.lobby.Lobby
+import com.google.protobuf.Message
 import org.slf4j.LoggerFactory
 import java.util.concurrent.atomic.AtomicInteger
 
-class Game(val lobby: ServerLobby<LobbyData, PlayerData>) {
+class Game(val lobby: Lobby) {
     val neutralPlayer = NeutralPlayer(this)
     val map: MapContainer
     val allPlayers: List<Player>
     val objects = mutableListOf<MapObject>()
     val effects = mutableListOf<MapEffect>()
-    private val actions = HashMap<Int, ActionContext<out NT_Action>>()
+    private val actions = HashMap<Int, ActionContext<out Message>>()
     var rounds = 1
         private set
     var currentTurn = -1
@@ -65,13 +67,13 @@ class Game(val lobby: ServerLobby<LobbyData, PlayerData>) {
     init {
         updateReceiver = GameUpdateReceiverProxy()
         updateReceiver.register(TurnEvents(this))
-        map = MapContainer(lobby.data.expansionSetting)
+        map = MapContainer(lobby.gameData.expansionSetting)
         allPlayers = PlayerFactory.create(this, lobby.players)
         monsterFactory = MonsterFactory()
         buffProcessor = BuffProcessor(this)
         statistic = GameStatistic(this)
         updateReceiver.register(statistic)
-        goalStorage = GoalStorage(this, lobby.data.goalTypes)
+        goalStorage = GoalStorage(this, lobby.gameData.goalTypes)
         cardStorage = CardStorage(this)
     }
 
@@ -86,14 +88,14 @@ class Game(val lobby: ServerLobby<LobbyData, PlayerData>) {
     fun newObjectId() = boardObjectCounter.incrementAndGet()
 
     @Synchronized
-    fun pushAction(action: ActionContext<out NT_Action>) {
+    fun pushAction(action: ActionContext<out Message>) {
         val nr = actionCounter.incrementAndGet()
-        action.action.actionId = nr
+        action.assignActionId(nr)
         actions[nr] = action
     }
 
     @Synchronized
-    fun getAction(id: Int): ActionContext<out NT_Action>? {
+    fun getAction(id: Int): ActionContext<out Message>? {
         return actions[id]
     }
 
@@ -106,16 +108,12 @@ class Game(val lobby: ServerLobby<LobbyData, PlayerData>) {
         actions.clear()
     }
 
-    fun start(player: Player): NT_StartGame {
-        val nt = NT_StartGame()
-        fillUpdate(nt)
-        nt.expansionsSetting = map.expansionSetting.ordinal
-        nt.pointLimit = lobby.data.pointLimit
-        nt.roundLimit = lobby.data.roundLimit
-        nt.cards = player.cardHandler.ntCards()
-        nt.shop = player.shop.nt()
-        return nt
-    }
+    fun start(player: Player): NT_StartGame =
+        NT_StartGame.newBuilder()
+            .setUpdate(nt())
+            .setPointLimit(lobby.gameData.pointLimit).setRoundLimit(lobby.gameData.roundLimit)
+            .addAllCards(player.cardHandler.ntCards()).setShop(player.shop.nt())
+            .addAllExpansions(map.expansions.map { it.nt() }).build()
 
     fun end() {
         Log.trace("Gamend called")
@@ -125,31 +123,18 @@ class Game(val lobby: ServerLobby<LobbyData, PlayerData>) {
         }
     }
 
-    fun reconnect(player: Player): NT_ReconnectGame {
-        val nt = NT_ReconnectGame()
-        fillUpdate(nt)
-        nt.expansionsSetting = map.expansionSetting.ordinal
-        nt.cards = player.cardHandler.ntCards()
-        nt.goals = player.goalHandler.ntGoals()
-        nt.pointLimit = lobby.data.pointLimit
-        nt.roundLimit = lobby.data.roundLimit
-        nt.shop = player.shop.nt()
-        return nt
-    }
+    fun reconnect(player: Player): NT_ReconnectGame =
+        NT_ReconnectGame.newBuilder()
+            .setStart(start(player))
+            .addAllGoals(player.goalHandler.ntGoals()).build()
 
-    fun fillUpdate(update: NT_BoardUpdate) {
-        update.round = rounds.toShort()
-        update.turn = currentTurn.toShort()
-        update.players = allPlayers.map { it.nt() }.toTypedArray()
-        update.objects = objects.map { it.nt() }.toTypedArray()
-        update.effects = effects.map { it.nt() }.toTypedArray()
-    }
+    fun nt(): NT_BoardUpdate = NT_BoardUpdate.newBuilder().setRound(rounds).setTurn(currentTurn)
+        .addAllPlayers(allPlayers.map { it.nt() }).addAllObjects(objects.map { it.boardNt() })
+        .addAllEffects(effects.map { it.nt() }).build()
 
-    fun nt(): NT_BoardUpdate {
-        val board = NT_BoardUpdate()
-        fillUpdate(board)
-        return board
-    }
+
+    fun gameOver(): NT_GameOver =
+        NT_GameOver.newBuilder().setUpdate(nt()).build()
 
     @Synchronized
     fun nextTurn(): Player? {
@@ -177,7 +162,7 @@ class Game(val lobby: ServerLobby<LobbyData, PlayerData>) {
 
 
     val gameSettings: LobbyData
-        get() = lobby.data
+        get() = lobby.gameData
 
     companion object {
         private val Log = LoggerFactory.getLogger(Game::class.java)

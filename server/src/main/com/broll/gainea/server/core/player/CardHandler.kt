@@ -1,8 +1,9 @@
 package com.broll.gainea.server.core.player
 
-import com.broll.gainea.net.NT_Event_OtherPlayerReceivedCard
-import com.broll.gainea.net.NT_Event_ReceivedCard
-import com.broll.gainea.net.NT_Event_RemoveCard
+import com.broll.gainea.net.proto.NT_Event
+import com.broll.gainea.net.proto.NT_Event_OtherPlayerReceivedCard
+import com.broll.gainea.net.proto.NT_Event_ReceivedCard
+import com.broll.gainea.net.proto.NT_Event_RemoveCard
 import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.cards.Card
 import com.broll.gainea.server.core.cards.DirectlyPlayedCard
@@ -27,25 +28,24 @@ class CardHandler(private val game: Game, private val player: Player) {
             return
         }
         cards.add(card)
-        val nt = NT_Event_ReceivedCard()
-        nt.card = card.nt()
-        nt.sound = "chime.ogg"
-        val nt2 = NT_Event_OtherPlayerReceivedCard()
-        nt2.player = player.serverPlayer.id
+        val nt = NT_Event_ReceivedCard.newBuilder().setCard(card.nt())
+            .setBase(NT_Event.newBuilder().setSound("chime.ogg").build())
+            .build()
+        val nt2 = NT_Event_OtherPlayerReceivedCard.newBuilder()
+            .setBase(NT_Event.newBuilder().setPlayer(player.serverPlayer.id).build())
+            .build()
         game.sendUpdate(player, nt, nt2)
     }
 
     fun discardCard(card: Card) {
         if (cards.remove(card)) {
-            val nt = NT_Event_RemoveCard()
-            nt.card = card.nt()
-            player.serverPlayer.sendTCP(nt)
+            player.serverPlayer.send(NT_Event_RemoveCard.newBuilder().setCard(card.nt()).build())
         }
     }
 
     val cardCount: Int
         get() = cards.size
 
-    fun ntCards() = cards.map { it.nt() }.toTypedArray()
+    fun ntCards() = cards.map { it.nt() }
 
 }

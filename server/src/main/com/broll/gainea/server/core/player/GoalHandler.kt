@@ -1,11 +1,12 @@
 package com.broll.gainea.server.core.player
 
-import com.broll.gainea.net.NT_Event_OtherPlayerReceivedGoal
-import com.broll.gainea.net.NT_Event_ReceivedGoal
-import com.broll.gainea.net.NT_Event_ReceivedPoints
-import com.broll.gainea.net.NT_Event_ReceivedStars
-import com.broll.gainea.net.NT_Event_RemoveGoal
-import com.broll.gainea.net.NT_Goal
+import com.broll.gainea.net.proto.NT_Event
+import com.broll.gainea.net.proto.NT_Event_OtherPlayerReceivedGoal
+import com.broll.gainea.net.proto.NT_Event_ReceivedGoal
+import com.broll.gainea.net.proto.NT_Event_ReceivedPoints
+import com.broll.gainea.net.proto.NT_Event_ReceivedStars
+import com.broll.gainea.net.proto.NT_Event_RemoveGoal
+import com.broll.gainea.net.proto.NT_Goal
 import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.goals.Goal
 import com.broll.gainea.server.core.utils.ProcessingUtils
@@ -29,10 +30,11 @@ class GoalHandler(private val game: Game, private val player: Player) {
     fun addPoints(points: Int) {
         if (player.isNeutral()) return
         score += points
-        val nt = NT_Event_ReceivedPoints()
-        nt.player = player.serverPlayer.id
-        nt.points = points
-        game.sendUpdate(nt)
+        game.sendUpdate(
+            NT_Event_ReceivedPoints.newBuilder()
+                .setBase(NT_Event.newBuilder().setPlayer(player.serverPlayer.id).build())
+                .setPoints(points).build()
+        )
         ProcessingUtils.pause(500)
         if (game.isGameEnd()) {
             game.end()
@@ -42,10 +44,11 @@ class GoalHandler(private val game: Game, private val player: Player) {
     fun addStars(stars: Int) {
         if (player.isNeutral()) return
         this.stars += stars
-        val nt = NT_Event_ReceivedStars()
-        nt.player = player.serverPlayer.id
-        nt.stars = stars
-        game.sendUpdate(nt)
+        game.sendUpdate(
+            NT_Event_ReceivedStars.newBuilder()
+                .setBase(NT_Event.newBuilder().setPlayer(player.serverPlayer.id).build())
+                .setStars(stars).build()
+        )
         ProcessingUtils.pause(500)
         game.updateReceiver.earnedStars(player, stars)
     }
@@ -53,19 +56,18 @@ class GoalHandler(private val game: Game, private val player: Player) {
     fun removeStars(stars: Int) {
         if (player.isNeutral()) return
         this.stars -= stars
-        val nt = NT_Event_ReceivedStars()
-        nt.player = player.serverPlayer.id
-        nt.stars = -stars
-        game.sendUpdate(nt)
+        game.sendUpdate(
+            NT_Event_ReceivedStars.newBuilder()
+                .setBase(NT_Event.newBuilder().setPlayer(player.serverPlayer.id).build())
+                .setStars(-stars).build()
+        )
     }
 
     fun removeGoal(oldGoal: Goal) {
         if (player.isNeutral()) return
         goals.remove(oldGoal)
         game.updateReceiver.unregister(oldGoal)
-        val nt = NT_Event_RemoveGoal()
-        nt.goal = oldGoal.nt()
-        player.serverPlayer.sendTCP(nt)
+        player.serverPlayer.send(NT_Event_RemoveGoal.newBuilder().setGoal(oldGoal.nt()).build())
         previousGoals.add(oldGoal)
     }
 
@@ -73,15 +75,15 @@ class GoalHandler(private val game: Game, private val player: Player) {
         if (player.isNeutral()) return
         goals.add(goal)
         game.updateReceiver.register(goal)
-        val nt = NT_Event_ReceivedGoal()
-        nt.sound = "swush.ogg"
-        nt.goal = goal.nt()
-        val nt2 = NT_Event_OtherPlayerReceivedGoal()
-        nt2.player = player.serverPlayer.id
+        val nt = NT_Event_ReceivedGoal.newBuilder()
+            .setBase(NT_Event.newBuilder().setSound("swush.ogg").build())
+            .setGoal(goal.nt()).build()
+        val nt2 = NT_Event_OtherPlayerReceivedGoal.newBuilder()
+            .setBase(NT_Event.newBuilder().setPlayer(player.serverPlayer.id).build()).build()
         game.sendUpdate(player, nt, nt2)
         //directly check goal for completion
         game.processingCore.execute({ goal.check() }, 100)
     }
 
-    fun ntGoals(): Array<NT_Goal> = goals.map { it.nt() }.toTypedArray()
+    fun ntGoals(): List<NT_Goal> = goals.map { it.nt() }
 }

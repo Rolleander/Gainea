@@ -1,6 +1,6 @@
 package com.broll.gainea.server.core.fractions
 
-import com.broll.gainea.net.NT_Unit
+import com.broll.gainea.net.proto.NT_Unit
 
 data class UnitDescription(
     val name: String,
@@ -10,11 +10,13 @@ data class UnitDescription(
     val description: String? = null
 ) {
 
-    fun nt() = NT_Unit().also {
-        it.health = health.toShort()
-        it.power = power.toShort()
-        it.name = name
-        it.icon = icon.toShort()
-        it.description = description
+    fun nt(): NT_Unit {
+        val builder = NT_Unit.newBuilder()
+            .setHealth(health)
+            .setPower(power)
+            .setName(name)
+            .setIcon(icon)
+        description?.let(builder::setDescription)
+        return builder.build()
     }
 }

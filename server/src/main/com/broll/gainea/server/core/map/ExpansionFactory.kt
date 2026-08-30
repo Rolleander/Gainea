@@ -1,8 +1,11 @@
 package com.broll.gainea.server.core.map
 
-abstract class ExpansionFactory(val type: ExpansionType, val texture: String) {
+import com.broll.gainea.core.map.ExpansionType
+
+abstract class ExpansionFactory(val type: ExpansionType) {
     private val expansion: Expansion
-    protected val baseCoordinates: Coordinates = Coordinates(0f, 0f)
+    protected val baseCoordinates: Coordinates =
+        Coordinates(0f, 0f)
     private val connectedExpansions = mutableListOf<ExpansionFactory>()
     private val areas = HashMap<AreaID, Area>()
     private val continents = HashMap<ContinentID, Continent>()

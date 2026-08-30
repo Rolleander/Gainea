@@ -12,9 +12,9 @@ import com.broll.gainea.client.ui.ingame.windows.MenuWindow;
 import com.broll.gainea.client.ui.ingame.windows.SettingsWindow;
 import com.broll.gainea.client.ui.ingame.windows.ShopWindow;
 import com.broll.gainea.client.ui.ingame.windows.lib.LibraryWindow;
-import com.broll.gainea.net.NT_Action;
-import com.broll.gainea.net.NT_Action_Card;
-import com.broll.gainea.net.NT_Action_Shop;
+import com.broll.gainea.net.proto.NT_Action;
+import com.broll.gainea.net.proto.NT_Action_Card;
+import com.broll.gainea.net.proto.NT_Action_Shop;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -94,8 +94,8 @@ public class MenuActions extends Table {
 
     public void updateOptionalActions(List<NT_Action> actions, PlayerPerformOptionalAction playerPerformAction) {
         this.endTurnButton.update(playerPerformAction);
-        cardWindow.updatePlayableCards(actions.stream().filter(it -> it instanceof NT_Action_Card).map(it -> (NT_Action_Card) it).collect(Collectors.toList()), playerPerformAction);
-        shopWindow.updateState(actions.stream().filter(it -> it instanceof NT_Action_Shop).map(it -> (NT_Action_Shop) it).collect(Collectors.toList()), playerPerformAction);
+        cardWindow.updatePlayableCards(actions.stream().filter(NT_Action::hasCard).map(NT_Action::getCard).collect(Collectors.toList()), playerPerformAction);
+        shopWindow.updateState(actions.stream().filter(NT_Action::hasShop).map(NT_Action::getShop).collect(Collectors.toList()), playerPerformAction);
     }
 
     public void update() {

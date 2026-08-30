@@ -1,8 +1,8 @@
 package com.broll.gainea.server.core
 
-import com.broll.gainea.net.NT_Action
-import com.broll.gainea.net.NT_PlayerTurnStart
-import com.broll.gainea.net.NT_PlayerWait
+import com.broll.gainea.net.proto.NT_Action
+import com.broll.gainea.net.proto.NT_PlayerTurnStart
+import com.broll.gainea.net.proto.NT_PlayerWait
 import com.broll.gainea.server.core.actions.ActionContext
 import com.broll.gainea.server.core.actions.ReactionActions
 import com.broll.gainea.server.core.actions.RequiredActionContext
@@ -14,15 +14,16 @@ import com.broll.gainea.server.core.utils.sendUpdate
 import com.broll.gainea.server.core.utils.sendUpdateExceptFor
 import com.broll.gainea.server.init.LobbyData
 import com.broll.gainea.server.init.PlayerData
-import com.broll.networklib.server.impl.ServerLobby
+import com.broll.mpnll.server.lobby.Lobby
+import com.google.protobuf.Message
 import org.slf4j.LoggerFactory
 
 class ReactionResultHandler(
     private val game: Game,
-    private val lobby: ServerLobby<LobbyData, PlayerData>
+    private val lobby: Lobby
 ) : ReactionActions {
-    override fun sendGameUpdate(update: Any) {
-        lobby.sendToAllTCP(update)
+    override fun sendGameUpdate(update: Message) {
+        lobby.sendToAll(update)
     }
 
     override fun endTurn() {
@@ -69,15 +70,14 @@ class ReactionResultHandler(
 
     private fun doPlayerTurn(player: Player) {
         //send turnstart to player and wait to other players
-        val wait = NT_PlayerWait()
-        wait.playersTurn = player.serverPlayer.id
-        game.sendUpdate(player, NT_PlayerTurnStart(), wait)
+        val wait = NT_PlayerWait.newBuilder().setPlayersTurn(player.serverPlayer.id).build()
+        game.sendUpdate(player, NT_PlayerTurnStart.getDefaultInstance(), wait)
         ProcessingUtils.pause(1000)
         player.fraction.prepareTurn()
         //send turn actions to player
         val turn = game.turnBuilder.build(player)
-        Log.trace("Send optional turn actions (" + turn.actions.size + ") to player " + player)
-        player.serverPlayer.sendTCP(turn)
+        Log.trace("Send optional turn actions (" + turn.actionsCount + ") to player " + player)
+        player.serverPlayer.send(turn)
     }
 
     override fun sendBoardUpdate() {
@@ -86,11 +86,11 @@ class ReactionResultHandler(
 
     override fun requireAction(
         player: Player,
-        action: RequiredActionContext<out NT_Action>
-    ): ActionContext<out NT_Action> {
+        action: RequiredActionContext<out Message>
+    ): ActionContext<out Message> {
         Log.trace("Require action for " + player + " : " + action.action)
         game.reactionHandler.requireAction(player, action)
-        player.serverPlayer.sendTCP(action.nt())
+        player.serverPlayer.send(action.nt())
         if (action.messageForOtherPlayer != null) {
             game.sendUpdateExceptFor(action.messageForOtherPlayer, player)
         }

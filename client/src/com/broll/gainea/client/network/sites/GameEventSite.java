@@ -4,7 +4,11 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.broll.gainea.client.AudioPlayer;
+import com.broll.gainea.client.game.BoardObjectState;
 import com.broll.gainea.client.game.GameUtils;
+import com.broll.gainea.client.game.GoalState;
+import com.broll.gainea.client.game.PlayerState;
+import com.broll.gainea.client.game.map.Location;
 import com.broll.gainea.client.ui.components.FinishedGoalDisplay;
 import com.broll.gainea.client.ui.ingame.hud.GoalOverlay;
 import com.broll.gainea.client.ui.ingame.map.MapObjectRender;
@@ -13,268 +17,277 @@ import com.broll.gainea.client.ui.ingame.windows.CardWindow;
 import com.broll.gainea.client.ui.ingame.windows.LogWindow;
 import com.broll.gainea.client.ui.utils.LabelUtils;
 import com.broll.gainea.client.ui.utils.MessageUtils;
-import com.broll.gainea.net.NT_BoardObject;
-import com.broll.gainea.net.NT_Event;
-import com.broll.gainea.net.NT_Event_BoardEffect;
-import com.broll.gainea.net.NT_Event_BoughtMerc;
-import com.broll.gainea.net.NT_Event_FinishedGoal;
-import com.broll.gainea.net.NT_Event_FocusLocation;
-import com.broll.gainea.net.NT_Event_FocusObject;
-import com.broll.gainea.net.NT_Event_FocusObjects;
-import com.broll.gainea.net.NT_Event_MovedObject;
-import com.broll.gainea.net.NT_Event_OtherPlayerReceivedCard;
-import com.broll.gainea.net.NT_Event_OtherPlayerReceivedGoal;
-import com.broll.gainea.net.NT_Event_PlacedObject;
-import com.broll.gainea.net.NT_Event_PlayedCard;
-import com.broll.gainea.net.NT_Event_ReceivedCard;
-import com.broll.gainea.net.NT_Event_ReceivedGoal;
-import com.broll.gainea.net.NT_Event_ReceivedPoints;
-import com.broll.gainea.net.NT_Event_ReceivedStars;
-import com.broll.gainea.net.NT_Event_RemoveCard;
-import com.broll.gainea.net.NT_Event_RemoveGoal;
-import com.broll.gainea.net.NT_Event_RemoveObjects;
-import com.broll.gainea.net.NT_Event_TextInfo;
-import com.broll.gainea.net.NT_Event_UpdateObjects;
-import com.broll.gainea.net.NT_Player;
-import com.broll.gainea.server.core.map.Location;
-import com.broll.networklib.PackageReceiver;
+import com.broll.gainea.core.protocol.ScreenEffect;
+import com.broll.gainea.core.protocol.TextInfoType;
+import com.broll.gainea.net.proto.NT_BoardObject;
+import com.broll.gainea.net.proto.NT_Card;
+import com.broll.gainea.net.proto.NT_Event;
+import com.broll.gainea.net.proto.NT_Goal;
+import com.broll.mpnll.client.site.MessageReceiverRegistry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
-
 public class GameEventSite extends AbstractGameSite {
+    private static final Logger Log = LoggerFactory.getLogger(GameEventSite.class);
 
-    private final static Logger Log = LoggerFactory.getLogger(GameEventSite.class);
+    private static int objectId(NT_BoardObject value) {
+        return value.hasMonster() ? value.getMonster().getId() : value.hasUnit() ? value.getUnit().getId() : value.getId();
+    }
+
+    private static int objectLocation(NT_BoardObject value) {
+        return value.hasMonster() ? value.getMonster().getLocation() : value.hasUnit() ? value.getUnit().getLocation() : value.getLocation();
+    }
 
     private LogWindow logWindow() {
-        return this.game.ui.inGameUI.getLogWindow();
+        return game.ui.inGameUI.getLogWindow();
     }
 
     @Override
-    public void receive(Object object) {
-        super.receive(object);
-        NT_Event event = (NT_Event) object;
-        if (event.screenEffect != 0) {
+    protected void registerReceivers(MessageReceiverRegistry r) {
+        r.connect(com.broll.gainea.net.proto.NT_Event_TextInfo.class, this::receivedText);
+        r.connect(com.broll.gainea.net.proto.NT_Event_ReceivedCard.class, this::receivedCard);
+        r.connect(com.broll.gainea.net.proto.NT_Event_FocusObject.class, this::focusObject);
+        r.connect(com.broll.gainea.net.proto.NT_Event_FocusObjects.class, this::focusObjects);
+        r.connect(com.broll.gainea.net.proto.NT_Event_RemoveObjects.class, this::removeObjects);
+        r.connect(com.broll.gainea.net.proto.NT_Event_UpdateObjects.class, this::updateObjects);
+        r.connect(com.broll.gainea.net.proto.NT_Event_MovedObject.class, this::movedObject);
+        r.connect(com.broll.gainea.net.proto.NT_Event_PlacedObject.class, this::placedObject);
+        r.connect(com.broll.gainea.net.proto.NT_Event_PlayedCard.class, this::playedCard);
+        r.connect(com.broll.gainea.net.proto.NT_Event_FocusLocation.class, this::focusLocation);
+        r.connect(com.broll.gainea.net.proto.NT_Event_BoughtMerc.class, this::boughtMerc);
+        r.connect(com.broll.gainea.net.proto.NT_Event_ReceivedGoal.class, this::receivedGoal);
+        r.connect(com.broll.gainea.net.proto.NT_Event_RemoveGoal.class, this::removeGoal);
+        r.connect(com.broll.gainea.net.proto.NT_Event_RemoveCard.class, this::removeCard);
+        r.connect(com.broll.gainea.net.proto.NT_Event_OtherPlayerReceivedCard.class, this::otherPlayerReceivedCard);
+        r.connect(com.broll.gainea.net.proto.NT_Event_OtherPlayerReceivedGoal.class, this::otherPlayerReceivedGoal);
+        r.connect(com.broll.gainea.net.proto.NT_Event_ReceivedPoints.class, this::receivedPoints);
+        r.connect(com.broll.gainea.net.proto.NT_Event_ReceivedStars.class, this::receivedStars);
+        r.connect(com.broll.gainea.net.proto.NT_Event_FinishedGoal.class, this::finishedGoal);
+        r.connect(com.broll.gainea.net.proto.NT_Event_BoardEffect.class, this::boardEffect);
+    }
 
+    private void runEventBase(NT_Event base) {
+        if (base == null) {
+            return;
         }
-        if (event.sound != null) {
-            AudioPlayer.playSound(event.sound);
+        String sound = base.getSound();
+        if (!sound.isEmpty()) {
+            AudioPlayer.playSound(sound);
         }
     }
 
-    @PackageReceiver
-    public void received(NT_Event_TextInfo text) {
+    private void receivedText(com.broll.gainea.net.proto.NT_Event_TextInfo text) {
         if (game.ui.inGameUI == null) return;
-        logWindow().log(text.text);
-        if (text.type == NT_Event_TextInfo.TYPE_MESSAGE_DISPLAY) {
-            game.ui.inGameUI.infoMessages.show(text.text);
-        } else if (text.type == NT_Event_TextInfo.TYPE_CONFIRM_MESSAGE) {
-            MessageUtils.showConfirmMessage(game, text.text);
-        }
+        runEventBase(text.getBase());
+        logWindow().log(text.getText());
+        if (text.getType() == TextInfoType.DISPLAY.value)
+            game.ui.inGameUI.infoMessages.show(text.getText());
+        else if (text.getType() == TextInfoType.CONFIRM.value)
+            MessageUtils.showConfirmMessage(game, text.getText());
     }
 
-    @PackageReceiver
-    public void received(NT_Event_ReceivedCard card) {
-        game.state.getPlayer(getPlayer().getId()).cards++;
+    private void receivedCard(com.broll.gainea.net.proto.NT_Event_ReceivedCard value) {
+        runEventBase(value.getBase());
+        NT_Card card = value.getCard();
+        game.state.getPlayer(getPlayer().getId()).addCards(1);
         game.ui.inGameUI.hideWindows();
         Table table = new Table(game.ui.skin);
         table.add(LabelUtils.label(game.ui.skin, "Du hast eine Aktionskarte erhalten:")).padBottom(20).row();
-        table.add(CardWindow.renderCard(game, card.card));
-        game.ui.inGameUI.infoMessages.showCardReceived(card.card);
-        game.state.getCards().add(card.card);
+        table.add(CardWindow.renderCard(game, card));
+        game.ui.inGameUI.infoMessages.showCardReceived(card);
+        game.state.getCards().add(card);
         game.ui.inGameUI.updateWindows();
-        logWindow().logCardEvent("Du hast [VIOLET]" + card.card.title + "[] erhalten!");
+        logWindow().logCardEvent("Du hast [VIOLET]" + card.getTitle() + "[] erhalten!");
     }
 
-    @PackageReceiver
-    public void received(NT_Event_FocusObject focus) {
-        focus(focus.screenEffect, focus.object);
+    private void focusObject(com.broll.gainea.net.proto.NT_Event_FocusObject value) {
+        runEventBase(value.getBase());
+        focus(value.getBase().getScreenEffect(), java.util.Collections.singletonList(value.getObject()));
     }
 
-    @PackageReceiver
-    public void received(NT_Event_FocusObjects focus) {
-        focus(focus.screenEffect, focus.objects);
+    private void focusObjects(com.broll.gainea.net.proto.NT_Event_FocusObjects value) {
+        runEventBase(value.getBase());
+        focus(value.getBase().getScreenEffect(), value.getObjectsList());
     }
 
-    @PackageReceiver
-    public void received(NT_Event_RemoveObjects evt) {
-        for (NT_BoardObject obj : evt.objects) {
-            game.state.getMapObjectsContainer().remove(obj);
+    private void removeObjects(com.broll.gainea.net.proto.NT_Event_RemoveObjects value) {
+        runEventBase(value.getBase());
+        for (NT_BoardObject message : value.getObjectsList()) {
+            BoardObjectState obj = GameUtils.findObject(game, objectId(message));
+            if (obj != null) game.state.getMapObjectsContainer().remove(obj);
         }
         game.state.getMapObjectsContainer().rearrangeStacks();
-        GameUtils.removeObjects(game, evt.objects);
+        GameUtils.removeObjects(game, value.getObjectsList());
     }
 
-    @PackageReceiver
-    public void received(NT_Event_UpdateObjects update) {
-        game.state.getMapObjectsContainer().update(update.screenEffect, Arrays.asList(update.objects));
-        GameUtils.updateMapObjects(game, update.objects);
+    private void updateObjects(com.broll.gainea.net.proto.NT_Event_UpdateObjects value) {
+        runEventBase(value.getBase());
+        GameUtils.updateMapObjects(game, value.getObjectsList());
+        game.state.getMapObjectsContainer().update(value.getBase().getScreenEffect(), states(value.getObjectsList()));
     }
 
-    private void focus(int effect, NT_BoardObject... objects) {
+    private void focus(int effect, java.util.List<NT_BoardObject> objects) {
         game.ui.inGameUI.hideWindows();
-        game.state.getMapObjectsContainer().update(effect, Arrays.asList(objects));
         GameUtils.updateMapObjects(game, objects);
-        MapScrollUtils.showObject(game, objects[0]);
+        java.util.List<BoardObjectState> states = states(objects);
+        game.state.getMapObjectsContainer().update(effect, states);
+        MapScrollUtils.showObject(game, states.get(0));
         game.ui.inGameUI.updateWindows();
     }
 
-    @PackageReceiver
-    public void received(NT_Event_MovedObject moved) {
+    private void movedObject(com.broll.gainea.net.proto.NT_Event_MovedObject value) {
+        runEventBase(value.getBase());
+        java.util.List<NT_BoardObject> objects = value.getObjectsList();
         game.state.updateIdleState(false);
         game.ui.inGameUI.hideWindows();
         AudioPlayer.playSound("move.ogg");
-        NT_BoardObject moveObject = moved.objects[0];
-        int from = GameUtils.findObject(game, moveObject.id).location;
-        int to = moveObject.location;
+        NT_BoardObject moveObject = objects.get(0);
+        int id = objectId(moveObject);
+        int from = GameUtils.findObject(game, id).location(), to = objectLocation(moveObject);
         MapScrollUtils.showLocations(game, from, to);
-        GameUtils.updateMapObjects(game, moved.objects);
+        GameUtils.updateMapObjects(game, objects);
         boolean first = true;
-        for (NT_BoardObject object : moved.objects) {
+        for (NT_BoardObject message : objects) {
+            BoardObjectState object = GameUtils.findObject(game, objectId(message));
             MapObjectRender render = game.state.getMapObjectsContainer().getObjectRender(object);
-            Location location = game.state.getMap().getLocation(object.location);
+            Location location = game.state.getMap().getLocation(object.location());
             MoveToAction action = new MoveToAction();
             action.setDuration(1);
             action.setPosition(location.getCoordinates().getDisplayX(), location.getCoordinates().getDisplayY() + render.getStackHeight());
-            if (first) {
-                render.addAction(Actions.sequence(action, Actions.run(() -> {
-                    //walking done
-                    NT_BoardObject nt = GameUtils.findObject(game, object.id);
-                    if (nt != null) {
-                        nt.location = (short) to;
-                    }
-                    game.state.updateMapObjects(NT_Event.EFFECT_MOVED);
-                })));
-            } else {
-                render.addAction(action);
-            }
+            if (first) render.addAction(Actions.sequence(action, Actions.run(() -> {
+                game.state.updateMapObjects(ScreenEffect.MOVED.value);
+            })));
+            else render.addAction(action);
             first = false;
         }
     }
 
-    @PackageReceiver
-    public void received(NT_Event_PlacedObject placed) {
+    private void placedObject(com.broll.gainea.net.proto.NT_Event_PlacedObject value) {
+        runEventBase(value.getBase());
+        BoardObjectState object = GameUtils.addMapObject(game, value.getObject());
         game.ui.inGameUI.hideWindows();
-        NT_BoardObject object = placed.object;
         MapScrollUtils.showObject(game, object);
-        GameUtils.addMapObject(game, object);
-        game.state.updateMapObjects(NT_Event.EFFECT_SPAWNED);
+        game.state.updateMapObjects(ScreenEffect.SPAWNED.value);
         game.ui.inGameUI.updateWindows();
     }
 
-    @PackageReceiver
-    public void received(NT_Event_PlayedCard card) {
+    private void playedCard(com.broll.gainea.net.proto.NT_Event_PlayedCard value) {
+        runEventBase(value.getBase());
+        NT_Card card = value.getCard();
+        int player = value.getBase().getPlayer();
         game.state.updateIdleState(false);
         game.ui.inGameUI.hideWindows();
-        game.ui.inGameUI.infoMessages.show(CardWindow.renderCard(game, card.card), 4f);
-        if (card.card.playable) {
-            NT_Player owner = game.state.getPlayer(card.player);
-            if (owner != null) {
-                owner.cards--;
-            }
-            if (card.player == getPlayer().getId()) {
-                game.state.getCards().remove(card.card);
-                logWindow().logCardEvent("Du hast [VIOLET]" + card.card.title + "[] ausgespielt: [GRAY]" + card.card.text + "[]");
-            } else if (owner != null) {
-                logWindow().logCardEvent(owner.name + " hat [VIOLET]" + card.card.title + "[] ausgespielt: [GRAY]" + card.card.text + "[]");
-            }
+        game.ui.inGameUI.infoMessages.show(CardWindow.renderCard(game, card), 4f);
+        if (card.getPlayable()) {
+            PlayerState owner = game.state.getPlayer(player);
+            if (owner != null) owner.addCards(-1);
+            if (player == getPlayer().getId()) {
+                game.state.getCards().remove(card);
+                logWindow().logCardEvent("Du hast [VIOLET]" + card.getTitle() + "[] ausgespielt: [GRAY]" + card.getText() + "[]");
+            } else if (owner != null)
+                logWindow().logCardEvent(owner.name() + " hat [VIOLET]" + card.getTitle() + "[] ausgespielt: [GRAY]" + card.getText() + "[]");
         }
-        if (card.player == -1 || !card.card.playable) {
-            logWindow().logCardEvent("Event-Karte [VIOLET]" + card.card.title + "[] wurde aktiviert: [GRAY]" + card.card.text + "[]");
-        }
+        if (player == -1 || !card.getPlayable())
+            logWindow().logCardEvent("Event-Karte [VIOLET]" + card.getTitle() + "[] wurde aktiviert: [GRAY]" + card.getText() + "[]");
         game.ui.inGameUI.updateWindows();
     }
 
-    @PackageReceiver
-    public void received(NT_Event_FocusLocation location) {
+    private void focusLocation(com.broll.gainea.net.proto.NT_Event_FocusLocation value) {
+        runEventBase(value.getBase());
         game.ui.inGameUI.hideWindows();
-        MapScrollUtils.showLocations(game, location.location);
+        MapScrollUtils.showLocations(game, value.getLocation());
     }
 
-    @PackageReceiver
-    public void received(NT_Event_BoughtMerc nt) {
-        NT_Player owner = game.state.getPlayer(nt.player);
-        logWindow().logStarEvent(owner.name + " hat [ORANGE]" + nt.unit.name + "[] gekauft");
+    private void boughtMerc(com.broll.gainea.net.proto.NT_Event_BoughtMerc value) {
+        runEventBase(value.getBase());
+        PlayerState owner = game.state.getPlayer(value.getBase().getPlayer());
+        logWindow().logStarEvent(owner.name() + " hat [ORANGE]" + value.getUnit().getName() + "[] gekauft");
     }
 
-    @PackageReceiver
-    public void received(NT_Event_ReceivedGoal goal) {
+    private void receivedGoal(com.broll.gainea.net.proto.NT_Event_ReceivedGoal value) {
+        runEventBase(value.getBase());
+        NT_Goal goal = value.getGoal();
         game.ui.inGameUI.hideWindows();
         Log.info("received goal");
-        game.ui.inGameUI.infoMessages.show(GoalOverlay.renderGoal(game, goal.goal), 3f);
-        game.state.getGoals().add(goal.goal);
+        game.ui.inGameUI.infoMessages.show(GoalOverlay.renderGoal(game, goal), 3f);
+        game.state.getGoals().add(new GoalState(goal));
         game.ui.inGameUI.updateWindows();
-        logWindow().logGoalEvent("Neues Ziel erhalten: [BROWN]" + goal.goal.description + "[]");
+        logWindow().logGoalEvent("Neues Ziel erhalten: [BROWN]" + goal.getDescription() + "[]");
     }
 
-    @PackageReceiver
-    public void received(NT_Event_RemoveGoal goal) {
+    private void removeGoal(com.broll.gainea.net.proto.NT_Event_RemoveGoal value) {
+        runEventBase(value.getBase());
+        GoalState goal = new GoalState(value.getGoal());
         Log.info("removed goal");
-        game.state.getGoals().remove(goal.goal);
+        game.state.getGoals().remove(goal);
         game.ui.inGameUI.updateWindows();
     }
 
-    @PackageReceiver
-    public void received(NT_Event_RemoveCard card) {
+    private void removeCard(com.broll.gainea.net.proto.NT_Event_RemoveCard value) {
+        runEventBase(value.getBase());
+        NT_Card card = value.getCard();
         Log.info("removed card");
-        game.state.getCards().remove(card.card);
-        NT_Player owner = game.state.getPlayer(card.player);
-        owner.cards--;
+        game.state.getCards().remove(card);
+        game.state.getPlayer(value.getBase().getPlayer()).addCards(-1);
         game.ui.inGameUI.updateWindows();
     }
 
-    @PackageReceiver
-    public void received(NT_Event_OtherPlayerReceivedCard card) {
+    private void otherPlayerReceivedCard(com.broll.gainea.net.proto.NT_Event_OtherPlayerReceivedCard value) {
+        runEventBase(value.getBase());
         game.ui.inGameUI.hideWindows();
-        NT_Player owner = game.state.getPlayer(card.player);
-        owner.cards++;
-        String info = owner.name + " hat eine Karte erhalten!";
+        PlayerState owner = game.state.getPlayer(value.getBase().getPlayer());
+        owner.addCards(1);
         game.ui.inGameUI.updateWindows();
+        game.ui.inGameUI.infoMessages.show(owner.name() + " hat eine Karte erhalten!");
+        logWindow().logCardEvent(owner.name() + " hat eine Karte erhalten!");
+    }
+
+    private void otherPlayerReceivedGoal(com.broll.gainea.net.proto.NT_Event_OtherPlayerReceivedGoal value) {
+        runEventBase(value.getBase());
+        game.ui.inGameUI.hideWindows();
+        PlayerState owner = game.state.getPlayer(value.getBase().getPlayer());
+        String info = owner.name() + " hat ein neues Ziel erhalten!";
         game.ui.inGameUI.infoMessages.show(info);
-        logWindow().logCardEvent(owner.name + " hat eine Karte erhalten!");
+        logWindow().logGoalEvent(info);
     }
 
-    @PackageReceiver
-    public void received(NT_Event_OtherPlayerReceivedGoal goal) {
-        game.ui.inGameUI.hideWindows();
-        NT_Player owner = game.state.getPlayer(goal.player);
-        String info = owner.name + " hat ein neues Ziel erhalten!";
-        game.ui.inGameUI.infoMessages.show(info);
-        logWindow().logGoalEvent(owner.name + " hat ein neues Ziel erhalten!");
-    }
-
-    @PackageReceiver
-    public void received(NT_Event_ReceivedPoints points) {
-        game.state.getPlayer(points.player).points += points.points;
+    private void receivedPoints(com.broll.gainea.net.proto.NT_Event_ReceivedPoints value) {
+        runEventBase(value.getBase());
+        game.state.getPlayer(value.getBase().getPlayer()).addPoints(value.getPoints());
         game.ui.inGameUI.updateWindows();
     }
 
-    @PackageReceiver
-    public void received(NT_Event_ReceivedStars stars) {
-        game.state.getPlayer(stars.player).stars += stars.stars;
+    private void receivedStars(com.broll.gainea.net.proto.NT_Event_ReceivedStars value) {
+        runEventBase(value.getBase());
+        game.state.getPlayer(value.getBase().getPlayer()).addStars(value.getStars());
         game.ui.inGameUI.updateWindows();
     }
 
-    @PackageReceiver
-    public void received(NT_Event_FinishedGoal goal) {
+    private void finishedGoal(com.broll.gainea.net.proto.NT_Event_FinishedGoal value) {
+        runEventBase(value.getBase());
+        NT_Goal goal = value.getGoal();
+        boolean mine = value.getBase().getPlayer() == getPlayer().getId();
         game.ui.inGameUI.hideWindows();
-        boolean myGoal = goal.player == getPlayer().getId();
-        if (myGoal) {
-            game.state.getGoals().remove(goal.goal);
-            logWindow().logGoalEvent("Du hast hat dein Ziel erreicht: [BROWN]" + goal.goal.description + "[] (+" + goal.goal.points + " Punkte)");
+        if (mine) {
+            game.state.getGoals().remove(new GoalState(goal));
+            logWindow().logGoalEvent("Du hast hat dein Ziel erreicht: [BROWN]" + goal.getDescription() + "[] (+" + goal.getPoints() + " Punkte)");
         } else {
-            NT_Player owner = game.state.getPlayer(goal.player);
-            logWindow().logGoalEvent(owner.name + " hat ein Ziel erreicht: [BROWN]" + goal.goal.description + "[] (+" + goal.goal.points + " Punkte)");
+            PlayerState owner = game.state.getPlayer(value.getBase().getPlayer());
+            logWindow().logGoalEvent(owner.name() + " hat ein Ziel erreicht: [BROWN]" + goal.getDescription() + "[] (+" + goal.getPoints() + " Punkte)");
         }
-        FinishedGoalDisplay message = new FinishedGoalDisplay(game, goal, myGoal);
-        game.ui.inGameUI.infoMessages.show(message, 4f);
+        game.ui.inGameUI.infoMessages.show(new FinishedGoalDisplay(game, value, mine), 4f);
     }
 
-    @PackageReceiver
-    public void received(NT_Event_BoardEffect nt) {
-        GameUtils.updateMapEffects(game.state, nt.effects);
-        game.state.updateMapObjects(nt.screenEffect);
+    private void boardEffect(com.broll.gainea.net.proto.NT_Event_BoardEffect value) {
+        runEventBase(value.getBase());
+        GameUtils.updateMapEffects(game.state, value.getEffectsList());
+        game.state.updateMapObjects(value.getBase().getScreenEffect());
+    }
+
+    private java.util.List<BoardObjectState> states(java.util.List<NT_BoardObject> messages) {
+        java.util.List<BoardObjectState> result = new java.util.ArrayList<>();
+        messages.forEach(message -> result.add(GameUtils.findObject(game, objectId(message))));
+        return result;
     }
 }

@@ -3,10 +3,10 @@ package com.broll.gainea.server.core.fractions.impl
 import com.broll.gainea.server.core.battle.BattleResult
 import com.broll.gainea.server.core.battle.FightingPower
 import com.broll.gainea.server.core.cards.Card
-import com.broll.gainea.server.core.cards.EffectType.DISRUPTION
+import com.broll.gainea.core.cards.EffectType.DISRUPTION
 import com.broll.gainea.server.core.fractions.Fraction
 import com.broll.gainea.server.core.fractions.FractionDescription
-import com.broll.gainea.server.core.fractions.FractionType
+import com.broll.gainea.core.fractions.FractionType
 import com.broll.gainea.server.core.fractions.UnitDescription
 import com.broll.gainea.server.core.map.Area
 import com.broll.gainea.server.core.map.AreaType

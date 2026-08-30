@@ -1,12 +1,12 @@
 package com.broll.gainea.server.core.actions
 
-import com.broll.gainea.net.NT_Action
-import com.broll.gainea.net.NT_Action_Attack
-import com.broll.gainea.net.NT_Action_Card
-import com.broll.gainea.net.NT_Action_Move
-import com.broll.gainea.net.NT_Action_PlaceUnit
-import com.broll.gainea.net.NT_Action_SelectChoice
-import com.broll.gainea.net.NT_Action_Shop
+import com.broll.gainea.net.proto.NT_Action
+import com.broll.gainea.net.proto.NT_Action_Attack
+import com.broll.gainea.net.proto.NT_Action_Card
+import com.broll.gainea.net.proto.NT_Action_Move
+import com.broll.gainea.net.proto.NT_Action_PlaceUnit
+import com.broll.gainea.net.proto.NT_Action_SelectChoice
+import com.broll.gainea.net.proto.NT_Action_Shop
 import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.actions.optional.AttackAction
 import com.broll.gainea.server.core.actions.optional.CardAction
@@ -14,9 +14,10 @@ import com.broll.gainea.server.core.actions.optional.MoveUnitAction
 import com.broll.gainea.server.core.actions.optional.ShopAction
 import com.broll.gainea.server.core.actions.required.PlaceUnitAction
 import com.broll.gainea.server.core.actions.required.SelectChoiceAction
+import com.google.protobuf.Message
 
 class ActionHandlers(private val game: Game, val reactionActions: ReactionActions) {
-    private val handlers: MutableMap<Class<out NT_Action>, AbstractActionHandler<*, *>> = HashMap()
+    private val handlers: MutableMap<Class<out Message>, AbstractActionHandler<*, *>> = HashMap()
     private val handlers2: MutableMap<Class<out AbstractActionHandler<*, *>>, AbstractActionHandler<*, *>> =
         HashMap()
     val all: List<AbstractActionHandler<*, *>>
@@ -36,7 +37,7 @@ class ActionHandlers(private val game: Game, val reactionActions: ReactionAction
     }
 
     private fun initHandler(
-        actionClass: Class<out NT_Action>,
+        actionClass: Class<out Message>,
         handler: AbstractActionHandler<*, *>
     ) {
         handler.init(game, reactionActions, this)
@@ -44,7 +45,7 @@ class ActionHandlers(private val game: Game, val reactionActions: ReactionAction
         handlers2[handler.javaClass] = handler
     }
 
-    fun <T : NT_Action> getHandlerForAction(actionClass: Class<T>): AbstractActionHandler<T, ActionContext<out T>>? {
+    fun <T : Message> getHandlerForAction(actionClass: Class<T>): AbstractActionHandler<T, ActionContext<out T>>? {
         return handlers.get(actionClass) as AbstractActionHandler<T, ActionContext<out T>>?
     }
 

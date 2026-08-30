@@ -1,7 +1,7 @@
 package com.broll.gainea.server.core.cards.impl.direct
 
 import com.broll.gainea.server.core.cards.DirectlyPlayedCard
-import com.broll.gainea.server.core.cards.EffectType.OTHER
+import com.broll.gainea.core.cards.EffectType.OTHER
 import com.broll.gainea.server.core.objects.Unit
 import com.broll.gainea.server.core.utils.UnitControl.heal
 

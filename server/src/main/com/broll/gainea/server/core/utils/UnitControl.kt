@@ -1,12 +1,13 @@
 package com.broll.gainea.server.core.utils
 
-import com.broll.gainea.net.NT_Event
-import com.broll.gainea.net.NT_Event_FocusObject
-import com.broll.gainea.net.NT_Event_FocusObjects
-import com.broll.gainea.net.NT_Event_MovedObject
-import com.broll.gainea.net.NT_Event_PlacedObject
-import com.broll.gainea.net.NT_Event_RemoveObjects
-import com.broll.gainea.net.NT_Event_UpdateObjects
+import com.broll.gainea.core.protocol.ScreenEffect
+import com.broll.gainea.net.proto.NT_Event
+import com.broll.gainea.net.proto.NT_Event_FocusObject
+import com.broll.gainea.net.proto.NT_Event_FocusObjects
+import com.broll.gainea.net.proto.NT_Event_MovedObject
+import com.broll.gainea.net.proto.NT_Event_PlacedObject
+import com.broll.gainea.net.proto.NT_Event_RemoveObjects
+import com.broll.gainea.net.proto.NT_Event_UpdateObjects
 import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.map.Area
 import com.broll.gainea.server.core.map.Location
@@ -51,8 +52,8 @@ object UnitControl {
         Log.trace("UnitControl: move units [" + units.size + "] to " + location)
         units.forEach { it.place(location) }
         units.forEach { it.moved(fromPlayerAction) }
-        val movedObject = NT_Event_MovedObject()
-        movedObject.objects = units.map { it.nt() }.toTypedArray()
+        val movedObject = NT_Event_MovedObject.newBuilder()
+            .addAllObjects(units.map { it.boardNt() }).build()
         sendUpdate(movedObject)
         ProcessingUtils.pause(MOVE_PAUSE)
         updateReceiver.unitsMoved(units, location)
@@ -61,19 +62,20 @@ object UnitControl {
     fun Game.kill(unit: Unit) = damage(unit, Int.MAX_VALUE)
 
 
-    fun Game.focus(obj: MapObject, effect: Int) {
-        val nt = NT_Event_FocusObject()
-        nt.screenEffect = effect
-        nt.`object` = obj.nt()
+    fun Game.focus(obj: MapObject, effect: ScreenEffect) {
+        val nt = NT_Event_FocusObject.newBuilder()
+            .setBase(NT_Event.newBuilder().setScreenEffect(effect.value).build())
+            .setObject(obj.boardNt()).build()
         sendUpdate(nt)
         ProcessingUtils.pause(DAMAGE_PAUSE)
     }
 
-    fun Game.focus(objects: List<MapObject>, effect: Int) {
+    fun Game.focus(objects: List<MapObject>, effect: ScreenEffect) {
         objects.map { it.location }.distinct().forEach { location ->
-            val nt = NT_Event_FocusObjects()
-            nt.screenEffect = effect
-            nt.objects = objects.filter { it.location === location }.map { it.nt() }.toTypedArray()
+            val nt = NT_Event_FocusObjects.newBuilder()
+                .setBase(NT_Event.newBuilder().setScreenEffect(effect.value).build())
+                .addAllObjects(objects.filter { it.location === location }.map { it.boardNt() })
+                .build()
             sendUpdate(nt)
             ProcessingUtils.pause(DAMAGE_PAUSE)
         }
@@ -82,25 +84,33 @@ object UnitControl {
     fun Game.update(obj: MapObject) = update(listOf(obj))
 
     fun Game.update(objects: List<MapObject>) {
-        val nt = NT_Event_UpdateObjects()
-        nt.objects = objects.map { it.nt() }.toTypedArray()
+        val nt = NT_Event_UpdateObjects.newBuilder()
+            .addAllObjects(objects.map { it.boardNt() }).build()
         sendUpdate(nt)
     }
 
 
-    fun Game.heal(unit: Unit, heal: Int = 1, consumer: Consumer<NT_Event_FocusObject>? = null) {
+    fun Game.heal(
+        unit: Unit,
+        heal: Int = 1,
+        consumer: Consumer<NT_Event_FocusObject.Builder>? = null
+    ) {
         Log.trace("UnitControl: heal unit $unit for $heal")
         val actualHeal = Math.max(unit.maxHealth.value - unit.health.value, heal)
         unit.heal(actualHeal)
-        val nt = NT_Event_FocusObject()
-        nt.`object` = unit.nt()
-        nt.screenEffect = NT_Event.EFFECT_HEAL
+        val nt = NT_Event_FocusObject.newBuilder()
+            .setObject(unit.boardNt())
+            .setBase(NT_Event.newBuilder().setScreenEffect(ScreenEffect.HEAL.value))
         consumer?.accept(nt)
-        sendUpdate(nt)
+        sendUpdate(nt.build())
         ProcessingUtils.pause(DAMAGE_PAUSE)
     }
 
-    fun Game.damage(unit: Unit, damage: Int = 1, consumer: Consumer<NT_Event_FocusObject>? = null) {
+    fun Game.damage(
+        unit: Unit,
+        damage: Int = 1,
+        consumer: Consumer<NT_Event_FocusObject.Builder>? = null
+    ) {
         Log.trace("UnitControl: damage unit $unit for $damage")
         //dont overkill
         val actualDamage = Math.min(unit.health.value, damage)
@@ -116,11 +126,11 @@ object UnitControl {
             Log.trace("Damaged unit died and is removed")
         }
         //send update to focus clients on object
-        val nt = NT_Event_FocusObject()
-        nt.`object` = unit.nt()
-        nt.screenEffect = NT_Event.EFFECT_DAMAGE
+        val nt = NT_Event_FocusObject.newBuilder()
+            .setBase(NT_Event.newBuilder().setScreenEffect(ScreenEffect.DAMAGE.value))
+            .setObject(unit.boardNt())
         consumer?.accept(nt)
-        sendUpdate(nt)
+        sendUpdate(nt.build())
         updateReceiver.unitDamaged(unit, damage)
         if (lethal) {
             unit.onDeath(null)
@@ -132,7 +142,7 @@ object UnitControl {
     fun Game.spawn(
         obj: MapObject,
         location: Location,
-        consumer: Consumer<NT_Event_PlacedObject>? = null
+        consumer: Consumer<NT_Event_PlacedObject.Builder>? = null
     ) {
         Log.trace("UnitControl: spawn object $obj at $location")
         obj.init(this)
@@ -146,11 +156,11 @@ object UnitControl {
         }
         obj.place(location)
         updateReceiver.register(obj)
-        val nt = NT_Event_PlacedObject()
-        nt.`object` = obj.nt()
-        nt.sound = obj.defaultSpawnSound(location)
+        val nt = NT_Event_PlacedObject.newBuilder()
+            .setObject(obj.boardNt())
+            .setBase(NT_Event.newBuilder().setSound(obj.defaultSpawnSound(location)).build())
         consumer?.accept(nt)
-        sendUpdate(nt)
+        sendUpdate(nt.build())
         updateReceiver.unitSpawned(obj, location)
         ProcessingUtils.pause(SPAWN_PAUSE)
     }
@@ -159,8 +169,8 @@ object UnitControl {
 
     fun Game.despawn(objs: List<MapObject>) {
         objs.forEach { remove(it) }
-        val nt = NT_Event_RemoveObjects()
-        nt.objects = objs.map { it.nt() }.toTypedArray()
+        val nt = NT_Event_RemoveObjects.newBuilder()
+            .addAllObjects(objs.map { it.boardNt() }).build()
         sendUpdate(nt)
     }
 

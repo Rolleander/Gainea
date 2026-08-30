@@ -1,7 +1,7 @@
 package com.broll.gainea.server.core.cards.impl.direct
 
 import com.broll.gainea.server.core.cards.DirectlyPlayedCard
-import com.broll.gainea.server.core.cards.EffectType.SUMMON
+import com.broll.gainea.core.cards.EffectType.SUMMON
 import com.broll.gainea.server.core.utils.iteratePlayers
 
 class C_PlaceSoldier :

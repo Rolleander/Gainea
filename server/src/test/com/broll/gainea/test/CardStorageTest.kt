@@ -2,7 +2,7 @@ package com.broll.gainea.test
 
 import com.broll.gainea.server.core.cards.CardStorage
 import com.broll.gainea.server.core.cards.DirectlyPlayedCard
-import com.broll.gainea.server.init.ExpansionSetting.PLUS_ICELANDS
+import com.broll.gainea.core.map.ExpansionSetting.PLUS_ICELANDS
 import org.amshove.kluent.`should be true`
 import org.junit.jupiter.api.Test
 

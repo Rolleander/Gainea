@@ -1,6 +1,10 @@
 package com.broll.gainea.server.core.events.random
 
-import com.broll.gainea.net.NT_Event
+import com.broll.gainea.core.protocol.ScreenEffect
+
+import com.broll.gainea.server.core.map.*
+
+import com.broll.gainea.net.proto.NT_Event
 import com.broll.gainea.server.core.events.RandomEvent
 import com.broll.gainea.server.core.events.freeArea
 import com.broll.gainea.server.core.objects.Collectible
@@ -23,7 +27,7 @@ class RE_BuffPickup : RandomEvent() {
             val buff = IntBuff(ADD, 3)
             unit.addHealthBuff(buff)
             unit.power.addBuff(buff)
-            game.focus(unit, NT_Event.EFFECT_BUFF)
+            game.focus(unit, ScreenEffect.BUFF)
         }
         obj.name = "Waffenschmied"
         obj.description = "Eroberer verleiht einer Einheit +3/+3"

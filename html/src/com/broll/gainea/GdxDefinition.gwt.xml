@@ -3,11 +3,14 @@
 <module rename-to="html">
 	<inherits name='com.badlogic.gdx.backends.gdx_backends_gwt' />
 	<inherits name='com.badlogic.gdx.physics.box2d.box2d-gwt' />
+	<inherits name='com.broll.mpnll.GwtClient' />
 
 	<inherits name='Gainea' />
+	<!-- Apply application compatibility overrides after inherited emulation modules. -->
+	<super-source path='super' />
 	<entry-point class='com.broll.gainea.client.HtmlLauncher' />
 	<set-configuration-property name='xsiframe.failIfScriptTag' value='FALSE'/>
-	<set-configuration-property name="gdx.assetpath" value="../core/assets" />
+	<set-configuration-property name="gdx.assetpath" value="../client/assets" />
 	<set-property name="user.agent" value="gecko1_8, safari"/>
 	<collapse-property name="user.agent" values="*" />
 </module>

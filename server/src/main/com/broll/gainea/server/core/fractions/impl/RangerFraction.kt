@@ -1,12 +1,14 @@
 package com.broll.gainea.server.core.fractions.impl
 
-import com.broll.gainea.net.NT_Unit
+import com.broll.gainea.core.protocol.UnitType
+
+import com.broll.gainea.net.proto.NT_Unit
 import com.broll.gainea.server.core.battle.BattleContext
 import com.broll.gainea.server.core.battle.BattleResult
 import com.broll.gainea.server.core.battle.FightingPower
 import com.broll.gainea.server.core.fractions.Fraction
 import com.broll.gainea.server.core.fractions.FractionDescription
-import com.broll.gainea.server.core.fractions.FractionType
+import com.broll.gainea.core.fractions.FractionType
 import com.broll.gainea.server.core.fractions.UnitDescription
 import com.broll.gainea.server.core.map.AreaType
 import com.broll.gainea.server.core.objects.Soldier
@@ -47,11 +49,11 @@ class RangerFraction : Fraction(FractionType.RANGER) {
     }
 
     override fun createCommander(): Soldier = super.createCommander().apply {
-        setType(NT_Unit.TYPE_FEMALE.toInt())
+        setType(UnitType.FEMALE)
     }
 
     override fun createSoldier(): Soldier = super.createSoldier().apply {
-        setType(NT_Unit.TYPE_FEMALE.toInt())
+        setType(UnitType.FEMALE)
     }
 
 }

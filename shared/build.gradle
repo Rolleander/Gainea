@@ -1,8 +1,14 @@
-apply plugin: "java"
+plugins {
+    id 'com.broll.mpnll.protocol' version '0.1.0'
+    id 'java'
+}
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
 
 sourceCompatibility = 1.8
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
-
-sourceSets.main.java.srcDirs = [ "src/" ]
 
 java.targetCompatibility = JavaVersion.VERSION_1_8

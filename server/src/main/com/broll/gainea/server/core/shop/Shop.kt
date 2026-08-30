@@ -1,8 +1,8 @@
 package com.broll.gainea.server.core.shop
 
-import com.broll.gainea.net.NT_Shop
+import com.broll.gainea.net.proto.NT_Shop
 import com.broll.gainea.server.core.Game
-import com.broll.gainea.server.core.cards.EffectType.MOVEMENT
+import com.broll.gainea.core.cards.EffectType.MOVEMENT
 import com.broll.gainea.server.core.cards.impl.play.C_PickCard
 import com.broll.gainea.server.core.objects.impl.Challenger
 import com.broll.gainea.server.core.objects.impl.DemonKnight
@@ -24,9 +24,7 @@ class Shop(val game: Game, val owner: Player) {
         )
 
     fun nt(): NT_Shop {
-        val nt = NT_Shop()
-        nt.items = items.map { it.nt() }.toTypedArray()
-        return nt
+        return NT_Shop.newBuilder().addAllItems(items.map { it.nt() }).build()
     }
 
 }
@@ -45,4 +43,3 @@ object PickCard :
         player.cardHandler.receiveCard(C_PickCard())
     }
 }
-

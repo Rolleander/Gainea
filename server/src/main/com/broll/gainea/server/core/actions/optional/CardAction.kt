@@ -1,7 +1,7 @@
 package com.broll.gainea.server.core.actions.optional
 
-import com.broll.gainea.net.NT_Action_Card
-import com.broll.gainea.net.NT_Reaction
+import com.broll.gainea.net.proto.NT_Action_Card
+import com.broll.gainea.net.proto.NT_Reaction
 import com.broll.gainea.server.core.actions.AbstractActionHandler
 import com.broll.gainea.server.core.actions.ActionContext
 import com.broll.gainea.server.core.cards.Card
@@ -14,8 +14,7 @@ class CardAction : AbstractActionHandler<NT_Action_Card, CardAction.Context>() {
     ) : ActionContext<NT_Action_Card>(action)
 
     fun playableCard(card: Card): Context {
-        val action = NT_Action_Card()
-        action.cardId = card.id
+        val action = NT_Action_Card.newBuilder().setCardId(card.id).build()
         return Context(action, card)
     }
 

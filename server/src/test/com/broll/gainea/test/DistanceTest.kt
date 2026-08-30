@@ -42,7 +42,7 @@ class DistanceTest {
         area(HIENGLAND).getWalkingDistance(area(FELSWALD), unit) `should be equal to` 3
         area(KORBERG).getWalkingDistance(area(MISTRAWUESTE), unit) `should be equal to` 6
     }
-    
+
     @Test
     fun `connected distances are correct`() {
         area(KORBERG).getConnectedLocations(1)

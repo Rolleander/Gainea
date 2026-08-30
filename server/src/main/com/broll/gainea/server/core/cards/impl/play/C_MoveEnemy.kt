@@ -1,7 +1,7 @@
 package com.broll.gainea.server.core.cards.impl.play
 
 import com.broll.gainea.server.core.cards.Card
-import com.broll.gainea.server.core.cards.EffectType.DISRUPTION
+import com.broll.gainea.core.cards.EffectType.DISRUPTION
 import com.broll.gainea.server.core.player.isNeutral
 import com.broll.gainea.server.core.utils.UnitControl.move
 import com.broll.gainea.server.core.utils.getEnemyLocations

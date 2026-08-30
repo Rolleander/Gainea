@@ -5,13 +5,15 @@ import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.core.utils.endTurn
 import com.broll.gainea.server.init.LobbyData
 import com.broll.gainea.server.init.PlayerData
-import com.broll.networklib.server.LobbyServerSite
+import com.broll.gainea.server.network.gameData
+import com.broll.gainea.server.network.playerData
+import com.broll.mpnll.server.site.NetworkSite
 
-abstract class GameSite : LobbyServerSite<LobbyData, PlayerData>() {
+abstract class GameSite : NetworkSite() {
     protected val game: Game
-        get() = lobby.data!!.game!!
+        get() = lobby.gameData.game!!
     protected val gamePlayer: Player
-        get() = player.data!!.gamePlayer
+        get() = user.playerData.gamePlayer
     protected val playersCount: Int
         get() = game.allPlayers.size
 

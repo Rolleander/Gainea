@@ -1,7 +1,7 @@
 package com.broll.gainea.server.core.actions.optional
 
-import com.broll.gainea.net.NT_Action_Shop
-import com.broll.gainea.net.NT_Reaction
+import com.broll.gainea.net.proto.NT_Action_Shop
+import com.broll.gainea.net.proto.NT_Reaction
 import com.broll.gainea.server.core.actions.AbstractActionHandler
 import com.broll.gainea.server.core.actions.ActionContext
 import com.broll.gainea.server.core.player.Player
@@ -14,8 +14,7 @@ class ShopAction : AbstractActionHandler<NT_Action_Shop, ShopAction.Context>() {
     ) : ActionContext<NT_Action_Shop>(action)
 
     fun purchasableItem(player: Player, index: Int): Context {
-        val action = NT_Action_Shop()
-        action.index = index
+        val action = NT_Action_Shop.newBuilder().setIndex(index).build()
         return Context(action, player)
     }
 

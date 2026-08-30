@@ -1,6 +1,8 @@
 package com.broll.gainea.server.core.objects
 
-import com.broll.gainea.net.NT_BoardObject
+import com.broll.gainea.net.proto.NT_BoardObject
+import com.broll.gainea.net.proto.NT_Monster
+import com.broll.gainea.net.proto.NT_Unit
 import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.map.Location
 import com.broll.gainea.server.core.map.Ship
@@ -56,24 +58,38 @@ abstract class MapObject(var owner: Player) : GameUpdateReceiverAdapter() {
     val moveTargets: List<Location>
         get() = location.connectedLocations.filter { canMoveTo(it) }
 
-    open fun nt(): NT_BoardObject {
-        val obj = NT_BoardObject()
-        fillObject(obj)
-        return obj
+    open fun boardNt(): NT_BoardObject {
+        return fillObject(NT_BoardObject.newBuilder()).build()
     }
 
-    protected fun fillObject(obj: NT_BoardObject) {
-        obj.id = id.toShort()
-        obj.name = name
-        obj.icon = icon.toShort()
-        obj.scale = scale
-        obj.description = description
-        if (!owner.isNeutral()) {
-            obj.owner = owner.serverPlayer.id.toShort()
-        }
-        if (location != SpawnLocation) {
-            obj.location = location.number.toShort()
-        }
+    protected fun fillObject(obj: NT_BoardObject.Builder) = obj.apply {
+        id = this@MapObject.id
+        this@MapObject.name?.let { name = it }
+        icon = this@MapObject.icon
+        scale = this@MapObject.scale
+        this@MapObject.description?.let { description = it }
+        if (!this@MapObject.owner.isNeutral()) owner = this@MapObject.owner.serverPlayer.id
+        if (this@MapObject.location != SpawnLocation) location = this@MapObject.location.number
+    }
+
+    protected fun fillObject(obj: NT_Unit.Builder) = obj.apply {
+        id = this@MapObject.id
+        this@MapObject.name?.let { name = it }
+        icon = this@MapObject.icon
+        scale = this@MapObject.scale
+        this@MapObject.description?.let { description = it }
+        if (!this@MapObject.owner.isNeutral()) owner = this@MapObject.owner.serverPlayer.id
+        if (this@MapObject.location != SpawnLocation) location = this@MapObject.location.number
+    }
+
+    protected fun fillObject(obj: NT_Monster.Builder) = obj.apply {
+        id = this@MapObject.id
+        this@MapObject.name?.let { name = it }
+        icon = this@MapObject.icon
+        scale = this@MapObject.scale
+        this@MapObject.description?.let { description = it }
+        if (!this@MapObject.owner.isNeutral()) owner = this@MapObject.owner.serverPlayer.id
+        if (this@MapObject.location != SpawnLocation) location = this@MapObject.location.number
     }
 
     override fun equals(other: Any?) = other is MapObject && other.id == id

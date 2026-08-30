@@ -12,13 +12,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.broll.gainea.Gainea;
+import com.broll.gainea.client.game.GoalState;
 import com.broll.gainea.client.ui.ingame.DepthActor;
 import com.broll.gainea.client.ui.utils.LabelUtils;
 import com.broll.gainea.client.ui.utils.TextureUtils;
-import com.broll.gainea.net.NT_Goal;
-import com.broll.gainea.server.core.map.Location;
-
-import org.apache.commons.lang3.StringUtils;
+import com.broll.gainea.net.proto.NT_Goal;
+import com.broll.gainea.client.game.map.Location;
 
 import java.util.Arrays;
 import java.util.List;
@@ -49,15 +48,15 @@ public class GoalOverlay extends Table {
         int w = 500;
         table.left();
         table.setBackground("info-bg");
-        table.add(new Image(TextureUtils.icon(game, 8 + goal.points)));
+        table.add(new Image(TextureUtils.icon(game, 8 + goal.getPoints())));
         String info = "";
-        if (goal.progressionGoal != NT_Goal.NO_PROGRESSION_GOAL) {
-            info = "   [BLUE](" + goal.progression + "/" + goal.progressionGoal + ")[]";
+        if (goal.getProgressionGoal() != -1) {
+            info = "   [BLUE](" + goal.getProgression() + "/" + goal.getProgressionGoal() + ")[]";
         }
-        if (StringUtils.isNotEmpty(goal.restriction)) {
-            info += "   [BROWN]" + goal.restriction + "[]";
+        if (!goal.getRestriction().isEmpty()) {
+            info += "   [BROWN]" + goal.getRestriction() + "[]";
         }
-        table.add(LabelUtils.autoWrap(LabelUtils.markup(skin, goal.description + info), w)).width(w);
+        table.add(LabelUtils.autoWrap(LabelUtils.markup(skin, goal.getDescription() + info), w)).width(w);
         return table;
     }
 
@@ -68,14 +67,14 @@ public class GoalOverlay extends Table {
             selectedGoal = null;
         }
         game.state.getGoals().forEach(goal -> {
-            Table goalRender = renderGoal(game, goal);
-            addClickIndicator(goalRender, goal);
+            Table goalRender = renderGoal(game, goal.message());
+            addClickIndicator(goalRender, goal.message());
             content.add(goalRender).left().row();
         });
     }
 
     private void addClickIndicator(Table render, NT_Goal goal) {
-        if (goal.locations != null) {
+        if (goal.getLocationsCount() > 0) {
             render.setTouchable(Touchable.enabled);
             render.addListener(new ClickListener() {
                 @Override
@@ -91,7 +90,7 @@ public class GoalOverlay extends Table {
                     if (selectedGoal != goal) {
                         selectedGoal = goal;
                         render.setBackground("menu-bg");
-                        indicators = Arrays.stream(goal.locations).mapToObj(TargetIndicator::new).collect(Collectors.toList());
+                        indicators = goal.getLocationsList().stream().map(TargetIndicator::new).collect(Collectors.toList());
                         indicators.forEach(it -> game.gameStage.addActor(it));
                     } else {
                         selectedGoal = null;
