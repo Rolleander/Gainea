@@ -17,7 +17,7 @@ class ProtoMessagesTest {
         val game = testGame(playersCount = 1)
         val start = game.start(game.allPlayers.first())
 
-        assertEquals(1, start.playersCount)
+        assertEquals(1, start.update.playersCount)
         assertEquals(game.map.expansions.size, start.expansionsCount)
     }
 

@@ -1,5 +1,6 @@
 package com.broll.gainea.server.core.shop
 
+import com.broll.gainea.net.proto.NT_Event
 import com.broll.gainea.net.proto.NT_Event_BoughtMerc
 import com.broll.gainea.net.proto.NT_ShopItem
 import com.broll.gainea.net.proto.NT_ShopUnit
@@ -23,7 +24,10 @@ data class ShopUnit(
     override fun purchased(game: Game, player: Player) {
         val handler = game.getActionHandler(PlaceUnitAction::class.java)
         handler.placeUnit(player, unit, player.controlledLocations.toList())
-        game.sendUpdate(NT_Event_BoughtMerc.newBuilder().setUnit(unit.nt())
-            .setPlayer(player.serverPlayer.id).build())
+        game.sendUpdate(
+            NT_Event_BoughtMerc.newBuilder().setUnit(unit.nt())
+                .setBase(NT_Event.newBuilder().setPlayer(player.serverPlayer.id).build())
+                .build()
+        )
     }
 }

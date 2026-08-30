@@ -1,5 +1,6 @@
 package com.broll.gainea.server.core.events
 
+import com.broll.gainea.net.proto.NT_Event
 import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.objects.monster.GodDragon
 import com.broll.gainea.server.core.utils.UnitControl.spawn
@@ -9,7 +10,9 @@ class E_SpawnGoddrake : EventCard(59, "Gaineas Herrscher", "Der Götterdrache er
     override fun play() {
         val dragon = GodDragon(game.neutralPlayer)
         game.map.allAreas.getRandomFree()?.let {
-            game.spawn(dragon, it) { nt -> nt.sound = "goddrake.ogg" }
+            game.spawn(dragon, it) { nt ->
+                nt.setBase(NT_Event.newBuilder().setSound("goddrake.ogg").build())
+            }
         }
     }
 

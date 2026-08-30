@@ -1,17 +1,14 @@
 package com.broll.gainea.client.network.sites;
 
+import com.broll.gainea.client.game.GoalState;
 import com.broll.gainea.client.ui.screens.GameScreen;
 import com.broll.gainea.client.ui.screens.LobbyScreen;
-import com.broll.gainea.net.proto.NT_ReconnectGame;
-import com.broll.gainea.net.proto.NT_StartGame;
-import com.broll.gainea.client.game.GoalState;
 import com.broll.gainea.net.proto.NT_LoadedGame;
+import com.broll.gainea.net.proto.NT_StartGame;
 import com.broll.mpnll.client.site.MessageReceiverRegistry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Arrays;
 
 public class GameStateSite extends AbstractGameSite {
     private static final Logger Log = LoggerFactory.getLogger(GameStateSite.class);
@@ -38,10 +35,11 @@ public class GameStateSite extends AbstractGameSite {
 
     private void received(com.broll.gainea.net.proto.NT_ReconnectGame message) {
         Log.info("player reconnected!");
-        game.state.init(message.getExpansionsList(), message.getPointLimit(), message.getRoundLimit(), getPlayer());
-        game.state.getCards().addAll(message.getCardsList());
-        game.state.shop = message.getShop();
-        game.state.update(message);
+        NT_StartGame start = message.getStart();
+        game.state.init(start.getExpansionsList(), start.getPointLimit(), start.getRoundLimit(), getPlayer());
+        game.state.getCards().addAll(start.getCardsList());
+        game.state.shop = start.getShop();
+        game.state.update(start.getUpdate());
         showGame();
         message.getGoalsList().forEach(goal -> game.state.getGoals().add(new GoalState(goal)));
         game.ui.inGameUI.updateWindows();
@@ -49,7 +47,7 @@ public class GameStateSite extends AbstractGameSite {
 
     private void received(com.broll.gainea.net.proto.NT_GameOver message) {
         game.ui.inGameUI.hideWindows();
-        game.state.update(message);
+        game.state.update(message.getUpdate());
         game.state.playerTurnEnded();
         game.ui.inGameUI.gameOver(message);
     }
@@ -62,7 +60,7 @@ public class GameStateSite extends AbstractGameSite {
         game.state.init(start.getExpansionsList(), start.getPointLimit(), start.getRoundLimit(), getPlayer());
         game.state.getCards().addAll(start.getCardsList());
         game.state.shop = start.getShop();
-        game.state.update(start);
+        game.state.update(start.getUpdate());
         showGame();
     }
 

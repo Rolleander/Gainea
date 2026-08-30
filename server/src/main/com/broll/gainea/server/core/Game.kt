@@ -1,16 +1,14 @@
 package com.broll.gainea.server.core
 
-import com.broll.gainea.net.proto.NT_Action
 import com.broll.gainea.net.proto.NT_BoardUpdate
+import com.broll.gainea.net.proto.NT_GameOver
 import com.broll.gainea.net.proto.NT_ReconnectGame
 import com.broll.gainea.net.proto.NT_StartGame
-import com.broll.gainea.net.proto.NT_GameOver
 import com.broll.gainea.server.core.actions.ActionContext
 import com.broll.gainea.server.core.actions.ActionHandlers
 import com.broll.gainea.server.core.actions.ReactionActions
 import com.broll.gainea.server.core.actions.ReactionHandler
 import com.broll.gainea.server.core.actions.TurnBuilder
-import com.broll.gainea.server.core.actions.withActionId
 import com.broll.gainea.server.core.battle.BattleHandler
 import com.broll.gainea.server.core.cards.CardStorage
 import com.broll.gainea.server.core.goals.GoalStorage
@@ -28,13 +26,12 @@ import com.broll.gainea.server.core.stats.GameStatistic
 import com.broll.gainea.server.core.utils.isGameEnd
 import com.broll.gainea.server.core.utils.noActivePlayersRemaining
 import com.broll.gainea.server.init.LobbyData
-import com.broll.gainea.server.init.PlayerData
 import com.broll.gainea.server.network.gameData
 import com.broll.gainea.server.network.players
 import com.broll.mpnll.server.lobby.Lobby
+import com.google.protobuf.Message
 import org.slf4j.LoggerFactory
 import java.util.concurrent.atomic.AtomicInteger
-import com.google.protobuf.Message
 
 class Game(val lobby: Lobby) {
     val neutralPlayer = NeutralPlayer(this)
@@ -111,14 +108,12 @@ class Game(val lobby: Lobby) {
         actions.clear()
     }
 
-    fun start(player: Player): NT_StartGame {
-        return NT_StartGame.newBuilder().setRound(rounds).setTurn(currentTurn)
-            .addAllPlayers(allPlayers.map { it.nt() }).addAllObjects(objects.map { it.boardNt() })
-            .addAllEffects(effects.map { it.nt() }).setExpansionsSetting(map.expansionSetting.ordinal)
+    fun start(player: Player): NT_StartGame =
+        NT_StartGame.newBuilder()
+            .setUpdate(nt())
             .setPointLimit(lobby.gameData.pointLimit).setRoundLimit(lobby.gameData.roundLimit)
             .addAllCards(player.cardHandler.ntCards()).setShop(player.shop.nt())
             .addAllExpansions(map.expansions.map { it.nt() }).build()
-    }
 
     fun end() {
         Log.trace("Gamend called")
@@ -128,24 +123,18 @@ class Game(val lobby: Lobby) {
         }
     }
 
-    fun reconnect(player: Player): NT_ReconnectGame {
-        return NT_ReconnectGame.newBuilder().setRound(rounds).setTurn(currentTurn)
-            .addAllPlayers(allPlayers.map { it.nt() }).addAllObjects(objects.map { it.boardNt() })
-            .addAllEffects(effects.map { it.nt() }).setExpansionsSetting(map.expansionSetting.ordinal)
-            .addAllCards(player.cardHandler.ntCards()).addAllGoals(player.goalHandler.ntGoals())
-            .setPointLimit(lobby.gameData.pointLimit).setRoundLimit(lobby.gameData.roundLimit)
-            .setShop(player.shop.nt()).addAllExpansions(map.expansions.map { it.nt() }).build()
-    }
+    fun reconnect(player: Player): NT_ReconnectGame =
+        NT_ReconnectGame.newBuilder()
+            .setStart(start(player))
+            .addAllGoals(player.goalHandler.ntGoals()).build()
 
-    fun nt(): NT_BoardUpdate {
-        return NT_BoardUpdate.newBuilder().setRound(rounds).setTurn(currentTurn)
-            .addAllPlayers(allPlayers.map { it.nt() }).addAllObjects(objects.map { it.boardNt() })
-            .addAllEffects(effects.map { it.nt() }).build()
-    }
-
-    fun gameOver(): NT_GameOver = NT_GameOver.newBuilder().setRound(rounds).setTurn(currentTurn)
+    fun nt(): NT_BoardUpdate = NT_BoardUpdate.newBuilder().setRound(rounds).setTurn(currentTurn)
         .addAllPlayers(allPlayers.map { it.nt() }).addAllObjects(objects.map { it.boardNt() })
         .addAllEffects(effects.map { it.nt() }).build()
+
+
+    fun gameOver(): NT_GameOver =
+        NT_GameOver.newBuilder().setUpdate(nt()).build()
 
     @Synchronized
     fun nextTurn(): Player? {

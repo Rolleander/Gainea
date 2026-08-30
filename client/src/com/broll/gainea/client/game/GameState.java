@@ -1,7 +1,15 @@
 package com.broll.gainea.client.game;
 
 import com.broll.gainea.Gainea;
-import com.broll.gainea.net.proto.*;
+import com.broll.gainea.net.proto.NT_Action;
+import com.broll.gainea.net.proto.NT_BoardEffect;
+import com.broll.gainea.net.proto.NT_BoardObject;
+import com.broll.gainea.net.proto.NT_BoardUpdate;
+import com.broll.gainea.net.proto.NT_Card;
+import com.broll.gainea.net.proto.NT_GameStatistic;
+import com.broll.gainea.net.proto.NT_Lib;
+import com.broll.gainea.net.proto.NT_Player;
+import com.broll.gainea.net.proto.NT_Shop;
 import com.broll.mpnll.client.lobby.User;
 
 import java.util.ArrayList;
@@ -98,10 +106,9 @@ public class GameState {
         return actionsAllowed;
     }
 
-    public void update(NT_BoardUpdate update) { update(update.getRound(), update.getTurn(), update.getObjectsList(), update.getPlayersList(), update.getEffectsList()); }
-    public void update(NT_StartGame update) { update(update.getRound(), update.getTurn(), update.getObjectsList(), update.getPlayersList(), update.getEffectsList()); }
-    public void update(NT_ReconnectGame update) { update(update.getRound(), update.getTurn(), update.getObjectsList(), update.getPlayersList(), update.getEffectsList()); }
-    public void update(NT_GameOver update) { update(update.getRound(), update.getTurn(), update.getObjectsList(), update.getPlayersList(), update.getEffectsList()); }
+    public void update(NT_BoardUpdate update) {
+        update(update.getRound(), update.getTurn(), update.getObjectsList(), update.getPlayersList(), update.getEffectsList());
+    }
 
     private void update(int round, int turn, List<NT_BoardObject> objects, List<NT_Player> players, List<NT_BoardEffect> effects) {
         this.round = round;

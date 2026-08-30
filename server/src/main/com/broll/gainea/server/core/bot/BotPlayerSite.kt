@@ -3,11 +3,9 @@ package com.broll.gainea.server.core.bot
 import com.broll.gainea.net.proto.NT_Battle_Reaction
 import com.broll.gainea.net.proto.NT_EndTurn
 import com.broll.gainea.net.proto.NT_LoadedGame
-import com.broll.gainea.net.proto.NT_PlayerAction
-import com.broll.gainea.net.proto.NT_PlayerTurnActions
 import com.broll.gainea.net.proto.NT_Reaction
-import com.broll.gainea.server.core.actions.message
 import com.broll.gainea.server.core.Game
+import com.broll.gainea.server.core.actions.message
 import com.broll.gainea.server.core.battle.BattleHandler
 import com.broll.gainea.server.core.bot.impl.BotAttack
 import com.broll.gainea.server.core.bot.strategy.BotStrategy
@@ -42,7 +40,7 @@ class BotPlayerSite(private val lobby: Lobby, private val bot: User) {
             is com.broll.gainea.net.proto.NT_Battle_Start -> battleStart(message)
             is com.broll.gainea.net.proto.NT_Battle_Update -> battleUpdate(message)
             is com.broll.gainea.net.proto.NT_Event_ReceivedGoal -> strategy.synchronizeGoalStrategies()
-            is com.broll.gainea.net.proto.NT_Event_FinishedGoal -> if (message.player == bot.id) strategy.synchronizeGoalStrategies()
+            is com.broll.gainea.net.proto.NT_Event_FinishedGoal -> if (message.base.player == bot.id) strategy.synchronizeGoalStrategies()
         }
     }
 
@@ -70,11 +68,19 @@ class BotPlayerSite(private val lobby: Lobby, private val bot: User) {
     }
 
     private fun battleUpdate(message: com.broll.gainea.net.proto.NT_Battle_Update) {
-        ProcessingUtils.pause(BattleHandler.getAnimationDelay(message.attackerRollsCount, message.defenderRollsCount))
+        ProcessingUtils.pause(
+            BattleHandler.getAnimationDelay(
+                message.attackerRollsCount,
+                message.defenderRollsCount
+            )
+        )
         if (allowRetreat) {
             val attack = botActionHandler.getActionHandler(BotAttack::class.java)
-            sendServer(NT_Battle_Reaction.newBuilder()
-                .setKeepAttacking(attack.keepAttacking(battleAttackers, battleDefenders)).build())
+            sendServer(
+                NT_Battle_Reaction.newBuilder()
+                    .setKeepAttacking(attack.keepAttacking(battleAttackers, battleDefenders))
+                    .build()
+            )
         }
     }
 

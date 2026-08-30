@@ -151,162 +151,113 @@ message NT_Card {
 
 message NT_EndTurn {}
 
-// Event subclasses flatten these three fields. The base remains available for
-// code that previously registered or referenced NT_Event directly.
 message NT_Event {
-    // Screen effects: heal=1, damage=2, buff=3, debuff=4, spawned=5, moved=6.
     optional int32 screen_effect = 1;
     optional int32 player = 2;
     optional string sound = 3;
 }
 
 message NT_Event_BoardEffect {
-    optional int32 screen_effect = 1;
-    optional int32 player = 2;
-    optional string sound = 3;
-    repeated NT_BoardEffect effects = 4;
+    optional NT_Event base = 1;
+    repeated NT_BoardEffect effects = 2;
 }
 
 message NT_Event_BoughtMerc {
-    optional int32 screen_effect = 1;
-    optional int32 player = 2;
-    optional string sound = 3;
-    optional NT_Unit unit = 4;
+    optional NT_Event base = 1;
+    optional NT_Unit unit = 2;
 }
 
 message NT_Event_FinishedGoal {
-    optional int32 screen_effect = 1;
-    optional int32 player = 2;
-    optional string sound = 3;
-    optional NT_Goal goal = 4;
+    optional NT_Event base = 1;
+    optional NT_Goal goal = 2;
 }
 
 message NT_Event_FocusLocation {
-    optional int32 screen_effect = 1;
-    optional int32 player = 2;
-    optional string sound = 3;
-    optional int32 location = 4;
+    optional NT_Event base = 1;
+    optional int32 location = 2;
 }
 
 message NT_Event_FocusObject {
-    optional int32 screen_effect = 1;
-    optional int32 player = 2;
-    optional string sound = 3;
-    optional NT_BoardObject object = 4;
+    optional NT_Event base = 1;
+    optional NT_BoardObject object = 2;
 }
 
 message NT_Event_FocusObjects {
-    optional int32 screen_effect = 1;
-    optional int32 player = 2;
-    optional string sound = 3;
-    repeated NT_BoardObject objects = 4;
+    optional NT_Event base = 1;
+    repeated NT_BoardObject objects = 2;
 }
 
 message NT_Event_MovedObject {
-    optional int32 screen_effect = 1;
-    optional int32 player = 2;
-    optional string sound = 3;
-    repeated NT_BoardObject objects = 4;
+    optional NT_Event base = 1;
+    repeated NT_BoardObject objects = 2;
 }
 
 message NT_Event_OtherPlayerReceivedCard {
-    optional int32 screen_effect = 1;
-    optional int32 player = 2;
-    optional string sound = 3;
+    optional NT_Event base = 1;
 }
 
 message NT_Event_OtherPlayerReceivedGoal {
-    optional int32 screen_effect = 1;
-    optional int32 player = 2;
-    optional string sound = 3;
+    optional NT_Event base = 1;
 }
 
 message NT_Event_PlacedObject {
-    optional int32 screen_effect = 1;
-    optional int32 player = 2;
-    optional string sound = 3;
-    optional NT_BoardObject object = 4;
+    optional NT_Event base = 1;
+    optional NT_BoardObject object = 2;
 }
 
 message NT_Event_PlayedCard {
-    optional int32 screen_effect = 1;
-    optional int32 player = 2;
-    optional string sound = 3;
-    optional NT_Card card = 4;
+    optional NT_Event base = 1;
+    optional NT_Card card = 2;
 }
 
 message NT_Event_ReceivedCard {
-    optional int32 screen_effect = 1;
-    optional int32 player = 2;
-    optional string sound = 3;
-    optional NT_Card card = 4;
+    optional NT_Event base = 1;
+    optional NT_Card card = 2;
 }
 
 message NT_Event_ReceivedGoal {
-    optional int32 screen_effect = 1;
-    optional int32 player = 2;
-    optional string sound = 3;
-    optional NT_Goal goal = 4;
+    optional NT_Event base = 1;
+    optional NT_Goal goal = 2;
 }
 
 message NT_Event_ReceivedPoints {
-    optional int32 screen_effect = 1;
-    optional int32 player = 2;
-    optional string sound = 3;
-    optional int32 points = 4;
+    optional NT_Event base = 1;
+    optional int32 points = 2;
 }
 
 message NT_Event_ReceivedStars {
-    optional int32 screen_effect = 1;
-    optional int32 player = 2;
-    optional string sound = 3;
-    optional int32 stars = 4;
+    optional NT_Event base = 1;
+    optional int32 stars = 2;
 }
 
 message NT_Event_RemoveCard {
-    optional int32 screen_effect = 1;
-    optional int32 player = 2;
-    optional string sound = 3;
-    optional NT_Card card = 4;
+    optional NT_Event base = 1;
+    optional NT_Card card = 2;
 }
 
 message NT_Event_RemoveGoal {
-    optional int32 screen_effect = 1;
-    optional int32 player = 2;
-    optional string sound = 3;
-    optional NT_Goal goal = 4;
+    optional NT_Event base = 1;
+    optional NT_Goal goal = 2;
 }
 
 message NT_Event_RemoveObjects {
-    optional int32 screen_effect = 1;
-    optional int32 player = 2;
-    optional string sound = 3;
-    repeated NT_BoardObject objects = 4;
+    optional NT_Event base = 1;
+    repeated NT_BoardObject objects = 2;
 }
 
 message NT_Event_TextInfo {
-    // Legacy type constants: log=0, display=1, confirm=2.
-    optional int32 screen_effect = 1;
-    optional int32 player = 2;
-    optional string sound = 3;
-    optional string text = 4;
-    optional int32 type = 5;
+    optional NT_Event base = 1;
+    optional string text = 2;
+    optional int32 type = 3;
 }
 
 message NT_Event_UpdateObjects {
-    optional int32 screen_effect = 1;
-    optional int32 player = 2;
-    optional string sound = 3;
-    repeated NT_BoardObject objects = 4;
+    optional NT_Event base = 1;
+    repeated NT_BoardObject objects = 2;
 }
 
-// NT_GameOver flattens NT_BoardUpdate.
 message NT_GameOver {
-    optional int32 round = 1;
-    optional int32 turn = 2;
-    repeated NT_Player players = 3;
-    repeated NT_BoardObject objects = 4;
-    repeated NT_BoardEffect effects = 5;
+    required NT_BoardUpdate update = 1;
 }
 
 message NT_GameStatistic {
@@ -447,20 +398,9 @@ message NT_Reaction {
     repeated int32 options = 3;
 }
 
-// NT_ReconnectGame flattens NT_StartGame and NT_BoardUpdate.
 message NT_ReconnectGame {
-    optional int32 round = 1;
-    optional int32 turn = 2;
-    repeated NT_Player players = 3;
-    repeated NT_BoardObject objects = 4;
-    repeated NT_BoardEffect effects = 5;
-    optional int32 expansions_setting = 6;
-    optional int32 point_limit = 7;
-    optional int32 round_limit = 8;
-    repeated NT_Card cards = 9;
-    optional NT_Shop shop = 10;
-    repeated NT_Goal goals = 11;
-    repeated NT_Expansion expansions = 12;
+    required NT_StartGame start = 1;
+    repeated NT_Goal goals = 2;
 }
 
 message NT_RoundStatistic {
@@ -492,19 +432,14 @@ message NT_ShopUnit {
     optional NT_Unit unit = 2;
 }
 
-// NT_StartGame flattens NT_BoardUpdate.
 message NT_StartGame {
-    optional int32 round = 1;
-    optional int32 turn = 2;
-    repeated NT_Player players = 3;
-    repeated NT_BoardObject objects = 4;
-    repeated NT_BoardEffect effects = 5;
-    optional int32 expansions_setting = 6;
-    optional int32 point_limit = 7;
-    optional int32 round_limit = 8;
-    repeated NT_Card cards = 9;
-    optional NT_Shop shop = 10;
-    repeated NT_Expansion expansions = 11;
+    required NT_BoardUpdate update = 1;
+    optional int32 expansions_setting = 2;
+    optional int32 point_limit = 3;
+    optional int32 round_limit = 4;
+    repeated NT_Card cards = 5;
+    optional NT_Shop shop = 6;
+    repeated NT_Expansion expansions = 7;
 }
 
 message NT_Surrender {}
@@ -529,8 +464,6 @@ message NT_Unit {
 }
 
 message NT_UpdateLobbySettings {
-    // Setting constants: expansions=0, start locations=1, start goals=2,
-    // point limit=3, goal types=4, monsters=5, round limit=6.
     optional int32 setting = 1;
     optional int32 value = 2;
 }

@@ -2,6 +2,7 @@ package com.broll.gainea.server.core.cards
 
 import com.broll.gainea.core.cards.EffectType
 import com.broll.gainea.net.proto.NT_Card
+import com.broll.gainea.net.proto.NT_Event
 import com.broll.gainea.net.proto.NT_Event_PlayedCard
 import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.actions.ActionHandlers
@@ -62,8 +63,12 @@ abstract class Card(
 fun Game.playCard(card: Card) {
     val playerId = if (card.owner.isNeutral()) -1 else card.owner.serverPlayer.id
     val sound = if (card is DirectlyPlayedCard) "glitter.ogg" else "dwooom.ogg"
-    sendUpdate(NT_Event_PlayedCard.newBuilder().setPlayer(playerId).setCard(card.nt())
-        .setSound(sound).build())
+    sendUpdate(
+        NT_Event_PlayedCard.newBuilder()
+            .setBase(NT_Event.newBuilder().setPlayer(playerId).setSound(sound).build())
+            .setCard(card.nt())
+            .build()
+    )
     card.owner.cardHandler.cards.remove(card)
     ProcessingUtils.pause(CardAction.PLAY_CARD_DELAY)
     card.play(reactionHandler.actionHandlers)

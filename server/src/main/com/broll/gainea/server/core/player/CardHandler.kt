@@ -1,5 +1,6 @@
 package com.broll.gainea.server.core.player
 
+import com.broll.gainea.net.proto.NT_Event
 import com.broll.gainea.net.proto.NT_Event_OtherPlayerReceivedCard
 import com.broll.gainea.net.proto.NT_Event_ReceivedCard
 import com.broll.gainea.net.proto.NT_Event_RemoveCard
@@ -27,9 +28,12 @@ class CardHandler(private val game: Game, private val player: Player) {
             return
         }
         cards.add(card)
-        val nt = NT_Event_ReceivedCard.newBuilder().setCard(card.nt()).setSound("chime.ogg").build()
+        val nt = NT_Event_ReceivedCard.newBuilder().setCard(card.nt())
+            .setBase(NT_Event.newBuilder().setSound("chime.ogg").build())
+            .build()
         val nt2 = NT_Event_OtherPlayerReceivedCard.newBuilder()
-            .setPlayer(player.serverPlayer.id).build()
+            .setBase(NT_Event.newBuilder().setPlayer(player.serverPlayer.id).build())
+            .build()
         game.sendUpdate(player, nt, nt2)
     }
 

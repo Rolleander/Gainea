@@ -13,7 +13,7 @@ public class FinishedGoalDisplay extends Table {
         if (myGoal) {
             text = "Du hast ein Ziel erreicht!";
         } else {
-            text = game.state.getPlayer(goal.getPlayer()).name() + " hat ein Ziel erreicht!";
+            text = game.state.getPlayer(goal.getBase().getPlayer()).name() + " hat ein Ziel erreicht!";
         }
         setSkin(game.ui.skin);
         setBackground("highlight");

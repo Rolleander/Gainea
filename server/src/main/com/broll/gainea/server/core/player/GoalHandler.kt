@@ -1,5 +1,6 @@
 package com.broll.gainea.server.core.player
 
+import com.broll.gainea.net.proto.NT_Event
 import com.broll.gainea.net.proto.NT_Event_OtherPlayerReceivedGoal
 import com.broll.gainea.net.proto.NT_Event_ReceivedGoal
 import com.broll.gainea.net.proto.NT_Event_ReceivedPoints
@@ -29,8 +30,11 @@ class GoalHandler(private val game: Game, private val player: Player) {
     fun addPoints(points: Int) {
         if (player.isNeutral()) return
         score += points
-        game.sendUpdate(NT_Event_ReceivedPoints.newBuilder().setPlayer(player.serverPlayer.id)
-            .setPoints(points).build())
+        game.sendUpdate(
+            NT_Event_ReceivedPoints.newBuilder()
+                .setBase(NT_Event.newBuilder().setPlayer(player.serverPlayer.id).build())
+                .setPoints(points).build()
+        )
         ProcessingUtils.pause(500)
         if (game.isGameEnd()) {
             game.end()
@@ -40,8 +44,11 @@ class GoalHandler(private val game: Game, private val player: Player) {
     fun addStars(stars: Int) {
         if (player.isNeutral()) return
         this.stars += stars
-        game.sendUpdate(NT_Event_ReceivedStars.newBuilder().setPlayer(player.serverPlayer.id)
-            .setStars(stars).build())
+        game.sendUpdate(
+            NT_Event_ReceivedStars.newBuilder()
+                .setBase(NT_Event.newBuilder().setPlayer(player.serverPlayer.id).build())
+                .setStars(stars).build()
+        )
         ProcessingUtils.pause(500)
         game.updateReceiver.earnedStars(player, stars)
     }
@@ -49,8 +56,11 @@ class GoalHandler(private val game: Game, private val player: Player) {
     fun removeStars(stars: Int) {
         if (player.isNeutral()) return
         this.stars -= stars
-        game.sendUpdate(NT_Event_ReceivedStars.newBuilder().setPlayer(player.serverPlayer.id)
-            .setStars(-stars).build())
+        game.sendUpdate(
+            NT_Event_ReceivedStars.newBuilder()
+                .setBase(NT_Event.newBuilder().setPlayer(player.serverPlayer.id).build())
+                .setStars(-stars).build()
+        )
     }
 
     fun removeGoal(oldGoal: Goal) {
@@ -65,9 +75,11 @@ class GoalHandler(private val game: Game, private val player: Player) {
         if (player.isNeutral()) return
         goals.add(goal)
         game.updateReceiver.register(goal)
-        val nt = NT_Event_ReceivedGoal.newBuilder().setSound("swush.ogg").setGoal(goal.nt()).build()
+        val nt = NT_Event_ReceivedGoal.newBuilder()
+            .setBase(NT_Event.newBuilder().setSound("swush.ogg").build())
+            .setGoal(goal.nt()).build()
         val nt2 = NT_Event_OtherPlayerReceivedGoal.newBuilder()
-            .setPlayer(player.serverPlayer.id).build()
+            .setBase(NT_Event.newBuilder().setPlayer(player.serverPlayer.id).build()).build()
         game.sendUpdate(player, nt, nt2)
         //directly check goal for completion
         game.processingCore.execute({ goal.check() }, 100)

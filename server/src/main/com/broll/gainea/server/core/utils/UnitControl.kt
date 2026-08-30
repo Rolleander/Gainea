@@ -1,8 +1,6 @@
 package com.broll.gainea.server.core.utils
 
 import com.broll.gainea.core.protocol.ScreenEffect
-import com.broll.gainea.server.core.map.*
-
 import com.broll.gainea.net.proto.NT_Event
 import com.broll.gainea.net.proto.NT_Event_FocusObject
 import com.broll.gainea.net.proto.NT_Event_FocusObjects
@@ -66,7 +64,8 @@ object UnitControl {
 
     fun Game.focus(obj: MapObject, effect: ScreenEffect) {
         val nt = NT_Event_FocusObject.newBuilder()
-            .setScreenEffect(effect.value).setObject(obj.boardNt()).build()
+            .setBase(NT_Event.newBuilder().setScreenEffect(effect.value).build())
+            .setObject(obj.boardNt()).build()
         sendUpdate(nt)
         ProcessingUtils.pause(DAMAGE_PAUSE)
     }
@@ -74,7 +73,7 @@ object UnitControl {
     fun Game.focus(objects: List<MapObject>, effect: ScreenEffect) {
         objects.map { it.location }.distinct().forEach { location ->
             val nt = NT_Event_FocusObjects.newBuilder()
-                .setScreenEffect(effect.value)
+                .setBase(NT_Event.newBuilder().setScreenEffect(effect.value).build())
                 .addAllObjects(objects.filter { it.location === location }.map { it.boardNt() })
                 .build()
             sendUpdate(nt)
@@ -91,18 +90,27 @@ object UnitControl {
     }
 
 
-    fun Game.heal(unit: Unit, heal: Int = 1, consumer: Consumer<NT_Event_FocusObject.Builder>? = null) {
+    fun Game.heal(
+        unit: Unit,
+        heal: Int = 1,
+        consumer: Consumer<NT_Event_FocusObject.Builder>? = null
+    ) {
         Log.trace("UnitControl: heal unit $unit for $heal")
         val actualHeal = Math.max(unit.maxHealth.value - unit.health.value, heal)
         unit.heal(actualHeal)
         val nt = NT_Event_FocusObject.newBuilder()
-            .setObject(unit.boardNt()).setScreenEffect(ScreenEffect.HEAL.value)
+            .setObject(unit.boardNt())
+            .setBase(NT_Event.newBuilder().setScreenEffect(ScreenEffect.HEAL.value))
         consumer?.accept(nt)
         sendUpdate(nt.build())
         ProcessingUtils.pause(DAMAGE_PAUSE)
     }
 
-    fun Game.damage(unit: Unit, damage: Int = 1, consumer: Consumer<NT_Event_FocusObject.Builder>? = null) {
+    fun Game.damage(
+        unit: Unit,
+        damage: Int = 1,
+        consumer: Consumer<NT_Event_FocusObject.Builder>? = null
+    ) {
         Log.trace("UnitControl: damage unit $unit for $damage")
         //dont overkill
         val actualDamage = Math.min(unit.health.value, damage)
@@ -119,7 +127,8 @@ object UnitControl {
         }
         //send update to focus clients on object
         val nt = NT_Event_FocusObject.newBuilder()
-            .setObject(unit.boardNt()).setScreenEffect(ScreenEffect.DAMAGE.value)
+            .setBase(NT_Event.newBuilder().setScreenEffect(ScreenEffect.DAMAGE.value))
+            .setObject(unit.boardNt())
         consumer?.accept(nt)
         sendUpdate(nt.build())
         updateReceiver.unitDamaged(unit, damage)
@@ -148,7 +157,8 @@ object UnitControl {
         obj.place(location)
         updateReceiver.register(obj)
         val nt = NT_Event_PlacedObject.newBuilder()
-            .setObject(obj.boardNt()).setSound(obj.defaultSpawnSound(location))
+            .setObject(obj.boardNt())
+            .setBase(NT_Event.newBuilder().setSound(obj.defaultSpawnSound(location)).build())
         consumer?.accept(nt)
         sendUpdate(nt.build())
         updateReceiver.unitSpawned(obj, location)

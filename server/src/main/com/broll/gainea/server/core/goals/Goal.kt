@@ -1,12 +1,13 @@
 package com.broll.gainea.server.core.goals
 
 import com.broll.gainea.core.goals.GoalDifficulty
+import com.broll.gainea.core.map.ExpansionType
+import com.broll.gainea.net.proto.NT_Event
 import com.broll.gainea.net.proto.NT_Event_FinishedGoal
 import com.broll.gainea.net.proto.NT_Goal
 import com.broll.gainea.net.proto.NT_GoalProgression
 import com.broll.gainea.server.core.Game
 import com.broll.gainea.server.core.bot.strategy.GoalStrategy
-import com.broll.gainea.core.map.ExpansionType
 import com.broll.gainea.server.core.map.Location
 import com.broll.gainea.server.core.player.Player
 import com.broll.gainea.server.core.processing.GameUpdateReceiverAdapter
@@ -66,8 +67,14 @@ abstract class Goal(
     protected fun success() {
         if (!finished) {
             player.goalHandler.removeGoal(this)
-            game.sendUpdate(NT_Event_FinishedGoal.newBuilder().setSound("fanfare.ogg")
-                .setPlayer(player.serverPlayer.id).setGoal(nt()).build())
+            game.sendUpdate(
+                NT_Event_FinishedGoal.newBuilder()
+                    .setBase(
+                        NT_Event.newBuilder().setSound("fanfare.ogg")
+                            .setPlayer(player.serverPlayer.id).build()
+                    )
+                    .setGoal(nt()).build()
+            )
             ProcessingUtils.pause(4000)
             player.goalHandler.addPoints(difficulty.points)
             finished = true
@@ -81,8 +88,10 @@ abstract class Goal(
     protected fun updateProgression(progression: Int) {
         if (this.progression != progression && progressionGoal != NO_PROGRESSION_GOAL) {
             this.progression = progression
-            player.serverPlayer.send(NT_GoalProgression.newBuilder().setProgression(progression)
-                .setIndex(player.goalHandler.goals.indexOf(this)).build())
+            player.serverPlayer.send(
+                NT_GoalProgression.newBuilder().setProgression(progression)
+                    .setIndex(player.goalHandler.goals.indexOf(this)).build()
+            )
         }
     }
 
@@ -92,9 +101,10 @@ abstract class Goal(
 
     abstract fun check()
     fun nt(): NT_Goal {
-        val builder = NT_Goal.newBuilder().setId(id).setDescription(text).setPoints(difficulty.points)
-            .setProgression(progression).setProgressionGoal(progressionGoal)
-            .addAllLocations(locations.map { it.number })
+        val builder =
+            NT_Goal.newBuilder().setId(id).setDescription(text).setPoints(difficulty.points)
+                .setProgression(progression).setProgressionGoal(progressionGoal)
+                .addAllLocations(locations.map { it.number })
         restrictionInfo?.let { builder.restriction = it }
         return builder.build()
     }
@@ -109,5 +119,7 @@ abstract class Goal(
                 '}'
     }
 
-    companion object { private const val NO_PROGRESSION_GOAL = -1 }
+    companion object {
+        private const val NO_PROGRESSION_GOAL = -1
+    }
 }
